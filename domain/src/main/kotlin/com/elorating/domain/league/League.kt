@@ -2,7 +2,6 @@ package com.elorating.domain.league
 
 class League(var name: String) {
     var id: String? = null
-
     var settings: Settings = Settings()
         private set
 

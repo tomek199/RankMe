@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class LeagueTest {
-
     @Test
     internal fun `should create league with default params`() {
         // given
