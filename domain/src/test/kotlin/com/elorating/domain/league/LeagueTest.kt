@@ -24,7 +24,7 @@ internal class LeagueTest {
     @Test
     internal fun `should create league with id`() {
         // given
-        val id = "11111"
+        val id = "league-111"
         val name = "Tennis masters"
         // when
         val league = League(id, name)

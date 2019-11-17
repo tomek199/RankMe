@@ -1,4 +1,4 @@
-package com.elorating.domain.user
+package com.elorating.domain.player
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

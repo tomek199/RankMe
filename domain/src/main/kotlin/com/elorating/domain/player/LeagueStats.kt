@@ -1,4 +1,4 @@
-package com.elorating.domain.user
+package com.elorating.domain.player
 
 class LeagueStats(val leagueId: String) {
     var rating: Int = 1000
