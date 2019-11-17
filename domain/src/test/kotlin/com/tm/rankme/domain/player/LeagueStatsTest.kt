@@ -1,4 +1,4 @@
-package com.elorating.domain.player
+package com.tm.rankme.domain.player
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

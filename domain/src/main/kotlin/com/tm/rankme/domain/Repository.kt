@@ -1,4 +1,4 @@
-package com.elorating.domain
+package com.tm.rankme.domain
 
 interface Repository<T> {
     fun save(entity : T)

@@ -1,4 +1,4 @@
-package com.elorating.domain.player
+package com.tm.rankme.domain.player
 
 class Player(var username: String, var status: Status = Status.ACTIVE) {
     var id: String? = null
@@ -11,10 +11,6 @@ class Player(var username: String, var status: Status = Status.ACTIVE) {
         this.leagues = leagues
     }
 
-    /**
-     * Assign league statistics to player
-     * @param leagueStats league statistics to add
-     */
     fun addLeague(leagueStats: LeagueStats) {
         leagues.add(leagueStats)
     }

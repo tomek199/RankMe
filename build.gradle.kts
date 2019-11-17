@@ -5,7 +5,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.elorating"
+    group = "com.tm.glicko"
     version = "0.1-SNAPSHOT"
 
     repositories {

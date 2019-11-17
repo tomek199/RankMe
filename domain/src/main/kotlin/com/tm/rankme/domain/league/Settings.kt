@@ -1,4 +1,4 @@
-package com.elorating.domain.league
+package com.tm.rankme.domain.league
 
 class Settings {
     var maxScore: Int = 2

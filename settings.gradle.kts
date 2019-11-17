@@ -1,4 +1,4 @@
-rootProject.name = "new-elo-rating"
+rootProject.name = "RankMe"
 
 include("domain")
 include("infrastructure")
