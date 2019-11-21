@@ -13,6 +13,7 @@ internal class LeagueStatsTest {
         // then
         assertEquals(leagueId, leagueStats.leagueId)
         assertEquals(1000, leagueStats.rating)
+        assertEquals(350, leagueStats.ratingDeviation)
         assertEquals(0, leagueStats.won)
         assertEquals(0, leagueStats.lost)
         assertEquals(0, leagueStats.draw)
