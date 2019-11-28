@@ -8,36 +8,43 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 internal class Glicko(private val playerOne: LeagueStats,
-                      private val playerTwo: LeagueStats, private val score: Pair<Int, Int>) : Algorithm {
+                      private val playerTwo: LeagueStats,
+                      private val score: Pair<Int, Int>) : Algorithm {
     private val q = ln(10.0) / 400
-    private val c = 48
-    private val gPlayerOne = 1 / (sqrt(1 + 3 * (q * q) * (playerOne.ratingDeviation * playerOne.ratingDeviation) / (PI * PI)))
-    private val gPlayerTwo = 1 / (sqrt(1 + 3 * (q * q) * (playerTwo.ratingDeviation * playerTwo.ratingDeviation) / (PI * PI)))
-    private val ePlayerOne = 1 / (1 + 10.0.pow(-gPlayerTwo * (playerOne.rating - playerTwo.rating) / (-400)))
-    private val ePlayerTwo = 1 / (1 + 10.0.pow(-gPlayerOne * (playerTwo.rating - playerOne.rating) / (-400)))
-    private val dSquarePlayerOne = 1 / ((q * q) * (gPlayerTwo * gPlayerTwo) * ePlayerOne * (1 - ePlayerOne))
-    private val dSquarePlayerTwo = 1 / ((q * q) * (gPlayerOne * gPlayerOne) * ePlayerTwo * (1 - ePlayerTwo))
+
+    override fun playerOneDeviation(): Int {
+        return sqrt((1.0 / (playerOne.deviation * playerOne.deviation) + 1.0 / dSquare(playerOne, playerTwo))
+                .pow(-1)).roundToInt()
+    }
+
+    override fun playerTwoDeviation(): Int {
+        return sqrt((1.0 / (playerTwo.deviation * playerTwo.deviation) + 1.0 / dSquare(playerTwo, playerOne))
+                .pow(-1)).roundToInt()
+    }
 
     override fun playerOneRating(): Int {
         return (playerOne.rating +
-                q / (1.0 / (playerOne.ratingDeviation * playerOne.ratingDeviation) + 1 / dSquarePlayerOne) *
-                gPlayerTwo * (playerOneScore() - ePlayerOne)).roundToInt()
+                q / (1.0 / (playerOne.deviation * playerOne.deviation) + 1.0 / dSquare(playerOne, playerTwo)) *
+                g(playerTwo) * (playerOneScore() - e(playerOne, playerTwo))).roundToInt()
     }
 
     override fun playerTwoRating(): Int {
         return (playerTwo.rating +
-                q / (1.0 / (playerTwo.ratingDeviation * playerTwo.ratingDeviation) + 1 / dSquarePlayerTwo) *
-                gPlayerOne * (playerTwoScore() - ePlayerTwo)).roundToInt()
+                q / (1.0 / (playerTwo.deviation * playerTwo.deviation) + 1.0 / dSquare(playerTwo, playerOne)) *
+                g(playerOne) * (playerTwoScore() - e(playerTwo, playerOne))).roundToInt()
     }
 
-    override fun playerOneDeviation(): Int {
-        return sqrt((1.0 / (playerOne.ratingDeviation * playerOne.ratingDeviation) + 1.0 / dSquarePlayerOne).pow(-1))
-                .roundToInt()
+    private fun g(player: LeagueStats): Double {
+        return 1.0 / (sqrt(1 + 3 * (q * q) * (player.deviation * player.deviation) / (PI * PI)))
     }
 
-    override fun playerTwoDeviation(): Int {
-        return sqrt((1.0 / (playerTwo.ratingDeviation * playerTwo.ratingDeviation) + 1.0 / dSquarePlayerTwo).pow(-1))
-                .roundToInt()
+    private fun e(player: LeagueStats, opponent: LeagueStats): Double {
+        return 1 / (1 + 10.0.pow(-g(opponent) * (player.rating - opponent.rating) / 400))
+    }
+
+    private fun dSquare(player: LeagueStats, opponent: LeagueStats): Double {
+        val estimate = e(player, opponent)
+        return 1 / ((q * q) * g(opponent).pow(2) * estimate * (1 - estimate))
     }
 
     private fun playerOneScore(): Float {
