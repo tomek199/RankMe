@@ -6,15 +6,15 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-class LeagueStats(val leagueId: String) {
+class Statistics {
     var rating: Int = 1500
         internal set
     var deviation: Int = 350
         get() {
-            if (lastMatch == null)
+            if (lastGame == null)
                 return field
             val c = 48
-            val weeks = ChronoUnit.WEEKS.between(lastMatch, LocalDate.now()) + 1
+            val weeks = ChronoUnit.WEEKS.between(lastGame, LocalDate.now()) + 1
             val newDeviation = sqrt(((field * field) + (c * c) * weeks).toDouble()).roundToInt()
             return min(350, newDeviation)
         }
@@ -25,6 +25,6 @@ class LeagueStats(val leagueId: String) {
         internal set
     var draw: Int = 0
         internal set
-    var lastMatch: LocalDate? = null
+    var lastGame: LocalDate? = null
         internal set
 }

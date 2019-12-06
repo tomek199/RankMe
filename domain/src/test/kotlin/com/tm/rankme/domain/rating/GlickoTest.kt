@@ -1,6 +1,6 @@
 package com.tm.rankme.domain.rating
 
-import com.tm.rankme.domain.player.LeagueStats
+import com.tm.rankme.domain.player.Statistics
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -9,9 +9,8 @@ internal class GlickoTest {
     @Test
     internal fun `should return correct result for new players when draw`() {
         // given
-        val leagueId = "league-111"
-        val playerOneStats = LeagueStats(leagueId)
-        val playerTwoStats = LeagueStats(leagueId)
+        val playerOneStats = Statistics()
+        val playerTwoStats = Statistics()
         // when
         val glicko = Glicko(playerOneStats, playerTwoStats, Pair(2, 2))
         // then
@@ -24,13 +23,12 @@ internal class GlickoTest {
     @Test
     internal fun `should return correct result for players when draw`() {
         // given
-        val leagueId = "league-111"
-        val playerOneStats = LeagueStats(leagueId)
-        val playerTwoStats = LeagueStats(leagueId)
-        playerOneStats.lastMatch = LocalDate.now()
+        val playerOneStats = Statistics()
+        val playerTwoStats = Statistics()
+        playerOneStats.lastGame = LocalDate.now()
         playerOneStats.deviation = 224
         playerOneStats.rating = 2145
-        playerTwoStats.lastMatch = LocalDate.now()
+        playerTwoStats.lastGame = LocalDate.now()
         playerTwoStats.deviation = 314
         playerTwoStats.rating = 1839
         // when
@@ -45,13 +43,12 @@ internal class GlickoTest {
     @Test
     internal fun `should return correct result for when player one won`() {
         // given
-        val leagueId = "league-111"
-        val playerOneStats = LeagueStats(leagueId)
-        val playerTwoStats = LeagueStats(leagueId)
-        playerOneStats.lastMatch = LocalDate.now()
+        val playerOneStats = Statistics()
+        val playerTwoStats = Statistics()
+        playerOneStats.lastGame = LocalDate.now()
         playerOneStats.deviation = 164
         playerOneStats.rating = 2493
-        playerTwoStats.lastMatch = LocalDate.now()
+        playerTwoStats.lastGame = LocalDate.now()
         playerTwoStats.deviation = 179
         playerTwoStats.rating = 2435
         // when
@@ -66,13 +63,12 @@ internal class GlickoTest {
     @Test
     internal fun `should return correct result for when player two won`() {
         // given
-        val leagueId = "league-111"
-        val playerOneStats = LeagueStats(leagueId)
-        val playerTwoStats = LeagueStats(leagueId)
-        playerOneStats.lastMatch = LocalDate.now()
+        val playerOneStats = Statistics()
+        val playerTwoStats = Statistics()
+        playerOneStats.lastGame = LocalDate.now()
         playerOneStats.deviation = 164
         playerOneStats.rating = 2493
-        playerTwoStats.lastMatch = LocalDate.now()
+        playerTwoStats.lastGame = LocalDate.now()
         playerTwoStats.deviation = 179
         playerTwoStats.rating = 2435
         // when

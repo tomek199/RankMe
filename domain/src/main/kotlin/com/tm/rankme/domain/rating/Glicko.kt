@@ -1,14 +1,14 @@
 package com.tm.rankme.domain.rating
 
-import com.tm.rankme.domain.player.LeagueStats
+import com.tm.rankme.domain.player.Statistics
 import kotlin.math.PI
 import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-internal class Glicko(private val playerOne: LeagueStats,
-                      private val playerTwo: LeagueStats,
+internal class Glicko(private val playerOne: Statistics,
+                      private val playerTwo: Statistics,
                       private val score: Pair<Int, Int>) : Algorithm {
     private val q = ln(10.0) / 400
 
@@ -34,15 +34,15 @@ internal class Glicko(private val playerOne: LeagueStats,
                 g(playerOne) * (playerTwoScore() - e(playerTwo, playerOne))).roundToInt()
     }
 
-    private fun g(player: LeagueStats): Double {
+    private fun g(player: Statistics): Double {
         return 1.0 / (sqrt(1 + 3 * (q * q) * (player.deviation * player.deviation) / (PI * PI)))
     }
 
-    private fun e(player: LeagueStats, opponent: LeagueStats): Double {
+    private fun e(player: Statistics, opponent: Statistics): Double {
         return 1 / (1 + 10.0.pow(-g(opponent) * (player.rating - opponent.rating) / 400))
     }
 
-    private fun dSquare(player: LeagueStats, opponent: LeagueStats): Double {
+    private fun dSquare(player: Statistics, opponent: Statistics): Double {
         val estimate = e(player, opponent)
         return 1 / ((q * q) * g(opponent).pow(2) * estimate * (1 - estimate))
     }

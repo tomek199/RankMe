@@ -1,17 +1,14 @@
 package com.tm.rankme.domain.player
 
-class Player(var username: String, var status: Status = Status.ACTIVE) {
+class Player(val leagueId: String, var username: String, var status: Status = Status.ACTIVE) {
     var id: String? = null
         private set
-    var leagues: MutableList<LeagueStats> = mutableListOf()
+    var statistics: Statistics = Statistics()
         private set
 
-    constructor(id: String, username: String, leagues: MutableList<LeagueStats>) : this(username) {
+    constructor(leagueId: String, id: String, username: String, statistics: Statistics)
+            : this(leagueId, username) {
         this.id = id
-        this.leagues = leagues
-    }
-
-    fun addLeague(leagueStats: LeagueStats) {
-        leagues.add(leagueStats)
+        this.statistics = statistics
     }
 }
