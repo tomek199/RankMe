@@ -1,6 +1,6 @@
 package com.tm.rankme.domain.rating
 
-import com.tm.rankme.domain.player.Statistics
+import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate

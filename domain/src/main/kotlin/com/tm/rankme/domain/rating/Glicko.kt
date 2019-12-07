@@ -1,6 +1,6 @@
 package com.tm.rankme.domain.rating
 
-import com.tm.rankme.domain.player.Statistics
+import com.tm.rankme.domain.competitor.Statistics
 import kotlin.math.PI
 import kotlin.math.ln
 import kotlin.math.pow

@@ -1,4 +1,4 @@
-package com.tm.rankme.domain.player
+package com.tm.rankme.domain.competitor
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -31,7 +31,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should return correct rating deviation when player played game in last period`() {
+    internal fun `should return correct rating deviation when competitor played game in last period`() {
         // given
         val leagueStats = Statistics()
         // when

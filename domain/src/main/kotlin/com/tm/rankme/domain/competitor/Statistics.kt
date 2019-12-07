@@ -1,4 +1,4 @@
-package com.tm.rankme.domain.player
+package com.tm.rankme.domain.competitor
 
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
