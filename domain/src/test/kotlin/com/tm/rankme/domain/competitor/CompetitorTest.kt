@@ -1,8 +1,8 @@
 package com.tm.rankme.domain.competitor
 
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import kotlin.test.assertEquals
 
 internal class CompetitorTest {
     @Test
