@@ -1,61 +1,57 @@
 package com.tm.rankme.domain.game
 
-import com.tm.rankme.domain.competitor.Statistics
 import kotlin.math.PI
 import kotlin.math.ln
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-internal class GlickoService(scoreOne: Pair<Statistics, Int>,
-                             scoreTwo: Pair<Statistics, Int>) {
-
-    private val playerOne: Statistics = scoreOne.first
-    private val playerTwo: Statistics = scoreTwo.first
-    private val playerOneResult = calculateResult(scoreOne, scoreTwo)
-    private val playerTwoResult = calculateResult(scoreTwo, scoreOne)
+internal class GlickoService(playerOne: Player,
+                             playerTwo: Player) {
     private val q = ln(10.0) / 400
+    val playerOneDeviation: Int
+    val playerTwoDeviation: Int
+    val playerOneRating: Int
+    val playerTwoRating: Int
 
-    private fun calculateResult(player: Pair<Statistics, Int>, opponent: Pair<Statistics, Int>): Float {
-        return when {
-            player.second > opponent.second -> 1f
-            player.second < opponent.second -> 0f
-            else -> 0.5f
-        }
+    init {
+        val playerOneScore = playerOne.score?: throw IllegalArgumentException("Player one score is not provided!")
+        val playerTwoScore = playerTwo.score?: throw IllegalArgumentException("Player two Score is not provided!")
+        playerOneDeviation = calculateDeviation(playerOne, playerTwo)
+        playerTwoDeviation = calculateDeviation(playerTwo, playerOne)
+        playerOneRating = calculateRating(playerOne, playerTwo, result(playerOneScore, playerTwoScore))
+        playerTwoRating = calculateRating(playerTwo, playerOne, result(playerTwoScore, playerOneScore))
     }
 
-    fun playerOneDeviation(): Int {
-        return sqrt((1.0 / (playerOne.deviation * playerOne.deviation) + 1.0 / dSquare(playerOne, playerTwo))
+    private fun calculateDeviation(player: Player, opponent: Player): Int {
+        return sqrt((1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent))
                 .pow(-1)).roundToInt()
     }
 
-    fun playerTwoDeviation(): Int {
-        return sqrt((1.0 / (playerTwo.deviation * playerTwo.deviation) + 1.0 / dSquare(playerTwo, playerOne))
-                .pow(-1)).roundToInt()
+    private fun calculateRating(player: Player, opponent: Player, result: Float): Int {
+        return (player.rating +
+                q / (1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent)) *
+                g(opponent) * (result - e(player, opponent))).roundToInt()
     }
 
-    fun playerOneRating(): Int {
-        return (playerOne.rating +
-                q / (1.0 / (playerOne.deviation * playerOne.deviation) + 1.0 / dSquare(playerOne, playerTwo)) *
-                g(playerTwo) * (playerOneResult - e(playerOne, playerTwo))).roundToInt()
-    }
-
-    fun playerTwoRating(): Int {
-        return (playerTwo.rating +
-                q / (1.0 / (playerTwo.deviation * playerTwo.deviation) + 1.0 / dSquare(playerTwo, playerOne)) *
-                g(playerOne) * (playerTwoResult - e(playerTwo, playerOne))).roundToInt()
-    }
-
-    private fun g(player: Statistics): Double {
+    private fun g(player: Player): Double {
         return 1.0 / (sqrt(1 + 3 * (q * q) * (player.deviation * player.deviation) / (PI * PI)))
     }
 
-    private fun e(player: Statistics, opponent: Statistics): Double {
+    private fun e(player: Player, opponent: Player): Double {
         return 1 / (1 + 10.0.pow(-g(opponent) * (player.rating - opponent.rating) / 400))
     }
 
-    private fun dSquare(player: Statistics, opponent: Statistics): Double {
+    private fun dSquare(player: Player, opponent: Player): Double {
         val estimate = e(player, opponent)
         return 1 / ((q * q) * g(opponent).pow(2) * estimate * (1 - estimate))
+    }
+
+    private fun result(playerScore: Int, opponentScore: Int): Float {
+        return when {
+            playerScore > opponentScore -> 1f
+            playerScore < opponentScore -> 0f
+            else -> 0.5f
+        }
     }
 }
