@@ -17,17 +17,17 @@ class Statistics() {
             return min(350, newDeviation)
         }
         internal set
+
     var rating: Int = 1500
         internal set
     var won: Int = 0
-        internal set
+        private set
     var lost: Int = 0
-        internal set
+        private set
     var draw: Int = 0
-        internal set
+        private set
     var lastGame: LocalDate? = null
         internal set
-
     constructor(deviation: Int, rating: Int, won: Int, lost: Int, draw: Int, lastGame: LocalDate?): this() {
         this.deviation = deviation
         this.rating = rating
@@ -35,5 +35,13 @@ class Statistics() {
         this.lost = lost
         this.draw = draw
         this.lastGame = lastGame
+    }
+
+    fun addGame(score: Int, opponentScore: Int) {
+        when {
+            score > opponentScore -> won++
+            score < opponentScore -> lost++
+            else -> draw++
+        }
     }
 }

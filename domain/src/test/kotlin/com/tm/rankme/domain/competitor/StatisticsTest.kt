@@ -9,14 +9,14 @@ internal class StatisticsTest {
     @Test
     internal fun `should create Statistics with default parameters`() {
         // when
-        val leagueStats = Statistics()
+        val statistics = Statistics()
         // then
-        assertEquals(350, leagueStats.deviation)
-        assertEquals(1500, leagueStats.rating)
-        assertEquals(0, leagueStats.won)
-        assertEquals(0, leagueStats.lost)
-        assertEquals(0, leagueStats.draw)
-        assertNull(leagueStats.lastGame)
+        assertEquals(350, statistics.deviation)
+        assertEquals(1500, statistics.rating)
+        assertEquals(0, statistics.won)
+        assertEquals(0, statistics.lost)
+        assertEquals(0, statistics.draw)
+        assertNull(statistics.lastGame)
     }
 
     @Test
@@ -43,34 +43,70 @@ internal class StatisticsTest {
     @Test
     internal fun `should return default rating deviation`() {
         // given
-        val leagueStats = Statistics()
+        val statistics = Statistics()
         val lastMatch = LocalDate.now().minusWeeks(3)
         // when
-        leagueStats.lastGame = lastMatch
+        statistics.lastGame = lastMatch
         // then
-        assertEquals(350, leagueStats.deviation)
+        assertEquals(350, statistics.deviation)
     }
 
     @Test
     internal fun `should return correct rating deviation when competitor played game in last period`() {
         // given
-        val leagueStats = Statistics()
+        val statistics = Statistics()
         // when
-        leagueStats.lastGame = LocalDate.now().minusDays(6)
-        leagueStats.deviation = 224
+        statistics.lastGame = LocalDate.now().minusDays(6)
+        statistics.deviation = 224
         // then
-        assertEquals(229, leagueStats.deviation)
+        assertEquals(229, statistics.deviation)
 
     }
 
     @Test
     internal fun `should return bigger rating deviation after inactivity period`() {
         // given
-        val leagueStats = Statistics()
+        val statistics = Statistics()
         // when
-        leagueStats.lastGame = LocalDate.now().minusWeeks(3)
-        leagueStats.deviation = 158
+        statistics.lastGame = LocalDate.now().minusWeeks(3)
+        statistics.deviation = 158
         // then
-        assertEquals(185, leagueStats.deviation)
+        assertEquals(185, statistics.deviation)
+    }
+
+    @Test
+    internal fun `should add draw game`() {
+        // given
+        val statistics = Statistics()
+        // when
+        statistics.addGame(3, 3)
+        // then
+        assertEquals(1, statistics.draw)
+        assertEquals(0, statistics.won)
+        assertEquals(0, statistics.lost)
+    }
+
+    @Test
+    internal fun `should add won game`() {
+        // given
+        val statistics = Statistics()
+        // when
+        statistics.addGame(3, 2)
+        // then
+        assertEquals(0, statistics.draw)
+        assertEquals(1, statistics.won)
+        assertEquals(0, statistics.lost)
+    }
+
+    @Test
+    internal fun `should add lost game`() {
+        // given
+        val statistics = Statistics()
+        // when
+        statistics.addGame(2, 3)
+        // then
+        assertEquals(0, statistics.draw)
+        assertEquals(0, statistics.won)
+        assertEquals(1, statistics.lost)
     }
 }

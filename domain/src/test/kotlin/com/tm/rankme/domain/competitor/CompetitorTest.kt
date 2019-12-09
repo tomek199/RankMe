@@ -1,15 +1,20 @@
 package com.tm.rankme.domain.competitor
 
+import com.tm.rankme.domain.game.Player
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 internal class CompetitorTest {
+    private val leagueId = "league-111"
+    private val id = "competitor-111"
+    private val username = "Optimus Prime"
+
     @Test
     internal fun `should create competitor with default parameters`() {
         // given
-        val username = "Optimus Prime"
-        val leagueId = "league-111"
         val statistics = Statistics()
         // when
         val competitor = Competitor(leagueId, username)
@@ -28,16 +33,10 @@ internal class CompetitorTest {
     @Test
     internal fun `should create competitor with id and league statistics`() {
         // given
-        val leagueId = "league-111"
-        val id = "competitor-111"
-        val username = "Optimus Prime"
         val statistics = Statistics()
         statistics.deviation = 200
         statistics.rating = 2000
         statistics.lastGame = LocalDate.of(2019, 1, 1)
-        statistics.draw = 5
-        statistics.lost = 3
-        statistics.won = 7
         // when
         val competitor = Competitor(leagueId, id, username, statistics)
         // then
@@ -45,5 +44,77 @@ internal class CompetitorTest {
         assertEquals(username, competitor.username)
         assertEquals(Status.ACTIVE, competitor.status)
         assertEquals(statistics, competitor.statistics)
+    }
+
+    @Test
+    internal fun `should throw exception when update statistics without score`() {
+        // given
+        val competitor = Competitor(leagueId, username, Statistics())
+        // when
+        val player = Player(id, username, 234, 2548)
+        // then
+        assertFailsWith<IllegalArgumentException> {
+            competitor.updateStatistics(player, 2, LocalDateTime.now())
+        }
+    }
+
+    @Test
+    internal fun `should update statistics by draw game`() {
+        // given
+        val gameDateTime = LocalDateTime.now()
+        val deviationAfterGame = 326
+        val ratingAfterGame = 1547
+        val player = Player(id, username, deviationAfterGame, ratingAfterGame)
+        player.score = 3
+        val competitor = Competitor(leagueId, username, Statistics())
+        // when
+        competitor.updateStatistics(player, 3, gameDateTime)
+        // then
+        assertEquals(gameDateTime.toLocalDate(), competitor.statistics.lastGame)
+        assertEquals(deviationAfterGame + 4 /* getter recalculation */, competitor.statistics.deviation)
+        assertEquals(ratingAfterGame, competitor.statistics.rating)
+        assertEquals(1, competitor.statistics.draw)
+        assertEquals(0, competitor.statistics.won)
+        assertEquals(0, competitor.statistics.lost)
+    }
+
+    @Test
+    internal fun `should update statistics by won game`() {
+        // given
+        val competitor = Competitor(leagueId, username, Statistics())
+        val gameDateTime = LocalDateTime.now()
+        val deviationAfterGame = 258
+        val ratingAfterGame = 1673
+        val player = Player(id, username, deviationAfterGame, ratingAfterGame)
+        player.score = 2
+        // when
+        competitor.updateStatistics(player, 0, gameDateTime)
+        // then
+        assertEquals(gameDateTime.toLocalDate(), competitor.statistics.lastGame)
+        assertEquals(deviationAfterGame + 4 /* getter recalculation */, competitor.statistics.deviation)
+        assertEquals(ratingAfterGame, competitor.statistics.rating)
+        assertEquals(0, competitor.statistics.draw)
+        assertEquals(1, competitor.statistics.won)
+        assertEquals(0, competitor.statistics.lost)
+    }
+
+    @Test
+    internal fun `should update statistics by lost game`() {
+        // given
+        val competitor = Competitor(leagueId, username, Statistics())
+        val gameDateTime = LocalDateTime.now()
+        val deviationAfterGame = 173
+        val ratingAfterGame = 1438
+        val player = Player(id, username, deviationAfterGame, ratingAfterGame)
+        player.score = 1
+        // when
+        competitor.updateStatistics(player, 2, gameDateTime)
+        // then
+        assertEquals(gameDateTime.toLocalDate(), competitor.statistics.lastGame)
+        assertEquals(deviationAfterGame + 7 /* getter recalculation */, competitor.statistics.deviation)
+        assertEquals(ratingAfterGame, competitor.statistics.rating)
+        assertEquals(0, competitor.statistics.draw)
+        assertEquals(0, competitor.statistics.won)
+        assertEquals(1, competitor.statistics.lost)
     }
 }
