@@ -61,4 +61,28 @@ internal class GameTest {
         assertNull(game.playerTwo.score)
         assertNull(game.playerTwo.ratingDelta)
     }
+
+    @Test
+    internal fun `should complete scheduled game`() {
+        // given
+        val date = LocalDate.now()
+        val leagueId = "league-111"
+        val oneStats = Statistics(283, 1847, 0, 0, 0, date)
+        val competitorTwo = Competitor(leagueId, "c-222" ,"Han Solo", oneStats)
+        val twoStats = Statistics(165, 2156, 0, 0, 0, date)
+        val competitorOne = Competitor(leagueId, "c-111" ,"Darth Vader", twoStats)
+        val game = Game(competitorOne, competitorTwo, date)
+        // when
+        game.complete(Pair(oneStats, 1), Pair(twoStats, 2), date)
+        // then
+        assertEquals(date, game.date)
+
+        assertEquals(game.playerOne.deviation, 252)
+        assertEquals(game.playerOne.rating, 1792)
+        assertEquals(game.playerOne.ratingDelta, -55)
+
+        assertEquals(game.playerTwo.deviation, 165)
+        assertEquals(game.playerTwo.rating, 2180)
+        assertEquals(game.playerTwo.ratingDelta, 24)
+    }
 }

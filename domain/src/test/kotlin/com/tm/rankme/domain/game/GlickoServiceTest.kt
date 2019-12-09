@@ -1,18 +1,18 @@
-package com.tm.rankme.domain.rating
+package com.tm.rankme.domain.game
 
 import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
 
-internal class GlickoTest {
+internal class GlickoServiceTest {
     @Test
     internal fun `should return correct result for new players when draw`() {
         // given
         val playerOneStats = Statistics()
         val playerTwoStats = Statistics()
         // when
-        val glicko = Glicko(playerOneStats, playerTwoStats, Pair(2, 2))
+        val glicko = GlickoService(Pair(playerOneStats, 2), Pair(playerTwoStats, 2))
         // then
         assertEquals(1500, glicko.playerOneRating())
         assertEquals(1500, glicko.playerTwoRating())
@@ -32,7 +32,7 @@ internal class GlickoTest {
         playerTwoStats.deviation = 314
         playerTwoStats.rating = 1839
         // when
-        val glicko = Glicko(playerOneStats, playerTwoStats, Pair(1, 1))
+        val glicko = GlickoService(Pair(playerOneStats, 1), Pair(playerTwoStats, 1))
         // then
         assertEquals(214, glicko.playerOneDeviation())
         assertEquals(2094, glicko.playerOneRating())
@@ -52,7 +52,7 @@ internal class GlickoTest {
         playerTwoStats.deviation = 179
         playerTwoStats.rating = 2435
         // when
-        val glicko = Glicko(playerOneStats, playerTwoStats, Pair(2, 1))
+        val glicko = GlickoService(Pair(playerOneStats, 2), Pair(playerTwoStats, 1))
         // then
         assertEquals(158, glicko.playerOneDeviation())
         assertEquals(2546, glicko.playerOneRating())
@@ -72,7 +72,7 @@ internal class GlickoTest {
         playerTwoStats.deviation = 179
         playerTwoStats.rating = 2435
         // when
-        val glicko = Glicko(playerOneStats, playerTwoStats, Pair(0, 1))
+        val glicko = GlickoService(Pair(playerOneStats, 0), Pair(playerTwoStats, 1))
         // then
         assertEquals(158, glicko.playerOneDeviation())
         assertEquals(2422, glicko.playerOneRating())
