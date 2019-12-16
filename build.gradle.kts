@@ -24,15 +24,6 @@ subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "jacoco")
 
-    sonarqube {
-        properties {
-            property("sonar.sources", "src/main")
-            property("sonar.tests", "src/test")
-//            property("sonar.jacoco.reportPath", "build/jacoco/test.exec")
-//            property("sonar.test.exclusions", "src/test")
-        }
-    }
-
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
         testCompile("org.junit.jupiter:junit-jupiter:5.5.2")
@@ -45,11 +36,13 @@ subprojects {
 
     tasks.test {
         useJUnitPlatform()
+        finalizedBy(tasks.jacocoTestReport)
     }
-}
 
-tasks.register("info") {
-    doLast {
-        println(project.base)
+    tasks.jacocoTestReport {
+        reports {
+            xml.isEnabled = true
+            csv.isEnabled = false
+        }
     }
 }
