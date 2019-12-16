@@ -5,11 +5,15 @@ val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPlu
 
 plugins {
     kotlin("jvm") version "1.3.60"
+    jacoco
+    id("org.sonarqube") version("2.7.1")
 }
 
 allprojects {
     group = "com.tm.rankme"
     version = "0.2-SNAPSHOT"
+    
+    apply(plugin = "jacoco")
 
     repositories {
         mavenCentral()
@@ -18,6 +22,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "kotlin")
+    apply(plugin = "jacoco")
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
@@ -31,5 +36,13 @@ subprojects {
 
     tasks.test {
         useJUnitPlatform()
+        finalizedBy(tasks.jacocoTestReport)
+    }
+
+    tasks.jacocoTestReport {
+        reports {
+            xml.isEnabled = true
+            csv.isEnabled = false
+        }
     }
 }
