@@ -21,7 +21,8 @@ allprojects {
 subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "jacoco")
-    apply(plugin = "org.sonarqube")
+
+    sonarqube { }
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
