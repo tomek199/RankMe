@@ -2,6 +2,11 @@ package com.tm.rankme.domain.game
 
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
+import com.tm.rankme.domain.competitorId1
+import com.tm.rankme.domain.competitorId2
+import com.tm.rankme.domain.competitorName1
+import com.tm.rankme.domain.competitorName2
+import com.tm.rankme.domain.leagueId
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -11,24 +16,21 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 internal class GameTest {
+
     @Test
     internal fun `should throw exception when first competitor id is null`() {
-        // given
-        val leagueId = "league-111"
         // when
-        val competitorOne = Competitor(leagueId, "Darth Vader")
-        val competitorTwo = Competitor(leagueId, "competitor-111", "Han Solo", Statistics())
+        val competitorOne = Competitor(leagueId, competitorName1)
+        val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, Statistics())
         // then
         assertFailsWith<IllegalStateException> { Game(competitorOne, competitorTwo, LocalDateTime.now()) }
     }
 
     @Test
     internal fun `should throw exception when second competitor id is null`() {
-        // given
-        val leagueId = "league-111"
         // when
-        val competitorOne = Competitor(leagueId, "competitor-111" ,"Darth Vader", Statistics())
-        val competitorTwo = Competitor(leagueId, "Han Solo")
+        val competitorOne = Competitor(leagueId, competitorId1 , competitorName1, Statistics())
+        val competitorTwo = Competitor(leagueId, competitorName2)
         // then
         assertFailsWith<IllegalStateException> { Game(competitorOne, competitorTwo, LocalDateTime.now()) }
     }
@@ -36,12 +38,11 @@ internal class GameTest {
     @Test
     internal fun `should create scheduled game without score`() {
         // given
-        val leagueId = "league-111"
         val lastGameDate = LocalDate.now()
         val statisticsOne = Statistics(204, 1344, 49, 38, 8, lastGameDate)
-        val competitorOne = Competitor(leagueId, "c-111" ,"Darth Vader", statisticsOne)
+        val competitorOne = Competitor(leagueId, competitorId1 , competitorName1, statisticsOne)
         val statisticsTwo = Statistics(279, 2043, 98, 93, 25, lastGameDate)
-        val competitorTwo = Competitor(leagueId, "c-222" ,"Han Solo", statisticsTwo)
+        val competitorTwo = Competitor(leagueId, competitorId2 , competitorName2, statisticsTwo)
         // when
         val game = Game(competitorOne, competitorTwo, LocalDateTime.now())
         // then
@@ -66,11 +67,10 @@ internal class GameTest {
     internal fun `should complete scheduled game`() {
         // given
         val lastGameDate = LocalDate.now()
-        val leagueId = "league-111"
         val oneStats = Statistics(283, 1847, 0, 0, 0, lastGameDate)
-        val competitorOne = Competitor(leagueId, "c-111" ,"Darth Vader", oneStats)
+        val competitorOne = Competitor(leagueId, competitorId1 , competitorName1, oneStats)
         val twoStats = Statistics(165, 2156, 0, 0, 0, lastGameDate)
-        val competitorTwo = Competitor(leagueId, "c-222" ,"Han Solo", twoStats)
+        val competitorTwo = Competitor(leagueId, competitorId2 ,competitorName2, twoStats)
         val game = Game(competitorOne, competitorTwo, LocalDateTime.now())
         // when
         game.complete(Pair(competitorOne, 1), Pair(competitorTwo, 2))
@@ -90,11 +90,10 @@ internal class GameTest {
     internal fun `should create completed game`() {
         // given
         val lastGameDate = LocalDate.now()
-        val leagueId = "league-111"
         val oneStats = Statistics(245, 1397, 0, 0, 0, lastGameDate)
-        val competitorOne = Competitor(leagueId, "c-111" ,"Darth Vader", oneStats)
+        val competitorOne = Competitor(leagueId, competitorId1 , competitorName1, oneStats)
         val twoStats = Statistics(224, 1874, 0, 0, 0, lastGameDate)
-        val competitorTwo = Competitor(leagueId, "c-222" ,"Han Solo", twoStats)
+        val competitorTwo = Competitor(leagueId, competitorId2 ,competitorName2, twoStats)
         // when
         val game = Game(Pair(competitorOne, 1), Pair(competitorTwo, 0))
         // then

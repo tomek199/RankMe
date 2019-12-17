@@ -9,7 +9,17 @@ internal class GlickoServiceTest {
     private val playerTwo = Player("c-222", "Han Solo", 350, 1500)
 
     @Test
-    internal fun `should throw exception when score is not provided`() {
+    internal fun `should throw exception when first player score is not provided`() {
+        // when
+        playerTwo.score = 1
+        // then
+        assertFailsWith<IllegalArgumentException> { GlickoService(playerOne, playerTwo) }
+    }
+
+    @Test
+    internal fun `should throw exception when second player score is not provided`() {
+        // when
+        playerOne.score = 1
         // then
         assertFailsWith<IllegalArgumentException> { GlickoService(playerOne, playerTwo) }
     }
