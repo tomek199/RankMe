@@ -12,8 +12,6 @@ plugins {
 allprojects {
     group = "com.tm.rankme"
     version = "0.2-SNAPSHOT"
-    
-    apply(plugin = "jacoco")
 
     repositories {
         mavenCentral()
@@ -23,6 +21,7 @@ allprojects {
 subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "jacoco")
+    apply(plugin = "org.sonarqube")
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
