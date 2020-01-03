@@ -23,7 +23,7 @@ internal class GameTest {
         val competitorOne = Competitor(leagueId, competitorName1)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, Statistics())
         // then
-        assertFailsWith<IllegalStateException> { Game(competitorOne, competitorTwo, LocalDateTime.now()) }
+        assertFailsWith<IllegalStateException> { Game(leagueId, competitorOne, competitorTwo, LocalDateTime.now()) }
     }
 
     @Test
@@ -32,7 +32,7 @@ internal class GameTest {
         val competitorOne = Competitor(leagueId, competitorId1 , competitorName1, Statistics())
         val competitorTwo = Competitor(leagueId, competitorName2)
         // then
-        assertFailsWith<IllegalStateException> { Game(competitorOne, competitorTwo, LocalDateTime.now()) }
+        assertFailsWith<IllegalStateException> { Game(leagueId, competitorOne, competitorTwo, LocalDateTime.now()) }
     }
 
     @Test
@@ -44,9 +44,10 @@ internal class GameTest {
         val statisticsTwo = Statistics(279, 2043, 98, 93, 25, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2 , competitorName2, statisticsTwo)
         // when
-        val game = Game(competitorOne, competitorTwo, LocalDateTime.now())
+        val game = Game(leagueId, competitorOne, competitorTwo, LocalDateTime.now())
         // then
         assertNull(game.id)
+        assertEquals(leagueId, game.leagueId)
 
         assertEquals(competitorOne.id, game.playerOne.competitorId)
         assertEquals(competitorOne.username, game.playerOne.username)
@@ -71,7 +72,7 @@ internal class GameTest {
         val competitorOne = Competitor(leagueId, competitorId1 , competitorName1, oneStats)
         val twoStats = Statistics(165, 2156, 0, 0, 0, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2 ,competitorName2, twoStats)
-        val game = Game(competitorOne, competitorTwo, LocalDateTime.now())
+        val game = Game(leagueId, competitorOne, competitorTwo, LocalDateTime.now())
         // when
         game.complete(Pair(competitorOne, 1), Pair(competitorTwo, 2))
         // then
@@ -95,9 +96,10 @@ internal class GameTest {
         val twoStats = Statistics(224, 1874, 0, 0, 0, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2 ,competitorName2, twoStats)
         // when
-        val game = Game(Pair(competitorOne, 1), Pair(competitorTwo, 0))
+        val game = Game(leagueId, Pair(competitorOne, 1), Pair(competitorTwo, 0))
         // then
         assertNotNull(game.dateTime)
+        assertEquals(leagueId, game.leagueId)
 
         assertEquals(236, game.playerOne.deviation)
         assertEquals(1631, game.playerOne.rating)
