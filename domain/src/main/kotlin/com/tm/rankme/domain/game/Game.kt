@@ -3,7 +3,7 @@ package com.tm.rankme.domain.game
 import com.tm.rankme.domain.competitor.Competitor
 import java.time.LocalDateTime
 
-class Game(first: Competitor, second: Competitor, var dateTime: LocalDateTime) {
+class Game(val leagueId: String, first: Competitor, second: Competitor, var dateTime: LocalDateTime) {
     val id: String? = null
     val playerOne: Player = first.id?.let {
             Player(it, first.username, first.statistics.deviation, first.statistics.rating)
@@ -12,8 +12,8 @@ class Game(first: Competitor, second: Competitor, var dateTime: LocalDateTime) {
             Player(it, second.username, second.statistics.deviation, second.statistics.rating)
         } ?: throw IllegalStateException("Competitor ids cannot be null!")
 
-    constructor(scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>)
-            : this(scoreOne.first, scoreTwo.first, LocalDateTime.now()) {
+    constructor(leagueId: String, scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>)
+            : this(leagueId, scoreOne.first, scoreTwo.first, LocalDateTime.now()) {
         playerOne.score = scoreOne.second
         playerTwo.score = scoreTwo.second
         recalculatePlayers()
