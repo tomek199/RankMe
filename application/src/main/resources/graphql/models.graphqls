@@ -1,0 +1,8 @@
+type Test {
+    field1: String
+    field2: Int
+}
+
+type Query {
+    tests: [Test]
+}
