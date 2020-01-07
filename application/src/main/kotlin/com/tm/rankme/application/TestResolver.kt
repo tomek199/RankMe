@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
  * Temporary test resolver
  */
 @Service
-internal class TestResolver : GraphQLQueryResolver {
+class TestResolver : GraphQLQueryResolver {
 
     fun tests(): List<Test> {
         var test1 = Test("Value1", 4)
