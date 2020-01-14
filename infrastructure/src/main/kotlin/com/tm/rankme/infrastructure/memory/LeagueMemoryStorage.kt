@@ -4,12 +4,12 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
 
 class LeagueMemoryStorage  : LeagueRepository {
-    private val leagues: MutableCollection<League> = mutableListOf()
+    private val leagues: MutableList<League> = mutableListOf()
 
-    override fun save(league: League): League {
-        league.id = (leagues.size + 1).toString()
-        leagues.add(league)
-        return league
+    override fun save(entity: League): League {
+        val id = (leagues.size + 1).toString()
+        leagues.add(League(id, entity.name))
+        return entity
     }
 
     override fun findAll(): Collection<League> {

@@ -39,8 +39,7 @@ internal class LeagueMemoryStorageTest {
     @Test
     internal fun `should return league by id`() {
         // given
-        val leagueToFind = League("Star Wars")
-        repository.save(leagueToFind)
+        val leagueToFind = repository.save(League("Star Wars"))
         // when
         val result = repository.findById("3")
         // then
@@ -59,11 +58,11 @@ internal class LeagueMemoryStorageTest {
     @Test
     internal fun `should delete league from list`() {
         // given
-        val leagueToDelete = League("Star Wars")
-        repository.save(leagueToDelete)
+        val leagueToDelete = repository.save(League("Star Wars"))
         // when
         leagueToDelete.id?.let { repository.delete(it) }
         // then
         assertEquals(2, repository.findAll().size)
+        assertNull(leagueToDelete.id?.let { repository.findById(it) })
     }
 }
