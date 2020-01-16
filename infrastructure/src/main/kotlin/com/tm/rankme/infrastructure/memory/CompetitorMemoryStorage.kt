@@ -23,6 +23,6 @@ class CompetitorMemoryStorage : CompetitorRepository {
     }
 
     override fun delete(id: String) {
-        competitors.removeIf { competitor: Competitor -> competitor.id.equals(id) }
+        competitors.removeIf { competitor -> competitor.id.equals(id) }
     }
 }

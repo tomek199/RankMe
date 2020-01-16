@@ -8,8 +8,9 @@ class LeagueMemoryStorage  : LeagueRepository {
 
     override fun save(entity: League): League {
         val id = (leagues.size + 1).toString()
-        leagues.add(League(id, entity.name))
-        return entity
+        val league = League(id, entity.name)
+        leagues.add(league)
+        return league
     }
 
     override fun findAll(): Collection<League> {
@@ -21,6 +22,6 @@ class LeagueMemoryStorage  : LeagueRepository {
     }
 
     override fun delete(id: String) {
-        leagues.removeIf { league: League -> league.id.equals(id) }
+        leagues.removeIf { league -> league.id.equals(id) }
     }
 }
