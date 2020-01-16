@@ -8,3 +8,5 @@ const val competitorName1 = "Darth Vader"
 
 const val competitorId2 = "c-222"
 const val competitorName2 = "Han Solo"
+
+const val gameId = "g-222"

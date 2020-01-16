@@ -3,26 +3,20 @@ package com.tm.rankme.domain.game
 import com.tm.rankme.domain.competitor.Competitor
 import java.time.LocalDateTime
 
-class Game(val leagueId: String, first: Competitor, second: Competitor, var dateTime: LocalDateTime) {
-    val id: String? = null
-    val playerOne: Player = first.id?.let {
-            Player(it, first.username, first.statistics.deviation, first.statistics.rating)
-        } ?: throw IllegalStateException("Competitor ids cannot be null!")
-    val playerTwo: Player = second.id?.let {
-            Player(it, second.username, second.statistics.deviation, second.statistics.rating)
-        } ?: throw IllegalStateException("Competitor ids cannot be null!")
+class Game internal constructor(val playerOne: Player, val playerTwo: Player,
+                               val leagueId: String, var dateTime: LocalDateTime) {
+    var id: String? = null
+        private set
 
-    constructor(leagueId: String, scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>)
-            : this(leagueId, scoreOne.first, scoreTwo.first, LocalDateTime.now()) {
-        playerOne.score = scoreOne.second
-        playerTwo.score = scoreTwo.second
-        recalculatePlayers()
+    constructor(id: String, playerOne: Player, playerTwo: Player, leagueId: String, dateTime: LocalDateTime)
+            : this(playerOne, playerTwo, leagueId, dateTime) {
+        this.id = id
     }
 
     fun complete(scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>) {
         dateTime = LocalDateTime.now()
         updatePlayers(scoreOne, scoreTwo)
-        recalculatePlayers()
+        recalculatePlayersStats()
     }
 
     private fun updatePlayers(scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>) {
@@ -34,7 +28,7 @@ class Game(val leagueId: String, first: Competitor, second: Competitor, var date
         playerTwo.rating = scoreTwo.first.statistics.rating
     }
 
-    private fun recalculatePlayers() {
+    private fun recalculatePlayersStats() {
         val glicko = GlickoService(playerOne, playerTwo)
         playerOne.update(glicko.playerOneDeviation, glicko.playerOneRating)
         playerTwo.update(glicko.playerTwoDeviation, glicko.playerTwoRating)
