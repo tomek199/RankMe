@@ -8,6 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 internal class LeagueMemoryStorageTest {
+    private val leagueName = "Star Wars"
     private val repository: LeagueRepository = LeagueMemoryStorage()
 
     @BeforeEach
@@ -19,7 +20,7 @@ internal class LeagueMemoryStorageTest {
     @Test
     internal fun `should save league`() {
         // given
-        val league = League("Star Wars")
+        val league = League(leagueName)
         // when
         val result = repository.save(league)
         // then
@@ -39,7 +40,7 @@ internal class LeagueMemoryStorageTest {
     @Test
     internal fun `should return league by id`() {
         // given
-        val leagueToFind = repository.save(League("Star Wars"))
+        val leagueToFind = repository.save(League(leagueName))
         // when
         val result = repository.findById("3")
         // then
@@ -58,7 +59,7 @@ internal class LeagueMemoryStorageTest {
     @Test
     internal fun `should delete league from list`() {
         // given
-        val leagueToDelete = repository.save(League("Star Wars"))
+        val leagueToDelete = repository.save(League(leagueName))
         // when
         leagueToDelete.id?.let { repository.delete(it) }
         // then
