@@ -2,7 +2,11 @@ package com.tm.rankme.infrastructure.memory
 
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Repository
 
+@Repository
+@Profile("dev")
 class GameMemoryStorage : GameRepository {
     private val games: MutableList<Game> = mutableListOf()
 

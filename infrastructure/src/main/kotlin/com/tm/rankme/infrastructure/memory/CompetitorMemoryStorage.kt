@@ -3,7 +3,11 @@ package com.tm.rankme.infrastructure.memory
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Repository
 
+@Repository
+@Profile("dev")
 class CompetitorMemoryStorage : CompetitorRepository {
     private val competitors: MutableList<Competitor> = mutableListOf()
 
