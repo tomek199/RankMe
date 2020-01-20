@@ -12,10 +12,13 @@ class CompetitorMemoryStorage : CompetitorRepository {
     private val competitors: MutableList<Competitor> = mutableListOf()
 
     override fun save(entity: Competitor): Competitor {
-        val id = (competitors.size + 1).toString()
-        val competitor = Competitor(entity.leagueId, id, entity.username, Statistics())
-        competitors.add(competitor)
-        return competitor
+        if (entity.id == null) {
+            val id = (competitors.size + 1).toString()
+            val competitor = Competitor(entity.leagueId, id, entity.username, Statistics())
+            competitors.add(competitor)
+            return competitor
+        }
+        return entity
     }
 
     override fun findAll(): Collection<Competitor> {

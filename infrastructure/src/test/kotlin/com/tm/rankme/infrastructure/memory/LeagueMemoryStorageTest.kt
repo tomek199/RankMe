@@ -18,7 +18,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save league`() {
+    internal fun `should save new league`() {
         // given
         val league = League(leagueName)
         // when
@@ -27,6 +27,19 @@ internal class LeagueMemoryStorageTest {
         assertEquals(league.name, result.name)
         assertEquals("3", result.id)
         assertEquals(3, repository.findAll().size)
+    }
+
+    @Test
+    internal fun `should save existing league`() {
+        // given
+        val leagueToUpdate = repository.findById("1")
+        // when
+        leagueToUpdate!!.name = leagueName
+        repository.save(leagueToUpdate)
+        // then
+        val league = repository.findById("1")
+        assertEquals(leagueName, league!!.name)
+        assertEquals(2, repository.findAll().size)
     }
 
     @Test

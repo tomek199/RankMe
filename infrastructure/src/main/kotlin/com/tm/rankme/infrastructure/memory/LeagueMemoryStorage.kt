@@ -11,10 +11,13 @@ class LeagueMemoryStorage  : LeagueRepository {
     private val leagues: MutableList<League> = mutableListOf()
 
     override fun save(entity: League): League {
-        val id = (leagues.size + 1).toString()
-        val league = League(id, entity.name)
-        leagues.add(league)
-        return league
+        if (entity.id == null) {
+            val id = (leagues.size + 1).toString()
+            val league = League(id, entity.name)
+            leagues.add(league)
+            return league
+        }
+        return entity
     }
 
     override fun findAll(): Collection<League> {

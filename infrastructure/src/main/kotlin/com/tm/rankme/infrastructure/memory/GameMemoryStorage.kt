@@ -11,10 +11,13 @@ class GameMemoryStorage : GameRepository {
     private val games: MutableList<Game> = mutableListOf()
 
     override fun save(entity: Game): Game {
-        val id = (games.size + 1).toString()
-        val game = Game(id, entity.playerOne, entity.playerTwo, entity.leagueId, entity.dateTime)
-        games.add(game)
-        return game
+        if (entity.id == null) {
+            val id = (games.size + 1).toString()
+            val game = Game(id, entity.playerOne, entity.playerTwo, entity.leagueId, entity.dateTime)
+            games.add(game)
+            return game
+        }
+        return entity
     }
 
     override fun findAll(): Collection<Game> {
