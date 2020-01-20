@@ -16,7 +16,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save competitor`() {
+    internal fun `should save new competitor`() {
         // given
         val competitor = Competitor("l-111", "Batman")
         // when
@@ -25,6 +25,20 @@ internal class CompetitorMemoryStorageTest {
         assertEquals(result.username, competitor.username)
         assertEquals("3", result.id)
         assertEquals(3, repository.findAll().size)
+    }
+
+    @Test
+    internal fun `should save existing competitor`() {
+        // given
+        val competitorToUpdate = repository.findById("1")
+        val newUsername = "Batman"
+        // when
+        competitorToUpdate!!.username = newUsername
+        repository.save(competitorToUpdate)
+        // then
+        val competitor = repository.findById("1")
+        assertEquals(newUsername, competitor!!.username)
+        assertEquals(2, repository.findAll().size)
     }
 
     @Test

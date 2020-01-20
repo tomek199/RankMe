@@ -5,6 +5,7 @@ import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.GameFactory
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -22,7 +23,7 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save game`() {
+    internal fun `should save new game`() {
         // given
         val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         // when
@@ -30,6 +31,19 @@ internal class GameMemoryStorageTest {
         // then
         assertEquals("3", result.id)
         assertEquals(3, repository.findAll().size)
+    }
+
+    @Test
+    internal fun `should save existing game`() {
+        // given
+        val gameToUpdate = repository.findById("1")
+        val newDateTime = LocalDateTime.now().minusMinutes(10)
+        // when
+        gameToUpdate!!.dateTime = newDateTime
+        // then
+        val game = repository.findById("1")
+        assertEquals(newDateTime, game!!.dateTime)
+        assertEquals(2, repository.findAll().size)
     }
 
     @Test
