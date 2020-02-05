@@ -7,12 +7,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class LeagueMapperTest {
+    private val leagueName = "Star Wars"
+    private val leagueId = "l-111"
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
 
     @Test
     fun `should map model to domain`() {
         // given
-        val model = LeagueModel("l-111", "Star Wars", LeagueSettingsModel(true, 5))
+        val model = LeagueModel(leagueId, leagueName, LeagueSettingsModel(true, 5))
         // when
         val domain = mapper.toDomain(model)
         // then
@@ -25,7 +27,7 @@ internal class LeagueMapperTest {
     @Test
     fun `should map domain to model`() {
         // given
-        val domain = League("l-111", "Star Wars")
+        val domain = League(leagueId, leagueName)
         domain.setAllowDraws(true)
         domain.setMaxScore(7)
         // when
@@ -40,7 +42,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `should throw IllegalStateException when domain league id is null`() {
         // when
-        val domain = League("Star Wars")
+        val domain = League(leagueName)
         // then
         assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
     }
