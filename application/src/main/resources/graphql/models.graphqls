@@ -1,6 +1,6 @@
 type LeagueModel {
-    id: String
-    name: String
+    id: String!
+    name: String!
     settings: LeagueSettingsModel
 }
 
@@ -13,11 +13,6 @@ type Mutation {
     addLeague(name: String): LeagueModel
 }
 
-type Test {
-    field1: String
-    field2: Int
-}
-
 type Query {
-    tests: [Test]
+    league(id: String): LeagueModel
 }
