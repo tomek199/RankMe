@@ -11,3 +11,6 @@ graphiql:
   cdn:
     enabled: false
     version: 0.13.0
+spring:
+  profiles:
+    active: dev

@@ -1,3 +1,18 @@
+type LeagueModel {
+    id: String
+    name: String
+    settings: LeagueSettingsModel
+}
+
+type LeagueSettingsModel {
+    allowDraws: Boolean
+    maxScore: Int
+}
+
+type Mutation {
+    addLeague(name: String): LeagueModel
+}
+
 type Test {
     field1: String
     field2: Int
