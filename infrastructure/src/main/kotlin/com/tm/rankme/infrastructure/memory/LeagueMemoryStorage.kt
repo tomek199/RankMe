@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 @Profile("dev")
-class LeagueMemoryStorage  : LeagueRepository {
+class LeagueMemoryStorage : LeagueRepository {
     private val leagues: MutableList<League> = mutableListOf()
 
     override fun save(entity: League): League {

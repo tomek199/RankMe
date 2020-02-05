@@ -11,7 +11,7 @@ plugins {
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.4-SNAPSHOT"
+    version = "0.5-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -28,6 +28,7 @@ subprojects {
         implementation(kotlin("stdlib-jdk8"))
         testCompile("org.junit.jupiter:junit-jupiter:5.5.2")
         testCompile("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
+        testCompile("org.mockito:mockito-junit-jupiter:3.2.4")
     }
 
     tasks.withType<KotlinCompile> {
