@@ -1,6 +1,6 @@
 type LeagueModel {
-    id: String
-    name: String
+    id: String!
+    name: String!
     settings: LeagueSettingsModel
 }
 
@@ -20,4 +20,5 @@ type Test {
 
 type Query {
     tests: [Test]
+    league(id: String): LeagueModel
 }
