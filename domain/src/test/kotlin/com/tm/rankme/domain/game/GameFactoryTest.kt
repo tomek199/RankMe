@@ -17,7 +17,7 @@ import kotlin.test.assertNull
 
 internal class GameFactoryTest {
     @Test
-    internal fun `should throw exception when first competitor id is null`() {
+    internal fun `Should throw exception when first competitor id is null`() {
         // when
         val competitorOne = Competitor(leagueId, competitorName1)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, Statistics())
@@ -28,7 +28,7 @@ internal class GameFactoryTest {
     }
 
     @Test
-    internal fun `should throw exception when second competitor id is null`() {
+    internal fun `Should throw exception when second competitor id is null`() {
         // when
         val competitorOne = Competitor(leagueId, competitorId1, competitorName1, Statistics())
         val competitorTwo = Competitor(leagueId, competitorName2)
@@ -39,7 +39,7 @@ internal class GameFactoryTest {
     }
 
     @Test
-    internal fun `should create scheduled game without score`() {
+    internal fun `Should create scheduled game without score`() {
         // given
         val lastGameDate = LocalDate.now()
         val statisticsOne = Statistics(204, 1344, 49, 38, 8, lastGameDate)
@@ -68,7 +68,7 @@ internal class GameFactoryTest {
     }
 
     @Test
-    internal fun `should create completed game`() {
+    internal fun `Should create completed game`() {
         // given
         val lastGameDate = LocalDate.now()
         val oneStats = Statistics(245, 1397, 0, 0, 0, lastGameDate)

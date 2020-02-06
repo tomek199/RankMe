@@ -18,7 +18,7 @@ internal class LeagueQueryTest {
     private val query = LeagueQuery(repository, mapper)
 
     @Test
-    internal fun `should return league by id`() {
+    internal fun `Should return league by id`() {
         // given
         val leagueId = "l-111"
         val leagueName = "Star Wars"
@@ -33,7 +33,7 @@ internal class LeagueQueryTest {
     }
 
     @Test
-    internal fun `should return null when league not found`() {
+    internal fun `Should return null when league not found`() {
         // given
         val leagueId = "l-111"
         given(repository.findById(leagueId)).willReturn(null)

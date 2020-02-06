@@ -13,7 +13,7 @@ internal class CompetitorTest {
     private val username = "Optimus Prime"
 
     @Test
-    internal fun `should create competitor with default parameters`() {
+    internal fun `Should create competitor with default parameters`() {
         // given
         val statistics = Statistics()
         // when
@@ -31,7 +31,7 @@ internal class CompetitorTest {
     }
 
     @Test
-    internal fun `should create competitor with id and league statistics`() {
+    internal fun `Should create competitor with id and league statistics`() {
         // given
         val statistics = Statistics()
         statistics.deviation = 200
@@ -47,7 +47,7 @@ internal class CompetitorTest {
     }
 
     @Test
-    internal fun `should throw exception when update statistics without score`() {
+    internal fun `Should throw exception when update statistics without score`() {
         // given
         val competitor = Competitor(leagueId, username, Statistics())
         // when
@@ -59,7 +59,7 @@ internal class CompetitorTest {
     }
 
     @Test
-    internal fun `should update statistics by draw game`() {
+    internal fun `Should update statistics by draw game`() {
         // given
         val gameDateTime = LocalDateTime.now()
         val deviationAfterGame = 326
@@ -79,7 +79,7 @@ internal class CompetitorTest {
     }
 
     @Test
-    internal fun `should update statistics by won game`() {
+    internal fun `Should update statistics by won game`() {
         // given
         val competitor = Competitor(leagueId, username, Statistics())
         val gameDateTime = LocalDateTime.now()
@@ -99,7 +99,7 @@ internal class CompetitorTest {
     }
 
     @Test
-    internal fun `should update statistics by lost game`() {
+    internal fun `Should update statistics by lost game`() {
         // given
         val competitor = Competitor(leagueId, username, Statistics())
         val gameDateTime = LocalDateTime.now()

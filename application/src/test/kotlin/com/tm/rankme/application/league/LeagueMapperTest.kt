@@ -12,7 +12,7 @@ internal class LeagueMapperTest {
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
 
     @Test
-    fun `should map model to domain`() {
+    internal fun `Should map model to domain`() {
         // given
         val model = LeagueModel(leagueId, leagueName, LeagueSettingsModel(true, 5))
         // when
@@ -25,7 +25,7 @@ internal class LeagueMapperTest {
     }
 
     @Test
-    fun `should map domain to model`() {
+    internal fun `Should map domain to model`() {
         // given
         val domain = League(leagueId, leagueName)
         domain.setAllowDraws(true)
@@ -40,7 +40,7 @@ internal class LeagueMapperTest {
     }
 
     @Test
-    internal fun `should throw IllegalStateException when domain league id is null`() {
+    internal fun `Should throw IllegalStateException when domain league id is null`() {
         // when
         val domain = League(leagueName)
         // then

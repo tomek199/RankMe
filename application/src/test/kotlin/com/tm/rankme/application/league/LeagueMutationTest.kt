@@ -20,12 +20,12 @@ internal class LeagueMutationTest {
     private val mutation = LeagueMutation(repository, mapper)
 
     @BeforeEach
-    fun setUp() {
+    internal fun setUp() {
         given(repository.save(any(League::class.java))).willReturn(League("l-111", "Star Wars"))
     }
 
     @Test
-    fun `should add league with default params`() {
+    internal fun `Should add league with default params`() {
         // given
         val name = "Star Wars"
         // when

@@ -16,7 +16,7 @@ import kotlin.test.assertNotNull
 
 internal class GameTest {
     @Test
-    internal fun `should create game with all properties`() {
+    internal fun `Should create game with all properties`() {
         // given
         val playerOne = Player(competitorId1, competitorName1, 180, 1343)
         val playerTwo = Player(competitorId2, competitorName2, 230, 1758)
@@ -32,7 +32,7 @@ internal class GameTest {
     }
 
     @Test
-    internal fun `should complete scheduled game`() {
+    internal fun `Should complete scheduled game`() {
         // given
         val lastGameDate = LocalDate.now()
         val oneStats = Statistics(283, 1847, 0, 0, 0, lastGameDate)

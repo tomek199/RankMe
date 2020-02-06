@@ -3,7 +3,7 @@ package com.tm.rankme.domain.game
 import com.tm.rankme.domain.competitor.Competitor
 import java.time.LocalDateTime
 
-class GameFactory {
+class GameFactory private constructor() {
     companion object {
         fun scheduledMatch(firstCompetitor: Competitor, secondCompetitor: Competitor,
                            leagueId: String, dateTime: LocalDateTime): Game {

@@ -9,7 +9,7 @@ internal class GlickoServiceTest {
     private val playerTwo = Player("c-222", "Han Solo", 350, 1500)
 
     @Test
-    internal fun `should throw exception when first player score is not provided`() {
+    internal fun `Should throw exception when first player score is not provided`() {
         // when
         playerTwo.score = 1
         // then
@@ -17,7 +17,7 @@ internal class GlickoServiceTest {
     }
 
     @Test
-    internal fun `should throw exception when second player score is not provided`() {
+    internal fun `Should throw exception when second player score is not provided`() {
         // when
         playerOne.score = 1
         // then
@@ -25,7 +25,7 @@ internal class GlickoServiceTest {
     }
 
     @Test
-    internal fun `should return correct result for new players when draw`() {
+    internal fun `Should return correct result for new players when draw`() {
         // given
         playerOne.score = 1
         playerTwo.score = 1
@@ -41,7 +41,7 @@ internal class GlickoServiceTest {
     // Deviation for players provided are already recalculated based on last game played.
 
     @Test
-    internal fun `should return correct result for players when draw`() {
+    internal fun `Should return correct result for players when draw`() {
         // given
         playerOne.score = 1
         playerOne.deviation = 229
@@ -59,7 +59,7 @@ internal class GlickoServiceTest {
     }
 
     @Test
-    internal fun `should return correct result when player one won`() {
+    internal fun `Should return correct result when player one won`() {
         // given
         playerOne.score = 2
         playerOne.deviation = 171
@@ -77,7 +77,7 @@ internal class GlickoServiceTest {
     }
 
     @Test
-    internal fun `should return correct result when player two won`() {
+    internal fun `Should return correct result when player two won`() {
         // given
         playerOne.score = 0
         playerOne.deviation = 171

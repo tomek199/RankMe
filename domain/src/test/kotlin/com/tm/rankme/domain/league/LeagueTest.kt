@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 internal class LeagueTest {
 
     @Test
-    internal fun `should create league with default params`() {
+    internal fun `Should create league with default params`() {
         // when
         val league = League(leagueName)
         // then
@@ -22,7 +22,7 @@ internal class LeagueTest {
     }
 
     @Test
-    internal fun `should create league with id`() {
+    internal fun `Should create league with id`() {
         // given
         val id = "league-111"
         // when
@@ -33,7 +33,7 @@ internal class LeagueTest {
     }
 
     @Test
-    internal fun `should change allow draws setting`() {
+    internal fun `Should change allow draws setting`() {
         // given
         val league = League(leagueName)
         // when
@@ -43,7 +43,7 @@ internal class LeagueTest {
     }
 
     @Test
-    internal fun `should change max score setting`() {
+    internal fun `Should change max score setting`() {
         // given
         val league = League(leagueName)
         // when
