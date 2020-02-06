@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 internal class PlayerTest {
     @Test
-    internal fun `should update deviation, rating and rating delta`() {
+    internal fun `Should update deviation, rating and rating delta`() {
         // given
         val newDeviation = 239
         val newRating = 1821

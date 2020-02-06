@@ -18,7 +18,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save new league`() {
+    internal fun `Should save new league`() {
         // given
         val league = League(leagueName)
         // when
@@ -30,7 +30,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save existing league`() {
+    internal fun `Should save existing league`() {
         // given
         val leagueToUpdate = repository.findById("1")
         // when
@@ -43,7 +43,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return leagues list`() {
+    internal fun `Should return leagues list`() {
         // when
         val result = repository.findAll()
         // then
@@ -51,7 +51,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return league by id`() {
+    internal fun `Should return league by id`() {
         // given
         val leagueToFind = repository.save(League(leagueName))
         // when
@@ -62,7 +62,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return null when league not found`() {
+    internal fun `Should return null when league not found`() {
         // when
         val result = repository.findById("10")
         // then
@@ -70,7 +70,7 @@ internal class LeagueMemoryStorageTest {
     }
 
     @Test
-    internal fun `should delete league from list`() {
+    internal fun `Should delete league from list`() {
         // given
         val leagueToDelete = repository.save(League(leagueName))
         // when

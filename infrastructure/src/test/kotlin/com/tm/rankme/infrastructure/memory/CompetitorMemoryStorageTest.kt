@@ -16,7 +16,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save new competitor`() {
+    internal fun `Should save new competitor`() {
         // given
         val competitor = Competitor("l-111", "Batman")
         // when
@@ -28,7 +28,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save existing competitor`() {
+    internal fun `Should save existing competitor`() {
         // given
         val competitorToUpdate = repository.findById("1")
         val newUsername = "Batman"
@@ -42,7 +42,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return competitors list`() {
+    internal fun `Should return competitors list`() {
         // when
         val result = repository.findAll()
         // then
@@ -50,7 +50,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return competitor by id`() {
+    internal fun `Should return competitor by id`() {
         // given
         val competitorToFind = repository.save(Competitor("l-111", "Batman"))
         // when
@@ -61,7 +61,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return null when competitor not found`() {
+    internal fun `Should return null when competitor not found`() {
         // when
         val result = repository.findById("10")
         // then
@@ -69,7 +69,7 @@ internal class CompetitorMemoryStorageTest {
     }
 
     @Test
-    internal fun `should delete competitor from list`() {
+    internal fun `Should delete competitor from list`() {
         // given
         val competitorToDelete = repository.save(Competitor("l-111", "Batman"))
         // when

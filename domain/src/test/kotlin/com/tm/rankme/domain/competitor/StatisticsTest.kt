@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 internal class StatisticsTest {
     @Test
-    internal fun `should create Statistics with default parameters`() {
+    internal fun `Should create Statistics with default parameters`() {
         // when
         val statistics = Statistics()
         // then
@@ -20,7 +20,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should create Statistics with custom parameters`() {
+    internal fun `Should create Statistics with custom parameters`() {
         // given
         val expectedDeviation = 186
         val expectedRating = 1343
@@ -41,7 +41,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should return default rating deviation`() {
+    internal fun `Should return default rating deviation`() {
         // given
         val statistics = Statistics()
         val lastMatch = LocalDate.now().minusWeeks(3)
@@ -52,7 +52,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should return correct rating deviation when competitor played game in last period`() {
+    internal fun `Should return correct rating deviation when competitor played game in last period`() {
         // given
         val statistics = Statistics()
         // when
@@ -64,7 +64,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should return bigger rating deviation after inactivity period`() {
+    internal fun `Should return bigger rating deviation after inactivity period`() {
         // given
         val statistics = Statistics()
         // when
@@ -75,7 +75,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should add draw game`() {
+    internal fun `Should add draw game`() {
         // given
         val statistics = Statistics()
         // when
@@ -87,7 +87,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should add won game`() {
+    internal fun `Should add won game`() {
         // given
         val statistics = Statistics()
         // when
@@ -99,7 +99,7 @@ internal class StatisticsTest {
     }
 
     @Test
-    internal fun `should add lost game`() {
+    internal fun `Should add lost game`() {
         // given
         val statistics = Statistics()
         // when

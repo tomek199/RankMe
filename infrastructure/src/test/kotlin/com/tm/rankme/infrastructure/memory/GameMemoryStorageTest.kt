@@ -23,7 +23,7 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save new game`() {
+    internal fun `Should save new game`() {
         // given
         val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         // when
@@ -34,12 +34,13 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should save existing game`() {
+    internal fun `Should save existing game`() {
         // given
         val gameToUpdate = repository.findById("1")
         val newDateTime = LocalDateTime.now().minusMinutes(10)
-        // when
         gameToUpdate!!.dateTime = newDateTime
+        // when
+        repository.save(gameToUpdate)
         // then
         val game = repository.findById("1")
         assertEquals(newDateTime, game!!.dateTime)
@@ -47,7 +48,7 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return games list`() {
+    internal fun `Should return games list`() {
         // when
         val result = repository.findAll()
         // then
@@ -55,7 +56,7 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return game by id`() {
+    internal fun `Should return game by id`() {
         // given
         val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         val gameToFind = repository.save(game)
@@ -66,7 +67,7 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should return null when game not found`() {
+    internal fun `Should return null when game not found`() {
         // when
         val result = repository.findById("10")
         // then
@@ -74,7 +75,7 @@ internal class GameMemoryStorageTest {
     }
 
     @Test
-    internal fun `should delete game from list`() {
+    internal fun `Should delete game from list`() {
         // given
         val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         val gameToDelete = repository.save(game)
