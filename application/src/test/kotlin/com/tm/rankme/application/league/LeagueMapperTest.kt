@@ -12,19 +12,6 @@ internal class LeagueMapperTest {
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
 
     @Test
-    internal fun `Should map model to domain`() {
-        // given
-        val model = LeagueModel(leagueId, leagueName, LeagueSettingsModel(true, 5))
-        // when
-        val domain = mapper.toDomain(model)
-        // then
-        assertEquals(model.id, domain.id)
-        assertEquals(model.name, domain.name)
-        assertEquals(model.settings.allowDraws, domain.settings.allowDraws)
-        assertEquals(model.settings.maxScore, domain.settings.maxScore)
-    }
-
-    @Test
     internal fun `Should map domain to model`() {
         // given
         val domain = League(leagueId, leagueName)
