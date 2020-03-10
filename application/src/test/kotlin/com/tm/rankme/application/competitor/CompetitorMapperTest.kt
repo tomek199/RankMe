@@ -4,6 +4,7 @@ import com.tm.rankme.application.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -16,7 +17,8 @@ internal class CompetitorMapperTest {
     @Test
     internal fun `Should map domain to model`() {
         // given
-        val statistics = Statistics(154, 2564, 53, 34, 95, null) // fixme lastGame
+        val lastGame = LocalDate.of(2020, 3, 30)
+        val statistics = Statistics(154, 2564, 53, 34, 95, lastGame)
         val domain = Competitor(leagueId, competitorId, competitorUsername, statistics)
         // when
         val model = mapper.toModel(domain)
@@ -29,6 +31,7 @@ internal class CompetitorMapperTest {
         assertEquals(domain.statistics.won, model.statistics.won)
         assertEquals(domain.statistics.lost, model.statistics.lost)
         assertEquals(domain.statistics.draw, model.statistics.draw)
+        assertEquals(domain.statistics.lastGame, model.statistics.lastGame)
     }
 
     @Test

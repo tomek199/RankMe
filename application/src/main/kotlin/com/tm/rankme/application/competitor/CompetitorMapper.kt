@@ -12,7 +12,7 @@ class CompetitorMapper : Mapper<Competitor, CompetitorModel> {
         val id = domain.id?: throw IllegalStateException("Competitor id can't be null!")
         val domainStats = domain.statistics
         val statistics = CompetitorStatisticsModel(domainStats.deviation, domainStats.rating,
-                domainStats.won, domainStats.lost, domainStats.draw, null)
+                domainStats.won, domainStats.lost, domainStats.draw, domainStats.lastGame)
         return CompetitorModel(id, domain.username, domain.leagueId, statistics)
     }
 }

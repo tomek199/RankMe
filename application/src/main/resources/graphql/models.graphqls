@@ -22,8 +22,10 @@ type CompetitorStatisticsModel {
     won: Int!
     lost: Int!
     draw: Int!
-    lastGame: String
+    lastGame: LocalDate
 }
+
+scalar LocalDate
 
 type Mutation {
     addLeague(name: String): LeagueModel

@@ -5,6 +5,7 @@ import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 
 @Repository
 @Profile("dev")

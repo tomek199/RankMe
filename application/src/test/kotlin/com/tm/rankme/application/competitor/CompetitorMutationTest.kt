@@ -42,7 +42,7 @@ internal class CompetitorMutationTest {
         assertEquals(username, competitor.username)
         assertEquals(expectedStatistics.deviation, competitor.statistics.deviation)
         assertEquals(expectedStatistics.rating, competitor.statistics.rating)
-        assertNull(competitor.statistics.lastGame) // fixme
+        assertNull(competitor.statistics.lastGame)
         assertEquals(expectedStatistics.won, competitor.statistics.won)
         assertEquals(expectedStatistics.lost, competitor.statistics.lost)
         assertEquals(expectedStatistics.draw, competitor.statistics.draw)
