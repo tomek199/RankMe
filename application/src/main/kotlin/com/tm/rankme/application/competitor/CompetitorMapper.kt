@@ -1,6 +1,6 @@
 package com.tm.rankme.application.competitor
 
-import com.tm.rankme.application.Mapper
+import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service

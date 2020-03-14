@@ -1,6 +1,6 @@
 package com.tm.rankme.application.league
 
-import com.tm.rankme.application.Mapper
+import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.league.League
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
