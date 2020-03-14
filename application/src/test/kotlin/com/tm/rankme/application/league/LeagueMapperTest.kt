@@ -8,7 +8,7 @@ import kotlin.test.assertFailsWith
 
 internal class LeagueMapperTest {
     private val leagueName = "Star Wars"
-    private val leagueId = "l-111"
+    private val leagueId = "league-1"
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
 
     @Test

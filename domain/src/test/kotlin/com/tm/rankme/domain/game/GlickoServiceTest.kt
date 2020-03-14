@@ -5,8 +5,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class GlickoServiceTest {
-    private val playerOne = Player("c-111", "Darth Vader", 350, 1500)
-    private val playerTwo = Player("c-222", "Han Solo", 350, 1500)
+    private val playerOne = Player("comp-1", "Darth Vader", 350, 1500)
+    private val playerTwo = Player("comp-2", "Han Solo", 350, 1500)
 
     @Test
     internal fun `Should throw exception when first player score is not provided`() {

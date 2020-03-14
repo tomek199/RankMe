@@ -34,4 +34,6 @@ type Mutation {
 
 type Query {
     league(id: String): LeagueModel
+    competitor(id: String): CompetitorModel
+    competitorsByLeagueId(leagueId: String): [CompetitorModel]
 }

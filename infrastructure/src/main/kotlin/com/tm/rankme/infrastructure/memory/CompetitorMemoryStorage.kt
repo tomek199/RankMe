@@ -11,7 +11,6 @@ import java.time.LocalDate
 @Profile("dev")
 class CompetitorMemoryStorage : CompetitorRepository {
     private val competitors: MutableList<Competitor> = mutableListOf()
-
     override fun save(entity: Competitor): Competitor {
         if (entity.id == null) {
             val id = (competitors.size + 1).toString()
@@ -22,15 +21,15 @@ class CompetitorMemoryStorage : CompetitorRepository {
         return entity
     }
 
-    override fun findAll(): Collection<Competitor> {
-        return competitors
-    }
-
     override fun findById(id: String): Competitor? {
         return competitors.find { competitor -> competitor.id.equals(id) }
     }
 
     override fun delete(id: String) {
         competitors.removeIf { competitor -> competitor.id.equals(id) }
+    }
+
+    override fun findByLeagueId(leagueId: String): List<Competitor> {
+        return competitors.filter { competitor -> competitor.leagueId.equals(leagueId) }
     }
 }

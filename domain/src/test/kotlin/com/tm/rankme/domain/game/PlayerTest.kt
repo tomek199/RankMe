@@ -9,7 +9,7 @@ internal class PlayerTest {
         // given
         val newDeviation = 239
         val newRating = 1821
-        val player = Player("c-111", "Optimus Prime", 248, 1764)
+        val player = Player("comp-1", "Optimus Prime", 248, 1764)
         // when
         player.update(newDeviation, newRating)
         // then

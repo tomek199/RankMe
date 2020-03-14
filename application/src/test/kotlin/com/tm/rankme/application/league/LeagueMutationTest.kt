@@ -21,7 +21,7 @@ internal class LeagueMutationTest {
 
     @BeforeEach
     internal fun setUp() {
-        given(repository.save(any(League::class.java))).willReturn(League("l-111", "Star Wars"))
+        given(repository.save(any(League::class.java))).willReturn(League("league-1", "Star Wars"))
     }
 
     @Test
