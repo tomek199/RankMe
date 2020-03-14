@@ -26,7 +26,6 @@ internal class LeagueMemoryStorageTest {
         // then
         assertEquals(league.name, result.name)
         assertEquals("3", result.id)
-        assertEquals(3, repository.findAll().size)
     }
 
     @Test
@@ -39,15 +38,6 @@ internal class LeagueMemoryStorageTest {
         // then
         val league = repository.findById("1")
         assertEquals(leagueName, league!!.name)
-        assertEquals(2, repository.findAll().size)
-    }
-
-    @Test
-    internal fun `Should return leagues list`() {
-        // when
-        val result = repository.findAll()
-        // then
-        assertEquals(2, result.size)
     }
 
     @Test
@@ -76,7 +66,6 @@ internal class LeagueMemoryStorageTest {
         // when
         leagueToDelete.id?.let { repository.delete(it) }
         // then
-        assertEquals(2, repository.findAll().size)
         assertNull(leagueToDelete.id?.let { repository.findById(it) })
     }
 }

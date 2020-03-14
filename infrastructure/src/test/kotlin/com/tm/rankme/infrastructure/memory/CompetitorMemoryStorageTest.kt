@@ -1,13 +1,14 @@
 package com.tm.rankme.infrastructure.memory
 
 import com.tm.rankme.domain.competitor.Competitor
+import com.tm.rankme.domain.competitor.CompetitorRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 internal class CompetitorMemoryStorageTest {
-    private val repository = CompetitorMemoryStorage()
+    private val repository: CompetitorRepository = CompetitorMemoryStorage()
 
     @BeforeEach
     fun setUp() {
@@ -24,7 +25,6 @@ internal class CompetitorMemoryStorageTest {
         // then
         assertEquals(result.username, competitor.username)
         assertEquals("3", result.id)
-        assertEquals(3, repository.findAll().size)
     }
 
     @Test
@@ -38,13 +38,13 @@ internal class CompetitorMemoryStorageTest {
         // then
         val competitor = repository.findById("1")
         assertEquals(newUsername, competitor!!.username)
-        assertEquals(2, repository.findAll().size)
     }
 
     @Test
-    internal fun `Should return competitors list`() {
+    internal fun `Should return competitors list by league id`() {
         // when
-        val result = repository.findAll()
+        repository.save(Competitor("league-2", "Joker"))
+        val result = repository.findByLeagueId("league-2")
         // then
         assertEquals(2, result.size)
     }
@@ -75,7 +75,6 @@ internal class CompetitorMemoryStorageTest {
         // when
         competitorToDelete.id?.let { repository.delete(it) }
         // then
-        assertEquals(2, repository.findAll().size)
         assertNull(competitorToDelete.id?.let { repository.findById(it) })
     }
 }

@@ -16,4 +16,8 @@ class CompetitorQuery(
         val competitor = repository.findById(id)
         return competitor?.let { mapper.toModel(competitor) }
     }
+
+    fun competitorsByLeagueId(leagueId: String): List<CompetitorModel> {
+        return repository.findByLeagueId(leagueId).map { competitor -> mapper.toModel(competitor) }
+    }
 }

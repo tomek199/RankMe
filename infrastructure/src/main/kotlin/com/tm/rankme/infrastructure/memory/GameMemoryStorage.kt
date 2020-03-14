@@ -20,10 +20,6 @@ class GameMemoryStorage : GameRepository {
         return entity
     }
 
-    override fun findAll(): Collection<Game> {
-        return games
-    }
-
     override fun findById(id: String): Game? {
         return games.find { game -> game.id.equals(id) }
     }

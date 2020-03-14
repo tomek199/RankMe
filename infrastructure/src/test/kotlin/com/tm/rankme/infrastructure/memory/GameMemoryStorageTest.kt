@@ -3,6 +3,7 @@ package com.tm.rankme.infrastructure.memory
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.GameFactory
+import com.tm.rankme.domain.game.GameRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ internal class GameMemoryStorageTest {
     private val competitor1 = Competitor(leagueId, "comp-1", "Spiderman", Statistics())
     private val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
 
-    private val repository = GameMemoryStorage()
+    private val repository: GameRepository = GameMemoryStorage()
 
     @BeforeEach
     internal fun setUp() {
@@ -30,7 +31,6 @@ internal class GameMemoryStorageTest {
         val result = repository.save(game)
         // then
         assertEquals("3", result.id)
-        assertEquals(3, repository.findAll().size)
     }
 
     @Test
@@ -44,15 +44,6 @@ internal class GameMemoryStorageTest {
         // then
         val game = repository.findById("1")
         assertEquals(newDateTime, game!!.dateTime)
-        assertEquals(2, repository.findAll().size)
-    }
-
-    @Test
-    internal fun `Should return games list`() {
-        // when
-        val result = repository.findAll()
-        // then
-        assertEquals(2, result.size)
     }
 
     @Test
@@ -82,7 +73,6 @@ internal class GameMemoryStorageTest {
         // when
         gameToDelete.id?.let { repository.delete(it) }
         // then
-        assertEquals(2, repository.findAll().size)
         assertNull(gameToDelete.id?.let { repository.findById(it) })
     }
 }

@@ -20,10 +20,6 @@ class LeagueMemoryStorage : LeagueRepository {
         return entity
     }
 
-    override fun findAll(): Collection<League> {
-        return leagues
-    }
-
     override fun findById(id: String): League? {
         return leagues.find { league -> league.id.equals(id) }
     }
