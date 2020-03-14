@@ -9,8 +9,27 @@ type LeagueSettingsModel {
     maxScore: Int
 }
 
+type CompetitorModel {
+    id: String!
+    username: String!
+    leagueId: String!
+    statistics: CompetitorStatisticsModel!
+}
+
+type CompetitorStatisticsModel {
+    deviation: Int!
+    rating: Int!
+    won: Int!
+    lost: Int!
+    draw: Int!
+    lastGame: LocalDate
+}
+
+scalar LocalDate
+
 type Mutation {
     addLeague(name: String): LeagueModel
+    addCompetitor(leagueId: String username: String): CompetitorModel
 }
 
 type Query {
