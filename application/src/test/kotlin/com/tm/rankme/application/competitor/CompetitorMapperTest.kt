@@ -9,8 +9,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class CompetitorMapperTest {
-    private val leagueId = "l-111"
-    private val competitorId = "c-111"
+    private val leagueId = "league-1"
+    private val competitorId = "comp-1"
     private val competitorUsername = "Optimus Prime"
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
 

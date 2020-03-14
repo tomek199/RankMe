@@ -20,7 +20,7 @@ internal class LeagueQueryTest {
     @Test
     internal fun `Should return league by id`() {
         // given
-        val leagueId = "l-111"
+        val leagueId = "league-1"
         val leagueName = "Star Wars"
         given(repository.findById(leagueId)).willReturn(League(leagueId, leagueName))
         // when
@@ -35,7 +35,7 @@ internal class LeagueQueryTest {
     @Test
     internal fun `Should return null when league is not found`() {
         // given
-        val leagueId = "l-111"
+        val leagueId = "league-1"
         given(repository.findById(leagueId)).willReturn(null)
         // when
         val league = query.league(leagueId)

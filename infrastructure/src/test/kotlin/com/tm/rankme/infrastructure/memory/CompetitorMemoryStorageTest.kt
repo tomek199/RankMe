@@ -11,14 +11,14 @@ internal class CompetitorMemoryStorageTest {
 
     @BeforeEach
     fun setUp() {
-        repository.save(Competitor("l-111", "Spiderman"))
-        repository.save(Competitor("l-222", "Superman"))
+        repository.save(Competitor("league-1", "Spiderman"))
+        repository.save(Competitor("league-2", "Superman"))
     }
 
     @Test
     internal fun `Should save new competitor`() {
         // given
-        val competitor = Competitor("l-111", "Batman")
+        val competitor = Competitor("league-1", "Batman")
         // when
         val result = repository.save(competitor)
         // then
@@ -52,7 +52,7 @@ internal class CompetitorMemoryStorageTest {
     @Test
     internal fun `Should return competitor by id`() {
         // given
-        val competitorToFind = repository.save(Competitor("l-111", "Batman"))
+        val competitorToFind = repository.save(Competitor("league-1", "Batman"))
         // when
         val result = repository.findById("3")
         // then
@@ -71,7 +71,7 @@ internal class CompetitorMemoryStorageTest {
     @Test
     internal fun `Should delete competitor from list`() {
         // given
-        val competitorToDelete = repository.save(Competitor("l-111", "Batman"))
+        val competitorToDelete = repository.save(Competitor("league-1", "Batman"))
         // when
         competitorToDelete.id?.let { repository.delete(it) }
         // then

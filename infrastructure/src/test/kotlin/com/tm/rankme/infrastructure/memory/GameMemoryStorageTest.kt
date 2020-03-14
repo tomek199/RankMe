@@ -10,9 +10,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 internal class GameMemoryStorageTest {
-    private val leagueId = "l-111"
-    private val competitor1 = Competitor(leagueId, "c-111", "Spiderman", Statistics())
-    private val competitor2 = Competitor(leagueId, "c-222", "Superman", Statistics())
+    private val leagueId = "league-1"
+    private val competitor1 = Competitor(leagueId, "comp-1", "Spiderman", Statistics())
+    private val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
 
     private val repository = GameMemoryStorage()
 

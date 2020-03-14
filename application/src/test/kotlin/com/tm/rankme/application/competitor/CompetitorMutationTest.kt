@@ -24,14 +24,14 @@ internal class CompetitorMutationTest {
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
     private val mutation = CompetitorMutation(competitorRepository, leagueRepository, mapper)
 
-    private val leagueId = "l-111"
+    private val leagueId = "league-1"
     private val username = "Optimus Prime"
 
 
     @BeforeEach
     internal fun setUp() {
         given(competitorRepository.save(any(Competitor::class.java)))
-                .willReturn(Competitor(leagueId, "c-111", username, Statistics()))
+                .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
     }
 
     @Test

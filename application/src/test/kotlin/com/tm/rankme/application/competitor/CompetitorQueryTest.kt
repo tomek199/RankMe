@@ -20,11 +20,11 @@ internal class CompetitorQueryTest {
     private val repository: CompetitorRepository = Mockito.mock(CompetitorRepository::class.java)
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
     private val query = CompetitorQuery(repository, mapper)
-    private val id = "c-111"
+    private val id = "comp-1"
 
     @Test
     internal fun `Should return competitor by id`() {
-        val leagueId = "l-111"
+        val leagueId = "league-1"
         val username = "Optimus Prime"
         // given
         given(repository.findById(id)).willReturn(Competitor(leagueId, id, username, Statistics()))

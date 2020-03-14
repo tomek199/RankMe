@@ -8,8 +8,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class CompetitorTest {
-    private val leagueId = "league-111"
-    private val id = "competitor-111"
+    private val leagueId = "league-1"
+    private val id = "comp-1"
     private val username = "Optimus Prime"
 
     @Test
