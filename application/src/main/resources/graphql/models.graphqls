@@ -26,6 +26,7 @@ type CompetitorStatisticsModel {
 }
 
 scalar LocalDate
+scalar LocalDateTime
 
 type Mutation {
     addLeague(name: String): LeagueModel

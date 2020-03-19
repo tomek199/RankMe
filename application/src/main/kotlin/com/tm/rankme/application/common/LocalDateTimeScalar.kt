@@ -6,37 +6,35 @@ import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingParseValueException
 import graphql.schema.CoercingSerializeException
 import graphql.schema.GraphQLScalarType
-import org.springframework.stereotype.Component
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
 
-@Component
-class LocalDateScalar(name: String? = "LocalDate", description: String? = null)
-    : GraphQLScalarType(name, description, object : Coercing<LocalDate?, String?> {
-    override fun parseValue(input: Any?): LocalDate? {
+class LocalDateTimeScalar(name: String? = "LocalDateTime", description: String? = null)
+    : GraphQLScalarType(name, description, object : Coercing<LocalDateTime?, String?> {
+    override fun parseValue(input: Any?): LocalDateTime? {
         if (input !is String) return null
         try {
-            return LocalDate.parse(input)
+            return LocalDateTime.parse(input)
         } catch (e: DateTimeParseException) {
-            throw CoercingParseValueException("Could not parse value $input for LocalDate")
+            throw CoercingParseValueException("Could not parse value $input for LocalDateTime")
         }
     }
 
-    override fun parseLiteral(input: Any?): LocalDate? {
+    override fun parseLiteral(input: Any?): LocalDateTime? {
         if (input !is StringValue) return null
         try {
-            return LocalDate.parse(input.value)
+            return LocalDateTime.parse(input.value)
         } catch (e: DateTimeParseException) {
-            throw CoercingParseLiteralException("Could not parse literal $input for LocalDate")
+            throw CoercingParseLiteralException("Could not parse literal $input for LocalDateTime")
         }
     }
 
     override fun serialize(dataFetcherResult: Any?): String? {
         when(dataFetcherResult) {
-            is LocalDate -> return dataFetcherResult.toString()
+            is LocalDateTime -> return dataFetcherResult.toString()
             is String ->
                 try {
-                    return LocalDate.parse(dataFetcherResult).toString()
+                    return LocalDateTime.parse(dataFetcherResult).toString()
                 } catch (e: DateTimeParseException) {
                     throw CoercingSerializeException("Could not serialize object $dataFetcherResult")
                 }
