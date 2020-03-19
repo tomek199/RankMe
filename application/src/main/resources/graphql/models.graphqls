@@ -12,8 +12,22 @@ type LeagueSettingsModel {
 type CompetitorModel {
     id: String!
     username: String!
-    leagueId: String!
+    leagueId: String! # todo remove
     statistics: CompetitorStatisticsModel!
+}
+
+type GameModel {
+    id: String!
+    playerOne: PlayerModel!
+    playerTwo: PlayerModel!
+    dateTime: LocalDateTime!
+}
+
+type PlayerModel {
+    competitorId: String!
+    username: String!
+    rating: Int!
+    score: Int!
 }
 
 type CompetitorStatisticsModel {
