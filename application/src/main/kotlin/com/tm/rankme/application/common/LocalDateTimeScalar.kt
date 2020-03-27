@@ -6,9 +6,11 @@ import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingParseValueException
 import graphql.schema.CoercingSerializeException
 import graphql.schema.GraphQLScalarType
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
 
+@Component
 class LocalDateTimeScalar(name: String? = "LocalDateTime", description: String? = null)
     : GraphQLScalarType(name, description, object : Coercing<LocalDateTime?, String?> {
     override fun parseValue(input: Any?): LocalDateTime? {

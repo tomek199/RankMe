@@ -48,6 +48,7 @@ type Mutation {
     addCompletedGame(leagueId: String
         playerOneId: String playerOneScore: Int
         playerTwoId: String playerTwoScore: Int): GameModel
+    addScheduledGame(leagueId: String playerOneId: String playerTwoId: String dateTime: LocalDateTime): GameModel
 }
 
 type Query {
