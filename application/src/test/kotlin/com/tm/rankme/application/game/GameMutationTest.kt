@@ -15,6 +15,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
@@ -54,46 +55,54 @@ internal class GameMutationTest {
 
     @Test
     internal fun `Should throw exception when first competitor does not exist for completed game`() {
-        // when
+        // given
         val invalidCompetitorId = "comp-3"
         given(competitorRepository.findById("comp-3")).willReturn(null)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addCompletedGame(leagueId, invalidCompetitorId, 2, secondCompetitor.id!!, 1)
         }
+        // then
+        assertEquals("Competitor $invalidCompetitorId is not found", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when second competitor does not exist form completed game`() {
-        // when
+        // given
         val invalidCompetitorId = "comp-3"
         given(competitorRepository.findById("comp-3")).willReturn(null)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addCompletedGame(leagueId, firstCompetitor.id!!, 2, invalidCompetitorId, 1)
         }
+        // then
+        assertEquals("Competitor $invalidCompetitorId is not found", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when first player is not included to league for completed game`() {
-        // when
+        // given
         val invalidCompetitor = Competitor("league-2", "comp-3", "Joker", Statistics())
         given(competitorRepository.findById(invalidCompetitor.id!!)).willReturn(invalidCompetitor)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addCompletedGame(leagueId, invalidCompetitor.id!!, 2, secondCompetitor.id!!, 1)
         }
+        // then
+        assertEquals("Competitor comp-3 is not assigned to league $leagueId", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when second player is not included to league for completed game`() {
-        // when
+        // given
         val invalidCompetitor = Competitor("league-2", "comp-3", "Joker", Statistics())
         given(competitorRepository.findById(invalidCompetitor.id!!)).willReturn(invalidCompetitor)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addCompletedGame(leagueId, firstCompetitor.id!!, 2, invalidCompetitor.id!!, 1)
         }
+        // then
+        assertEquals("Competitor comp-3 is not assigned to league $leagueId", exception.message)
     }
 
     @Test
@@ -115,46 +124,54 @@ internal class GameMutationTest {
 
     @Test
     internal fun `Should throw exception when first competitor does not exist for scheduled game`() {
-        // when
+        // given
         val invalidCompetitorId = "comp-3"
         given(competitorRepository.findById("comp-3")).willReturn(null)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addScheduledGame(leagueId, invalidCompetitorId, secondCompetitor.id!!, LocalDateTime.now())
         }
+        // then
+        assertEquals("Competitor $invalidCompetitorId is not found", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when second competitor does not exist form scheduled game`() {
-        // when
+        // given
         val invalidCompetitorId = "comp-3"
         given(competitorRepository.findById("comp-3")).willReturn(null)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addScheduledGame(leagueId, firstCompetitor.id!!, invalidCompetitorId, LocalDateTime.now())
         }
+        // then
+        assertEquals("Competitor $invalidCompetitorId is not found", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when first player is not included to league for scheduled game`() {
-        // when
+        // given
         val invalidCompetitor = Competitor("league-2", "comp-3", "Joker", Statistics())
         given(competitorRepository.findById(invalidCompetitor.id!!)).willReturn(invalidCompetitor)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException>("Competitor comp-3 is not assigned to league league-2") {
             mutation.addScheduledGame(leagueId, invalidCompetitor.id!!, secondCompetitor.id!!, LocalDateTime.now())
         }
+        // then
+        assertEquals("Competitor comp-3 is not assigned to league $leagueId", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when second player is not included to league for scheduled game`() {
-        // when
+        // given
         val invalidCompetitor = Competitor("league-2", "comp-3", "Joker", Statistics())
         given(competitorRepository.findById(invalidCompetitor.id!!)).willReturn(invalidCompetitor)
-        // then
-        assertFailsWith<IllegalStateException> {
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
             mutation.addScheduledGame(leagueId, firstCompetitor.id!!, invalidCompetitor.id!!, LocalDateTime.now())
         }
+        // then
+        assertEquals("Competitor comp-3 is not assigned to league $leagueId", exception.message)
     }
 
     @Test
@@ -180,21 +197,30 @@ internal class GameMutationTest {
 
     @Test
     internal fun `Should throw exception when game is not found`() {
-        // when
+        // given
         val invalidGameId = "game-2"
         given(gameRepository.findById(invalidGameId)).willReturn(null)
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            mutation.completeGame(invalidGameId, 2, 1)
+        }
         // then
-        assertFailsWith<IllegalStateException> { mutation.completeGame(invalidGameId, 2, 1) }
+        assertEquals("Game $invalidGameId is not found", exception.message)
     }
 
     @Test
     internal fun `Should throw exception on complete action when game is already completed`() {
-        // when
+        // given
         val gameId = "game-3"
-        val completedGame = GameFactory.completedMatch(Pair(firstCompetitor, 1), Pair(secondCompetitor, 3), leagueId)
+        val completedGame = GameFactory.completedGame(Pair(firstCompetitor, 1), Pair(secondCompetitor, 3), leagueId)
         given(gameRepository.findById(gameId)).willReturn(completedGame)
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            mutation.completeGame(gameId, 1, 3)
+        }
         // then
-        assertFailsWith<IllegalStateException> { mutation.completeGame(gameId, 1, 3) }
+        assertEquals("Game $gameId is already completed", exception.message)
+
     }
 
     private fun <T> any(type: Class<T>): T = Mockito.any(type)

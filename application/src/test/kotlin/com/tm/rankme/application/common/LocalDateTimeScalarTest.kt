@@ -26,8 +26,12 @@ internal class LocalDateTimeScalarTest {
 
     @Test
     internal fun `Should throw exception when converting incorrect String value to LocalDateTime`() {
+        // given
+        val input = "2020-8-7T22:18:45"
+        // when
+        val exception = assertFailsWith<CoercingParseValueException> { scalar.coercing.parseValue(input) }
         // then
-        assertFailsWith<CoercingParseValueException> { scalar.coercing.parseValue("2020-8-7T22:18:45") }
+        assertEquals("Could not parse value $input for LocalDateTime", exception.message)
     }
 
     @Test
@@ -50,10 +54,12 @@ internal class LocalDateTimeScalarTest {
 
     @Test
     internal fun `Should throw exception when converting incorrect StringValue literal to LocalDateTime`() {
-        // when
+        // given
         val literal = StringValue("2020-3-2T17:3:8")
+        // when
+        val exception = assertFailsWith<CoercingParseLiteralException> { scalar.coercing.parseLiteral(literal) }
         // then
-        assertFailsWith<CoercingParseLiteralException> { scalar.coercing.parseLiteral(literal) }
+        assertEquals("Could not parse literal $literal for LocalDateTime", exception.message)
     }
 
     @Test
@@ -94,7 +100,11 @@ internal class LocalDateTimeScalarTest {
 
     @Test
     internal fun `Should throw exception when serialize value is incorrect`() {
+        // given
+        val input = "abcd1234"
+        // when
+        val exception = assertFailsWith<CoercingSerializeException> { scalar.coercing.serialize(input) }
         // then
-        assertFailsWith<CoercingSerializeException> { scalar.coercing.serialize("abcd1234") }
+        assertEquals("Could not serialize object $input", exception.message)
     }
 }

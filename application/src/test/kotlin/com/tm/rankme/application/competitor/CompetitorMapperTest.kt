@@ -36,9 +36,11 @@ internal class CompetitorMapperTest {
 
     @Test
     internal fun `Should throw IllegalStateException when domain competitor id is null`() {
-        // when
+        // given
         val domain = Competitor(leagueId, competitorUsername, Statistics())
+        // when
+        val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
         // then
-        assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
+        assertEquals("Competitor id can't be null!", exception.message)
     }
 }

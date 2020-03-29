@@ -18,24 +18,29 @@ import kotlin.test.assertNull
 internal class GameFactoryTest {
     @Test
     internal fun `Should throw exception when first competitor id is null`() {
-        // when
-        val competitorOne = Competitor(leagueId, competitorName1)
+        // given
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, Statistics())
-        // then
-        assertFailsWith<IllegalStateException> {
-            GameFactory.scheduledMatch(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        val competitorOne = Competitor(leagueId, competitorName1)
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            GameFactory.scheduledGame(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
         }
+        // then
+        assertEquals("Competitor ids cannot be null!", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when second competitor id is null`() {
-        // when
+        // given
         val competitorOne = Competitor(leagueId, competitorId1, competitorName1, Statistics())
         val competitorTwo = Competitor(leagueId, competitorName2)
-        // then
-        assertFailsWith<IllegalStateException> {
-            GameFactory.scheduledMatch(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            GameFactory.scheduledGame(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
         }
+        // then
+        assertEquals("Competitor ids cannot be null!", exception.message)
+
     }
 
     @Test
@@ -47,7 +52,7 @@ internal class GameFactoryTest {
         val statisticsTwo = Statistics(279, 2043, 98, 93, 25, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, statisticsTwo)
         // when
-        val game = GameFactory.scheduledMatch(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        val game = GameFactory.scheduledGame(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
         // then
         assertNull(game.id)
         assertEquals(leagueId, game.leagueId)
@@ -76,7 +81,7 @@ internal class GameFactoryTest {
         val twoStats = Statistics(224, 1874, 0, 0, 0, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, twoStats)
         // when
-        val game = GameFactory.completedMatch(Pair(competitorOne, 1), Pair(competitorTwo, 0), leagueId)
+        val game = GameFactory.completedGame(Pair(competitorOne, 1), Pair(competitorTwo, 0), leagueId)
         // then
         assertNotNull(game.dateTime)
         assertEquals(leagueId, game.leagueId)

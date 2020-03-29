@@ -19,14 +19,14 @@ internal class GameMemoryStorageTest {
 
     @BeforeEach
     internal fun setUp() {
-        repository.save(GameFactory.completedMatch(Pair(competitor1, 2), Pair(competitor2, 1), leagueId))
-        repository.save(GameFactory.completedMatch(Pair(competitor1, 1), Pair(competitor2, 2), leagueId))
+        repository.save(GameFactory.completedGame(Pair(competitor1, 2), Pair(competitor2, 1), leagueId))
+        repository.save(GameFactory.completedGame(Pair(competitor1, 1), Pair(competitor2, 2), leagueId))
     }
 
     @Test
     internal fun `Should save new game`() {
         // given
-        val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
+        val game = GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         // when
         val result = repository.save(game)
         // then
@@ -49,7 +49,7 @@ internal class GameMemoryStorageTest {
     @Test
     internal fun `Should return game by id`() {
         // given
-        val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
+        val game = GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         val gameToFind = repository.save(game)
         // when
         val result = repository.findById("3")
@@ -68,7 +68,7 @@ internal class GameMemoryStorageTest {
     @Test
     internal fun `Should delete game from list`() {
         // given
-        val game = GameFactory.completedMatch(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
+        val game = GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
         val gameToDelete = repository.save(game)
         // when
         gameToDelete.id?.let { repository.delete(it) }

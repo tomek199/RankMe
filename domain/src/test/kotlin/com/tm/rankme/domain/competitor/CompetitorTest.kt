@@ -50,12 +50,13 @@ internal class CompetitorTest {
     internal fun `Should throw exception when update statistics without score`() {
         // given
         val competitor = Competitor(leagueId, username, Statistics())
-        // when
         val player = Player(id, username, 234, 2548)
-        // then
-        assertFailsWith<IllegalArgumentException> {
+        // when
+        val exception = assertFailsWith<IllegalArgumentException> {
             competitor.updateStatistics(player, 2, LocalDateTime.now())
         }
+        // then
+        assertEquals("Player does not contain score value!", exception.message)
     }
 
     @Test

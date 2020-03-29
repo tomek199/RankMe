@@ -9,7 +9,6 @@ import com.tm.rankme.domain.league.LeagueRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.BDDMockito
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
@@ -56,10 +55,11 @@ internal class CompetitorMutationTest {
     @Test
     internal fun `Should throw exception when league does not exist`() {
         // given
-        // when
         given(leagueRepository.findById(leagueId)).willReturn(null)
+        // when
+        val exception = assertFailsWith<IllegalStateException> { mutation.addCompetitor(leagueId, username) }
         // then
-        assertFailsWith<IllegalStateException> { mutation.addCompetitor(leagueId, username) }
+        assertEquals("League does not exist!", exception.message)
     }
 
     private fun <T> any(type: Class<T>): T = Mockito.any(type)

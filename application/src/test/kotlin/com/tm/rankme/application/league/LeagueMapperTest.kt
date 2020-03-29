@@ -28,9 +28,11 @@ internal class LeagueMapperTest {
 
     @Test
     internal fun `Should throw IllegalStateException when domain league id is null`() {
-        // when
+        // given
         val domain = League(leagueName)
+        // when
+        val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
         // then
-        assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
+        assertEquals("League id can't be null", exception.message)
     }
 }

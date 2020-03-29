@@ -21,7 +21,7 @@ class GameMutation(
                          playerTwoId: String, playerTwoScore: Int): GameModel {
         val firstCompetitor = getCompetitor(playerOneId, leagueId)
         val secondCompetitor = getCompetitor(playerTwoId, leagueId)
-        val game = GameFactory.completedMatch(Pair(firstCompetitor, playerOneScore),
+        val game = GameFactory.completedGame(Pair(firstCompetitor, playerOneScore),
                 Pair(secondCompetitor, playerTwoScore), leagueId)
         updateCompetitorStatistics(firstCompetitor, secondCompetitor, game)
         return mapper.toModel(gameRepository.save(game))
@@ -31,12 +31,12 @@ class GameMutation(
                          dateTime: LocalDateTime): GameModel {
         val firstCompetitor = getCompetitor(playerOneId, leagueId)
         val secondCompetitor = getCompetitor(playerTwoId, leagueId)
-        val game = GameFactory.scheduledMatch(firstCompetitor, secondCompetitor, leagueId, dateTime)
+        val game = GameFactory.scheduledGame(firstCompetitor, secondCompetitor, leagueId, dateTime)
         return mapper.toModel(gameRepository.save(game))
     }
 
     fun completeGame(id: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
-        val game = gameRepository.findById(id) ?: throw java.lang.IllegalStateException("Game $id not found")
+        val game = gameRepository.findById(id) ?: throw java.lang.IllegalStateException("Game $id is not found")
         if (game.playerOne.score != null || game.playerTwo.score != null)
             throw IllegalStateException("Game $id is already completed")
         val firstCompetitor = getCompetitor(game.playerOne.competitorId, game.leagueId)
@@ -47,9 +47,9 @@ class GameMutation(
     }
 
     private fun getCompetitor(id: String, leagueId: String): Competitor {
-        val competitor = competitorRepository.findById(id) ?: throw IllegalStateException("Competitor $id not fount")
+        val competitor = competitorRepository.findById(id) ?: throw IllegalStateException("Competitor $id is not found")
         if (competitor.leagueId != leagueId)
-            throw IllegalStateException("Competitor is not assigned to league $leagueId")
+            throw IllegalStateException("Competitor $id is not assigned to league $leagueId")
         return competitor
     }
 

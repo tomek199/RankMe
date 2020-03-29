@@ -40,11 +40,13 @@ internal class GameMapperTest {
 
     @Test
     internal fun `Should throw IllegalStateException when domain game id is null`() {
-        // when
+        // given
         val competitorOne = Competitor(leagueId, "comp-1", "Batman", Statistics())
         val competitorTwo = Competitor(leagueId, "comp-2", "Superman", Statistics())
-        val domain = GameFactory.scheduledMatch(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        val domain = GameFactory.scheduledGame(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        // when
+        val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
         // then
-        assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
+        assertEquals("Game id can't be null!", exception.message)
     }
 }
