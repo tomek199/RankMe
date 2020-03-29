@@ -4,6 +4,7 @@ import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.Game
+import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
 import org.junit.jupiter.api.BeforeEach
@@ -14,9 +15,8 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import java.time.LocalDateTime
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
+import kotlin.test.assertNotNull
 
 internal class GameMutationTest {
     private val gameRepository = mock(GameRepository::class.java)
@@ -44,18 +44,12 @@ internal class GameMutationTest {
         // when
         val game = mutation.addCompletedGame(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
         // then
-        assertEquals(expectedGame.id, game.id)
-        assertEquals(expectedGame.dateTime, game.dateTime)
-        assertEquals(expectedGame.playerOne.competitorId, game.playerOne.competitorId)
-        assertEquals(expectedGame.playerOne.username, game.playerOne.username)
-        assertEquals(expectedGame.playerOne.rating, game.playerOne.rating)
-        assertEquals(expectedGame.playerOne.score, game.playerOne.score)
-        assertEquals(expectedGame.playerTwo.competitorId, game.playerTwo.competitorId)
-        assertEquals(expectedGame.playerTwo.username, game.playerTwo.username)
-        assertEquals(expectedGame.playerTwo.rating, game.playerTwo.rating)
-        assertEquals(expectedGame.playerTwo.score, game.playerTwo.score)
+        assertNotNull(game)
+        verify(competitorRepository, times(1)).findById(firstCompetitor.id!!)
+        verify(competitorRepository, times(1)).findById(secondCompetitor.id!!)
         verify(competitorRepository, times(1)).save(firstCompetitor)
         verify(competitorRepository, times(1)).save(secondCompetitor)
+        verify(gameRepository, Mockito.only()).save(any(Game::class.java))
     }
 
     @Test
@@ -108,21 +102,15 @@ internal class GameMutationTest {
         val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 173, 2375)
         val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 249, 1559)
         val gameDateTime = LocalDateTime.now()
-        val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
+        val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, gameDateTime)
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         // when
         val game = mutation.addScheduledGame(leagueId, playerOne.competitorId, playerTwo.competitorId, gameDateTime)
         // then
-        assertEquals(expectedGame.id, game.id)
-        assertEquals(expectedGame.dateTime, game.dateTime)
-        assertEquals(expectedGame.playerOne.competitorId, game.playerOne.competitorId)
-        assertEquals(expectedGame.playerOne.username, game.playerOne.username)
-        assertEquals(expectedGame.playerOne.rating, game.playerOne.rating)
-        assertNull(game.playerOne.score)
-        assertEquals(expectedGame.playerTwo.competitorId, game.playerTwo.competitorId)
-        assertEquals(expectedGame.playerTwo.username, game.playerTwo.username)
-        assertEquals(expectedGame.playerTwo.rating, game.playerTwo.rating)
-        assertNull(expectedGame.playerTwo.score)
+        assertNotNull(game)
+        verify(competitorRepository, times(1)).findById(firstCompetitor.id!!)
+        verify(competitorRepository, times(1)).findById(secondCompetitor.id!!)
+        verify(gameRepository, Mockito.only()).save(any(Game::class.java))
     }
 
     @Test
@@ -167,6 +155,46 @@ internal class GameMutationTest {
         assertFailsWith<IllegalStateException> {
             mutation.addScheduledGame(leagueId, firstCompetitor.id!!, invalidCompetitor.id!!, LocalDateTime.now())
         }
+    }
+
+    @Test
+    internal fun `Should complete game`() {
+        // given
+        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 127, 2234)
+        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 227, 1752)
+        val gameDateTime = LocalDateTime.now()
+        val scheduledGame = Game("game-1", playerOne, playerTwo, leagueId, gameDateTime)
+        given(gameRepository.findById(scheduledGame.id!!)).willReturn(scheduledGame)
+        given(gameRepository.save(any(Game::class.java))).willReturn(scheduledGame)
+        // when
+        val completedGame = mutation.completeGame(scheduledGame.id!!, 2, 1)
+        // then
+        assertNotNull(completedGame)
+        verify(competitorRepository, times(1)).findById(firstCompetitor.id!!)
+        verify(competitorRepository, times(1)).findById(secondCompetitor.id!!)
+        verify(competitorRepository, times(1)).save(firstCompetitor)
+        verify(competitorRepository, times(1)).save(secondCompetitor)
+        verify(gameRepository, times(1)).findById(scheduledGame.id!!)
+        verify(gameRepository, times(1)).save(any(Game::class.java))
+    }
+
+    @Test
+    internal fun `Should throw exception when game is not found`() {
+        // when
+        val invalidGameId = "game-2"
+        given(gameRepository.findById(invalidGameId)).willReturn(null)
+        // then
+        assertFailsWith<IllegalStateException> { mutation.completeGame(invalidGameId, 2, 1) }
+    }
+
+    @Test
+    internal fun `Should throw exception on complete action when game is already completed`() {
+        // when
+        val gameId = "game-3"
+        val completedGame = GameFactory.completedMatch(Pair(firstCompetitor, 1), Pair(secondCompetitor, 3), leagueId)
+        given(gameRepository.findById(gameId)).willReturn(completedGame)
+        // then
+        assertFailsWith<IllegalStateException> { mutation.completeGame(gameId, 1, 3) }
     }
 
     private fun <T> any(type: Class<T>): T = Mockito.any(type)

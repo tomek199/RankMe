@@ -23,10 +23,7 @@ class GameMutation(
         val secondCompetitor = getCompetitor(playerTwoId, leagueId)
         val game = GameFactory.completedMatch(Pair(firstCompetitor, playerOneScore),
                 Pair(secondCompetitor, playerTwoScore), leagueId)
-        firstCompetitor.updateStatistics(game.playerOne, playerTwoScore, game.dateTime)
-        secondCompetitor.updateStatistics(game.playerTwo, playerTwoScore, game.dateTime)
-        competitorRepository.save(firstCompetitor)
-        competitorRepository.save(secondCompetitor)
+        updateCompetitorStatistics(firstCompetitor, secondCompetitor, game)
         return mapper.toModel(gameRepository.save(game))
     }
 
@@ -38,10 +35,32 @@ class GameMutation(
         return mapper.toModel(gameRepository.save(game))
     }
 
-    fun getCompetitor(id: String, leagueId: String): Competitor {
+    fun completeGame(id: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
+        val game = gameRepository.findById(id) ?: throw java.lang.IllegalStateException("Game $id not found")
+        if (game.playerOne.score != null || game.playerTwo.score != null)
+            throw IllegalStateException("Game $id is already completed")
+        val firstCompetitor = getCompetitor(game.playerOne.competitorId, game.leagueId)
+        val secondCompetitor = getCompetitor(game.playerTwo.competitorId, game.leagueId)
+        game.complete(Pair(firstCompetitor, playerOneScore), Pair(secondCompetitor, playerTwoScore))
+        updateCompetitorStatistics(firstCompetitor, secondCompetitor, game)
+        return mapper.toModel(gameRepository.save(game))
+    }
+
+    private fun getCompetitor(id: String, leagueId: String): Competitor {
         val competitor = competitorRepository.findById(id) ?: throw IllegalStateException("Competitor $id not fount")
         if (competitor.leagueId != leagueId)
             throw IllegalStateException("Competitor is not assigned to league $leagueId")
         return competitor
+    }
+
+    private fun updateCompetitorStatistics(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game) {
+        game.playerTwo.score?.let {
+            firstCompetitor.updateStatistics(game.playerOne, it, game.dateTime)
+            competitorRepository.save(firstCompetitor)
+        }
+        game.playerOne.score?.let {
+            secondCompetitor.updateStatistics(game.playerTwo, it, game.dateTime)
+            competitorRepository.save(secondCompetitor)
+        }
     }
 }
