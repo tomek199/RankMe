@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -52,6 +54,8 @@ internal class GameMutationTest {
         assertEquals(expectedGame.playerTwo.username, game.playerTwo.username)
         assertEquals(expectedGame.playerTwo.rating, game.playerTwo.rating)
         assertEquals(expectedGame.playerTwo.score, game.playerTwo.score)
+        verify(competitorRepository, times(1)).save(firstCompetitor)
+        verify(competitorRepository, times(1)).save(secondCompetitor)
     }
 
     @Test

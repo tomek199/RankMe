@@ -23,6 +23,10 @@ class GameMutation(
         val secondCompetitor = getCompetitor(playerTwoId, leagueId)
         val game = GameFactory.completedMatch(Pair(firstCompetitor, playerOneScore),
                 Pair(secondCompetitor, playerTwoScore), leagueId)
+        firstCompetitor.updateStatistics(game.playerOne, playerTwoScore, game.dateTime)
+        secondCompetitor.updateStatistics(game.playerTwo, playerTwoScore, game.dateTime)
+        competitorRepository.save(firstCompetitor)
+        competitorRepository.save(secondCompetitor)
         return mapper.toModel(gameRepository.save(game))
     }
 
