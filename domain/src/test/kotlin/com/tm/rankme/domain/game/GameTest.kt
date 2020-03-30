@@ -39,7 +39,7 @@ internal class GameTest {
         val competitorOne = Competitor(leagueId, competitorId1, competitorName1, oneStats)
         val twoStats = Statistics(165, 2156, 0, 0, 0, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, twoStats)
-        val game = GameFactory.scheduledMatch(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        val game = GameFactory.scheduledGame(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
         // when
         game.complete(Pair(competitorOne, 1), Pair(competitorTwo, 2))
         // then

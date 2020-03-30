@@ -5,14 +5,14 @@ import java.time.LocalDateTime
 
 class GameFactory private constructor() {
     companion object {
-        fun scheduledMatch(firstCompetitor: Competitor, secondCompetitor: Competitor,
-                           leagueId: String, dateTime: LocalDateTime): Game {
+        fun scheduledGame(firstCompetitor: Competitor, secondCompetitor: Competitor,
+                          leagueId: String, dateTime: LocalDateTime): Game {
             val playerOne = createPlayer(firstCompetitor)
             val playerTwo = createPlayer(secondCompetitor)
             return Game(playerOne, playerTwo, leagueId, dateTime)
         }
 
-        fun completedMatch(scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>, leagueId: String): Game {
+        fun completedGame(scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>, leagueId: String): Game {
             val playerOne = createPlayer(scoreOne.first)
             playerOne.score = scoreOne.second
             val playerTwo = createPlayer(scoreTwo.first)

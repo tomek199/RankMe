@@ -10,18 +10,22 @@ internal class GlickoServiceTest {
 
     @Test
     internal fun `Should throw exception when first player score is not provided`() {
-        // when
+        // given
         playerTwo.score = 1
+        // when
+        val exception = assertFailsWith<IllegalArgumentException> { GlickoService(playerOne, playerTwo) }
         // then
-        assertFailsWith<IllegalArgumentException> { GlickoService(playerOne, playerTwo) }
+        assertEquals("Player one score is not provided!", exception.message)
     }
 
     @Test
     internal fun `Should throw exception when second player score is not provided`() {
-        // when
+        // given
         playerOne.score = 1
+        // when
+        val exception = assertFailsWith<IllegalArgumentException> { GlickoService(playerOne, playerTwo) }
         // then
-        assertFailsWith<IllegalArgumentException> { GlickoService(playerOne, playerTwo) }
+        assertEquals("Player two score is not provided!", exception.message)
     }
 
     @Test

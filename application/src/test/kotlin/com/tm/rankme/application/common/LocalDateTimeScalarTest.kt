@@ -5,35 +5,37 @@ import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingParseValueException
 import graphql.schema.CoercingSerializeException
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
-internal class LocalDateScalarTest {
-    private val scalar = LocalDateScalar()
+
+internal class LocalDateTimeScalarTest {
+    private val scalar = LocalDateTimeScalar()
 
     @Test
-    internal fun `Should convert String value to LocalDate`() {
+    internal fun `Should convert String value to LocalDateTime`() {
         // given
-        val expectedDate = LocalDate.of(2020, 6, 15)
+        val expectedDate = LocalDateTime.of(2020, 6, 15, 13, 45, 34)
         // when
-        val result = scalar.coercing.parseValue("2020-06-15")
+        val result = scalar.coercing.parseValue("2020-06-15T13:45:34")
         // then
         assertEquals(expectedDate, result)
     }
 
     @Test
-    internal fun `Should throw exception when converting incorrect String value to LocalDate`() {
+    internal fun `Should throw exception when converting incorrect String value to LocalDateTime`() {
+        // given
+        val input = "2020-8-7T22:18:45"
         // when
-        val input = "2020-8-7"
         val exception = assertFailsWith<CoercingParseValueException> { scalar.coercing.parseValue(input) }
         // then
-        assertEquals("Could not parse value $input for LocalDate", exception.message)
+        assertEquals("Could not parse value $input for LocalDateTime", exception.message)
     }
 
     @Test
-    internal fun `Should return null when converting null value to LocalDate`() {
+    internal fun `Should return null when converting null value to LocalDateTime`() {
         // when
         val result = scalar.coercing.parseValue(null)
         // then
@@ -41,27 +43,27 @@ internal class LocalDateScalarTest {
     }
 
     @Test
-    internal fun `Should convert StringValue literal to LocalDate`() {
+    internal fun `Should convert StringValue literal to LocalDateTime`() {
         // given
-        val literal = StringValue("2020-12-04")
+        val literal = StringValue("2020-12-04T06:07:54")
         // when
         val result = scalar.coercing.parseLiteral(literal)
         // then
-        assertEquals(LocalDate.of(2020, 12, 4), result)
+        assertEquals(LocalDateTime.of(2020, 12, 4, 6, 7, 54), result)
     }
 
     @Test
-    internal fun `Should throw exception when converting incorrect StringValue literal to LocalDate`() {
+    internal fun `Should throw exception when converting incorrect StringValue literal to LocalDateTime`() {
         // given
-        val literal = StringValue("2020-3-2")
+        val literal = StringValue("2020-3-2T17:3:8")
         // when
         val exception = assertFailsWith<CoercingParseLiteralException> { scalar.coercing.parseLiteral(literal) }
         // then
-        assertEquals("Could not parse literal $literal for LocalDate", exception.message)
+        assertEquals("Could not parse literal $literal for LocalDateTime", exception.message)
     }
 
     @Test
-    internal fun `Should return null when converting null literal to LocalDate`() {
+    internal fun `Should return null when converting null literal to LocalDateTime`() {
         // when
         val result = scalar.coercing.parseLiteral(null)
         // then
@@ -71,7 +73,7 @@ internal class LocalDateScalarTest {
     @Test
     internal fun `Should serialize String value`() {
         // given
-        val expectedValue = "2020-10-07"
+        val expectedValue = "2020-10-07T09:34:27"
         // when
         val result = scalar.coercing.serialize(expectedValue)
         // then
@@ -79,11 +81,11 @@ internal class LocalDateScalarTest {
     }
 
     @Test
-    internal fun `Should serialize LocalDate value`() {
+    internal fun `Should serialize LocalDateTime value`() {
         // given
-        val expectedValue = "2020-06-07"
+        val expectedValue = "2020-06-07T13:51:27"
         // when
-        val result = scalar.coercing.serialize(LocalDate.of(2020, 6, 7))
+        val result = scalar.coercing.serialize(LocalDateTime.of(2020, 6, 7, 13, 51, 27))
         // then
         assertEquals(expectedValue, result)
     }

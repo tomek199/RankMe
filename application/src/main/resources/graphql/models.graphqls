@@ -12,8 +12,22 @@ type LeagueSettingsModel {
 type CompetitorModel {
     id: String!
     username: String!
-    leagueId: String!
+    leagueId: String! # todo remove
     statistics: CompetitorStatisticsModel!
+}
+
+type GameModel {
+    id: String!
+    playerOne: PlayerModel!
+    playerTwo: PlayerModel!
+    dateTime: LocalDateTime!
+}
+
+type PlayerModel {
+    competitorId: String!
+    username: String!
+    rating: Int!
+    score: Int!
 }
 
 type CompetitorStatisticsModel {
@@ -26,10 +40,16 @@ type CompetitorStatisticsModel {
 }
 
 scalar LocalDate
+scalar LocalDateTime
 
 type Mutation {
     addLeague(name: String): LeagueModel
     addCompetitor(leagueId: String username: String): CompetitorModel
+    addCompletedGame(leagueId: String
+        playerOneId: String playerOneScore: Int
+        playerTwoId: String playerTwoScore: Int): GameModel
+    addScheduledGame(leagueId: String playerOneId: String playerTwoId: String dateTime: LocalDateTime): GameModel
+    completeGame(id: String playerOneScore: Int playerTwoScore: Int): GameModel
 }
 
 type Query {

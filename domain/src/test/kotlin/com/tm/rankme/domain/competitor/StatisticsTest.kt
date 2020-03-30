@@ -44,9 +44,9 @@ internal class StatisticsTest {
     internal fun `Should return default rating deviation`() {
         // given
         val statistics = Statistics()
-        val lastMatch = LocalDate.now().minusWeeks(3)
+        val lastGame = LocalDate.now().minusWeeks(3)
         // when
-        statistics.lastGame = lastMatch
+        statistics.lastGame = lastGame
         // then
         assertEquals(350, statistics.deviation)
     }

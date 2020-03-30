@@ -16,7 +16,7 @@ internal class GlickoService(playerOne: Player,
 
     init {
         val playerOneScore = playerOne.score?: throw IllegalArgumentException("Player one score is not provided!")
-        val playerTwoScore = playerTwo.score?: throw IllegalArgumentException("Player two Score is not provided!")
+        val playerTwoScore = playerTwo.score?: throw IllegalArgumentException("Player two score is not provided!")
         playerOneDeviation = calculateDeviation(playerOne, playerTwo)
         playerTwoDeviation = calculateDeviation(playerTwo, playerOne)
         playerOneRating = calculateRating(playerOne, playerTwo, result(playerOneScore, playerTwoScore))
