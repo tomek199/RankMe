@@ -37,7 +37,7 @@ class GameMutation(
 
     fun completeGame(id: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
         val game = gameRepository.findById(id) ?: throw java.lang.IllegalStateException("Game $id is not found")
-        if (game.playerOne.score != null || game.playerTwo.score != null)
+        if (game.playerOne.score != null && game.playerTwo.score != null)
             throw IllegalStateException("Game $id is already completed")
         val firstCompetitor = getCompetitor(game.playerOne.competitorId, game.leagueId)
         val secondCompetitor = getCompetitor(game.playerTwo.competitorId, game.leagueId)
@@ -54,13 +54,9 @@ class GameMutation(
     }
 
     private fun updateCompetitorStatistics(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game) {
-        game.playerTwo.score?.let {
-            firstCompetitor.updateStatistics(game.playerOne, it, game.dateTime)
-            competitorRepository.save(firstCompetitor)
-        }
-        game.playerOne.score?.let {
-            secondCompetitor.updateStatistics(game.playerTwo, it, game.dateTime)
-            competitorRepository.save(secondCompetitor)
-        }
+        firstCompetitor.updateStatistics(game.playerOne, game.playerTwo.score!!, game.dateTime)
+        competitorRepository.save(firstCompetitor)
+        secondCompetitor.updateStatistics(game.playerTwo, game.playerOne.score!!, game.dateTime)
+        competitorRepository.save(secondCompetitor)
     }
 }
