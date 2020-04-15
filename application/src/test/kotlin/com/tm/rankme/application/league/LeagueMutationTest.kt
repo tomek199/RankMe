@@ -37,5 +37,5 @@ internal class LeagueMutationTest {
         assertEquals(2, league.settings.maxScore)
     }
 
-    private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
+    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 }

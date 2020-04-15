@@ -29,7 +29,7 @@ class Statistics() {
     var lastGame: LocalDate? = null
         internal set
 
-    constructor(deviation: Int, rating: Int, won: Int, lost: Int, draw: Int, lastGame: LocalDate?): this() {
+    constructor(deviation: Int, rating: Int, won: Int, lost: Int, draw: Int, lastGame: LocalDate?) : this() {
         this.deviation = deviation
         this.rating = rating
         this.won = won

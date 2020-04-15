@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class LeagueMutation(
-        private val repository: LeagueRepository,
-        @Qualifier("leagueMapper") private val mapper: Mapper<League, LeagueModel>
+    private val repository: LeagueRepository,
+    @Qualifier("leagueMapper") private val mapper: Mapper<League, LeagueModel>
 ) : GraphQLMutationResolver {
+
     fun addLeague(name: String): LeagueModel {
         val domain = League(name)
         val league = repository.save(domain)

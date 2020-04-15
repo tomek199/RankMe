@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Qualifier("gameMapper")
 class GameMapper : Mapper<Game, GameModel> {
     override fun toModel(domain: Game): GameModel {
-        val id = domain.id?: throw IllegalStateException("Game id can't be null!")
+        val id = domain.id ?: throw IllegalStateException("Game id can't be null!")
         val playerOne = mapPlayer(domain.playerOne)
         val playerTwo = mapPlayer(domain.playerTwo)
         return GameModel(id, playerOne, playerTwo, domain.dateTime)

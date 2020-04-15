@@ -13,7 +13,7 @@ import kotlin.test.assertFailsWith
 
 internal class GameMapperTest {
     private val mapper: Mapper<Game, GameModel> = GameMapper()
-    val leagueId = "league-1"
+    private val leagueId = "league-1"
 
     @Test
     internal fun `Should map completed game domain to model`() {

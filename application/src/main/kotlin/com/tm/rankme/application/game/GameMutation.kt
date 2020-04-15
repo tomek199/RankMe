@@ -13,22 +13,29 @@ import java.time.LocalDateTime
 
 @Service
 class GameMutation(
-        private val gameRepository: GameRepository,
-        private val competitorRepository: CompetitorRepository,
-        @Qualifier("gameMapper") private val mapper: Mapper<Game, GameModel>
+    private val gameRepository: GameRepository,
+    private val competitorRepository: CompetitorRepository,
+    @Qualifier("gameMapper") private val mapper: Mapper<Game, GameModel>
 ) : GraphQLMutationResolver {
-    fun addCompletedGame(leagueId: String, playerOneId: String, playerOneScore: Int,
-                         playerTwoId: String, playerTwoScore: Int): GameModel {
+
+    fun addCompletedGame(
+        leagueId: String, playerOneId: String, playerOneScore: Int,
+        playerTwoId: String, playerTwoScore: Int
+    ): GameModel {
         val firstCompetitor = getCompetitor(playerOneId, leagueId)
         val secondCompetitor = getCompetitor(playerTwoId, leagueId)
-        val game = GameFactory.completedGame(Pair(firstCompetitor, playerOneScore),
-                Pair(secondCompetitor, playerTwoScore), leagueId)
+        val game = GameFactory.completedGame(
+            Pair(firstCompetitor, playerOneScore),
+            Pair(secondCompetitor, playerTwoScore), leagueId
+        )
         updateCompetitorStatistics(firstCompetitor, secondCompetitor, game)
         return mapper.toModel(gameRepository.save(game))
     }
 
-    fun addScheduledGame(leagueId: String, playerOneId: String, playerTwoId: String,
-                         dateTime: LocalDateTime): GameModel {
+    fun addScheduledGame(
+        leagueId: String, playerOneId: String, playerTwoId: String,
+        dateTime: LocalDateTime
+    ): GameModel {
         val firstCompetitor = getCompetitor(playerOneId, leagueId)
         val secondCompetitor = getCompetitor(playerTwoId, leagueId)
         val game = GameFactory.scheduledGame(firstCompetitor, secondCompetitor, leagueId, dateTime)

@@ -2,6 +2,7 @@ type League {
     id: String!
     name: String!
     settings: LeagueSettings
+    competitors: [Competitor!]!
 }
 
 type LeagueSettings {

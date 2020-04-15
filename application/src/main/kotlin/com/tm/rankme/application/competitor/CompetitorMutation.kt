@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service
 
 @Service
 class CompetitorMutation(
-        private val competitorRepository: CompetitorRepository,
-        private val leagueRepository: LeagueRepository,
-        private val mapper: Mapper<Competitor, CompetitorModel>
+    private val competitorRepository: CompetitorRepository,
+    private val leagueRepository: LeagueRepository,
+    private val mapper: Mapper<Competitor, CompetitorModel>
 ) : GraphQLMutationResolver {
+
     fun addCompetitor(leagueId: String, username: String): CompetitorModel {
-        leagueRepository.findById(leagueId)?:  throw IllegalStateException("League does not exist!")
+        leagueRepository.findById(leagueId) ?: throw IllegalStateException("League does not exist!")
         val domain = Competitor(leagueId, username)
         val competitor = competitorRepository.save(domain)
         return mapper.toModel(competitor)
