@@ -1,0 +1,10 @@
+type League {
+    id: String!
+    name: String!
+    settings: LeagueSettings
+}
+
+type LeagueSettings {
+    allowDraws: Boolean
+    maxScore: Int
+}
