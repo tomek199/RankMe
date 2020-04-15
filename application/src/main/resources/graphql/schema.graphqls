@@ -1,0 +1,24 @@
+scalar LocalDate
+scalar LocalDateTime
+
+type MutationType {
+    addLeague(name: String!): League
+    addCompetitor(leagueId: String!, username: String!): Competitor
+    addCompletedGame(leagueId: String!,
+        playerOneId: String!, playerOneScore: Int!
+        playerTwoId: String!, playerTwoScore: Int!): Game
+    addScheduledGame(leagueId: String!, playerOneId: String!, playerTwoId: String!, dateTime: LocalDateTime!): Game
+    completeGame(id: String!, playerOneScore: Int!, playerTwoScore: Int!): Game
+}
+
+type QueryType {
+    league(id: String!): League
+    competitor(id: String!): Competitor
+    competitorsByLeagueId(leagueId: String!): [Competitor]
+    game(id: String!): Game
+}
+
+schema {
+    query: QueryType
+    mutation: MutationType
+}
