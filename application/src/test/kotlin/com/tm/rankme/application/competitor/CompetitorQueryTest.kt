@@ -30,7 +30,6 @@ internal class CompetitorQueryTest {
         val competitor = query.competitor(id)
         // then
         assertEquals(id, competitor!!.id)
-        assertEquals(leagueId, competitor.leagueId)
         assertEquals(username, competitor.username)
     }
 
@@ -56,10 +55,8 @@ internal class CompetitorQueryTest {
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
-        assertEquals(competitor1.leagueId, competitors[0].leagueId)
         assertEquals(competitor1.username, competitors[0].username)
         assertEquals(competitor2.id, competitors[1].id)
-        assertEquals(competitor2.leagueId, competitors[1].leagueId)
         assertEquals(competitor2.username, competitors[1].username)
     }
 

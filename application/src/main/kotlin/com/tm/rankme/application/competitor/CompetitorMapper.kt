@@ -15,6 +15,6 @@ class CompetitorMapper : Mapper<Competitor, CompetitorModel> {
             domainStats.deviation, domainStats.rating,
             domainStats.won, domainStats.lost, domainStats.draw, domainStats.lastGame
         )
-        return CompetitorModel(id, domain.username, domain.leagueId, statistics)
+        return CompetitorModel(id, domain.username, statistics)
     }
 }

@@ -32,10 +32,8 @@ internal class LeagueResolverTest {
         // then
         Assertions.assertEquals(2, competitors.size)
         Assertions.assertEquals(competitor1.id, competitors[0].id)
-        Assertions.assertEquals(competitor1.leagueId, competitors[0].leagueId)
         Assertions.assertEquals(competitor1.username, competitors[0].username)
         Assertions.assertEquals(competitor2.id, competitors[1].id)
-        Assertions.assertEquals(competitor2.leagueId, competitors[1].leagueId)
         Assertions.assertEquals(competitor2.username, competitors[1].username)
     }
 

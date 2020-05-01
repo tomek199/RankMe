@@ -25,7 +25,6 @@ internal class CompetitorMapperTest {
         // then
         assertEquals(domain.id, model.id)
         assertEquals(domain.username, model.username)
-        assertEquals(domain.leagueId, model.leagueId)
         assertEquals(domain.statistics.deviation, model.statistics.deviation)
         assertEquals(domain.statistics.rating, model.statistics.rating)
         assertEquals(domain.statistics.won, model.statistics.won)

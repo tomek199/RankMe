@@ -5,7 +5,6 @@ import java.time.LocalDate
 data class CompetitorModel(
     val id: String,
     val username: String,
-    val leagueId: String,
     val statistics: CompetitorStatisticsModel
 )
 

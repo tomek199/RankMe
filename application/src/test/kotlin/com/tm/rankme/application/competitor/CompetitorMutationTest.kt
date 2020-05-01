@@ -43,7 +43,6 @@ internal class CompetitorMutationTest {
         val competitor = mutation.addCompetitor(leagueId, username)
         // then
         assertNotNull(competitor.id)
-        assertEquals(leagueId, competitor.leagueId)
         assertEquals(username, competitor.username)
         assertEquals(expectedStatistics.deviation, competitor.statistics.deviation)
         assertEquals(expectedStatistics.rating, competitor.statistics.rating)
