@@ -6,8 +6,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-internal class GlickoService(playerOne: Player,
-                             playerTwo: Player) {
+internal class GlickoService(playerOne: Player, playerTwo: Player) {
     private val q = ln(10.0) / 400
     val playerOneDeviation: Int
     val playerTwoDeviation: Int
@@ -15,8 +14,8 @@ internal class GlickoService(playerOne: Player,
     val playerTwoRating: Int
 
     init {
-        val playerOneScore = playerOne.score?: throw IllegalArgumentException("Player one score is not provided!")
-        val playerTwoScore = playerTwo.score?: throw IllegalArgumentException("Player two score is not provided!")
+        val playerOneScore = playerOne.score ?: throw IllegalArgumentException("Player one score is not provided!")
+        val playerTwoScore = playerTwo.score ?: throw IllegalArgumentException("Player two score is not provided!")
         playerOneDeviation = calculateDeviation(playerOne, playerTwo)
         playerTwoDeviation = calculateDeviation(playerTwo, playerOne)
         playerOneRating = calculateRating(playerOne, playerTwo, result(playerOneScore, playerTwoScore))
@@ -24,14 +23,16 @@ internal class GlickoService(playerOne: Player,
     }
 
     private fun calculateDeviation(player: Player, opponent: Player): Int {
-        return sqrt((1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent))
-                .pow(-1)).roundToInt()
+        return sqrt(
+            (1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent))
+                .pow(-1)
+        ).roundToInt()
     }
 
     private fun calculateRating(player: Player, opponent: Player, result: Float): Int {
         return (player.rating +
-                q / (1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent)) *
-                g(opponent) * (result - e(player, opponent))).roundToInt()
+            q / (1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent)) *
+            g(opponent) * (result - e(player, opponent))).roundToInt()
     }
 
     private fun g(player: Player): Double {

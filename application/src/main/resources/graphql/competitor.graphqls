@@ -1,7 +1,6 @@
 type Competitor {
     id: String!
     username: String!
-    leagueId: String! # todo remove
     statistics: CompetitorStatistics!
 }
 

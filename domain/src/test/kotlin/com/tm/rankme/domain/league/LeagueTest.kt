@@ -8,7 +8,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class LeagueTest {
-
     @Test
     internal fun `Should create league with default params`() {
         // when

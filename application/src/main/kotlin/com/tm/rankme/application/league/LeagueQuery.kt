@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class LeagueQuery(
-        private val repository: LeagueRepository,
-        @Qualifier("leagueMapper") private val mapper: Mapper<League, LeagueModel>
+    private val repository: LeagueRepository,
+    @Qualifier("leagueMapper") private val mapper: Mapper<League, LeagueModel>
 ) : GraphQLQueryResolver {
+
     fun league(id: String): LeagueModel? {
         val league = repository.findById(id)
         return league?.let { mapper.toModel(it) }

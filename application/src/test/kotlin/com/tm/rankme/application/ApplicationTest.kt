@@ -6,7 +6,6 @@ import kotlin.test.assertNotNull
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class ApplicationTests {
-
     @Test
     internal fun `Should load context`() {
         // checking if application starts correctly

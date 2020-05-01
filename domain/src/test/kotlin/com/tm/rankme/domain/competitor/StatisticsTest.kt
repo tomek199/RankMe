@@ -29,8 +29,10 @@ internal class StatisticsTest {
         val expectedDraw = 12
         val expectedLastGame = LocalDate.now()
         // when
-        val statistics = Statistics(expectedDeviation, expectedRating,
-                expectedWon, expectedLost, expectedDraw, expectedLastGame)
+        val statistics = Statistics(
+            expectedDeviation, expectedRating,
+            expectedWon, expectedLost, expectedDraw, expectedLastGame
+        )
         // then
         assertEquals(192, statistics.deviation) // Deviation will be always higher than initialized value
         assertEquals(expectedRating, statistics.rating)

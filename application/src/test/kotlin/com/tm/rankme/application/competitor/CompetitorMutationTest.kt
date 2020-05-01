@@ -16,6 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+
 @ExtendWith(MockitoExtension::class)
 internal class CompetitorMutationTest {
     private val competitorRepository = Mockito.mock(CompetitorRepository::class.java)
@@ -30,7 +31,7 @@ internal class CompetitorMutationTest {
     @BeforeEach
     internal fun setUp() {
         given(competitorRepository.save(any(Competitor::class.java)))
-                .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
+            .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
     }
 
     @Test
@@ -42,7 +43,6 @@ internal class CompetitorMutationTest {
         val competitor = mutation.addCompetitor(leagueId, username)
         // then
         assertNotNull(competitor.id)
-        assertEquals(leagueId, competitor.leagueId)
         assertEquals(username, competitor.username)
         assertEquals(expectedStatistics.deviation, competitor.statistics.deviation)
         assertEquals(expectedStatistics.rating, competitor.statistics.rating)

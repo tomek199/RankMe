@@ -18,14 +18,14 @@ class Application {
     @Bean
     fun objectMapper(): ObjectMapper {
         return ObjectMapper().registerModule(JavaTimeModule())
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
 
     @Bean
     fun schemaParserOptions(): SchemaParserOptions? {
         return SchemaParserOptions.newOptions()
-                .objectMapperProvider(PerFieldObjectMapperProvider { objectMapper() })
-                .build()
+            .objectMapperProvider(PerFieldObjectMapperProvider { objectMapper() })
+            .build()
     }
 }
 
