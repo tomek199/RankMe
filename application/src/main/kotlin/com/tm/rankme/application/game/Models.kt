@@ -15,3 +15,19 @@ data class PlayerModel(
     val rating: Int,
     val score: Int?
 )
+
+data class GameConnection(
+    val totalCount: Int,
+    val edges: List<GameEdge>,
+    val pageInfo: PageInfo
+)
+
+data class GameEdge(
+    val node: GameModel,
+    val cursor: String
+)
+
+data class PageInfo(
+    val hasPreviousPage: Boolean,
+    val hasNextPage: Boolean
+)
