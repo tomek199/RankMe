@@ -8,7 +8,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class GameMemoryStorageTest {
     private val leagueId = "league-1"
@@ -74,5 +76,44 @@ internal class GameMemoryStorageTest {
         gameToDelete.id?.let { repository.delete(it) }
         // then
         assertNull(gameToDelete.id?.let { repository.findById(it) })
+    }
+
+    @Test
+    internal fun `Should return Side with first two games by league id`() {
+        // given
+        repository.save(GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), leagueId))
+        repository.save(GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), "league-2"))
+        // when
+        val result = repository.findByLeagueId(leagueId, 2)
+        // then
+        assertEquals(2, result.content.size)
+        assertEquals(3, result.total)
+        assertFalse(result.hasPrevious)
+        assertTrue(result.hasNext)
+    }
+
+    @Test
+    internal fun `Should return Side with two games by league id skipping first`() {
+        // given
+        repository.save(GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), leagueId))
+        repository.save(GameFactory.completedGame(Pair(competitor1, 3), Pair(competitor2, 3), "league-2"))
+        // when
+        val result = repository.findByLeagueId(leagueId, 2, "1")
+        // then
+        assertEquals(2, result.content.size)
+        assertEquals(3, result.total)
+        assertTrue(result.hasPrevious)
+        assertFalse(result.hasNext)
+    }
+
+    @Test
+    internal fun `Should return empty Side for games by league id`() {
+        // when
+        val result = repository.findByLeagueId("leagueNotExist", 2)
+        // then
+        assertTrue(result.content.isEmpty())
+        assertEquals(0, result.total)
+        assertFalse(result.hasPrevious)
+        assertFalse(result.hasNext)
     }
 }
