@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.memory
 
+import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import org.springframework.context.annotation.Profile
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Repository
 @Profile("dev")
 class GameMemoryStorage : GameRepository {
     private val games: MutableList<Game> = mutableListOf()
-
     override fun save(entity: Game): Game {
         if (entity.id == null) {
             val id = (games.size + 1).toString()
@@ -26,5 +26,15 @@ class GameMemoryStorage : GameRepository {
 
     override fun delete(id: String) {
         games.removeIf { game -> game.id.equals(id) }
+    }
+
+    override fun findByLeagueId(leagueId: String, last: Int, after: String?): Side<Game> {
+        val gamesByLeague = games.filter { game -> game.leagueId == leagueId }
+        val filteredGames =
+            if (after != null) gamesByLeague.filter { game -> game.id!!.toInt() > after.toInt() }.take(last)
+            else gamesByLeague.take(last)
+        val hasPrevious = filteredGames.isNotEmpty() && gamesByLeague.first() != filteredGames.first()
+        val hasNext = filteredGames.isNotEmpty() && gamesByLeague.last() != filteredGames.last()
+        return Side(filteredGames, gamesByLeague.size, hasPrevious, hasNext)
     }
 }
