@@ -6,6 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 internal class EventTest {
+    private val leagueId = "league-1"
     private val playerOne = Player("player-1", "Batman", 243, 1494)
     private val playerTwo = Player("player-2", "Superman", 185, 2765)
 
@@ -14,9 +15,10 @@ internal class EventTest {
         // given
         val dateTime = LocalDateTime.now()
         // when
-        val event = Event(playerOne, playerTwo, dateTime)
+        val event = Event(leagueId, playerOne, playerTwo, dateTime)
         // then
         assertNull(event.id)
+        assertEquals(leagueId, event.leagueId)
         assertEquals(playerOne, event.playerOne)
         assertEquals(playerTwo, event.playerTwo)
         assertEquals(dateTime, event.dateTime)
@@ -28,9 +30,10 @@ internal class EventTest {
         val id = "event-1"
         val dateTime = LocalDateTime.now()
         // when
-        val event = Event(id, playerOne, playerTwo, dateTime)
+        val event = Event(id, leagueId, playerOne, playerTwo, dateTime)
         // then
         assertEquals(id, event.id)
+        assertEquals(leagueId, event.leagueId)
         assertEquals(playerOne, event.playerOne)
         assertEquals(playerTwo, event.playerTwo)
         assertEquals(dateTime, event.dateTime)
