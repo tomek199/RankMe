@@ -17,7 +17,7 @@ class EventMemoryStorage : EventRepository {
     override fun save(entity: Event): Event {
         if (entity.id == null) {
             val id = (events.size + 1).toString()
-            val event = Event(id, entity.leagueId, entity.playerOne, entity.playerTwo, entity.dateTime)
+            val event = Event(id, entity.leagueId, entity.memberOne, entity.memberTwo, entity.dateTime)
             events.add(event)
             return event
         }

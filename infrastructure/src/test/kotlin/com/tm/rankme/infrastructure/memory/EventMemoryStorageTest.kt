@@ -2,7 +2,7 @@ package com.tm.rankme.infrastructure.memory
 
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.EventRepository
-import com.tm.rankme.domain.event.Player
+import com.tm.rankme.domain.event.Member
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
@@ -11,21 +11,21 @@ import kotlin.test.assertNull
 
 internal class EventMemoryStorageTest {
     private val leagueId = "league-1"
-    private val player1 = Player("comp-1", "Batman", 234, 2386)
-    private val player2 = Player("comp-2", "Superman", 285, 1859)
+    private val member1 = Member("comp-1", "Batman", 234, 2386)
+    private val member2 = Member("comp-2", "Superman", 285, 1859)
 
     private val repository: EventRepository = EventMemoryStorage()
 
     @BeforeEach
     internal fun setUp() {
-        repository.save(Event(leagueId, player1, player2, LocalDateTime.now()))
-        repository.save(Event(leagueId, player1, player2, LocalDateTime.now()))
+        repository.save(Event(leagueId, member1, member2, LocalDateTime.now()))
+        repository.save(Event(leagueId, member1, member2, LocalDateTime.now()))
     }
 
     @Test
     internal fun `Should save new event`() {
         // given
-        val event = Event(leagueId, player1, player2, LocalDateTime.now())
+        val event = Event(leagueId, member1, member2, LocalDateTime.now())
         // when
         val result = repository.save(event)
         // then
@@ -35,7 +35,7 @@ internal class EventMemoryStorageTest {
     @Test
     internal fun `Should return event by id`() {
         // given
-        val event = Event(leagueId, player1, player2, LocalDateTime.now())
+        val event = Event(leagueId, member1, member2, LocalDateTime.now())
         val eventToFind = repository.save(event)
         // when
         val result = repository.findById("3")
@@ -54,7 +54,7 @@ internal class EventMemoryStorageTest {
     @Test
     internal fun `Should delete event from list`() {
         // given
-        val event = Event(leagueId, player1, player2, LocalDateTime.now())
+        val event = Event(leagueId, member1, member2, LocalDateTime.now())
         val eventToDelete = repository.save(event)
         // when
         eventToDelete.id?.let { repository.delete(it) }
@@ -65,7 +65,7 @@ internal class EventMemoryStorageTest {
     @Test
     internal fun `Should return events list by league id`() {
         // given
-        repository.save(Event("league-2", player1, player2, LocalDateTime.now()))
+        repository.save(Event("league-2", member1, member2, LocalDateTime.now()))
         // when
         val result = repository.findByLeagueId(leagueId)
         // then

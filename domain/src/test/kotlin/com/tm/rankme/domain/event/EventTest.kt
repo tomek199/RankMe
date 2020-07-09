@@ -7,20 +7,20 @@ import kotlin.test.assertNull
 
 internal class EventTest {
     private val leagueId = "league-1"
-    private val playerOne = Player("player-1", "Batman", 243, 1494)
-    private val playerTwo = Player("player-2", "Superman", 185, 2765)
+    private val memberOne = Member("member-1", "Batman", 243, 1494)
+    private val memberTwo = Member("member-2", "Superman", 185, 2765)
 
     @Test
     internal fun `Should create event without id`() {
         // given
         val dateTime = LocalDateTime.now()
         // when
-        val event = Event(leagueId, playerOne, playerTwo, dateTime)
+        val event = Event(leagueId, memberOne, memberTwo, dateTime)
         // then
         assertNull(event.id)
         assertEquals(leagueId, event.leagueId)
-        assertEquals(playerOne, event.playerOne)
-        assertEquals(playerTwo, event.playerTwo)
+        assertEquals(memberOne, event.memberOne)
+        assertEquals(memberTwo, event.memberTwo)
         assertEquals(dateTime, event.dateTime)
     }
 
@@ -30,12 +30,12 @@ internal class EventTest {
         val id = "event-1"
         val dateTime = LocalDateTime.now()
         // when
-        val event = Event(id, leagueId, playerOne, playerTwo, dateTime)
+        val event = Event(id, leagueId, memberOne, memberTwo, dateTime)
         // then
         assertEquals(id, event.id)
         assertEquals(leagueId, event.leagueId)
-        assertEquals(playerOne, event.playerOne)
-        assertEquals(playerTwo, event.playerTwo)
+        assertEquals(memberOne, event.memberOne)
+        assertEquals(memberTwo, event.memberTwo)
         assertEquals(dateTime, event.dateTime)
     }
 }
