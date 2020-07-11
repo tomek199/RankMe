@@ -62,8 +62,8 @@ internal class LeagueResolverTest {
     internal fun `Should return pageable games by league id`() {
         // given
         val game = Game(
-            "game-1", Player(competitor1.id!!, competitor1.username, 243, 1435),
-            Player(competitor2.id!!, competitor2.username, 243, 1435), league.id, LocalDateTime.now()
+            "game-1", Player(competitor1.id!!, competitor1.username, 243, 1435, 4, 75),
+            Player(competitor2.id!!, competitor2.username, 243, 1435, 3, -75), league.id, LocalDateTime.now()
         )
         val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
         given(gameRepository.findByLeagueId(league.id, 1)).willReturn(side)

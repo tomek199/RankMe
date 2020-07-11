@@ -10,7 +10,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.only
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -35,8 +38,8 @@ internal class GameMutationTest {
     @Test
     internal fun `Should add new game`() {
         // given
-        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546)
-        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587)
+        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
+        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         // when

@@ -5,16 +5,22 @@ import kotlin.test.assertEquals
 
 internal class PlayerTest {
     @Test
-    internal fun `Should update deviation, rating and rating delta`() {
+    internal fun `Should create player`() {
         // given
-        val newDeviation = 239
-        val newRating = 1821
-        val player = Player("comp-1", "Optimus Prime", 248, 1764)
+        val competitorId = "comp-1"
+        val username = "Optimus Prime"
+        val deviation = 248
+        val rating = 1764
+        val score = 3
+        val ratingDelta = -74
         // when
-        player.update(newDeviation, newRating)
+        val player = Player(competitorId, username, deviation, rating, score, ratingDelta)
         // then
-        assertEquals(newDeviation, player.deviation)
-        assertEquals(newRating, player.rating)
-        assertEquals(57, player.ratingDelta)
+        assertEquals(competitorId, player.competitorId)
+        assertEquals(username, player.username)
+        assertEquals(deviation, player.deviation)
+        assertEquals(rating, player.rating)
+        assertEquals(score, player.score)
+        assertEquals(ratingDelta, player.ratingDelta)
     }
 }

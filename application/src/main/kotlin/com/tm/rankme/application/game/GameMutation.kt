@@ -39,9 +39,9 @@ class GameMutation(
     }
 
     private fun updateCompetitorStatistics(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game) {
-        firstCompetitor.updateStatistics(game.playerOne, game.playerTwo.score!!, game.dateTime)
+        firstCompetitor.updateStatistics(game.playerOne, game.playerTwo.score, game.dateTime)
         competitorRepository.save(firstCompetitor)
-        secondCompetitor.updateStatistics(game.playerTwo, game.playerOne.score!!, game.dateTime)
+        secondCompetitor.updateStatistics(game.playerTwo, game.playerOne.score, game.dateTime)
         competitorRepository.save(secondCompetitor)
     }
 }

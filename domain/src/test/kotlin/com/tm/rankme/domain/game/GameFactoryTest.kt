@@ -24,7 +24,7 @@ internal class GameFactoryTest {
             GameFactory.create(competitorOne, 2, competitorTwo, 1, leagueId)
         }
         // then
-        assertEquals("Competitor ids cannot be null!", exception.message)
+        assertEquals("Competitor id cannot be null!", exception.message)
     }
 
     @Test
@@ -37,7 +37,7 @@ internal class GameFactoryTest {
             GameFactory.create(competitorOne, 3, competitorTwo, 2, leagueId)
         }
         // then
-        assertEquals("Competitor ids cannot be null!", exception.message)
+        assertEquals("Competitor id cannot be null!", exception.message)
 
     }
 

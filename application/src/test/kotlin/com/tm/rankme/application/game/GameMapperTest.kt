@@ -20,8 +20,8 @@ internal class GameMapperTest {
         // given
         val id = "game-1"
         val dateTime = LocalDateTime.now()
-        val playerTwo = Player("comp-2", "Batman", 196, 2578)
-        val playerOne = Player("comp-1", "Superman", 258, 1345)
+        val playerTwo = Player("comp-2", "Batman", 196, 2578, 2, 96)
+        val playerOne = Player("comp-1", "Superman", 258, 1345, 0, -96)
         val domain = Game(id, playerOne, playerTwo, leagueId, dateTime)
         // when
         val model = mapper.toModel(domain)
