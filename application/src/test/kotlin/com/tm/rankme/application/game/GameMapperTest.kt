@@ -43,7 +43,7 @@ internal class GameMapperTest {
         // given
         val competitorOne = Competitor(leagueId, "comp-1", "Batman", Statistics())
         val competitorTwo = Competitor(leagueId, "comp-2", "Superman", Statistics())
-        val domain = GameFactory.create(Pair(competitorOne, 2), Pair(competitorTwo, 3), leagueId)
+        val domain = GameFactory.create(competitorOne, 2, competitorTwo, 3, leagueId)
         // when
         val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
         // then

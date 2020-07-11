@@ -1,8 +1,12 @@
 package com.tm.rankme.domain.game
 
-import com.tm.rankme.domain.*
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
+import com.tm.rankme.domain.competitorId1
+import com.tm.rankme.domain.competitorId2
+import com.tm.rankme.domain.competitorName1
+import com.tm.rankme.domain.competitorName2
+import com.tm.rankme.domain.leagueId
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
@@ -17,7 +21,7 @@ internal class GameFactoryTest {
         val competitorOne = Competitor(leagueId, competitorName1)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            GameFactory.create(Pair(competitorOne, 2), Pair(competitorTwo, 1), leagueId)
+            GameFactory.create(competitorOne, 2, competitorTwo, 1, leagueId)
         }
         // then
         assertEquals("Competitor ids cannot be null!", exception.message)
@@ -30,7 +34,7 @@ internal class GameFactoryTest {
         val competitorTwo = Competitor(leagueId, competitorName2)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            GameFactory.create(Pair(competitorOne, 3), Pair(competitorTwo, 2), leagueId)
+            GameFactory.create(competitorOne, 3, competitorTwo, 2, leagueId)
         }
         // then
         assertEquals("Competitor ids cannot be null!", exception.message)
@@ -38,7 +42,7 @@ internal class GameFactoryTest {
     }
 
     @Test
-    internal fun `Should create completed game`() {
+    internal fun `Should create game`() {
         // given
         val lastGameDate = LocalDate.now()
         val oneStats = Statistics(245, 1397, 0, 0, 0, lastGameDate)
@@ -46,7 +50,7 @@ internal class GameFactoryTest {
         val twoStats = Statistics(224, 1874, 0, 0, 0, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, twoStats)
         // when
-        val game = GameFactory.create(Pair(competitorOne, 1), Pair(competitorTwo, 0), leagueId)
+        val game = GameFactory.create(competitorOne, 1, competitorTwo, 0, leagueId)
         // then
         assertNotNull(game.dateTime)
         assertEquals(leagueId, game.leagueId)

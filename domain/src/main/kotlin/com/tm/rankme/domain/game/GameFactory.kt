@@ -5,11 +5,15 @@ import java.time.LocalDateTime
 
 class GameFactory private constructor() {
     companion object {
-        fun create(scoreOne: Pair<Competitor, Int>, scoreTwo: Pair<Competitor, Int>, leagueId: String): Game {
-            val playerOne = createPlayer(scoreOne.first)
-            playerOne.score = scoreOne.second
-            val playerTwo = createPlayer(scoreTwo.first)
-            playerTwo.score = scoreTwo.second
+        fun create(
+            competitorOne: Competitor, scoreOne: Int,
+            competitorTwo: Competitor, scoreTwo: Int,
+            leagueId: String
+        ): Game {
+            val playerOne = createPlayer(competitorOne)
+            playerOne.score = scoreOne
+            val playerTwo = createPlayer(competitorTwo)
+            playerTwo.score = scoreTwo
             val glicko = GlickoService(playerOne, playerTwo)
             playerOne.update(glicko.playerOneDeviation, glicko.playerOneRating)
             playerTwo.update(glicko.playerTwoDeviation, glicko.playerTwoRating)
