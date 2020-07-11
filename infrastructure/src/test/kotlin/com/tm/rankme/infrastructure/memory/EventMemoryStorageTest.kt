@@ -33,6 +33,16 @@ internal class EventMemoryStorageTest {
     }
 
     @Test
+    internal fun `Should save existing event`() {
+        // given
+        val event = repository.findById("1")
+        // when
+        val result = repository.save(event!!)
+        // then
+        assertEquals("1", result.id)
+    }
+
+    @Test
     internal fun `Should return event by id`() {
         // given
         val event = Event(leagueId, member1, member2, LocalDateTime.now())
