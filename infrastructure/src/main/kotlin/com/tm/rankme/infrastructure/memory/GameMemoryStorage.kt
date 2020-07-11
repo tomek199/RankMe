@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository
 @Profile("dev")
 class GameMemoryStorage : GameRepository {
     private val games: MutableList<Game> = mutableListOf()
+
     override fun save(entity: Game): Game {
         if (entity.id == null) {
             val id = (games.size + 1).toString()
