@@ -1,0 +1,13 @@
+type Event {
+    id: String!
+    memberOne: Member!
+    memberTwo: Member!
+    dateTime: LocalDateTime!
+}
+
+type Member {
+    competitorId: String!
+    username: String!
+    deviation: Int!
+    rating: Int!
+}

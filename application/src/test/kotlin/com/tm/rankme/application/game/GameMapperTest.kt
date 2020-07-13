@@ -16,7 +16,7 @@ internal class GameMapperTest {
     private val leagueId = "league-1"
 
     @Test
-    internal fun `Should map completed game domain to model`() {
+    internal fun `Should map game domain to model`() {
         // given
         val id = "game-1"
         val dateTime = LocalDateTime.now()
