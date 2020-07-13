@@ -17,7 +17,7 @@ class GameMutation(
     @Qualifier("gameMapper") private val mapper: Mapper<Game, GameModel>
 ) : GraphQLMutationResolver {
 
-    fun addCompletedGame(
+    fun addGame(
         leagueId: String, playerOneId: String, playerOneScore: Int,
         playerTwoId: String, playerTwoScore: Int
     ): GameModel {

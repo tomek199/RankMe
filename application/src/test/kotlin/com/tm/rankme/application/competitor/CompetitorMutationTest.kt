@@ -1,5 +1,6 @@
 package com.tm.rankme.application.competitor
 
+import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
@@ -61,7 +62,5 @@ internal class CompetitorMutationTest {
         // then
         assertEquals("League does not exist!", exception.message)
     }
-
-    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 }
 

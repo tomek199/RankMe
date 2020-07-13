@@ -1,5 +1,6 @@
 package com.tm.rankme.application.league
 
+import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
@@ -36,6 +37,4 @@ internal class LeagueMutationTest {
         assertFalse(league.settings.allowDraws)
         assertEquals(2, league.settings.maxScore)
     }
-
-    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 }
