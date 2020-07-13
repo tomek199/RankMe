@@ -32,7 +32,7 @@ internal class EventMapperTest {
         assertEquals(memberTwo.username, model.memberTwo.username)
         assertEquals(memberTwo.deviation, model.memberTwo.deviation)
         assertEquals(memberTwo.rating, model.memberTwo.rating)
-        assertEquals(dateTime, domain.dateTime)
+        assertEquals(dateTime, model.dateTime)
     }
 
     @Test
