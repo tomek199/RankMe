@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
-@ExtendWith(MockitoExtension::class)
 internal class LeagueResolverTest {
     private val competitorRepository: CompetitorRepository = Mockito.mock(CompetitorRepository::class.java)
     private val gameRepository: GameRepository = Mockito.mock(GameRepository::class.java)

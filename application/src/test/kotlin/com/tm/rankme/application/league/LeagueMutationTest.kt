@@ -14,7 +14,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 
-@ExtendWith(MockitoExtension::class)
 internal class LeagueMutationTest {
     private val repository: LeagueRepository = Mockito.mock(LeagueRepository::class.java)
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()

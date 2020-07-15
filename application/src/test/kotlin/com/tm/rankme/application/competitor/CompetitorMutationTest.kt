@@ -18,7 +18,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@ExtendWith(MockitoExtension::class)
 internal class CompetitorMutationTest {
     private val competitorRepository = Mockito.mock(CompetitorRepository::class.java)
     private val leagueRepository = Mockito.mock(LeagueRepository::class.java)

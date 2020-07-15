@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-@ExtendWith(MockitoExtension::class)
 internal class LeagueQueryTest {
     private val repository: LeagueRepository = Mockito.mock(LeagueRepository::class.java)
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
