@@ -1,16 +1,22 @@
 package com.tm.rankme.application.game
 
+import com.tm.rankme.application.any
+import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
+import com.tm.rankme.domain.event.Event
+import com.tm.rankme.domain.event.EventRepository
+import com.tm.rankme.domain.event.Member
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.only
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -18,9 +24,10 @@ import kotlin.test.assertNotNull
 
 internal class GameMutationTest {
     private val gameRepository = mock(GameRepository::class.java)
-    private val competitorRepository = mock(CompetitorRepository::class.java)
+    private val eventRepository = mock(EventRepository::class.java)
+    private val competitorService = mock(CompetitorService::class.java)
     private val mapper = GameMapper()
-    private val mutation = GameMutation(gameRepository, competitorRepository, mapper)
+    private val mutation = GameMutation(gameRepository, eventRepository, competitorService, mapper)
 
     private val leagueId = "league-1"
     private val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", Statistics())
@@ -28,79 +35,63 @@ internal class GameMutationTest {
 
     @BeforeEach
     internal fun setUp() {
-        given(competitorRepository.findById(firstCompetitor.id!!)).willReturn(firstCompetitor)
-        given(competitorRepository.findById(secondCompetitor.id!!)).willReturn(secondCompetitor)
+        given(competitorService.getCompetitor(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
+        given(competitorService.getCompetitor(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
     }
 
     @Test
     internal fun `Should add new game`() {
         // given
-        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546)
-        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587)
+        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
+        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         // when
-        val game = mutation.addCompletedGame(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
+        val game = mutation.addGame(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
         // then
         assertNotNull(game)
-        verify(competitorRepository, times(1)).findById(firstCompetitor.id!!)
-        verify(competitorRepository, times(1)).findById(secondCompetitor.id!!)
-        verify(competitorRepository, times(1)).save(firstCompetitor)
-        verify(competitorRepository, times(1)).save(secondCompetitor)
+        verify(competitorService, times(1)).getCompetitor(firstCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getCompetitor(secondCompetitor.id!!, leagueId)
+        verify(competitorService, times(1))
+            .updateCompetitorsStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
         verify(gameRepository, only()).save(any(Game::class.java))
     }
 
     @Test
-    internal fun `Should throw exception when first competitor does not exist for completed game`() {
+    internal fun `Should create game base on existing event`() {
         // given
-        val invalidCompetitorId = "comp-3"
-        given(competitorRepository.findById("comp-3")).willReturn(null)
+        val eventId = "event-1"
+        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
+        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
+        val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
+        given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
+        val event = Event(
+            eventId, leagueId,
+            Member(firstCompetitor.id!!, firstCompetitor.username, 274, 1546),
+            Member(secondCompetitor.id!!, secondCompetitor.username, 152, 2587), LocalDateTime.now()
+        )
+        given(eventRepository.findById(eventId)).willReturn(event)
         // when
-        val exception = assertFailsWith<IllegalStateException> {
-            mutation.addCompletedGame(leagueId, invalidCompetitorId, 2, secondCompetitor.id!!, 1)
-        }
+        val game = mutation.completeGame(eventId, 1, 3)
         // then
-        assertEquals("Competitor $invalidCompetitorId is not found", exception.message)
+        assertNotNull(game)
+        verify(eventRepository, times(1)).findById(eventId)
+        verify(eventRepository, times(1)).delete(eventId)
+        verify(competitorService, times(1)).getCompetitor(firstCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getCompetitor(secondCompetitor.id!!, leagueId)
+        verify(competitorService, times(1))
+            .updateCompetitorsStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
+        verify(gameRepository, only()).save(any(Game::class.java))
     }
 
     @Test
-    internal fun `Should throw exception when second competitor does not exist form completed game`() {
+    internal fun `Should throw exception when event does not exist when completing game`() {
         // given
-        val invalidCompetitorId = "comp-3"
-        given(competitorRepository.findById("comp-3")).willReturn(null)
+        val eventId = "event-1"
+        given(eventRepository.findById(eventId)).willReturn(null)
         // when
-        val exception = assertFailsWith<IllegalStateException> {
-            mutation.addCompletedGame(leagueId, firstCompetitor.id!!, 2, invalidCompetitorId, 1)
-        }
+        val exception = assertFailsWith<IllegalStateException> { mutation.completeGame(eventId, 2, 1) }
         // then
-        assertEquals("Competitor $invalidCompetitorId is not found", exception.message)
+        assertEquals("Event $eventId is not found", exception.message)
     }
-
-    @Test
-    internal fun `Should throw exception when first player is not included to league for completed game`() {
-        // given
-        val invalidCompetitor = Competitor("league-2", "comp-3", "Joker", Statistics())
-        given(competitorRepository.findById(invalidCompetitor.id!!)).willReturn(invalidCompetitor)
-        // when
-        val exception = assertFailsWith<IllegalStateException> {
-            mutation.addCompletedGame(leagueId, invalidCompetitor.id!!, 2, secondCompetitor.id!!, 1)
-        }
-        // then
-        assertEquals("Competitor comp-3 is not assigned to league $leagueId", exception.message)
-    }
-
-    @Test
-    internal fun `Should throw exception when second player is not included to league for completed game`() {
-        // given
-        val invalidCompetitor = Competitor("league-2", "comp-3", "Joker", Statistics())
-        given(competitorRepository.findById(invalidCompetitor.id!!)).willReturn(invalidCompetitor)
-        // when
-        val exception = assertFailsWith<IllegalStateException> {
-            mutation.addCompletedGame(leagueId, firstCompetitor.id!!, 2, invalidCompetitor.id!!, 1)
-        }
-        // then
-        assertEquals("Competitor comp-3 is not assigned to league $leagueId", exception.message)
-    }
-
-    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 }

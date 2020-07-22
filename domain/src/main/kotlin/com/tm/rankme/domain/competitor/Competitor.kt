@@ -17,8 +17,7 @@ class Competitor(
     }
 
     fun updateStatistics(player: Player, opponentScore: Int, gameDateTime: LocalDateTime) {
-        val score = player.score ?: throw IllegalArgumentException("Player does not contain score value!")
-        statistics.addGame(score, opponentScore)
+        statistics.addGame(player.score, opponentScore)
         statistics.lastGame = gameDateTime.toLocalDate()
         statistics.deviation = player.deviation
         statistics.rating = player.rating

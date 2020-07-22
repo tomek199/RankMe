@@ -16,12 +16,12 @@ internal class GameMapperTest {
     private val leagueId = "league-1"
 
     @Test
-    internal fun `Should map completed game domain to model`() {
+    internal fun `Should map game domain to model`() {
         // given
         val id = "game-1"
         val dateTime = LocalDateTime.now()
-        val playerTwo = Player("comp-2", "Batman", 196, 2578)
-        val playerOne = Player("comp-1", "Superman", 258, 1345)
+        val playerTwo = Player("comp-2", "Batman", 196, 2578, 2, 96)
+        val playerOne = Player("comp-1", "Superman", 258, 1345, 0, -96)
         val domain = Game(id, playerOne, playerTwo, leagueId, dateTime)
         // when
         val model = mapper.toModel(domain)
@@ -43,7 +43,7 @@ internal class GameMapperTest {
         // given
         val competitorOne = Competitor(leagueId, "comp-1", "Batman", Statistics())
         val competitorTwo = Competitor(leagueId, "comp-2", "Superman", Statistics())
-        val domain = GameFactory.create(Pair(competitorOne, 2), Pair(competitorTwo, 3), leagueId)
+        val domain = GameFactory.create(competitorOne, 2, competitorTwo, 3, leagueId)
         // when
         val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
         // then

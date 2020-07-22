@@ -21,14 +21,14 @@ internal class GameMemoryStorageTest {
 
     @BeforeEach
     internal fun setUp() {
-        repository.save(GameFactory.create(Pair(competitor1, 2), Pair(competitor2, 1), leagueId))
-        repository.save(GameFactory.create(Pair(competitor1, 1), Pair(competitor2, 2), leagueId))
+        repository.save(GameFactory.create(competitor1, 2, competitor2, 1, leagueId))
+        repository.save(GameFactory.create(competitor1, 1, competitor2, 2, leagueId))
     }
 
     @Test
     internal fun `Should save new game`() {
         // given
-        val game = GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
+        val game = GameFactory.create(competitor1, 3, competitor2, 3, leagueId)
         // when
         val result = repository.save(game)
         // then
@@ -51,7 +51,7 @@ internal class GameMemoryStorageTest {
     @Test
     internal fun `Should return game by id`() {
         // given
-        val game = GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
+        val game = GameFactory.create(competitor1, 3, competitor2, 3, leagueId)
         val gameToFind = repository.save(game)
         // when
         val result = repository.findById("3")
@@ -70,7 +70,7 @@ internal class GameMemoryStorageTest {
     @Test
     internal fun `Should delete game from list`() {
         // given
-        val game = GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), leagueId)
+        val game = GameFactory.create(competitor1, 3, competitor2, 3, leagueId)
         val gameToDelete = repository.save(game)
         // when
         gameToDelete.id?.let { repository.delete(it) }
@@ -81,8 +81,8 @@ internal class GameMemoryStorageTest {
     @Test
     internal fun `Should return Side with first two games by league id`() {
         // given
-        repository.save(GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), leagueId))
-        repository.save(GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), "league-2"))
+        repository.save(GameFactory.create(competitor1, 3, competitor2, 3, leagueId))
+        repository.save(GameFactory.create(competitor1, 3, competitor2, 3, "league-2"))
         // when
         val result = repository.findByLeagueId(leagueId, 2)
         // then
@@ -95,8 +95,8 @@ internal class GameMemoryStorageTest {
     @Test
     internal fun `Should return Side with two games by league id skipping first`() {
         // given
-        repository.save(GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), leagueId))
-        repository.save(GameFactory.create(Pair(competitor1, 3), Pair(competitor2, 3), "league-2"))
+        repository.save(GameFactory.create(competitor1, 3, competitor2, 3, leagueId))
+        repository.save(GameFactory.create(competitor1, 3, competitor2, 3, "league-2"))
         // when
         val result = repository.findByLeagueId(leagueId, 2, "1")
         // then

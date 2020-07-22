@@ -1,5 +1,6 @@
 package com.tm.rankme.application.competitor
 
+import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
@@ -17,7 +18,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@ExtendWith(MockitoExtension::class)
 internal class CompetitorMutationTest {
     private val competitorRepository = Mockito.mock(CompetitorRepository::class.java)
     private val leagueRepository = Mockito.mock(LeagueRepository::class.java)
@@ -61,7 +61,5 @@ internal class CompetitorMutationTest {
         // then
         assertEquals("League does not exist!", exception.message)
     }
-
-    private fun <T> any(type: Class<T>): T = Mockito.any(type)
 }
 

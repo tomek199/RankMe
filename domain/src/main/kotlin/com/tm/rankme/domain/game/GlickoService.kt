@@ -6,7 +6,10 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-internal class GlickoService(playerOne: Player, playerTwo: Player) {
+internal class GlickoService(
+    deviationOne: Int, ratingOne: Int, scoreOne: Int,
+    deviationTwo: Int, ratingTwo: Int, scoreTwo: Int
+) {
     private val q = ln(10.0) / 400
     val playerOneDeviation: Int
     val playerTwoDeviation: Int
@@ -14,38 +17,44 @@ internal class GlickoService(playerOne: Player, playerTwo: Player) {
     val playerTwoRating: Int
 
     init {
-        val playerOneScore = playerOne.score ?: throw IllegalArgumentException("Player one score is not provided!")
-        val playerTwoScore = playerTwo.score ?: throw IllegalArgumentException("Player two score is not provided!")
-        playerOneDeviation = calculateDeviation(playerOne, playerTwo)
-        playerTwoDeviation = calculateDeviation(playerTwo, playerOne)
-        playerOneRating = calculateRating(playerOne, playerTwo, result(playerOneScore, playerTwoScore))
-        playerTwoRating = calculateRating(playerTwo, playerOne, result(playerTwoScore, playerOneScore))
+        playerOneDeviation = calculateDeviation(deviationOne, ratingOne, deviationTwo, ratingTwo)
+        playerTwoDeviation = calculateDeviation(deviationTwo, ratingTwo, deviationOne, ratingOne)
+        playerOneRating = calculateRating(deviationOne, ratingOne, deviationTwo, ratingTwo, result(scoreOne, scoreTwo))
+        playerTwoRating = calculateRating(deviationTwo, ratingTwo, deviationOne, ratingOne, result(scoreTwo, scoreOne))
     }
 
-    private fun calculateDeviation(player: Player, opponent: Player): Int {
+    private fun calculateDeviation(
+        playerDeviation: Int, playerRating: Int,
+        opponentDeviation: Int, opponentRating: Int
+    ): Int {
         return sqrt(
-            (1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent))
+            (1.0 / (playerDeviation * playerDeviation) + 1.0 / dSquare(playerRating, opponentDeviation, opponentRating))
                 .pow(-1)
         ).roundToInt()
     }
 
-    private fun calculateRating(player: Player, opponent: Player, result: Float): Int {
-        return (player.rating +
-            q / (1.0 / (player.deviation * player.deviation) + 1.0 / dSquare(player, opponent)) *
-            g(opponent) * (result - e(player, opponent))).roundToInt()
+    private fun calculateRating(
+        playerDeviation: Int, playerRating: Int,
+        opponentDeviation: Int, opponentRating: Int,
+        result: Float
+    ): Int {
+        return (playerRating +
+            q / (1.0 / (playerDeviation * playerDeviation) + 1.0 /
+            dSquare(playerRating, opponentDeviation, opponentRating)) *
+            g(opponentDeviation) * (result - e(playerRating, opponentDeviation, opponentRating))).roundToInt()
     }
 
-    private fun g(player: Player): Double {
-        return 1.0 / (sqrt(1 + 3 * (q * q) * (player.deviation * player.deviation) / (PI * PI)))
+    private fun e(playerRating: Int, opponentDeviation: Int, opponentRating: Int): Double {
+        return 1 / (1 + 10.0.pow(-g(opponentDeviation) * (playerRating - opponentRating) / 400))
     }
 
-    private fun e(player: Player, opponent: Player): Double {
-        return 1 / (1 + 10.0.pow(-g(opponent) * (player.rating - opponent.rating) / 400))
+    private fun dSquare(playerRating: Int, opponentDeviation: Int, opponentRating: Int): Double {
+        val estimate = e(playerRating, opponentDeviation, opponentRating)
+        return 1 / ((q * q) * g(opponentDeviation).pow(2) * estimate * (1 - estimate))
     }
 
-    private fun dSquare(player: Player, opponent: Player): Double {
-        val estimate = e(player, opponent)
-        return 1 / ((q * q) * g(opponent).pow(2) * estimate * (1 - estimate))
+    private fun g(playerDeviation: Int): Double {
+        return 1.0 / (sqrt(1 + 3 * (q * q) * (playerDeviation * playerDeviation) / (PI * PI)))
     }
 
     private fun result(playerScore: Int, opponentScore: Int): Float {

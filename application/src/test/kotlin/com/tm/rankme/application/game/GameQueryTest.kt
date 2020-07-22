@@ -21,8 +21,8 @@ internal class GameQueryTest {
     @Test
     internal fun `Should return game by id`() {
         // given
-        val playerOne = Player("comp-1", "Batman", 235, 1683)
-        val playerTwo = Player("comp-2", "Superman", 386, 2748)
+        val playerOne = Player("comp-1", "Batman", 235, 1683, 3, 46)
+        val playerTwo = Player("comp-2", "Superman", 386, 2748, 1, -46)
         val gameId = "game-1"
         val expectedGame = Game(gameId, playerOne, playerTwo, "league-1", LocalDateTime.now())
         given(repository.findById(gameId)).willReturn(expectedGame)

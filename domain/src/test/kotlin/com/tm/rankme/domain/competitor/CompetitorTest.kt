@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 internal class CompetitorTest {
     private val leagueId = "league-1"
@@ -47,26 +46,12 @@ internal class CompetitorTest {
     }
 
     @Test
-    internal fun `Should throw exception when update statistics without score`() {
-        // given
-        val competitor = Competitor(leagueId, username, Statistics())
-        val player = Player(id, username, 234, 2548)
-        // when
-        val exception = assertFailsWith<IllegalArgumentException> {
-            competitor.updateStatistics(player, 2, LocalDateTime.now())
-        }
-        // then
-        assertEquals("Player does not contain score value!", exception.message)
-    }
-
-    @Test
     internal fun `Should update statistics by draw game`() {
         // given
         val gameDateTime = LocalDateTime.now()
         val deviationAfterGame = 326
         val ratingAfterGame = 1547
-        val player = Player(id, username, deviationAfterGame, ratingAfterGame)
-        player.score = 3
+        val player = Player(id, username, deviationAfterGame, ratingAfterGame, 3, 6)
         val competitor = Competitor(leagueId, username, Statistics())
         // when
         competitor.updateStatistics(player, 3, gameDateTime)
@@ -86,8 +71,7 @@ internal class CompetitorTest {
         val gameDateTime = LocalDateTime.now()
         val deviationAfterGame = 258
         val ratingAfterGame = 1673
-        val player = Player(id, username, deviationAfterGame, ratingAfterGame)
-        player.score = 2
+        val player = Player(id, username, deviationAfterGame, ratingAfterGame, 2, 68)
         // when
         competitor.updateStatistics(player, 0, gameDateTime)
         // then
@@ -106,8 +90,7 @@ internal class CompetitorTest {
         val gameDateTime = LocalDateTime.now()
         val deviationAfterGame = 173
         val ratingAfterGame = 1438
-        val player = Player(id, username, deviationAfterGame, ratingAfterGame)
-        player.score = 1
+        val player = Player(id, username, deviationAfterGame, ratingAfterGame, 1, -54)
         // when
         competitor.updateStatistics(player, 2, gameDateTime)
         // then

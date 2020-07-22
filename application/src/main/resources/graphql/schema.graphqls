@@ -4,9 +4,11 @@ scalar LocalDateTime
 type MutationType {
     addLeague(name: String!): League
     addCompetitor(leagueId: String!, username: String!): Competitor
-    addCompletedGame(leagueId: String!,
+    addGame(leagueId: String!,
         playerOneId: String!, playerOneScore: Int!
         playerTwoId: String!, playerTwoScore: Int!): Game
+    addEvent(leagueId: String!, memberOneId: String!, memberTwoId: String!, dateTime: LocalDateTime!): Event
+    completeGame(eventId: String!, playerOneScore: Int!, playerTwoScore: Int!): Game
 }
 
 type QueryType {

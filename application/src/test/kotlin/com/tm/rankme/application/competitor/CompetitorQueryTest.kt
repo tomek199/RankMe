@@ -13,7 +13,6 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
 internal class CompetitorQueryTest {
     private val repository: CompetitorRepository = Mockito.mock(CompetitorRepository::class.java)
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
