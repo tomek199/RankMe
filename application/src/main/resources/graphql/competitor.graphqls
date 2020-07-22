@@ -12,3 +12,8 @@ type CompetitorStatistics {
     draw: Int!
     lastGame: LocalDate
 }
+
+input AddCompetitorInput {
+    leagueId: String!
+    username: String!
+}

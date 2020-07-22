@@ -1,9 +1,9 @@
 package com.tm.rankme.application.competitor
 
-import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
+import graphql.kickstart.tools.GraphQLQueryResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 

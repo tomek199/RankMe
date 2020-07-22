@@ -9,10 +9,8 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -39,8 +37,9 @@ internal class CompetitorMutationTest {
         // given
         given(leagueRepository.findById(leagueId)).willReturn(League(leagueId, "Transformers"))
         val expectedStatistics = Statistics()
+        val input = AddCompetitorInput(leagueId, username)
         // when
-        val competitor = mutation.addCompetitor(leagueId, username)
+        val competitor = mutation.addCompetitor(input)
         // then
         assertNotNull(competitor.id)
         assertEquals(username, competitor.username)
@@ -56,8 +55,9 @@ internal class CompetitorMutationTest {
     internal fun `Should throw exception when league does not exist`() {
         // given
         given(leagueRepository.findById(leagueId)).willReturn(null)
+        val input = AddCompetitorInput(leagueId, username)
         // when
-        val exception = assertFailsWith<IllegalStateException> { mutation.addCompetitor(leagueId, username) }
+        val exception = assertFailsWith<IllegalStateException> { mutation.addCompetitor(input) }
         // then
         assertEquals("League does not exist!", exception.message)
     }

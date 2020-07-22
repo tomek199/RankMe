@@ -10,3 +10,7 @@ data class LeagueSettingsModel(
     val allowDraws: Boolean,
     val maxScore: Int
 )
+
+data class AddLeagueInput(
+    val name: String
+)

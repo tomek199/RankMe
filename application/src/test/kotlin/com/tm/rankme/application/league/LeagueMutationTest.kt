@@ -6,10 +6,8 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -27,12 +25,12 @@ internal class LeagueMutationTest {
     @Test
     internal fun `Should add league with default params`() {
         // given
-        val name = "Star Wars"
+        val input = AddLeagueInput("Star Wars")
         // when
-        val league = mutation.addLeague(name)
+        val league = mutation.addLeague(input)
         // then
         assertNotNull(league.id)
-        assertEquals(name, league.name)
+        assertEquals(input.name, league.name)
         assertFalse(league.settings.allowDraws)
         assertEquals(2, league.settings.maxScore)
     }

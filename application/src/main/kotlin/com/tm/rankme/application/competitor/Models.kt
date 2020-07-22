@@ -16,3 +16,8 @@ data class CompetitorStatisticsModel(
     val draw: Int,
     val lastGame: LocalDate?
 )
+
+data class AddCompetitorInput(
+    val leagueId: String,
+    val username: String
+)
