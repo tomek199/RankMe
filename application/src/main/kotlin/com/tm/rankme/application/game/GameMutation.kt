@@ -18,15 +18,12 @@ class GameMutation(
     @Qualifier("gameMapper") private val mapper: Mapper<Game, GameModel>
 ) : GraphQLMutationResolver {
 
-    fun addGame(
-        leagueId: String, playerOneId: String, playerOneScore: Int,
-        playerTwoId: String, playerTwoScore: Int
-    ): GameModel {
-        val firstCompetitor = competitorService.getCompetitor(playerOneId, leagueId)
-        val secondCompetitor = competitorService.getCompetitor(playerTwoId, leagueId)
+    fun addGame(input: AddGameInput): GameModel {
+        val firstCompetitor = competitorService.getCompetitor(input.playerOneId, input.leagueId)
+        val secondCompetitor = competitorService.getCompetitor(input.playerTwoId, input.leagueId)
         val game = GameFactory.create(
-            firstCompetitor, playerOneScore,
-            secondCompetitor, playerTwoScore, leagueId
+            firstCompetitor, input.playerOneScore,
+            secondCompetitor, input.playerTwoScore, input.leagueId
         )
         competitorService.updateCompetitorsStatistic(firstCompetitor, secondCompetitor, game)
         return mapper.toModel(gameRepository.save(game))

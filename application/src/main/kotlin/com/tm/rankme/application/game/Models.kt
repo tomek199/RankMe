@@ -31,3 +31,11 @@ data class PageInfo(
     val hasPreviousPage: Boolean,
     val hasNextPage: Boolean
 )
+
+data class AddGameInput(
+    val leagueId: String,
+    val playerOneId: String,
+    val playerOneScore: Int,
+    val playerTwoId: String,
+    val playerTwoScore: Int
+)

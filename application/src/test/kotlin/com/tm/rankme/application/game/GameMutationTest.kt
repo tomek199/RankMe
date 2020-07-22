@@ -46,8 +46,9 @@ internal class GameMutationTest {
         val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
+        val input = AddGameInput(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
         // when
-        val game = mutation.addGame(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
+        val game = mutation.addGame(input)
         // then
         assertNotNull(game)
         verify(competitorService, times(1)).getCompetitor(firstCompetitor.id!!, leagueId)
