@@ -72,8 +72,9 @@ internal class GameMutationTest {
             Member(secondCompetitor.id!!, secondCompetitor.username, 152, 2587), LocalDateTime.now()
         )
         given(eventRepository.findById(eventId)).willReturn(event)
+        val input = CompleteGameInput(eventId, 1, 3)
         // when
-        val game = mutation.completeGame(eventId, 1, 3)
+        val game = mutation.completeGame(input)
         // then
         assertNotNull(game)
         verify(eventRepository, times(1)).findById(eventId)
@@ -90,8 +91,9 @@ internal class GameMutationTest {
         // given
         val eventId = "event-1"
         given(eventRepository.findById(eventId)).willReturn(null)
+        val input = CompleteGameInput(eventId, 1, 3)
         // when
-        val exception = assertFailsWith<IllegalStateException> { mutation.completeGame(eventId, 2, 1) }
+        val exception = assertFailsWith<IllegalStateException> { mutation.completeGame(input) }
         // then
         assertEquals("Event $eventId is not found", exception.message)
     }

@@ -29,13 +29,17 @@ class GameMutation(
         return mapper.toModel(gameRepository.save(game))
     }
 
-    fun completeGame(eventId: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
-        val event = eventRepository.findById(eventId) ?: throw IllegalStateException("Event $eventId is not found")
+    fun completeGame(input: CompleteGameInput): GameModel {
+        val event = eventRepository.findById(input.eventId)
+            ?: throw IllegalStateException("Event ${input.eventId} is not found")
         val firstCompetitor = competitorService.getCompetitor(event.memberOne.competitorId, event.leagueId)
         val secondCompetitor = competitorService.getCompetitor(event.memberTwo.competitorId, event.leagueId)
-        val game = GameFactory.create(firstCompetitor, playerOneScore, secondCompetitor, playerTwoScore, event.leagueId)
+        val game = GameFactory.create(
+            firstCompetitor, input.playerOneScore,
+            secondCompetitor, input.playerTwoScore, event.leagueId
+        )
         competitorService.updateCompetitorsStatistic(firstCompetitor, secondCompetitor, game)
-        eventRepository.delete(eventId)
+        eventRepository.delete(input.eventId)
         return mapper.toModel(gameRepository.save(game))
     }
 }
