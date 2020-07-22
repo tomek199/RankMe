@@ -11,3 +11,10 @@ type Member {
     deviation: Int!
     rating: Int!
 }
+
+input AddEventInput {
+    leagueId: String!
+    memberOneId: String!
+    memberTwoId: String!
+    dateTime: LocalDateTime!
+}

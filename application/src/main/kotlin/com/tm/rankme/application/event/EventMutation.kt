@@ -17,18 +17,18 @@ class EventMutation(
     @Qualifier("eventMapper") private val mapper: Mapper<Event, EventModel>
 ) : GraphQLMutationResolver {
 
-    fun addEvent(leagueId: String, memberOneId: String, memberTwoId: String, dateTime: LocalDateTime): EventModel {
-        val firstCompetitor = competitorService.getCompetitor(memberOneId, leagueId)
-        val secondCompetitor = competitorService.getCompetitor(memberTwoId, leagueId)
+    fun addEvent(input: AddEventInput): EventModel {
+        val firstCompetitor = competitorService.getCompetitor(input.memberOneId, input.leagueId)
+        val secondCompetitor = competitorService.getCompetitor(input.memberTwoId, input.leagueId)
         val memberOne = Member(
-            memberOneId, firstCompetitor.username,
+            input.memberOneId, firstCompetitor.username,
             firstCompetitor.statistics.deviation, firstCompetitor.statistics.rating
         )
         val memberTwo = Member(
-            memberTwoId, secondCompetitor.username,
+            input.memberTwoId, secondCompetitor.username,
             secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating
         )
-        val event = Event(leagueId, memberOne, memberTwo, LocalDateTime.now())
+        val event = Event(input.leagueId, memberOne, memberTwo, LocalDateTime.now())
         return mapper.toModel(eventRepository.save(event))
     }
 }

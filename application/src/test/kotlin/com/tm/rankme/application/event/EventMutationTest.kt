@@ -40,8 +40,9 @@ internal class EventMutationTest {
         val memberTwo = Member(secondCompetitor.id!!, secondCompetitor.username, 156, 2895)
         val expectedEvent = Event("event-1", leagueId, memberOne, memberTwo, LocalDateTime.now())
         given(eventRepository.save(any(Event::class.java))).willReturn(expectedEvent)
+        val input = AddEventInput(leagueId, firstCompetitor.id!!, secondCompetitor.id!!, LocalDateTime.now())
         // when
-        val event = mutation.addEvent(leagueId, firstCompetitor.id!!, secondCompetitor.id!!, LocalDateTime.now())
+        val event = mutation.addEvent(input)
         // then
         assertNotNull(event)
         verify(competitorService, times(1)).getCompetitor(firstCompetitor.id!!, leagueId)

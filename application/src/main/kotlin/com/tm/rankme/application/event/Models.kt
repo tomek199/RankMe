@@ -15,3 +15,10 @@ data class MemberModel(
     val deviation: Int,
     val rating: Int
 )
+
+data class AddEventInput(
+    val leagueId: String,
+    val memberOneId: String,
+    val memberTwoId: String,
+    val dateTime: LocalDateTime
+)
