@@ -8,7 +8,6 @@ import com.tm.rankme.domain.event.Member
 import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 
 @Service
 class EventMutation(
@@ -28,7 +27,7 @@ class EventMutation(
             input.memberTwoId, secondCompetitor.username,
             secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating
         )
-        val event = Event(input.leagueId, memberOne, memberTwo, LocalDateTime.now())
+        val event = Event(input.leagueId, memberOne, memberTwo, input.dateTime)
         return mapper.toModel(eventRepository.save(event))
     }
 }
