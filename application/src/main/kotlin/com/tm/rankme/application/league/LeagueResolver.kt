@@ -1,6 +1,5 @@
 package com.tm.rankme.application.league
 
-import com.coxautodev.graphql.tools.GraphQLResolver
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorModel
 import com.tm.rankme.application.game.GameConnection
@@ -11,6 +10,7 @@ import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
+import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 

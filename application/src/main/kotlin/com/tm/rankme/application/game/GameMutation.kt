@@ -1,12 +1,12 @@
 package com.tm.rankme.application.game
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
+import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 

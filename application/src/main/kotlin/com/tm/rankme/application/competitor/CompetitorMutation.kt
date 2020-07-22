@@ -1,10 +1,10 @@
 package com.tm.rankme.application.competitor
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.league.LeagueRepository
+import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.stereotype.Service
 
 @Service

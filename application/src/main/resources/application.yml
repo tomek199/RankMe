@@ -6,7 +6,6 @@ graphql:
 
 graphiql:
   mapping: /graphiql
-  endpoint: /graphql
   enabled: true
   cdn:
     enabled: false

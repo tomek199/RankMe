@@ -1,9 +1,9 @@
 package com.tm.rankme.application.league
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
+import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 

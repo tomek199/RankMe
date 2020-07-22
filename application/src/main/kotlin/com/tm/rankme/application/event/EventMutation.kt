@@ -1,11 +1,11 @@
 package com.tm.rankme.application.event
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.event.Member
+import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
