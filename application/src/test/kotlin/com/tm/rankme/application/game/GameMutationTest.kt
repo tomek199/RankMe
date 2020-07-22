@@ -4,6 +4,9 @@ import com.tm.rankme.application.any
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
+import com.tm.rankme.domain.event.Event
+import com.tm.rankme.domain.event.EventRepository
+import com.tm.rankme.domain.event.Member
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
@@ -15,13 +18,16 @@ import org.mockito.Mockito.only
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 internal class GameMutationTest {
     private val gameRepository = mock(GameRepository::class.java)
+    private val eventRepository = mock(EventRepository::class.java)
     private val competitorService = mock(CompetitorService::class.java)
     private val mapper = GameMapper()
-    private val mutation = GameMutation(gameRepository, competitorService, mapper)
+    private val mutation = GameMutation(gameRepository, eventRepository, competitorService, mapper)
 
     private val leagueId = "league-1"
     private val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", Statistics())
@@ -49,5 +55,43 @@ internal class GameMutationTest {
         verify(competitorService, times(1))
             .updateCompetitorsStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
         verify(gameRepository, only()).save(any(Game::class.java))
+    }
+
+    @Test
+    internal fun `Should create game base on existing event`() {
+        // given
+        val eventId = "event-1"
+        val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
+        val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
+        val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
+        given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
+        val event = Event(
+            eventId, leagueId,
+            Member(firstCompetitor.id!!, firstCompetitor.username, 274, 1546),
+            Member(secondCompetitor.id!!, secondCompetitor.username, 152, 2587), LocalDateTime.now()
+        )
+        given(eventRepository.findById(eventId)).willReturn(event)
+        // when
+        val game = mutation.completeGame(eventId, 1, 3)
+        // then
+        assertNotNull(game)
+        verify(eventRepository, times(1)).findById(eventId)
+        verify(eventRepository, times(1)).delete(eventId)
+        verify(competitorService, times(1)).getCompetitor(firstCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getCompetitor(secondCompetitor.id!!, leagueId)
+        verify(competitorService, times(1))
+            .updateCompetitorsStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
+        verify(gameRepository, only()).save(any(Game::class.java))
+    }
+
+    @Test
+    internal fun `Should throw exception when event does not exist when completing game`() {
+        // given
+        val eventId = "event-1"
+        given(eventRepository.findById(eventId)).willReturn(null)
+        // when
+        val exception = assertFailsWith<IllegalStateException> { mutation.completeGame(eventId, 2, 1) }
+        // then
+        assertEquals("Event $eventId is not found", exception.message)
     }
 }

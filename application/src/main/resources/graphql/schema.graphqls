@@ -8,6 +8,7 @@ type MutationType {
         playerOneId: String!, playerOneScore: Int!
         playerTwoId: String!, playerTwoScore: Int!): Game
     addEvent(leagueId: String!, memberOneId: String!, memberTwoId: String!, dateTime: LocalDateTime!): Event
+    completeGame(eventId: String!, playerOneScore: Int!, playerTwoScore: Int!): Game
 }
 
 type QueryType {
