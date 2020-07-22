@@ -13,8 +13,8 @@ class LeagueMutation(
     @Qualifier("leagueMapper") private val mapper: Mapper<League, LeagueModel>
 ) : GraphQLMutationResolver {
 
-    fun addLeague(name: String): LeagueModel {
-        val domain = League(name)
+    fun addLeague(input: AddLeagueInput): LeagueModel {
+        val domain = League(input.name)
         val league = repository.save(domain)
         return mapper.toModel(league)
     }
