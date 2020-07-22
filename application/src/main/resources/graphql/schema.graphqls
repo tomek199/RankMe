@@ -2,8 +2,8 @@ scalar LocalDate
 scalar LocalDateTime
 
 type MutationType {
-    addLeague(input: AddLeagueInput): League
-    addCompetitor(leagueId: String!, username: String!): Competitor
+    addLeague(input: AddLeagueInput!): League
+    addCompetitor(input: AddCompetitorInput!): Competitor
     addGame(leagueId: String!,
         playerOneId: String!, playerOneScore: Int!
         playerTwoId: String!, playerTwoScore: Int!): Game

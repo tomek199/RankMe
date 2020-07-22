@@ -14,9 +14,9 @@ class CompetitorMutation(
     private val mapper: Mapper<Competitor, CompetitorModel>
 ) : GraphQLMutationResolver {
 
-    fun addCompetitor(leagueId: String, username: String): CompetitorModel {
-        leagueRepository.findById(leagueId) ?: throw IllegalStateException("League does not exist!")
-        val domain = Competitor(leagueId, username)
+    fun addCompetitor(input: AddCompetitorInput): CompetitorModel {
+        leagueRepository.findById(input.leagueId) ?: throw IllegalStateException("League does not exist!")
+        val domain = Competitor(input.leagueId, input.username)
         val competitor = competitorRepository.save(domain)
         return mapper.toModel(competitor)
     }
