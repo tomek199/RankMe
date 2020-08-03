@@ -15,7 +15,7 @@ import kotlin.test.assertFailsWith
 
 internal class CompetitorServiceTest {
     private val repository = mock(CompetitorRepository::class.java)
-    private val service = CompetitorService(repository)
+    private val service: CompetitorService = CompetitorServiceImpl(repository)
     private val competitorId = "comp-1"
     private val leagueId = "league-1"
 

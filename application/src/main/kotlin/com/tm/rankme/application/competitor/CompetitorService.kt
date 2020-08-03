@@ -1,23 +1,9 @@
 package com.tm.rankme.application.competitor
 
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.game.Game
-import org.springframework.stereotype.Service
 
-@Service
-class CompetitorService(private val repository: CompetitorRepository) {
-    fun getCompetitor(id: String, leagueId: String): Competitor {
-        val competitor = repository.findById(id) ?: throw IllegalStateException("Competitor $id is not found")
-        if (competitor.leagueId != leagueId)
-            throw IllegalStateException("Competitor $id is not assigned to league $leagueId")
-        return competitor
-    }
-
-    fun updateCompetitorsStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game) {
-        firstCompetitor.updateStatistics(game.playerOne, game.playerTwo.score, game.dateTime)
-        repository.save(firstCompetitor)
-        secondCompetitor.updateStatistics(game.playerTwo, game.playerOne.score, game.dateTime)
-        repository.save(secondCompetitor)
-    }
+interface CompetitorService {
+    fun getCompetitor(id: String, leagueId: String): Competitor
+    fun updateCompetitorsStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game)
 }
