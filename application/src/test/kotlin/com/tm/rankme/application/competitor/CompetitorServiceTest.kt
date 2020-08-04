@@ -12,6 +12,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 internal class CompetitorServiceTest {
     private val repository = mock(CompetitorRepository::class.java)
@@ -43,6 +44,32 @@ internal class CompetitorServiceTest {
         }
         // then
         assertEquals("Competitor $competitorId is not found", exception.message)
+    }
+
+    @Test
+    internal fun `Should return competitors list by league id`() {
+        // given
+        val competitor1 = Competitor(leagueId, "comp-1", "Batman", Statistics())
+        val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
+        given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
+        // when
+        val competitors = service.getByLeagueId(leagueId)
+        // then
+        assertEquals(2, competitors.size)
+        assertEquals(competitor1.id, competitors[0].id)
+        assertEquals(competitor1.id, competitors[0].id)
+        assertEquals(competitor2.username, competitors[1].username)
+        assertEquals(competitor2.username, competitors[1].username)
+    }
+
+    @Test
+    internal fun `Should return empty competitors list by league id`() {
+        // given
+        given(repository.findByLeagueId(leagueId)).willReturn(emptyList())
+        // when
+        val competitors = service.getByLeagueId(leagueId)
+        // then
+        assertTrue(competitors.isEmpty())
     }
 
     @Test

@@ -14,6 +14,10 @@ internal class CompetitorServiceImpl(private val repository: CompetitorRepositor
         return competitor
     }
 
+    override fun getByLeagueId(leagueId: String): List<Competitor> {
+        return repository.findByLeagueId(leagueId)
+    }
+
     override fun updateCompetitorsStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game) {
         firstCompetitor.updateStatistics(game.playerOne, game.playerTwo.score, game.dateTime)
         repository.save(firstCompetitor)

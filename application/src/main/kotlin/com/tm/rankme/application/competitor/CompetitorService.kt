@@ -5,5 +5,6 @@ import com.tm.rankme.domain.game.Game
 
 interface CompetitorService {
     fun getCompetitor(id: String, leagueId: String): Competitor
+    fun getByLeagueId(leagueId: String): List<Competitor>
     fun updateCompetitorsStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game)
 }
