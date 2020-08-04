@@ -2,23 +2,22 @@ package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.CompetitorRepository
 import graphql.kickstart.tools.GraphQLQueryResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
 class CompetitorQuery(
-    private val repository: CompetitorRepository,
+    private val competitorService: CompetitorService,
     @Qualifier("competitorMapper") private val mapper: Mapper<Competitor, CompetitorModel>
 ) : GraphQLQueryResolver {
 
     fun competitor(id: String): CompetitorModel? {
-        val competitor = repository.findById(id)
-        return competitor?.let { mapper.toModel(competitor) }
+        val competitor = competitorService.getCompetitor(id)
+        return mapper.toModel(competitor)
     }
 
     fun competitorsByLeagueId(leagueId: String): List<CompetitorModel> {
-        return repository.findByLeagueId(leagueId).map { competitor -> mapper.toModel(competitor) }
+        return competitorService.getCompetitors(leagueId).map { competitor -> mapper.toModel(competitor) }
     }
 }

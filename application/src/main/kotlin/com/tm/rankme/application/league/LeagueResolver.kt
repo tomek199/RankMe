@@ -23,7 +23,7 @@ class LeagueResolver(
 ) : GraphQLResolver<LeagueModel> {
 
     fun competitors(league: LeagueModel): List<CompetitorModel> {
-        return competitorService.getByLeagueId(league.id).map { competitor ->
+        return competitorService.getCompetitors(league.id).map { competitor ->
             competitorMapper.toModel(competitor)
         }
     }

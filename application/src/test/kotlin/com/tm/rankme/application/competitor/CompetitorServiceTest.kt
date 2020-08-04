@@ -12,6 +12,8 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CompetitorServiceTest {
@@ -21,12 +23,12 @@ internal class CompetitorServiceTest {
     private val leagueId = "league-1"
 
     @Test
-    internal fun `Should return competitor`() {
+    internal fun `Should return competitor for league`() {
         // given
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
-        val competitor = service.getCompetitor(competitorId, leagueId)
+        val competitor = service.getCompetitorForLeague(competitorId, leagueId)
         // then
         assertEquals(expectedCompetitor.id, competitor.id)
         assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
@@ -35,12 +37,38 @@ internal class CompetitorServiceTest {
     }
 
     @Test
-    internal fun `Should throw IllegalStateException when competitor is not found`() {
+    internal fun `Should return competitor by id`() {
+        // given
+        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
+        given(repository.findById(competitorId)).willReturn(expectedCompetitor)
+        // when
+        val competitor = service.getCompetitor(competitorId)
+        // then
+        assertEquals(expectedCompetitor.id, competitor.id)
+        assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
+        assertEquals(expectedCompetitor.username, competitor.username)
+        assertEquals(expectedCompetitor.statistics, competitor.statistics)
+    }
+
+    @Test
+    internal fun `Should throw IllegalStateException when competitor does not exist`() {
         // given
         given(repository.findById(competitorId)).willReturn(null)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            service.getCompetitor(competitorId, leagueId)
+            service.getCompetitor(competitorId)
+        }
+        // then
+        assertEquals("Competitor $competitorId is not found", exception.message)
+    }
+
+    @Test
+    internal fun `Should throw IllegalStateException when competitor for league is not found`() {
+        // given
+        given(repository.findById(competitorId)).willReturn(null)
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            service.getCompetitorForLeague(competitorId, leagueId)
         }
         // then
         assertEquals("Competitor $competitorId is not found", exception.message)
@@ -53,7 +81,7 @@ internal class CompetitorServiceTest {
         val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
         given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
-        val competitors = service.getByLeagueId(leagueId)
+        val competitors = service.getCompetitors(leagueId)
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
@@ -67,7 +95,7 @@ internal class CompetitorServiceTest {
         // given
         given(repository.findByLeagueId(leagueId)).willReturn(emptyList())
         // when
-        val competitors = service.getByLeagueId(leagueId)
+        val competitors = service.getCompetitors(leagueId)
         // then
         assertTrue(competitors.isEmpty())
     }
@@ -81,10 +109,25 @@ internal class CompetitorServiceTest {
         given(repository.findById(competitorId)).willReturn(competitor)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            service.getCompetitor(competitorId, leagueId)
+            service.getCompetitorForLeague(competitorId, leagueId)
         }
         // then
         assertEquals("Competitor $competitorId is not assigned to league $leagueId", exception.message)
+    }
+
+    @Test
+    internal fun `Should save competitor`() {
+        // given
+        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
+        given(repository.save(expectedCompetitor)).willReturn(expectedCompetitor)
+        // when
+        val competitor = service.saveCompetitor(expectedCompetitor)
+        // then
+        assertNotNull(competitor.id)
+        assertEquals(expectedCompetitor.username, competitor.username)
+        assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
+        assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
+        assertNull(competitor.statistics.lastGame)
     }
 
     @Test

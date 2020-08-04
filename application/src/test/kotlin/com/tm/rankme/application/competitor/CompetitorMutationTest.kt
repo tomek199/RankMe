@@ -3,7 +3,6 @@ package com.tm.rankme.application.competitor
 import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
@@ -17,18 +16,17 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 internal class CompetitorMutationTest {
-    private val competitorRepository = Mockito.mock(CompetitorRepository::class.java)
+    private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
     private val leagueRepository = Mockito.mock(LeagueRepository::class.java)
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
-    private val mutation = CompetitorMutation(competitorRepository, leagueRepository, mapper)
+    private val mutation = CompetitorMutation(competitorService, leagueRepository, mapper)
 
     private val leagueId = "league-1"
     private val username = "Optimus Prime"
 
-
     @BeforeEach
     internal fun setUp() {
-        given(competitorRepository.save(any(Competitor::class.java)))
+        given(competitorService.saveCompetitor(any(Competitor::class.java)))
             .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
     }
 
@@ -62,4 +60,3 @@ internal class CompetitorMutationTest {
         assertEquals("League does not exist!", exception.message)
     }
 }
-

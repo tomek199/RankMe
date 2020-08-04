@@ -19,8 +19,8 @@ class GameMutation(
 ) : GraphQLMutationResolver {
 
     fun addGame(input: AddGameInput): GameModel {
-        val firstCompetitor = competitorService.getCompetitor(input.playerOneId, input.leagueId)
-        val secondCompetitor = competitorService.getCompetitor(input.playerTwoId, input.leagueId)
+        val firstCompetitor = competitorService.getCompetitorForLeague(input.playerOneId, input.leagueId)
+        val secondCompetitor = competitorService.getCompetitorForLeague(input.playerTwoId, input.leagueId)
         val game = GameFactory.create(
             firstCompetitor, input.playerOneScore,
             secondCompetitor, input.playerTwoScore, input.leagueId
@@ -32,8 +32,8 @@ class GameMutation(
     fun completeGame(input: CompleteGameInput): GameModel {
         val event = eventRepository.findById(input.eventId)
             ?: throw IllegalStateException("Event ${input.eventId} is not found")
-        val firstCompetitor = competitorService.getCompetitor(event.memberOne.competitorId, event.leagueId)
-        val secondCompetitor = competitorService.getCompetitor(event.memberTwo.competitorId, event.leagueId)
+        val firstCompetitor = competitorService.getCompetitorForLeague(event.memberOne.competitorId, event.leagueId)
+        val secondCompetitor = competitorService.getCompetitorForLeague(event.memberTwo.competitorId, event.leagueId)
         val game = GameFactory.create(
             firstCompetitor, input.playerOneScore,
             secondCompetitor, input.playerTwoScore, event.leagueId
