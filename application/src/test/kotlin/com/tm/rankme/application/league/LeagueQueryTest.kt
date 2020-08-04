@@ -2,26 +2,23 @@ package com.tm.rankme.application.league
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.league.League
-import com.tm.rankme.domain.league.LeagueRepository
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertFailsWith
 
 internal class LeagueQueryTest {
-    private val repository: LeagueRepository = Mockito.mock(LeagueRepository::class.java)
+    private val leagueService: LeagueService = Mockito.mock(LeagueService::class.java)
     private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
-    private val query = LeagueQuery(repository, mapper)
+    private val query = LeagueQuery(leagueService, mapper)
 
     @Test
     internal fun `Should return league by id`() {
         // given
         val leagueId = "league-1"
         val leagueName = "Star Wars"
-        given(repository.findById(leagueId)).willReturn(League(leagueId, leagueName))
+        given(leagueService.getLeague(leagueId)).willReturn(League(leagueId, leagueName))
         // when
         val league = query.league(leagueId)
         // then
@@ -32,13 +29,11 @@ internal class LeagueQueryTest {
     }
 
     @Test
-    internal fun `Should return null when league is not found`() {
+    internal fun `Should throw IllegalStateException when league is not found`() {
         // given
         val leagueId = "league-1"
-        given(repository.findById(leagueId)).willReturn(null)
-        // when
-        val league = query.league(leagueId)
+        given(leagueService.getLeague(leagueId)).willThrow(IllegalStateException::class.java)
         // then
-        assertNull(league)
+        assertFailsWith<IllegalStateException> { query.league(leagueId) }
     }
 }

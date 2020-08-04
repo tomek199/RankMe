@@ -2,13 +2,13 @@ package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
+import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
-import com.tm.rankme.domain.league.League
-import com.tm.rankme.domain.league.LeagueRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.willDoNothing
 import org.mockito.Mockito
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -17,9 +17,9 @@ import kotlin.test.assertNull
 
 internal class CompetitorMutationTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
-    private val leagueRepository = Mockito.mock(LeagueRepository::class.java)
+    private val leagueService = Mockito.mock(LeagueService::class.java)
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
-    private val mutation = CompetitorMutation(competitorService, leagueRepository, mapper)
+    private val mutation = CompetitorMutation(competitorService, leagueService, mapper)
 
     private val leagueId = "league-1"
     private val username = "Optimus Prime"
@@ -33,7 +33,7 @@ internal class CompetitorMutationTest {
     @Test
     internal fun `Should add competitor with default params`() {
         // given
-        given(leagueRepository.findById(leagueId)).willReturn(League(leagueId, "Transformers"))
+        willDoNothing().given(leagueService).checkIfExist(leagueId)
         val expectedStatistics = Statistics()
         val input = AddCompetitorInput(leagueId, username)
         // when
@@ -52,11 +52,9 @@ internal class CompetitorMutationTest {
     @Test
     internal fun `Should throw exception when league does not exist`() {
         // given
-        given(leagueRepository.findById(leagueId)).willReturn(null)
+        given(leagueService.checkIfExist(leagueId)).willThrow(IllegalStateException::class.java)
         val input = AddCompetitorInput(leagueId, username)
-        // when
-        val exception = assertFailsWith<IllegalStateException> { mutation.addCompetitor(input) }
         // then
-        assertEquals("League does not exist!", exception.message)
+        assertFailsWith<IllegalStateException> { mutation.addCompetitor(input) }
     }
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.only
 import org.mockito.Mockito.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -128,6 +129,7 @@ internal class CompetitorServiceTest {
         assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
         assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
         assertNull(competitor.statistics.lastGame)
+        verify(repository, only()).save(expectedCompetitor)
     }
 
     @Test
