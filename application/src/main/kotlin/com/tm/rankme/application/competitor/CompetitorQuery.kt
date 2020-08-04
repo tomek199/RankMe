@@ -13,11 +13,11 @@ class CompetitorQuery(
 ) : GraphQLQueryResolver {
 
     fun competitor(id: String): CompetitorModel? {
-        val competitor = competitorService.getCompetitor(id)
+        val competitor = competitorService.get(id)
         return mapper.toModel(competitor)
     }
 
     fun competitorsByLeagueId(leagueId: String): List<CompetitorModel> {
-        return competitorService.getCompetitors(leagueId).map { competitor -> mapper.toModel(competitor) }
+        return competitorService.getListForLeague(leagueId).map { competitor -> mapper.toModel(competitor) }
     }
 }

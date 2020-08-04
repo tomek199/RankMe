@@ -21,7 +21,7 @@ internal class CompetitorQueryTest {
         val leagueId = "league-1"
         val username = "Optimus Prime"
         // given
-        given(competitorService.getCompetitor(id)).willReturn(Competitor(leagueId, id, username, Statistics()))
+        given(competitorService.get(id)).willReturn(Competitor(leagueId, id, username, Statistics()))
         // when
         val competitor = query.competitor(id)
         // then
@@ -32,7 +32,7 @@ internal class CompetitorQueryTest {
     @Test
     internal fun `Should throw IllegalStateException when competitor is not found`() {
         // given
-        given(competitorService.getCompetitor(id)).willThrow(IllegalStateException::class.java)
+        given(competitorService.get(id)).willThrow(IllegalStateException::class.java)
         // then
         assertFailsWith<IllegalStateException> { query.competitor(id) }
     }
@@ -43,7 +43,7 @@ internal class CompetitorQueryTest {
         val leagueId = "league-1"
         val competitor1 = Competitor(leagueId, "comp-1", "Optimus Prime", Statistics())
         val competitor2 = Competitor(leagueId, "comp-2", "Megatron", Statistics())
-        given(competitorService.getCompetitors(leagueId)).willReturn(listOf(competitor1, competitor2))
+        given(competitorService.getListForLeague(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
         val competitors = query.competitorsByLeagueId(leagueId)
         // then
@@ -58,7 +58,7 @@ internal class CompetitorQueryTest {
     internal fun `Should return empty list when competitors are not found`() {
         // given
         val leagueId = "league-1"
-        given(competitorService.getCompetitors(leagueId)).willReturn(emptyList())
+        given(competitorService.getListForLeague(leagueId)).willReturn(emptyList())
         // when
         val competitors = query.competitorsByLeagueId(leagueId)
         // then

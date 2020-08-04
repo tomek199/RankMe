@@ -22,7 +22,7 @@ internal class LeagueServiceTest {
         // given
         given(repository.findById(leagueId)).willReturn(League(leagueId, leagueName))
         // when
-        val league = service.getLeague(leagueId)
+        val league = service.get(leagueId)
         // then
         assertEquals(leagueId, league.id)
         assertEquals(leagueName, league.name)
@@ -35,7 +35,7 @@ internal class LeagueServiceTest {
         // given
         given(repository.findById(leagueId)).willReturn(null)
         // when
-        val exception = assertFailsWith<IllegalStateException> { service.getLeague(leagueId) }
+        val exception = assertFailsWith<IllegalStateException> { service.get(leagueId) }
         // then
         assertEquals("League $leagueId is not found", exception.message)
     }
@@ -46,7 +46,7 @@ internal class LeagueServiceTest {
         val expectedLeague = League(leagueId, leagueName)
         given(repository.save(expectedLeague)).willReturn(expectedLeague)
         // when
-        val league = service.saveLeague(expectedLeague)
+        val league = service.create(expectedLeague)
         // then
         assertEquals(expectedLeague.id, league.id)
         assertEquals(expectedLeague.name, league.name)

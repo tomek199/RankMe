@@ -18,7 +18,7 @@ internal class LeagueQueryTest {
         // given
         val leagueId = "league-1"
         val leagueName = "Star Wars"
-        given(leagueService.getLeague(leagueId)).willReturn(League(leagueId, leagueName))
+        given(leagueService.get(leagueId)).willReturn(League(leagueId, leagueName))
         // when
         val league = query.league(leagueId)
         // then
@@ -32,7 +32,7 @@ internal class LeagueQueryTest {
     internal fun `Should throw IllegalStateException when league is not found`() {
         // given
         val leagueId = "league-1"
-        given(leagueService.getLeague(leagueId)).willThrow(IllegalStateException::class.java)
+        given(leagueService.get(leagueId)).willThrow(IllegalStateException::class.java)
         // then
         assertFailsWith<IllegalStateException> { query.league(leagueId) }
     }

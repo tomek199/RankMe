@@ -13,7 +13,7 @@ class LeagueQuery(
 ) : GraphQLQueryResolver {
 
     fun league(id: String): LeagueModel? {
-        val league = leagueService.getLeague(id)
+        val league = leagueService.get(id)
         return mapper.toModel(league)
     }
 }

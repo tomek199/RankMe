@@ -9,16 +9,16 @@ internal class LeagueServiceImpl(
     private val repository: LeagueRepository
 ) : LeagueService {
 
-    override fun getLeague(leagueId: String): League {
+    override fun get(leagueId: String): League {
         val league = repository.findById(leagueId)
         return league ?: throw IllegalStateException("League $leagueId is not found")
     }
 
-    override fun saveLeague(league: League): League {
+    override fun create(league: League): League {
         return repository.save(league)
     }
 
     override fun checkIfExist(leagueId: String) {
-        getLeague(leagueId)
+        get(leagueId)
     }
 }

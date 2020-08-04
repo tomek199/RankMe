@@ -4,9 +4,9 @@ import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.game.Game
 
 interface CompetitorService {
-    fun getCompetitor(competitorId: String): Competitor
-    fun getCompetitorForLeague(competitorId: String, leagueId: String): Competitor
-    fun getCompetitors(leagueId: String): List<Competitor>
-    fun saveCompetitor(competitor: Competitor): Competitor
-    fun updateCompetitorsStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game)
+    fun get(competitorId: String): Competitor
+    fun getForLeague(competitorId: String, leagueId: String): Competitor
+    fun getListForLeague(leagueId: String): List<Competitor>
+    fun create(competitor: Competitor): Competitor
+    fun updateStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game)
 }

@@ -26,7 +26,7 @@ internal class CompetitorMutationTest {
 
     @BeforeEach
     internal fun setUp() {
-        given(competitorService.saveCompetitor(any(Competitor::class.java)))
+        given(competitorService.create(any(Competitor::class.java)))
             .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
     }
 

@@ -17,8 +17,8 @@ class EventMutation(
 ) : GraphQLMutationResolver {
 
     fun addEvent(input: AddEventInput): EventModel {
-        val firstCompetitor = competitorService.getCompetitorForLeague(input.memberOneId, input.leagueId)
-        val secondCompetitor = competitorService.getCompetitorForLeague(input.memberTwoId, input.leagueId)
+        val firstCompetitor = competitorService.getForLeague(input.memberOneId, input.leagueId)
+        val secondCompetitor = competitorService.getForLeague(input.memberTwoId, input.leagueId)
         val memberOne = Member(
             input.memberOneId, firstCompetitor.username,
             firstCompetitor.statistics.deviation, firstCompetitor.statistics.rating

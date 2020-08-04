@@ -34,7 +34,7 @@ internal class LeagueResolverTest {
     @Test
     internal fun `Should return competitors list by league id`() {
         // given
-        given(competitorService.getCompetitors(league.id)).willReturn(listOf(competitor1, competitor2))
+        given(competitorService.getListForLeague(league.id)).willReturn(listOf(competitor1, competitor2))
         // when
         val competitors = resolver.competitors(league)
         // then
@@ -48,7 +48,7 @@ internal class LeagueResolverTest {
     @Test
     internal fun `Should return empty competitors list`() {
         // given
-        given(competitorService.getCompetitors(league.id)).willReturn(emptyList())
+        given(competitorService.getListForLeague(league.id)).willReturn(emptyList())
         // when
         val competitors = resolver.competitors(league)
         // then

@@ -29,7 +29,7 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
-        val competitor = service.getCompetitorForLeague(competitorId, leagueId)
+        val competitor = service.getForLeague(competitorId, leagueId)
         // then
         assertEquals(expectedCompetitor.id, competitor.id)
         assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
@@ -43,7 +43,7 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
-        val competitor = service.getCompetitor(competitorId)
+        val competitor = service.get(competitorId)
         // then
         assertEquals(expectedCompetitor.id, competitor.id)
         assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
@@ -57,7 +57,7 @@ internal class CompetitorServiceTest {
         given(repository.findById(competitorId)).willReturn(null)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            service.getCompetitor(competitorId)
+            service.get(competitorId)
         }
         // then
         assertEquals("Competitor $competitorId is not found", exception.message)
@@ -69,7 +69,7 @@ internal class CompetitorServiceTest {
         given(repository.findById(competitorId)).willReturn(null)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            service.getCompetitorForLeague(competitorId, leagueId)
+            service.getForLeague(competitorId, leagueId)
         }
         // then
         assertEquals("Competitor $competitorId is not found", exception.message)
@@ -82,7 +82,7 @@ internal class CompetitorServiceTest {
         val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
         given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
-        val competitors = service.getCompetitors(leagueId)
+        val competitors = service.getListForLeague(leagueId)
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
@@ -96,7 +96,7 @@ internal class CompetitorServiceTest {
         // given
         given(repository.findByLeagueId(leagueId)).willReturn(emptyList())
         // when
-        val competitors = service.getCompetitors(leagueId)
+        val competitors = service.getListForLeague(leagueId)
         // then
         assertTrue(competitors.isEmpty())
     }
@@ -110,7 +110,7 @@ internal class CompetitorServiceTest {
         given(repository.findById(competitorId)).willReturn(competitor)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            service.getCompetitorForLeague(competitorId, leagueId)
+            service.getForLeague(competitorId, leagueId)
         }
         // then
         assertEquals("Competitor $competitorId is not assigned to league $leagueId", exception.message)
@@ -122,7 +122,7 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.save(expectedCompetitor)).willReturn(expectedCompetitor)
         // when
-        val competitor = service.saveCompetitor(expectedCompetitor)
+        val competitor = service.create(expectedCompetitor)
         // then
         assertNotNull(competitor.id)
         assertEquals(expectedCompetitor.username, competitor.username)
@@ -139,7 +139,7 @@ internal class CompetitorServiceTest {
         val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", Statistics())
         val game = GameFactory.create(firstCompetitor, 2, secondCompetitor, 1, leagueId)
         // when
-        service.updateCompetitorsStatistic(firstCompetitor, secondCompetitor, game)
+        service.updateStatistic(firstCompetitor, secondCompetitor, game)
         // then
         verify(repository, Mockito.times(2)).save(any(Competitor::class.java))
     }

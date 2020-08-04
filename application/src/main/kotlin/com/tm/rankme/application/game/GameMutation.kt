@@ -19,26 +19,26 @@ class GameMutation(
 ) : GraphQLMutationResolver {
 
     fun addGame(input: AddGameInput): GameModel {
-        val firstCompetitor = competitorService.getCompetitorForLeague(input.playerOneId, input.leagueId)
-        val secondCompetitor = competitorService.getCompetitorForLeague(input.playerTwoId, input.leagueId)
+        val firstCompetitor = competitorService.getForLeague(input.playerOneId, input.leagueId)
+        val secondCompetitor = competitorService.getForLeague(input.playerTwoId, input.leagueId)
         val game = GameFactory.create(
             firstCompetitor, input.playerOneScore,
             secondCompetitor, input.playerTwoScore, input.leagueId
         )
-        competitorService.updateCompetitorsStatistic(firstCompetitor, secondCompetitor, game)
+        competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
         return mapper.toModel(gameRepository.save(game))
     }
 
     fun completeGame(input: CompleteGameInput): GameModel {
         val event = eventRepository.findById(input.eventId)
             ?: throw IllegalStateException("Event ${input.eventId} is not found")
-        val firstCompetitor = competitorService.getCompetitorForLeague(event.memberOne.competitorId, event.leagueId)
-        val secondCompetitor = competitorService.getCompetitorForLeague(event.memberTwo.competitorId, event.leagueId)
+        val firstCompetitor = competitorService.getForLeague(event.memberOne.competitorId, event.leagueId)
+        val secondCompetitor = competitorService.getForLeague(event.memberTwo.competitorId, event.leagueId)
         val game = GameFactory.create(
             firstCompetitor, input.playerOneScore,
             secondCompetitor, input.playerTwoScore, event.leagueId
         )
-        competitorService.updateCompetitorsStatistic(firstCompetitor, secondCompetitor, game)
+        competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
         eventRepository.delete(input.eventId)
         return mapper.toModel(gameRepository.save(game))
     }

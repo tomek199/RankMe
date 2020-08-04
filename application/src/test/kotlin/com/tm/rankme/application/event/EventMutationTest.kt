@@ -29,8 +29,8 @@ internal class EventMutationTest {
 
     @BeforeEach
     internal fun setUp() {
-        given(competitorService.getCompetitorForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
-        given(competitorService.getCompetitorForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
+        given(competitorService.getForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
+        given(competitorService.getForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
     }
 
     @Test
@@ -45,8 +45,8 @@ internal class EventMutationTest {
         val event = mutation.addEvent(input)
         // then
         assertNotNull(event)
-        verify(competitorService, times(1)).getCompetitorForLeague(firstCompetitor.id!!, leagueId)
-        verify(competitorService, times(1)).getCompetitorForLeague(secondCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(eventRepository, only()).save(any(Event::class.java))
     }
 }

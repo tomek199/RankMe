@@ -35,8 +35,8 @@ internal class GameMutationTest {
 
     @BeforeEach
     internal fun setUp() {
-        given(competitorService.getCompetitorForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
-        given(competitorService.getCompetitorForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
+        given(competitorService.getForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
+        given(competitorService.getForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
     }
 
     @Test
@@ -51,10 +51,10 @@ internal class GameMutationTest {
         val game = mutation.addGame(input)
         // then
         assertNotNull(game)
-        verify(competitorService, times(1)).getCompetitorForLeague(firstCompetitor.id!!, leagueId)
-        verify(competitorService, times(1)).getCompetitorForLeague(secondCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
-            .updateCompetitorsStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
+            .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
         verify(gameRepository, only()).save(any(Game::class.java))
     }
 
@@ -79,10 +79,10 @@ internal class GameMutationTest {
         assertNotNull(game)
         verify(eventRepository, times(1)).findById(eventId)
         verify(eventRepository, times(1)).delete(eventId)
-        verify(competitorService, times(1)).getCompetitorForLeague(firstCompetitor.id!!, leagueId)
-        verify(competitorService, times(1)).getCompetitorForLeague(secondCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
+        verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
-            .updateCompetitorsStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
+            .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
         verify(gameRepository, only()).save(any(Game::class.java))
     }
 

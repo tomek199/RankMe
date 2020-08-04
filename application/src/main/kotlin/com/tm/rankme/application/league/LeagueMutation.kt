@@ -14,7 +14,7 @@ class LeagueMutation(
 
     fun addLeague(input: AddLeagueInput): LeagueModel {
         val domain = League(input.name)
-        val league = leagueService.saveLeague(domain)
+        val league = leagueService.create(domain)
         return mapper.toModel(league)
     }
 }
