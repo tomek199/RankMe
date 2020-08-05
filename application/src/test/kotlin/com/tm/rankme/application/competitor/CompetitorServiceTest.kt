@@ -117,7 +117,7 @@ internal class CompetitorServiceTest {
     }
 
     @Test
-    internal fun `Should save competitor`() {
+    internal fun `Should create competitor`() {
         // given
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.save(expectedCompetitor)).willReturn(expectedCompetitor)

@@ -5,7 +5,6 @@ import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.event.Event
-import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.event.Member
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,9 +18,9 @@ import kotlin.test.assertNotNull
 
 internal class EventMutationTest {
     private val competitorService = Mockito.mock(CompetitorService::class.java)
-    private val eventRepository = Mockito.mock(EventRepository::class.java)
+    private val eventService = Mockito.mock(EventService::class.java)
     private val mapper = EventMapper()
-    private val mutation = EventMutation(eventRepository, competitorService, mapper)
+    private val mutation = EventMutation(eventService, competitorService, mapper)
 
     private val leagueId = "league-1"
     private val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", Statistics())
@@ -39,7 +38,7 @@ internal class EventMutationTest {
         val memberOne = Member(firstCompetitor.id!!, firstCompetitor.username, 314, 1643)
         val memberTwo = Member(secondCompetitor.id!!, secondCompetitor.username, 156, 2895)
         val expectedEvent = Event("event-1", leagueId, memberOne, memberTwo, LocalDateTime.now())
-        given(eventRepository.save(any(Event::class.java))).willReturn(expectedEvent)
+        given(eventService.create(any(Event::class.java))).willReturn(expectedEvent)
         val input = AddEventInput(leagueId, firstCompetitor.id!!, secondCompetitor.id!!, LocalDateTime.now())
         // when
         val event = mutation.addEvent(input)
@@ -47,6 +46,6 @@ internal class EventMutationTest {
         assertNotNull(event)
         verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
-        verify(eventRepository, only()).save(any(Event::class.java))
+        verify(eventService, only()).create(any(Event::class.java))
     }
 }

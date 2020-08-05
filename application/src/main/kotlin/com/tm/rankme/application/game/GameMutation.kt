@@ -2,7 +2,7 @@ package com.tm.rankme.application.game
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
-import com.tm.rankme.domain.event.EventRepository
+import com.tm.rankme.application.event.EventService
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class GameMutation(
     private val gameRepository: GameRepository,
-    private val eventRepository: EventRepository,
+    private val eventService: EventService,
     private val competitorService: CompetitorService,
     @Qualifier("gameMapper") private val mapper: Mapper<Game, GameModel>
 ) : GraphQLMutationResolver {
@@ -30,8 +30,7 @@ class GameMutation(
     }
 
     fun completeGame(input: CompleteGameInput): GameModel {
-        val event = eventRepository.findById(input.eventId)
-            ?: throw IllegalStateException("Event ${input.eventId} is not found")
+        val event = eventService.get(input.eventId)
         val firstCompetitor = competitorService.getForLeague(event.memberOne.competitorId, event.leagueId)
         val secondCompetitor = competitorService.getForLeague(event.memberTwo.competitorId, event.leagueId)
         val game = GameFactory.create(
@@ -39,7 +38,7 @@ class GameMutation(
             secondCompetitor, input.playerTwoScore, event.leagueId
         )
         competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
-        eventRepository.delete(input.eventId)
+        eventService.remove(input.eventId)
         return mapper.toModel(gameRepository.save(game))
     }
 }

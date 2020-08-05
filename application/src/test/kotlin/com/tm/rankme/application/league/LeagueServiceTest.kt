@@ -41,7 +41,7 @@ internal class LeagueServiceTest {
     }
 
     @Test
-    internal fun `Should save league`() {
+    internal fun `Should create league`() {
         // given
         val expectedLeague = League(leagueId, leagueName)
         given(repository.save(expectedLeague)).willReturn(expectedLeague)
