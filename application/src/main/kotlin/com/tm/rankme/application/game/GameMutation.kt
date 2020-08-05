@@ -5,14 +5,13 @@ import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.application.event.EventService
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
-import com.tm.rankme.domain.game.GameRepository
 import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
 class GameMutation(
-    private val gameRepository: GameRepository,
+    private val gameService: GameService,
     private val eventService: EventService,
     private val competitorService: CompetitorService,
     @Qualifier("gameMapper") private val mapper: Mapper<Game, GameModel>
@@ -26,7 +25,7 @@ class GameMutation(
             secondCompetitor, input.playerTwoScore, input.leagueId
         )
         competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
-        return mapper.toModel(gameRepository.save(game))
+        return mapper.toModel(gameService.create(game))
     }
 
     fun completeGame(input: CompleteGameInput): GameModel {
@@ -39,6 +38,6 @@ class GameMutation(
         )
         competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
         eventService.remove(input.eventId)
-        return mapper.toModel(gameRepository.save(game))
+        return mapper.toModel(gameService.create(game))
     }
 }

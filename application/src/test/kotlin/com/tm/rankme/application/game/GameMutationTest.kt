@@ -22,11 +22,11 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
 internal class GameMutationTest {
-    private val gameRepository = mock(GameRepository::class.java)
+    private val gameService = mock(GameService::class.java)
     private val eventService = mock(EventService::class.java)
     private val competitorService = mock(CompetitorService::class.java)
     private val mapper = GameMapper()
-    private val mutation = GameMutation(gameRepository, eventService, competitorService, mapper)
+    private val mutation = GameMutation(gameService, eventService, competitorService, mapper)
 
     private val leagueId = "league-1"
     private val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", Statistics())
@@ -44,7 +44,7 @@ internal class GameMutationTest {
         val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
         val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
-        given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
+        given(gameService.create(any(Game::class.java))).willReturn(expectedGame)
         val input = AddGameInput(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
         // when
         val game = mutation.addGame(input)
@@ -54,7 +54,7 @@ internal class GameMutationTest {
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
             .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
-        verify(gameRepository, only()).save(any(Game::class.java))
+        verify(gameService, only()).create(any(Game::class.java))
     }
 
     @Test
@@ -64,7 +64,7 @@ internal class GameMutationTest {
         val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
         val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
-        given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
+        given(gameService.create(any(Game::class.java))).willReturn(expectedGame)
         val event = Event(
             eventId, leagueId,
             Member(firstCompetitor.id!!, firstCompetitor.username, 274, 1546),
@@ -82,7 +82,7 @@ internal class GameMutationTest {
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
             .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
-        verify(gameRepository, only()).save(any(Game::class.java))
+        verify(gameService, only()).create(any(Game::class.java))
     }
 
     @Test

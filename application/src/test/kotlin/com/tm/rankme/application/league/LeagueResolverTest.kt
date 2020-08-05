@@ -6,6 +6,7 @@ import com.tm.rankme.application.competitor.CompetitorModel
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.application.game.GameMapper
 import com.tm.rankme.application.game.GameModel
+import com.tm.rankme.application.game.GameService
 import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
@@ -21,11 +22,11 @@ import kotlin.test.assertFalse
 
 internal class LeagueResolverTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
-    private val gameRepository: GameRepository = Mockito.mock(GameRepository::class.java)
+    private val gameService: GameService = Mockito.mock(GameService::class.java)
     private val competitorMapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
     private val gameMapper: Mapper<Game, GameModel> = GameMapper()
     private val resolver: LeagueResolver = LeagueResolver(
-        competitorService, gameRepository, competitorMapper, gameMapper
+        competitorService, gameService, competitorMapper, gameMapper
     )
     private val league = LeagueModel("league-1", "Star Wars", LeagueSettingsModel(true, 3))
     private val competitor1 = Competitor(league.id, "comp-1", "Optimus Prime", Statistics())
@@ -63,7 +64,7 @@ internal class LeagueResolverTest {
             Player(competitor2.id!!, competitor2.username, 243, 1435, 3, -75), league.id, LocalDateTime.now()
         )
         val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
-        given(gameRepository.findByLeagueId(league.id, 1)).willReturn(side)
+        given(gameService.getSideForLeague(league.id, 1)).willReturn(side)
         // when
         val result = resolver.games(league, 1, null)
         // then
