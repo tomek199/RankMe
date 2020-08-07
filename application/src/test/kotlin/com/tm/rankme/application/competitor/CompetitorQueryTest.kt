@@ -2,21 +2,18 @@ package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
+import kotlin.test.assertFailsWith
 
 internal class CompetitorQueryTest {
-    private val repository: CompetitorRepository = Mockito.mock(CompetitorRepository::class.java)
+    private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
-    private val query = CompetitorQuery(repository, mapper)
+    private val query = CompetitorQuery(competitorService, mapper)
     private val id = "comp-1"
 
     @Test
@@ -24,7 +21,7 @@ internal class CompetitorQueryTest {
         val leagueId = "league-1"
         val username = "Optimus Prime"
         // given
-        given(repository.findById(id)).willReturn(Competitor(leagueId, id, username, Statistics()))
+        given(competitorService.get(id)).willReturn(Competitor(leagueId, id, username, Statistics()))
         // when
         val competitor = query.competitor(id)
         // then
@@ -33,13 +30,11 @@ internal class CompetitorQueryTest {
     }
 
     @Test
-    internal fun `Should return null when competitor is not found`() {
+    internal fun `Should throw IllegalStateException when competitor is not found`() {
         // given
-        given(repository.findById(id)).willReturn(null)
-        // when
-        val competitor = query.competitor(id)
+        given(competitorService.get(id)).willThrow(IllegalStateException::class.java)
         // then
-        assertNull(competitor)
+        assertFailsWith<IllegalStateException> { query.competitor(id) }
     }
 
     @Test
@@ -48,7 +43,7 @@ internal class CompetitorQueryTest {
         val leagueId = "league-1"
         val competitor1 = Competitor(leagueId, "comp-1", "Optimus Prime", Statistics())
         val competitor2 = Competitor(leagueId, "comp-2", "Megatron", Statistics())
-        given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
+        given(competitorService.getListForLeague(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
         val competitors = query.competitorsByLeagueId(leagueId)
         // then
@@ -63,7 +58,7 @@ internal class CompetitorQueryTest {
     internal fun `Should return empty list when competitors are not found`() {
         // given
         val leagueId = "league-1"
-        given(repository.findByLeagueId(leagueId)).willReturn(emptyList())
+        given(competitorService.getListForLeague(leagueId)).willReturn(emptyList())
         // when
         val competitors = query.competitorsByLeagueId(leagueId)
         // then
