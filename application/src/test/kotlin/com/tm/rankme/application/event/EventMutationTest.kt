@@ -1,6 +1,5 @@
 package com.tm.rankme.application.event
 
-import com.tm.rankme.application.any
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
-import org.mockito.Mockito.only
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import java.time.LocalDateTime
@@ -37,15 +35,17 @@ internal class EventMutationTest {
         // given
         val memberOne = Member(firstCompetitor.id!!, firstCompetitor.username, 314, 1643)
         val memberTwo = Member(secondCompetitor.id!!, secondCompetitor.username, 156, 2895)
-        val expectedEvent = Event("event-1", leagueId, memberOne, memberTwo, LocalDateTime.now())
-        given(eventService.create(any(Event::class.java))).willReturn(expectedEvent)
-        val input = AddEventInput(leagueId, firstCompetitor.id!!, secondCompetitor.id!!, LocalDateTime.now())
+        val eventDateTime = LocalDateTime.now()
+        val expectedEvent = Event("event-1", leagueId, memberOne, memberTwo, eventDateTime)
+        given(eventService.create(leagueId, firstCompetitor, secondCompetitor, eventDateTime))
+            .willReturn(expectedEvent)
+        val input = AddEventInput(leagueId, firstCompetitor.id!!, secondCompetitor.id!!, eventDateTime)
         // when
         val event = mutation.addEvent(input)
         // then
         assertNotNull(event)
         verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
-        verify(eventService, only()).create(any(Event::class.java))
+//        verify(eventService, only()).create(leagueId, Pair(firstCompetitor, secondCompetitor), eventDateTime)
     }
 }

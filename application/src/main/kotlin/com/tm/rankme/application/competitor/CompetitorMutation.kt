@@ -15,8 +15,7 @@ class CompetitorMutation(
 
     fun addCompetitor(input: AddCompetitorInput): CompetitorModel {
         leagueService.checkIfExist(input.leagueId)
-        val domain = Competitor(input.leagueId, input.username)
-        val competitor = competitorService.create(domain)
+        val competitor = competitorService.create(input.leagueId, input.username)
         return mapper.toModel(competitor)
     }
 }

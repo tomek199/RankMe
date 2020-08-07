@@ -8,7 +8,6 @@ import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.Member
 import com.tm.rankme.domain.game.Game
-import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -44,7 +43,7 @@ internal class GameMutationTest {
         val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
         val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
-        given(gameService.create(any(Game::class.java))).willReturn(expectedGame)
+        given(gameService.create(leagueId, firstCompetitor, 2, secondCompetitor, 1)).willReturn(expectedGame)
         val input = AddGameInput(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
         // when
         val game = mutation.addGame(input)
@@ -54,7 +53,7 @@ internal class GameMutationTest {
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
             .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
-        verify(gameService, only()).create(any(Game::class.java))
+        verify(gameService, only()).create(leagueId, firstCompetitor, 2, secondCompetitor, 1)
     }
 
     @Test
@@ -64,7 +63,7 @@ internal class GameMutationTest {
         val playerOne = Player(firstCompetitor.id!!, firstCompetitor.username, 274, 1546, 1, -79)
         val playerTwo = Player(secondCompetitor.id!!, secondCompetitor.username, 152, 2587, 3, 79)
         val expectedGame = Game("game-1", playerOne, playerTwo, leagueId, LocalDateTime.now())
-        given(gameService.create(any(Game::class.java))).willReturn(expectedGame)
+        given(gameService.create(leagueId, firstCompetitor, 1, secondCompetitor, 3)).willReturn(expectedGame)
         val event = Event(
             eventId, leagueId,
             Member(firstCompetitor.id!!, firstCompetitor.username, 274, 1546),
@@ -82,7 +81,7 @@ internal class GameMutationTest {
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
             .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
-        verify(gameService, only()).create(any(Game::class.java))
+        verify(gameService, only()).create(leagueId, firstCompetitor, 1, secondCompetitor, 3)
     }
 
     @Test

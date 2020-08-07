@@ -1,6 +1,5 @@
 package com.tm.rankme.application.competitor
 
-import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Competitor
@@ -26,7 +25,7 @@ internal class CompetitorMutationTest {
 
     @BeforeEach
     internal fun setUp() {
-        given(competitorService.create(any(Competitor::class.java)))
+        given(competitorService.create(leagueId, username))
             .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
     }
 

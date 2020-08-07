@@ -1,7 +1,9 @@
 package com.tm.rankme.application.game
 
 import com.tm.rankme.domain.Side
+import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.game.Game
+import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import org.springframework.stereotype.Service
 
@@ -15,7 +17,12 @@ internal class GameServiceImpl(
         return game ?: throw IllegalStateException("Game $gameId is not found")
     }
 
-    override fun create(game: Game): Game {
+    override fun create(
+        leagueId: String,
+        firstCompetitor: Competitor, firstScore: Int,
+        secondCompetitor: Competitor, secondScore: Int
+    ): Game {
+        val game = GameFactory.create(firstCompetitor, firstScore, secondCompetitor, secondScore, leagueId)
         return repository.save(game)
     }
 

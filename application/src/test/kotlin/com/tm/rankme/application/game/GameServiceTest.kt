@@ -1,14 +1,19 @@
 package com.tm.rankme.application.game
 
+import com.tm.rankme.application.any
 import com.tm.rankme.domain.Side
+import com.tm.rankme.domain.competitor.Competitor
+import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
 import org.junit.jupiter.api.Test
+import org.mockito.AdditionalAnswers
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.Mockito.only
 import org.mockito.Mockito.verify
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -49,17 +54,29 @@ internal class GameServiceTest {
 
     @Test
     internal fun `Should create game`() {
-        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
-        given(repository.save(expectedGame)).willReturn(expectedGame)
+        // given
+        val firstCompetitorStats = Statistics(285, 1868, 4, 8, 6, LocalDate.now())
+        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", firstCompetitorStats)
+        val secondCompetitorStats = Statistics(182, 2593, 6, 5, 3, LocalDate.now())
+        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", secondCompetitorStats)
+        val firstScore = 3
+        val secondScore = 2
+        given(repository.save(any(Game::class.java))).will(AdditionalAnswers.returnsFirstArg<Game>())
         // when
-        val game = service.create(expectedGame)
+        val game = service.create(leagueId, firstCompetitor, firstScore, secondCompetitor, secondScore)
         // then
-        assertEquals(expectedGame.leagueId, game.leagueId)
-        assertEquals(expectedGame.id, game.id)
-        assertEquals(expectedGame.playerOne, game.playerOne)
-        assertEquals(expectedGame.playerTwo, game.playerTwo)
-        assertEquals(expectedGame.dateTime, game.dateTime)
-        verify(repository, only()).save(expectedGame)
+        verify(repository, only()).save(any(Game::class.java))
+        assertEquals(leagueId, game.leagueId)
+        assertEquals(firstCompetitor.id, game.playerOne.competitorId)
+        assertEquals(firstCompetitor.username, playerOne.username)
+        assertEquals(282, game.playerOne.deviation)
+        assertEquals(2249, game.playerOne.rating)
+        assertEquals(firstScore, game.playerOne.score)
+        assertEquals(secondCompetitor.id, game.playerTwo.competitorId)
+        assertEquals(secondCompetitor.username, playerTwo.username)
+        assertEquals(186, game.playerTwo.deviation)
+        assertEquals(2453, game.playerTwo.rating)
+        assertEquals(secondScore, game.playerTwo.score)
     }
 
     @Test

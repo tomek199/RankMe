@@ -119,17 +119,18 @@ internal class CompetitorServiceTest {
     @Test
     internal fun `Should create competitor`() {
         // given
-        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
-        given(repository.save(expectedCompetitor)).willReturn(expectedCompetitor)
+        val username = "Optimus Prime"
+        val expectedCompetitor = Competitor(leagueId, competitorId, username, Statistics())
+        given(repository.save(any(Competitor::class.java))).willReturn(expectedCompetitor)
         // when
-        val competitor = service.create(expectedCompetitor)
+        val competitor = service.create(leagueId, username)
         // then
         assertNotNull(competitor.id)
         assertEquals(expectedCompetitor.username, competitor.username)
         assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
         assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
         assertNull(competitor.statistics.lastGame)
-        verify(repository, only()).save(expectedCompetitor)
+        verify(repository, only()).save(any(Competitor::class.java))
     }
 
     @Test

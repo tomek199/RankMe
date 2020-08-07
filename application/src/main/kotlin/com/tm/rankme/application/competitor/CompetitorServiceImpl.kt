@@ -26,7 +26,8 @@ internal class CompetitorServiceImpl(
         return repository.findByLeagueId(leagueId)
     }
 
-    override fun create(competitor: Competitor): Competitor {
+    override fun create(leagueId: String, username: String): Competitor {
+        val competitor = Competitor(leagueId, username)
         return repository.save(competitor)
     }
 
