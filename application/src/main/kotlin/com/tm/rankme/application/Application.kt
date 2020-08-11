@@ -1,6 +1,7 @@
 package com.tm.rankme.application
 
 import com.tm.rankme.application.common.LocalDateCoercing
+import com.tm.rankme.application.common.LocalDateTimeCoercing
 import graphql.schema.GraphQLScalarType
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -17,6 +18,14 @@ class Application {
         return GraphQLScalarType.newScalar()
             .name("LocalDate")
             .coercing(LocalDateCoercing())
+            .build()
+    }
+
+    @Bean
+    fun localDateTimeScalar(): GraphQLScalarType {
+        return GraphQLScalarType.newScalar()
+            .name("LocalDateTime")
+            .coercing(LocalDateTimeCoercing())
             .build()
     }
 }
