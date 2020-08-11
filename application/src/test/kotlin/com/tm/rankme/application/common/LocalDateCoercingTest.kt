@@ -10,15 +10,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
-internal class LocalDateScalarTest {
-    private val scalar = LocalDateScalar()
+internal class LocalDateCoercingTest {
+    private val coercing = LocalDateCoercing()
 
     @Test
     internal fun `Should convert String value to LocalDate`() {
         // given
         val expectedDate = LocalDate.of(2020, 6, 15)
         // when
-        val result = scalar.coercing.parseValue("2020-06-15")
+        val result = coercing.parseValue("2020-06-15")
         // then
         assertEquals(expectedDate, result)
     }
@@ -27,7 +27,7 @@ internal class LocalDateScalarTest {
     internal fun `Should throw exception when converting incorrect String value to LocalDate`() {
         // when
         val input = "2020-8-7"
-        val exception = assertFailsWith<CoercingParseValueException> { scalar.coercing.parseValue(input) }
+        val exception = assertFailsWith<CoercingParseValueException> { coercing.parseValue(input) }
         // then
         assertEquals("Could not parse value $input for LocalDate", exception.message)
     }
@@ -35,7 +35,7 @@ internal class LocalDateScalarTest {
     @Test
     internal fun `Should return null when converting null value to LocalDate`() {
         // when
-        val result = scalar.coercing.parseValue(null)
+        val result = coercing.parseValue(null)
         // then
         assertNull(result)
     }
@@ -45,7 +45,7 @@ internal class LocalDateScalarTest {
         // given
         val literal = StringValue("2020-12-04")
         // when
-        val result = scalar.coercing.parseLiteral(literal)
+        val result = coercing.parseLiteral(literal)
         // then
         assertEquals(LocalDate.of(2020, 12, 4), result)
     }
@@ -55,7 +55,7 @@ internal class LocalDateScalarTest {
         // given
         val literal = StringValue("2020-3-2")
         // when
-        val exception = assertFailsWith<CoercingParseLiteralException> { scalar.coercing.parseLiteral(literal) }
+        val exception = assertFailsWith<CoercingParseLiteralException> { coercing.parseLiteral(literal) }
         // then
         assertEquals("Could not parse literal $literal for LocalDate", exception.message)
     }
@@ -63,7 +63,7 @@ internal class LocalDateScalarTest {
     @Test
     internal fun `Should return null when converting null literal to LocalDate`() {
         // when
-        val result = scalar.coercing.parseLiteral(null)
+        val result = coercing.parseLiteral(null)
         // then
         assertNull(result)
     }
@@ -73,7 +73,7 @@ internal class LocalDateScalarTest {
         // given
         val expectedValue = "2020-10-07"
         // when
-        val result = scalar.coercing.serialize(expectedValue)
+        val result = coercing.serialize(expectedValue)
         // then
         assertEquals(expectedValue, result)
     }
@@ -83,7 +83,7 @@ internal class LocalDateScalarTest {
         // given
         val expectedValue = "2020-06-07"
         // when
-        val result = scalar.coercing.serialize(LocalDate.of(2020, 6, 7))
+        val result = coercing.serialize(LocalDate.of(2020, 6, 7))
         // then
         assertEquals(expectedValue, result)
     }
@@ -91,7 +91,7 @@ internal class LocalDateScalarTest {
     @Test
     internal fun `Should serialize null value`() {
         // when
-        val result = scalar.coercing.serialize(null)
+        val result = coercing.serialize(null)
         // then
         assertNull(result)
     }
@@ -101,7 +101,7 @@ internal class LocalDateScalarTest {
         // given
         val input = "abcd1234"
         // when
-        val exception = assertFailsWith<CoercingSerializeException> { scalar.coercing.serialize(input) }
+        val exception = assertFailsWith<CoercingSerializeException> { coercing.serialize(input) }
         // then
         assertEquals("Could not serialize object $input", exception.message)
     }
