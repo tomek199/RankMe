@@ -87,9 +87,9 @@ internal class LeagueResolverTest {
     internal fun `Should return empty games connection`() {
         // given
         val side = Side(emptyList<Game>(), 0, hasPrevious = false, hasNext = false)
-        given(gameService.getSideForLeague(league.id, 1)).willReturn(side)
+        given(gameService.getSideForLeague(league.id, 1, "3")).willReturn(side)
         // when
-        val result = resolver.games(league, 1, null, Mockito.mock(DataFetchingEnvironment::class.java))
+        val result = resolver.games(league, 1, "Mw==", Mockito.mock(DataFetchingEnvironment::class.java))
         // then
         assertTrue(result.edges.isEmpty())
         assertFalse(result.pageInfo.isHasPreviousPage)
