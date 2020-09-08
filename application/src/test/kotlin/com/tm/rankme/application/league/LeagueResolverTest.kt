@@ -11,14 +11,18 @@ import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.Game
-import com.tm.rankme.domain.game.GameRepository
+import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.Player
+import graphql.schema.DataFetchingEnvironment
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import java.time.LocalDateTime
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class LeagueResolverTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
@@ -57,7 +61,7 @@ internal class LeagueResolverTest {
     }
 
     @Test
-    internal fun `Should return pageable games by league id`() {
+    internal fun `Should return games connection by league id with one result`() {
         // given
         val game = Game(
             "game-1", Player(competitor1.id!!, competitor1.username, 243, 1435, 4, 75),
@@ -66,17 +70,44 @@ internal class LeagueResolverTest {
         val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
         given(gameService.getSideForLeague(league.id, 1)).willReturn(side)
         // when
-        val result = resolver.games(league, 1, null)
+        val result = resolver.games(league, 1, null, Mockito.mock(DataFetchingEnvironment::class.java))
         // then
-        assertEquals(1, result.totalCount)
-        assertFalse(result.pageInfo.hasPreviousPage)
-        assertFalse(result.pageInfo.hasNextPage)
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertFalse(result.pageInfo.isHasNextPage)
         assertEquals(1, result.edges.size)
         val edge = result.edges.first()
-        assertEquals(game.id, edge.cursor)
+        assertEquals(game.id, String(Base64.getDecoder().decode(edge.cursor.value)))
         assertEquals(game.dateTime, edge.node.dateTime)
         assertEquals(game.id, edge.node.id)
         assertEquals(game.playerOne.competitorId, edge.node.playerOne.competitorId)
         assertEquals(game.playerTwo.competitorId, edge.node.playerTwo.competitorId)
+    }
+
+    @Test
+    internal fun `Should return empty games connection`() {
+        // given
+        val side = Side(emptyList<Game>(), 0, hasPrevious = false, hasNext = false)
+        given(gameService.getSideForLeague(league.id, 1, "3")).willReturn(side)
+        // when
+        val result = resolver.games(league, 1, "Mw==", Mockito.mock(DataFetchingEnvironment::class.java))
+        // then
+        assertTrue(result.edges.isEmpty())
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertFalse(result.pageInfo.isHasNextPage)
+        println(result)
+    }
+
+    @Test
+    internal fun `Should throw IllegalStateException when game id is null`() {
+        // given
+        val game = GameFactory.create(competitor1, 2, competitor2, 3, league.id)
+        val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
+        given(gameService.getSideForLeague(league.id, 1)).willReturn(side)
+        // when
+        val exception = assertThrows<IllegalStateException> {
+            resolver.games(league, 1, null, Mockito.mock(DataFetchingEnvironment::class.java))
+        }
+        // then
+        assertEquals("Value to encode is null", exception.message)
     }
 }
