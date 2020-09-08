@@ -26,7 +26,7 @@ internal class GameServiceImpl(
         return repository.save(game)
     }
 
-    override fun getSideForLeague(leagueId: String, last: Int, after: String?): Side<Game> {
-        return repository.findByLeagueId(leagueId, last, after)
+    override fun getSideForLeague(leagueId: String, first: Int, after: String?): Side<Game> {
+        return repository.findByLeagueId(leagueId, first, after)
     }
 }

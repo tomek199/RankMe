@@ -12,22 +12,6 @@ type Player {
     score: Int!
 }
 
-type GameConnection {
-    totalCount: Int!
-    edges: [GameEdge]!
-    pageInfo: PageInfo!
-}
-
-type GameEdge {
-    node: Game!
-    cursor: String!
-}
-
-type PageInfo {
-    hasPreviousPage: Boolean!
-    hasNextPage: Boolean!
-}
-
 input AddGameInput {
     leagueId: String!
     playerOneId: String!

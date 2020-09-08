@@ -29,11 +29,11 @@ class GameMemoryStorage : GameRepository {
         games.removeIf { game -> game.id.equals(id) }
     }
 
-    override fun findByLeagueId(leagueId: String, last: Int, after: String?): Side<Game> {
+    override fun findByLeagueId(leagueId: String, first: Int, after: String?): Side<Game> {
         val gamesByLeague = games.filter { game -> game.leagueId == leagueId }
         val filteredGames =
-            if (after != null) gamesByLeague.filter { game -> game.id!!.toInt() > after.toInt() }.take(last)
-            else gamesByLeague.take(last)
+            if (after != null) gamesByLeague.filter { game -> game.id!!.toInt() > after.toInt() }.take(first)
+            else gamesByLeague.take(first)
         val hasPrevious = filteredGames.isNotEmpty() && gamesByLeague.first() != filteredGames.first()
         val hasNext = filteredGames.isNotEmpty() && gamesByLeague.last() != filteredGames.last()
         return Side(filteredGames, gamesByLeague.size, hasPrevious, hasNext)

@@ -12,5 +12,5 @@ interface GameService {
         secondCompetitor: Competitor, secondScore: Int
     ): Game
 
-    fun getSideForLeague(leagueId: String, last: Int, after: String? = null): Side<Game>
+    fun getSideForLeague(leagueId: String, first: Int, after: String? = null): Side<Game>
 }
