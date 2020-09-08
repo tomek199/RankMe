@@ -4,14 +4,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
 
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
     jacoco
     id("org.sonarqube") version("2.7.1")
 }
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.18-SNAPSHOT"
+    version = "0.19-SNAPSHOT"
 
     repositories {
         mavenCentral()
