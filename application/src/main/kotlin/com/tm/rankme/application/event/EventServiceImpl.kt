@@ -1,15 +1,18 @@
 package com.tm.rankme.application.event
 
+import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.event.Member
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 internal class EventServiceImpl(
-    private val repository: EventRepository
+    private val repository: EventRepository,
+    @Qualifier("eventMapper") private val mapper: Mapper<Event, EventModel>
 ) : EventService {
 
     override fun get(eventId: String): Event {
@@ -21,11 +24,11 @@ internal class EventServiceImpl(
         leagueId: String,
         firstCompetitor: Competitor, secondCompetitor: Competitor,
         dateTime: LocalDateTime
-    ): Event {
+    ): EventModel {
         val firstMember = createMember(firstCompetitor)
         val secondMember = createMember(secondCompetitor)
-        val event = Event(leagueId, firstMember, secondMember, dateTime)
-        return repository.save(event)
+        val event = repository.save(Event(leagueId, firstMember, secondMember, dateTime))
+        return mapper.toModel(event)
     }
 
     private fun createMember(competitor: Competitor): Member {

@@ -10,7 +10,7 @@ interface EventService {
         leagueId: String,
         firstCompetitor: Competitor, secondCompetitor: Competitor,
         dateTime: LocalDateTime
-    ): Event
+    ): EventModel
 
     fun remove(eventId: String)
 }

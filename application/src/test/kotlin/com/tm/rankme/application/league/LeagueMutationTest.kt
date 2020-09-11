@@ -24,7 +24,7 @@ internal class LeagueMutationTest {
         // given
         val input = AddLeagueInput(leagueName)
         // when
-        val league = mutation.addLeague(input)
+        val league: LeagueModel = mutation.addLeague(input)
         // then
         assertNotNull(league.id)
         assertEquals(input.name, league.name)

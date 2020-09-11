@@ -1,13 +1,13 @@
 package com.tm.rankme.application.event
 
 import com.tm.rankme.application.any
+import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.event.Member
 import org.junit.jupiter.api.Test
-import org.mockito.AdditionalAnswers.returnsFirstArg
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.mockito.Mockito.only
@@ -19,7 +19,9 @@ import kotlin.test.assertFailsWith
 
 internal class EventServiceTest {
     private val repository: EventRepository = Mockito.mock(EventRepository::class.java)
-    private val service: EventService = EventServiceImpl(repository)
+    private val mapper: Mapper<Event, EventModel> = EventMapper()
+    private val service: EventService = EventServiceImpl(repository, mapper)
+
     private val eventId = "event-1"
     private val leagueId = "league-1"
     private val memberOne = Member("comp-1", "Batman", 234, 2435)
@@ -59,12 +61,21 @@ internal class EventServiceTest {
         val secondCompetitorStats = Statistics(195, 2877, 8, 7, 2, LocalDate.now())
         val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", secondCompetitorStats)
         val eventDateTime = LocalDateTime.now()
-        given(repository.save(any(Event::class.java))).will(returnsFirstArg<Event>())
+        val expectedEvent = Event(
+            eventId, leagueId,
+            Member(
+                firstCompetitor.id!!, firstCompetitor.username,
+                firstCompetitor.statistics.deviation, firstCompetitor.statistics.rating),
+            Member(
+                secondCompetitor.id!!, secondCompetitor.username,
+                secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating),
+            eventDateTime
+        )
+        given(repository.save(any(Event::class.java))).willReturn(expectedEvent)
         // when
-        val event = service.create(leagueId, firstCompetitor, secondCompetitor, eventDateTime)
+        val event: EventModel = service.create(leagueId, firstCompetitor, secondCompetitor, eventDateTime)
         // then
         verify(repository, only()).save(any(Event::class.java))
-        assertEquals(leagueId, event.leagueId)
         assertEquals(eventDateTime, event.dateTime)
         assertEquals(firstCompetitor.id, event.memberOne.competitorId)
         assertEquals(firstCompetitor.username, event.memberOne.username)
