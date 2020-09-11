@@ -1,8 +1,5 @@
 package com.tm.rankme.application.league
 
-import com.tm.rankme.application.any
-import com.tm.rankme.application.common.Mapper
-import com.tm.rankme.domain.league.League
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -13,18 +10,19 @@ import kotlin.test.assertNotNull
 
 internal class LeagueMutationTest {
     private val leagueService: LeagueService = Mockito.mock(LeagueService::class.java)
-    private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
-    private val mutation = LeagueMutation(leagueService, mapper)
+    private val mutation = LeagueMutation(leagueService)
+    private val leagueName = "Star Wars"
 
     @BeforeEach
     internal fun setUp() {
-        given(leagueService.create(any(League::class.java))).willReturn(League("league-1", "Star Wars"))
+        given(leagueService.create(leagueName))
+            .willReturn(LeagueModel("league-1", leagueName, LeagueSettingsModel(false, 2)))
     }
 
     @Test
     internal fun `Should add league with default params`() {
         // given
-        val input = AddLeagueInput("Star Wars")
+        val input = AddLeagueInput(leagueName)
         // when
         val league = mutation.addLeague(input)
         // then

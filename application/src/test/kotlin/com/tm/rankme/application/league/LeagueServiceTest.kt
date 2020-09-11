@@ -1,5 +1,7 @@
 package com.tm.rankme.application.league
 
+import com.tm.rankme.application.any
+import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
 import org.junit.jupiter.api.Test
@@ -12,7 +14,8 @@ import kotlin.test.assertFailsWith
 
 internal class LeagueServiceTest {
     private val repository: LeagueRepository = Mockito.mock(LeagueRepository::class.java)
-    private val service: LeagueService = LeagueServiceImpl(repository)
+    private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
+    private val service: LeagueService = LeagueServiceImpl(repository, mapper)
     private val leagueId = "league-1"
     private val leagueName = "Star Wars"
 
@@ -44,14 +47,15 @@ internal class LeagueServiceTest {
     internal fun `Should create league`() {
         // given
         val expectedLeague = League(leagueId, leagueName)
-        given(repository.save(expectedLeague)).willReturn(expectedLeague)
+        given(repository.save(any(League::class.java))).willReturn(expectedLeague)
         // when
-        val league = service.create(expectedLeague)
+        val league: LeagueModel = service.create(leagueName)
         // then
         assertEquals(expectedLeague.id, league.id)
         assertEquals(expectedLeague.name, league.name)
-        assertEquals(expectedLeague.settings, league.settings)
-        verify(repository, only()).save(expectedLeague)
+        assertEquals(expectedLeague.settings.allowDraws, league.settings.allowDraws)
+        assertEquals(expectedLeague.settings.maxScore, league.settings.maxScore)
+        verify(repository, only()).save(any(League::class.java))
     }
 
     @Test
