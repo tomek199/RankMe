@@ -1,8 +1,6 @@
 package com.tm.rankme.application.competitor
 
-import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.league.LeagueService
-import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,16 +15,16 @@ import kotlin.test.assertNull
 internal class CompetitorMutationTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
     private val leagueService = Mockito.mock(LeagueService::class.java)
-    private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
-    private val mutation = CompetitorMutation(competitorService, leagueService, mapper)
+    private val mutation = CompetitorMutation(competitorService, leagueService)
 
     private val leagueId = "league-1"
     private val username = "Optimus Prime"
 
     @BeforeEach
     internal fun setUp() {
+        val statistics = CompetitorStatisticsModel(350, 1500, 0, 0, 0, null)
         given(competitorService.create(leagueId, username))
-            .willReturn(Competitor(leagueId, "comp-1", username, Statistics()))
+            .willReturn(CompetitorModel("comp-1", username, statistics))
     }
 
     @Test
@@ -36,7 +34,7 @@ internal class CompetitorMutationTest {
         val expectedStatistics = Statistics()
         val input = AddCompetitorInput(leagueId, username)
         // when
-        val competitor = mutation.addCompetitor(input)
+        val competitor: CompetitorModel = mutation.addCompetitor(input)
         // then
         assertNotNull(competitor.id)
         assertEquals(username, competitor.username)

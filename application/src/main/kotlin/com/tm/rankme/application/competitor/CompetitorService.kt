@@ -7,6 +7,6 @@ interface CompetitorService {
     fun get(competitorId: String): Competitor
     fun getForLeague(competitorId: String, leagueId: String): Competitor
     fun getListForLeague(leagueId: String): List<Competitor>
-    fun create(leagueId: String, username: String): Competitor
+    fun create(leagueId: String, username: String): CompetitorModel
     fun updateStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game)
 }
