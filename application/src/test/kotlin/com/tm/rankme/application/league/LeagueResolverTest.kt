@@ -4,6 +4,7 @@ import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorMapper
 import com.tm.rankme.application.competitor.CompetitorModel
 import com.tm.rankme.application.competitor.CompetitorService
+import com.tm.rankme.application.competitor.CompetitorStatisticsModel
 import com.tm.rankme.application.game.GameMapper
 import com.tm.rankme.application.game.GameModel
 import com.tm.rankme.application.game.GameService
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.assertEquals
@@ -27,11 +29,9 @@ import kotlin.test.assertTrue
 internal class LeagueResolverTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
     private val gameService: GameService = Mockito.mock(GameService::class.java)
-    private val competitorMapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
     private val gameMapper: Mapper<Game, GameModel> = GameMapper()
-    private val resolver: LeagueResolver = LeagueResolver(
-        competitorService, gameService, competitorMapper, gameMapper
-    )
+    private val resolver: LeagueResolver = LeagueResolver(competitorService, gameService, gameMapper)
+
     private val league = LeagueModel("league-1", "Star Wars", LeagueSettingsModel(true, 3))
     private val competitor1 = Competitor(league.id, "comp-1", "Optimus Prime", Statistics())
     private val competitor2 = Competitor(league.id, "comp-2", "Megatron", Statistics())
@@ -39,9 +39,13 @@ internal class LeagueResolverTest {
     @Test
     internal fun `Should return competitors list by league id`() {
         // given
-        given(competitorService.getListForLeague(league.id)).willReturn(listOf(competitor1, competitor2))
+        val statisticsModel1 = CompetitorStatisticsModel(250, 1500, 0, 0, 0, LocalDate.now())
+        val competitorModel1 = CompetitorModel( "comp-1", "Optimus Prime", statisticsModel1)
+        val statisticsModel2 = CompetitorStatisticsModel(250, 1500, 0, 0, 0, LocalDate.now())
+        val competitorModel2 = CompetitorModel("comp-2", "Megatron", statisticsModel2)
+        given(competitorService.getListForLeague(league.id)).willReturn(listOf(competitorModel1, competitorModel2))
         // when
-        val competitors = resolver.competitors(league)
+        val competitors: List<CompetitorModel> = resolver.competitors(league)
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
@@ -55,7 +59,7 @@ internal class LeagueResolverTest {
         // given
         given(competitorService.getListForLeague(league.id)).willReturn(emptyList())
         // when
-        val competitors = resolver.competitors(league)
+        val competitors: List<CompetitorModel> = resolver.competitors(league)
         // then
         assertEquals(0, competitors.size)
     }

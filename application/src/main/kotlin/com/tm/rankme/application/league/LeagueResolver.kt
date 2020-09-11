@@ -5,7 +5,6 @@ import com.tm.rankme.application.competitor.CompetitorModel
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.application.game.GameModel
 import com.tm.rankme.application.game.GameService
-import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.game.Game
 import graphql.kickstart.tools.GraphQLResolver
 import graphql.relay.Connection
@@ -23,14 +22,11 @@ import java.util.*
 class LeagueResolver(
     private val competitorService: CompetitorService,
     private val gameService: GameService,
-    @Qualifier("competitorMapper") private val competitorMapper: Mapper<Competitor, CompetitorModel>,
     @Qualifier("gameMapper") private val gameMapper: Mapper<Game, GameModel>
 ) : GraphQLResolver<LeagueModel> {
 
     fun competitors(league: LeagueModel): List<CompetitorModel> {
-        return competitorService.getListForLeague(league.id).map { competitor ->
-            competitorMapper.toModel(competitor)
-        }
+        return competitorService.getListForLeague(league.id)
     }
 
     fun games(league: LeagueModel, first: Int, after: String?, env: DataFetchingEnvironment): Connection<GameModel> {

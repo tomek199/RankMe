@@ -45,12 +45,16 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
-        val competitor = service.get(competitorId)
+        val competitor: CompetitorModel = service.get(competitorId)
         // then
         assertEquals(expectedCompetitor.id, competitor.id)
-        assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
         assertEquals(expectedCompetitor.username, competitor.username)
-        assertEquals(expectedCompetitor.statistics, competitor.statistics)
+        assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
+        assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
+        assertEquals(expectedCompetitor.statistics.draw, competitor.statistics.draw)
+        assertEquals(expectedCompetitor.statistics.lost, competitor.statistics.lost)
+        assertEquals(expectedCompetitor.statistics.won, competitor.statistics.won)
+        assertEquals(expectedCompetitor.statistics.lastGame, competitor.statistics.lastGame)
     }
 
     @Test
@@ -84,7 +88,7 @@ internal class CompetitorServiceTest {
         val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
         given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
-        val competitors = service.getListForLeague(leagueId)
+        val competitors: List<CompetitorModel> = service.getListForLeague(leagueId)
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
@@ -98,7 +102,7 @@ internal class CompetitorServiceTest {
         // given
         given(repository.findByLeagueId(leagueId)).willReturn(emptyList())
         // when
-        val competitors = service.getListForLeague(leagueId)
+        val competitors: List<CompetitorModel> = service.getListForLeague(leagueId)
         // then
         assertTrue(competitors.isEmpty())
     }
@@ -125,7 +129,7 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, username, Statistics())
         given(repository.save(any(Competitor::class.java))).willReturn(expectedCompetitor)
         // when
-        val competitor = service.create(leagueId, username)
+        val competitor: CompetitorModel = service.create(leagueId, username)
         // then
         assertNotNull(competitor.id)
         assertEquals(expectedCompetitor.username, competitor.username)

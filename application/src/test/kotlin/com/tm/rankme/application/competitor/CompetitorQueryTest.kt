@@ -1,29 +1,26 @@
 package com.tm.rankme.application.competitor
 
-import com.tm.rankme.application.common.Mapper
-import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
+import java.time.LocalDate
 import kotlin.test.assertFailsWith
 
 internal class CompetitorQueryTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
-    private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
-    private val query = CompetitorQuery(competitorService, mapper)
+    private val query = CompetitorQuery(competitorService)
     private val id = "comp-1"
 
     @Test
     internal fun `Should return competitor by id`() {
-        val leagueId = "league-1"
         val username = "Optimus Prime"
         // given
-        given(competitorService.get(id)).willReturn(Competitor(leagueId, id, username, Statistics()))
+        val statisticsModel = CompetitorStatisticsModel(145, 2359, 35, 34, 33, LocalDate.now())
+        given(competitorService.get(id)).willReturn(CompetitorModel(id, username, statisticsModel))
         // when
-        val competitor = query.competitor(id)
+        val competitor: CompetitorModel? = query.competitor(id)
         // then
         assertEquals(id, competitor!!.id)
         assertEquals(username, competitor.username)
@@ -41,11 +38,13 @@ internal class CompetitorQueryTest {
     internal fun `Should return competitors list by league id`() {
         // given
         val leagueId = "league-1"
-        val competitor1 = Competitor(leagueId, "comp-1", "Optimus Prime", Statistics())
-        val competitor2 = Competitor(leagueId, "comp-2", "Megatron", Statistics())
+        val statistics1 = CompetitorStatisticsModel(250, 1500, 0, 0, 0, LocalDate.now())
+        val competitor1 = CompetitorModel( "comp-1", "Optimus Prime", statistics1)
+        val statistics2 = CompetitorStatisticsModel(250, 1500, 0, 0, 0, LocalDate.now())
+        val competitor2 = CompetitorModel("comp-2", "Megatron", statistics2)
         given(competitorService.getListForLeague(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
-        val competitors = query.competitorsByLeagueId(leagueId)
+        val competitors: List<CompetitorModel> = query.competitorsByLeagueId(leagueId)
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
@@ -60,7 +59,7 @@ internal class CompetitorQueryTest {
         val leagueId = "league-1"
         given(competitorService.getListForLeague(leagueId)).willReturn(emptyList())
         // when
-        val competitors = query.competitorsByLeagueId(leagueId)
+        val competitors: List<CompetitorModel> = query.competitorsByLeagueId(leagueId)
         // then
         assertTrue(competitors.isEmpty())
     }
