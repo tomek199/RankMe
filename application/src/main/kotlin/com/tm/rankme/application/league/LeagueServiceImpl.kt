@@ -12,9 +12,10 @@ internal class LeagueServiceImpl(
     @Qualifier("leagueMapper") private val mapper: Mapper<League, LeagueModel>
 ) : LeagueService {
 
-    override fun get(leagueId: String): League {
+    override fun get(leagueId: String): LeagueModel {
         val league = repository.findById(leagueId)
-        return league ?: throw IllegalStateException("League $leagueId is not found")
+        league ?: throw IllegalStateException("League $leagueId is not found")
+        return mapper.toModel(league)
     }
 
     override fun create(name: String): LeagueModel {

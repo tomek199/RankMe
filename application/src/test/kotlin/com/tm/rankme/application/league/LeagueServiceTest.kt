@@ -25,7 +25,7 @@ internal class LeagueServiceTest {
         // given
         given(repository.findById(leagueId)).willReturn(League(leagueId, leagueName))
         // when
-        val league = service.get(leagueId)
+        val league: LeagueModel = service.get(leagueId)
         // then
         assertEquals(leagueId, league.id)
         assertEquals(leagueName, league.name)

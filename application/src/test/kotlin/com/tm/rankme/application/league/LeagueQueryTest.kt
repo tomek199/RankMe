@@ -1,7 +1,5 @@
 package com.tm.rankme.application.league
 
-import com.tm.rankme.application.common.Mapper
-import com.tm.rankme.domain.league.League
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
@@ -10,17 +8,17 @@ import kotlin.test.assertFailsWith
 
 internal class LeagueQueryTest {
     private val leagueService: LeagueService = Mockito.mock(LeagueService::class.java)
-    private val mapper: Mapper<League, LeagueModel> = LeagueMapper()
-    private val query = LeagueQuery(leagueService, mapper)
+    private val query = LeagueQuery(leagueService)
 
     @Test
     internal fun `Should return league by id`() {
         // given
         val leagueId = "league-1"
         val leagueName = "Star Wars"
-        given(leagueService.get(leagueId)).willReturn(League(leagueId, leagueName))
+        given(leagueService.get(leagueId))
+            .willReturn(LeagueModel(leagueId, leagueName, LeagueSettingsModel(false, 2)))
         // when
-        val league = query.league(leagueId)
+        val league: LeagueModel? = query.league(leagueId)
         // then
         assertEquals(leagueId, league!!.id)
         assertEquals(leagueName, league.name)
