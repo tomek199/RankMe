@@ -16,23 +16,6 @@ data class PlayerModel(
     val score: Int
 )
 
-// todo remove obsolete connection classes
-data class GameConnection(
-    val totalCount: Int,
-    val edges: List<GameEdge>,
-    val pageInfo: PageInfo
-)
-
-data class GameEdge(
-    val node: GameModel,
-    val cursor: String
-)
-
-data class PageInfo(
-    val hasPreviousPage: Boolean,
-    val hasNextPage: Boolean
-)
-
 data class AddGameInput(
     val leagueId: String,
     val playerOneId: String,
