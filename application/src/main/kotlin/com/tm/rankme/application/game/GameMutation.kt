@@ -4,10 +4,7 @@ import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.stereotype.Service
 
 @Service
-class GameMutation(
-    private val gameService: GameService,
-) : GraphQLMutationResolver {
-
+class GameMutation(private val gameService: GameService) : GraphQLMutationResolver {
     fun addGame(input: AddGameInput): GameModel {
         return gameService.create(
             leagueId = input.leagueId,

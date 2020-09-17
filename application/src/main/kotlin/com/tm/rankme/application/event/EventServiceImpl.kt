@@ -5,14 +5,13 @@ import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.event.Member
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 internal class EventServiceImpl(
     private val repository: EventRepository,
-    @Qualifier("eventMapper") private val mapper: Mapper<Event, EventModel>
+    private val mapper: Mapper<Event, EventModel>
 ) : EventService {
 
     override fun get(eventId: String): Event {
