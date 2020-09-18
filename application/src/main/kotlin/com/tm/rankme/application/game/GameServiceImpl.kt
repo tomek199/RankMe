@@ -3,6 +3,7 @@ package com.tm.rankme.application.game
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.application.event.EventService
+import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
@@ -34,23 +35,32 @@ internal class GameServiceImpl(
         firstCompetitorId: String, firstScore: Int,
         secondCompetitorId: String, secondScore: Int
     ): GameModel {
-        val firstCompetitor = competitorService.getForLeague(firstCompetitorId, leagueId)
-        val secondCompetitor = competitorService.getForLeague(secondCompetitorId, leagueId)
-        val game = GameFactory.create(firstCompetitor, firstScore, secondCompetitor, secondScore, leagueId)
-        val createdGame = gameRepository.save(game)
-        competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
+        val createdGame = addNewGame(leagueId, firstCompetitorId, firstScore, secondCompetitorId, secondScore)
         return mapper.toModel(createdGame)
     }
 
     override fun complete(eventId: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
         val event = eventService.get(eventId)
-        val firstCompetitor = competitorService.getForLeague(event.memberOne.competitorId, event.leagueId)
-        val secondCompetitor = competitorService.getForLeague(event.memberTwo.competitorId, event.leagueId)
-        val game = GameFactory.create(firstCompetitor, playerOneScore, secondCompetitor, playerTwoScore, event.leagueId)
-        val createdGame = gameRepository.save(game)
-        competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
+        val createdGame = addNewGame(
+            event.leagueId,
+            event.memberOne.competitorId, playerOneScore,
+            event.memberTwo.competitorId, playerTwoScore
+        )
         eventService.remove(eventId)
         return mapper.toModel(createdGame)
+    }
+
+    private fun addNewGame(
+        leagueId: String,
+        firstCompetitorId: String, firstScore: Int,
+        secondCompetitorId: String, secondScore: Int
+    ): Game {
+        val firstCompetitor = competitorService.getForLeague(firstCompetitorId, leagueId)
+        val secondCompetitor = competitorService.getForLeague(secondCompetitorId, leagueId)
+        val game = GameFactory.create(firstCompetitor, firstScore, secondCompetitor, secondScore, leagueId)
+        val createdGame = gameRepository.save(game)
+        competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
+        return createdGame
     }
 
     override fun getConnectionForLeague(
@@ -60,17 +70,23 @@ internal class GameServiceImpl(
         val decodedAfter = if (after != null) String(Base64.getDecoder().decode(after)) else null
         val side = gameRepository.findByLeagueId(leagueId, first, decodedAfter)
         if (side.content.isEmpty()) return SimpleListConnection<GameModel>(emptyList()).get(env)
-        val edges = side.content.map { game ->
+        return DefaultConnection(createEdges(side), createPageInfo(side))
+    }
+
+    private fun createEdges(side: Side<Game>): List<DefaultEdge<GameModel>> {
+        return side.content.map { game ->
             val cursor = DefaultConnectionCursor(encode(game.id))
             DefaultEdge(mapper.toModel(game), cursor)
         }
-        val startCursor = Base64.getEncoder().encodeToString(side.content.first().id!!.toByteArray())
-        val endCursor = Base64.getEncoder().encodeToString(side.content.last().id!!.toByteArray())
-        val pageInfo = DefaultPageInfo(
+    }
+
+    private fun createPageInfo(side: Side<Game>): DefaultPageInfo {
+        val startCursor = encode(side.content.first().id)
+        val endCursor = encode(side.content.last().id)
+        return DefaultPageInfo(
             DefaultConnectionCursor(startCursor), DefaultConnectionCursor(endCursor),
             side.hasPrevious, side.hasNext
         )
-        return DefaultConnection(edges, pageInfo)
     }
 
     private fun encode(value: String?): String {

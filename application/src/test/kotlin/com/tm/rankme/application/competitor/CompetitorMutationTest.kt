@@ -1,21 +1,17 @@
 package com.tm.rankme.application.competitor
 
-import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.willDoNothing
 import org.mockito.Mockito
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 internal class CompetitorMutationTest {
     private val competitorService: CompetitorService = Mockito.mock(CompetitorService::class.java)
-    private val leagueService = Mockito.mock(LeagueService::class.java)
-    private val mutation = CompetitorMutation(competitorService, leagueService)
+    private val mutation = CompetitorMutation(competitorService)
 
     private val leagueId = "league-1"
     private val username = "Optimus Prime"
@@ -30,7 +26,6 @@ internal class CompetitorMutationTest {
     @Test
     internal fun `Should add competitor with default params`() {
         // given
-        willDoNothing().given(leagueService).checkIfExist(leagueId)
         val expectedStatistics = Statistics()
         val input = AddCompetitorInput(leagueId, username)
         // when
@@ -44,14 +39,5 @@ internal class CompetitorMutationTest {
         assertEquals(expectedStatistics.won, competitor.statistics.won)
         assertEquals(expectedStatistics.lost, competitor.statistics.lost)
         assertEquals(expectedStatistics.draw, competitor.statistics.draw)
-    }
-
-    @Test
-    internal fun `Should throw exception when league does not exist`() {
-        // given
-        given(leagueService.checkIfExist(leagueId)).willThrow(IllegalStateException::class.java)
-        val input = AddCompetitorInput(leagueId, username)
-        // then
-        assertFailsWith<IllegalStateException> { mutation.addCompetitor(input) }
     }
 }

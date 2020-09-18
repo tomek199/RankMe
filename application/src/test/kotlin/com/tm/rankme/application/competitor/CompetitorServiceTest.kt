@@ -2,6 +2,7 @@ package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
+import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
@@ -20,8 +21,10 @@ import kotlin.test.assertTrue
 
 internal class CompetitorServiceTest {
     private val repository = mock(CompetitorRepository::class.java)
+    private val leagueService: LeagueService = mock(LeagueService::class.java)
     private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
-    private val service: CompetitorService = CompetitorServiceImpl(repository, mapper)
+    private val service: CompetitorService = CompetitorServiceImpl(repository, leagueService, mapper)
+
     private val competitorId = "comp-1"
     private val leagueId = "league-1"
 
@@ -137,6 +140,14 @@ internal class CompetitorServiceTest {
         assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
         assertNull(competitor.statistics.lastGame)
         verify(repository, only()).save(any(Competitor::class.java))
+    }
+
+    @Test
+    internal fun `Should throw exception when league does not exist when creating competitor`() {
+        // given
+        given(leagueService.checkIfExist(leagueId)).willThrow(IllegalStateException::class.java)
+        // then
+        assertFailsWith<IllegalStateException> { service.create(leagueId, "Batman") }
     }
 
     @Test

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class LeagueResolver(
     private val competitorService: CompetitorService,
-    private val gameService: GameService,
+    private val gameService: GameService
 ) : GraphQLResolver<LeagueModel> {
 
     fun competitors(league: LeagueModel): List<CompetitorModel> {

@@ -1,6 +1,7 @@
 package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.common.Mapper
+import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.game.Game
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 internal class CompetitorServiceImpl(
     private val repository: CompetitorRepository,
+    private val leagueService: LeagueService,
     private val mapper: Mapper<Competitor, CompetitorModel>
 ) : CompetitorService {
 
@@ -34,6 +36,7 @@ internal class CompetitorServiceImpl(
     }
 
     override fun create(leagueId: String, username: String): CompetitorModel {
+        leagueService.checkIfExist(leagueId)
         val competitor = repository.save(Competitor(leagueId, username))
         return mapper.toModel(competitor)
     }
