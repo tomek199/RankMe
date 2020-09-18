@@ -1,6 +1,8 @@
 package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.any
+import com.tm.rankme.application.common.Mapper
+import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
 import com.tm.rankme.domain.competitor.Statistics
@@ -19,7 +21,10 @@ import kotlin.test.assertTrue
 
 internal class CompetitorServiceTest {
     private val repository = mock(CompetitorRepository::class.java)
-    private val service: CompetitorService = CompetitorServiceImpl(repository)
+    private val leagueService: LeagueService = mock(LeagueService::class.java)
+    private val mapper: Mapper<Competitor, CompetitorModel> = CompetitorMapper()
+    private val service: CompetitorService = CompetitorServiceImpl(repository, leagueService, mapper)
+
     private val competitorId = "comp-1"
     private val leagueId = "league-1"
 
@@ -43,12 +48,16 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
-        val competitor = service.get(competitorId)
+        val competitor: CompetitorModel = service.get(competitorId)
         // then
         assertEquals(expectedCompetitor.id, competitor.id)
-        assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
         assertEquals(expectedCompetitor.username, competitor.username)
-        assertEquals(expectedCompetitor.statistics, competitor.statistics)
+        assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
+        assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
+        assertEquals(expectedCompetitor.statistics.draw, competitor.statistics.draw)
+        assertEquals(expectedCompetitor.statistics.lost, competitor.statistics.lost)
+        assertEquals(expectedCompetitor.statistics.won, competitor.statistics.won)
+        assertEquals(expectedCompetitor.statistics.lastGame, competitor.statistics.lastGame)
     }
 
     @Test
@@ -82,7 +91,7 @@ internal class CompetitorServiceTest {
         val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
         given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
-        val competitors = service.getListForLeague(leagueId)
+        val competitors: List<CompetitorModel> = service.getListForLeague(leagueId)
         // then
         assertEquals(2, competitors.size)
         assertEquals(competitor1.id, competitors[0].id)
@@ -96,7 +105,7 @@ internal class CompetitorServiceTest {
         // given
         given(repository.findByLeagueId(leagueId)).willReturn(emptyList())
         // when
-        val competitors = service.getListForLeague(leagueId)
+        val competitors: List<CompetitorModel> = service.getListForLeague(leagueId)
         // then
         assertTrue(competitors.isEmpty())
     }
@@ -123,7 +132,7 @@ internal class CompetitorServiceTest {
         val expectedCompetitor = Competitor(leagueId, competitorId, username, Statistics())
         given(repository.save(any(Competitor::class.java))).willReturn(expectedCompetitor)
         // when
-        val competitor = service.create(leagueId, username)
+        val competitor: CompetitorModel = service.create(leagueId, username)
         // then
         assertNotNull(competitor.id)
         assertEquals(expectedCompetitor.username, competitor.username)
@@ -131,6 +140,14 @@ internal class CompetitorServiceTest {
         assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
         assertNull(competitor.statistics.lastGame)
         verify(repository, only()).save(any(Competitor::class.java))
+    }
+
+    @Test
+    internal fun `Should throw exception when league does not exist when creating competitor`() {
+        // given
+        given(leagueService.checkIfExist(leagueId)).willThrow(IllegalStateException::class.java)
+        // then
+        assertFailsWith<IllegalStateException> { service.create(leagueId, "Batman") }
     }
 
     @Test

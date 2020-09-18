@@ -1,6 +1,7 @@
 package com.tm.rankme.application.event
 
-import com.tm.rankme.domain.competitor.Competitor
+import com.tm.rankme.application.common.Mapper
+import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.EventRepository
 import com.tm.rankme.domain.event.Member
@@ -9,7 +10,9 @@ import java.time.LocalDateTime
 
 @Service
 internal class EventServiceImpl(
-    private val repository: EventRepository
+    private val repository: EventRepository,
+    private val competitorService: CompetitorService,
+    private val mapper: Mapper<Event, EventModel>
 ) : EventService {
 
     override fun get(eventId: String): Event {
@@ -19,16 +22,17 @@ internal class EventServiceImpl(
 
     override fun create(
         leagueId: String,
-        firstCompetitor: Competitor, secondCompetitor: Competitor,
+        firstMemberId: String, secondMemberId: String,
         dateTime: LocalDateTime
-    ): Event {
-        val firstMember = createMember(firstCompetitor)
-        val secondMember = createMember(secondCompetitor)
-        val event = Event(leagueId, firstMember, secondMember, dateTime)
-        return repository.save(event)
+    ): EventModel {
+        val firstMember = createMember(firstMemberId, leagueId)
+        val secondMember = createMember(secondMemberId, leagueId)
+        val event = repository.save(Event(leagueId, firstMember, secondMember, dateTime))
+        return mapper.toModel(event)
     }
 
-    private fun createMember(competitor: Competitor): Member {
+    private fun createMember(competitorId: String, leagueId: String): Member {
+        val competitor = competitorService.getForLeague(competitorId, leagueId)
         val id = competitor.id ?: throw IllegalStateException("Competitor ${competitor.username} id is null")
         return Member(id, competitor.username, competitor.statistics.deviation, competitor.statistics.rating)
     }

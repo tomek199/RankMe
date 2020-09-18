@@ -3,11 +3,9 @@ package com.tm.rankme.application.event
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.event.Event
 import com.tm.rankme.domain.event.Member
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
-@Qualifier("eventMapper")
 class EventMapper : Mapper<Event, EventModel> {
     override fun toModel(domain: Event): EventModel {
         val id = domain.id ?: throw IllegalStateException("Event id can't be null!")
