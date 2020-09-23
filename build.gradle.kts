@@ -26,9 +26,9 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
-        testCompile("org.junit.jupiter:junit-jupiter:5.5.2")
-        testCompile("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-        testCompile("org.mockito:mockito-junit-jupiter:3.2.4")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+        testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
+        testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
     }
 
     tasks.withType<KotlinCompile> {
