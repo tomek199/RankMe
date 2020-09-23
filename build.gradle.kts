@@ -11,7 +11,7 @@ plugins {
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.21-SNAPSHOT"
+    version = "0.22-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -26,9 +26,13 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
-        testCompile("org.junit.jupiter:junit-jupiter:5.5.2")
-        testCompile("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-        testCompile("org.mockito:mockito-junit-jupiter:3.2.4")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+        testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
+        testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
+    }
+
+    tasks.register("stage") {
+        dependsOn("build")
     }
 
     tasks.withType<KotlinCompile> {
@@ -46,4 +50,10 @@ subprojects {
             csv.isEnabled = false
         }
     }
+}
+
+tasks.register("stage") {
+    group = "Build"
+    description = "Assembles and test this project for Heroku deployment"
+    dependsOn("build")
 }

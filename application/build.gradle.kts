@@ -5,12 +5,12 @@ plugins {
 }
 
 dependencies {
-    compile(project(":domain"))
-    compile(project(":infrastructure"))
+    implementation(project(":domain"))
+    implementation(project(":infrastructure"))
 
-    compile("com.graphql-java-kickstart:graphql-spring-boot-starter:7.1.0")
-    compile("com.graphql-java-kickstart:graphql-java-tools:6.1.0")
-    compile("com.graphql-java-kickstart:graphiql-spring-boot-starter:7.1.0")
+    implementation("com.graphql-java-kickstart:graphql-spring-boot-starter:7.1.0")
+    implementation("com.graphql-java-kickstart:graphql-java-tools:6.1.0")
+    implementation("com.graphql-java-kickstart:graphiql-spring-boot-starter:7.1.0")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
