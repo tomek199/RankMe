@@ -31,6 +31,10 @@ subprojects {
         testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
     }
 
+    tasks.register("stage") {
+        dependsOn("build")
+    }
+
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -46,4 +50,10 @@ subprojects {
             csv.isEnabled = false
         }
     }
+}
+
+tasks.register("stage") {
+    group = "Build"
+    description = "Assembles and test this project for Heroku deployment"
+    dependsOn("build")
 }
