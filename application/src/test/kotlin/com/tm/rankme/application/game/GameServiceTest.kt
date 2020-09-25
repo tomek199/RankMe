@@ -3,12 +3,12 @@ package com.tm.rankme.application.game
 import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
-import com.tm.rankme.application.event.EventService
+import com.tm.rankme.application.match.MatchService
 import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.Statistics
-import com.tm.rankme.domain.event.Event
-import com.tm.rankme.domain.event.Member
+import com.tm.rankme.domain.match.Match
+import com.tm.rankme.domain.match.Member
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
@@ -33,14 +33,14 @@ import kotlin.test.assertTrue
 internal class GameServiceTest {
     private val gameRepository: GameRepository = mock(GameRepository::class.java)
     private val competitorService: CompetitorService = mock(CompetitorService::class.java)
-    private val eventService: EventService = mock(EventService::class.java)
+    private val matchService: MatchService = mock(MatchService::class.java)
     private val mapper: Mapper<Game, GameModel> = GameMapper()
 
-    private val service: GameService = GameServiceImpl(gameRepository, competitorService, eventService, mapper)
+    private val service: GameService = GameServiceImpl(gameRepository, competitorService, matchService, mapper)
 
     private val gameId = "game-1"
     private val leagueId = "league-1"
-    private val eventId = "event-1"
+    private val matchId = "match-1"
     private val playerOne = Player("comp-1", "Batman", 235, 1683, 3, 46)
     private val playerTwo = Player("comp-2", "Superman", 386, 2748, 1, -46)
 
@@ -103,7 +103,7 @@ internal class GameServiceTest {
     }
 
     @Test
-    internal fun `Should complete event and create game`() {
+    internal fun `Should complete match and create game`() {
         // given
         val firstCompetitorStats = Statistics(285, 1868, 4, 8, 6, LocalDate.now())
         val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", firstCompetitorStats)
@@ -121,17 +121,17 @@ internal class GameServiceTest {
             secondCompetitor.id!!, secondCompetitor.username,
             secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating
         )
-        given(eventService.get(eventId)).willReturn(Event(eventId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
+        given(matchService.get(matchId)).willReturn(Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
         // when
-        val game: GameModel = service.complete(eventId, playerOne.score, playerTwo.score)
+        val game: GameModel = service.complete(matchId, playerOne.score, playerTwo.score)
         // then
         verify(gameRepository, only()).save(any(Game::class.java))
         verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
             .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
-        verify(eventService, times(1)).get(eventId)
-        verify(eventService, times(1)).remove(eventId)
+        verify(matchService, times(1)).get(matchId)
+        verify(matchService, times(1)).remove(matchId)
         assertEquals(firstCompetitor.id, game.playerOne.competitorId)
         assertEquals(firstCompetitor.username, playerOne.username)
         assertEquals(playerOne.rating, game.playerOne.rating)
@@ -143,11 +143,11 @@ internal class GameServiceTest {
     }
 
     @Test
-    internal fun `Should throw exception when event does not exist when completing game`() {
+    internal fun `Should throw exception when match does not exist when completing game`() {
         // given
-        given(eventService.get(eventId)).willThrow(IllegalStateException::class.java)
+        given(matchService.get(matchId)).willThrow(IllegalStateException::class.java)
         // then
-        assertFailsWith<IllegalStateException> { service.complete(eventId, 4, 3) }
+        assertFailsWith<IllegalStateException> { service.complete(matchId, 4, 3) }
     }
 
     @Test

@@ -21,6 +21,6 @@ class GameMutation(private val gameService: GameService) : GraphQLMutationResolv
 
     fun completeGame(input: CompleteGameInput): GameModel {
         log.info("Complete game: $input")
-        return gameService.complete(input.eventId, input.playerOneScore, input.playerTwoScore)
+        return gameService.complete(input.matchId, input.playerOneScore, input.playerTwoScore)
     }
 }

@@ -1,17 +1,17 @@
-package com.tm.rankme.application.event
+package com.tm.rankme.application.match
 
 import com.tm.rankme.application.common.Mapper
-import com.tm.rankme.domain.event.Event
-import com.tm.rankme.domain.event.Member
+import com.tm.rankme.domain.match.Match
+import com.tm.rankme.domain.match.Member
 import org.springframework.stereotype.Service
 
 @Service
-class EventMapper : Mapper<Event, EventModel> {
-    override fun toModel(domain: Event): EventModel {
-        val id = domain.id ?: throw IllegalStateException("Event id can't be null!")
+class MatchMapper : Mapper<Match, MatchModel> {
+    override fun toModel(domain: Match): MatchModel {
+        val id = domain.id ?: throw IllegalStateException("Match id can't be null!")
         val memberOne = mapMember(domain.memberOne)
         val memberTwo = mapMember(domain.memberTwo)
-        return EventModel(id, memberOne, memberTwo, domain.dateTime)
+        return MatchModel(id, memberOne, memberTwo, domain.dateTime)
     }
 
     private fun mapMember(member: Member): MemberModel {

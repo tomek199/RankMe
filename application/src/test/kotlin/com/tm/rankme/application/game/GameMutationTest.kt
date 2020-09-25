@@ -34,18 +34,18 @@ internal class GameMutationTest {
     }
 
     @Test
-    internal fun `Should create game base on existing event`() {
+    internal fun `Should create game base on existing match`() {
         // given
-        val eventId = "event-1"
+        val matchId = "match-1"
         val playerOne = PlayerModel(firstCompetitor.id!!, firstCompetitor.username, 274, 1546)
         val playerTwo = PlayerModel(secondCompetitor.id!!, secondCompetitor.username, 152, 2587)
         val expectedGame = GameModel("game-1", playerOne, playerTwo, LocalDateTime.now())
-        given(gameService.complete(eventId, 1, 3)).willReturn(expectedGame)
-        val input = CompleteGameInput(eventId, 1, 3)
+        given(gameService.complete(matchId, 1, 3)).willReturn(expectedGame)
+        val input = CompleteGameInput(matchId, 1, 3)
         // when
         val game: GameModel = mutation.completeGame(input)
         // then
         assertNotNull(game)
-        verify(gameService, only()).complete(eventId, 1, 3)
+        verify(gameService, only()).complete(matchId, 1, 3)
     }
 }

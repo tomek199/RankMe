@@ -21,7 +21,7 @@ input AddGameInput {
 }
 
 input CompleteGameInput {
-    eventId: String!
+    matchId: String!
     playerOneScore: Int!
     playerTwoScore: Int!
 }

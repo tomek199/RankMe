@@ -1,4 +1,4 @@
-type Event {
+type Match {
     id: String!
     memberOne: Member!
     memberTwo: Member!
@@ -12,7 +12,7 @@ type Member {
     rating: Int!
 }
 
-input AddEventInput {
+input AddMatchInput {
     leagueId: String!
     memberOneId: String!
     memberTwoId: String!

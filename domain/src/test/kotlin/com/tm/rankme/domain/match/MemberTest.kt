@@ -1,4 +1,4 @@
-package com.tm.rankme.domain.event
+package com.tm.rankme.domain.match
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
