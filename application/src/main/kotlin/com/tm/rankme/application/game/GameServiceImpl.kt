@@ -2,7 +2,7 @@ package com.tm.rankme.application.game
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
-import com.tm.rankme.application.event.EventService
+import com.tm.rankme.application.match.MatchService
 import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
@@ -21,7 +21,7 @@ import java.util.*
 internal class GameServiceImpl(
     private val gameRepository: GameRepository,
     private val competitorService: CompetitorService,
-    private val eventService: EventService,
+    private val matchService: MatchService,
     private val mapper: Mapper<Game, GameModel>
 ) : GameService {
 
@@ -39,14 +39,14 @@ internal class GameServiceImpl(
         return mapper.toModel(createdGame)
     }
 
-    override fun complete(eventId: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
-        val event = eventService.get(eventId)
+    override fun complete(matchId: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
+        val match = matchService.get(matchId)
         val createdGame = addNewGame(
-            event.leagueId,
-            event.memberOne.competitorId, playerOneScore,
-            event.memberTwo.competitorId, playerTwoScore
+            match.leagueId,
+            match.memberOne.competitorId, playerOneScore,
+            match.memberTwo.competitorId, playerTwoScore
         )
-        eventService.remove(eventId)
+        matchService.remove(matchId)
         return mapper.toModel(createdGame)
     }
 

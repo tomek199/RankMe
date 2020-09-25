@@ -1,8 +1,8 @@
-package com.tm.rankme.application.event
+package com.tm.rankme.application.match
 
 import java.time.LocalDateTime
 
-data class EventModel(
+data class MatchModel(
     val id: String,
     val memberOne: MemberModel,
     val memberTwo: MemberModel,
@@ -16,7 +16,7 @@ data class MemberModel(
     val rating: Int
 )
 
-data class AddEventInput(
+data class AddMatchInput(
     val leagueId: String,
     val memberOneId: String,
     val memberTwoId: String,

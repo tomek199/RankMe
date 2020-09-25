@@ -5,7 +5,7 @@ type MutationType {
     addLeague(input: AddLeagueInput!): League
     addCompetitor(input: AddCompetitorInput!): Competitor
     addGame(input: AddGameInput!): Game
-    addEvent(input: AddEventInput!): Event
+    addMatch(input: AddMatchInput!): Match
     completeGame(input: CompleteGameInput): Game
 }
 

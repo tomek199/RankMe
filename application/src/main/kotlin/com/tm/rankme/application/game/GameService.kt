@@ -11,7 +11,7 @@ interface GameService {
         secondCompetitorId: String, secondScore: Int
     ): GameModel
 
-    fun complete(eventId: String, playerOneScore: Int, playerTwoScore: Int): GameModel
+    fun complete(matchId: String, playerOneScore: Int, playerTwoScore: Int): GameModel
     fun getConnectionForLeague(
         leagueId: String, first: Int,
         after: String? = null, env: DataFetchingEnvironment

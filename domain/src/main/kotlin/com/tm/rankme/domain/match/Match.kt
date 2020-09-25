@@ -1,8 +1,8 @@
-package com.tm.rankme.domain.event
+package com.tm.rankme.domain.match
 
 import java.time.LocalDateTime
 
-class Event(val leagueId: String, val memberOne: Member, val memberTwo: Member, val dateTime: LocalDateTime) {
+class Match(val leagueId: String, val memberOne: Member, val memberTwo: Member, val dateTime: LocalDateTime) {
     var id: String? = null
         private set
 
