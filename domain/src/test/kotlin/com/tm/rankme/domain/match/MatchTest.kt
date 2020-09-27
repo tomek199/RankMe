@@ -21,6 +21,7 @@ internal class MatchTest {
         assertEquals(leagueId, match.leagueId)
         assertEquals(memberOne, match.memberOne)
         assertEquals(memberTwo, match.memberTwo)
+        assertEquals(Status.SCHEDULED, match.status)
         assertEquals(dateTime, match.dateTime)
     }
 
@@ -36,6 +37,29 @@ internal class MatchTest {
         assertEquals(leagueId, match.leagueId)
         assertEquals(memberOne, match.memberOne)
         assertEquals(memberTwo, match.memberTwo)
+        assertEquals(Status.SCHEDULED, match.status)
         assertEquals(dateTime, match.dateTime)
+    }
+
+    @Test
+    internal fun `Should complete match`() {
+        // given
+        val match = Match("match-1", leagueId, memberOne, memberTwo, LocalDateTime.now())
+        val gameId = "game-1"
+        // when
+        match.complete(gameId)
+        // then
+        assertEquals(Status.COMPLETED, match.status)
+        assertEquals(gameId, match.gameId)
+    }
+
+    @Test
+    internal fun `Should delete match`() {
+        // given
+        val match = Match("match-1", leagueId, memberOne, memberTwo, LocalDateTime.now())
+        // when
+        match.remove()
+        // then
+        assertEquals(Status.REMOVED, match.status)
     }
 }

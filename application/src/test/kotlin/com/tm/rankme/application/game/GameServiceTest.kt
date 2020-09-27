@@ -121,7 +121,7 @@ internal class GameServiceTest {
             secondCompetitor.id!!, secondCompetitor.username,
             secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating
         )
-        given(matchService.get(matchId)).willReturn(Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
+        given(matchService.getScheduled(matchId)).willReturn(Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
         // when
         val game: GameModel = service.complete(matchId, playerOne.score, playerTwo.score)
         // then
@@ -130,8 +130,8 @@ internal class GameServiceTest {
         verify(competitorService, times(1)).getForLeague(secondCompetitor.id!!, leagueId)
         verify(competitorService, times(1))
             .updateStatistic(any(Competitor::class.java), any(Competitor::class.java), any(Game::class.java))
-        verify(matchService, times(1)).get(matchId)
-        verify(matchService, times(1)).remove(matchId)
+        verify(matchService, times(1)).getScheduled(matchId)
+        verify(matchService, times(1)).complete(matchId, gameId)
         assertEquals(firstCompetitor.id, game.playerOne.competitorId)
         assertEquals(firstCompetitor.username, playerOne.username)
         assertEquals(playerOne.rating, game.playerOne.rating)
@@ -145,7 +145,7 @@ internal class GameServiceTest {
     @Test
     internal fun `Should throw exception when match does not exist when completing game`() {
         // given
-        given(matchService.get(matchId)).willThrow(IllegalStateException::class.java)
+        given(matchService.getScheduled(matchId)).willThrow(IllegalStateException::class.java)
         // then
         assertFailsWith<IllegalStateException> { service.complete(matchId, 4, 3) }
     }
