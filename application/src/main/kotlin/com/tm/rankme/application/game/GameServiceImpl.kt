@@ -40,13 +40,13 @@ internal class GameServiceImpl(
     }
 
     override fun complete(matchId: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
-        val match = matchService.get(matchId)
+        val match = matchService.getScheduled(matchId)
         val createdGame = addNewGame(
             match.leagueId,
             match.memberOne.competitorId, playerOneScore,
             match.memberTwo.competitorId, playerTwoScore
         )
-        matchService.remove(matchId)
+        matchService.complete(matchId, createdGame.id!!)
         return mapper.toModel(createdGame)
     }
 

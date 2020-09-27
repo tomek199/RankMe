@@ -5,6 +5,7 @@ import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.match.Match
 import com.tm.rankme.domain.match.MatchRepository
 import com.tm.rankme.domain.match.Member
+import com.tm.rankme.domain.match.Status
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -14,6 +15,13 @@ internal class MatchServiceImpl(
     private val competitorService: CompetitorService,
     private val mapper: Mapper<Match, MatchModel>
 ) : MatchService {
+
+    override fun getScheduled(matchId: String): Match {
+        val match = get(matchId)
+        if (match.status != Status.SCHEDULED)
+            throw IllegalStateException("Match $matchId is not in ${Status.SCHEDULED} state")
+        return match
+    }
 
     override fun get(matchId: String): Match {
         val match = repository.findById(matchId)
@@ -37,7 +45,9 @@ internal class MatchServiceImpl(
         return Member(id, competitor.username, competitor.statistics.deviation, competitor.statistics.rating)
     }
 
-    override fun remove(matchId: String) {
-        repository.delete(matchId)
+    override fun complete(matchId: String, gameId: String) {
+        val match = repository.findById(matchId) ?: throw IllegalStateException("Match $matchId is not found")
+        match.complete(gameId)
+        repository.save(match)
     }
 }

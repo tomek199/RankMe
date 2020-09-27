@@ -8,14 +8,17 @@ import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.match.Match
 import com.tm.rankme.domain.match.MatchRepository
 import com.tm.rankme.domain.match.Member
+import com.tm.rankme.domain.match.Status
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.times
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.only
 import org.mockito.Mockito.verify
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
 internal class MatchServiceTest {
@@ -43,6 +46,18 @@ internal class MatchServiceTest {
         assertEquals(expectedMatch.memberTwo, match.memberTwo)
         assertEquals(expectedMatch.dateTime, match.dateTime)
         verify(repository, only()).findById(matchId)
+    }
+
+    @Test
+    internal fun `Should throw IllegalStateException when get scheduled match`() {
+        // given
+        val completedMatch = Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now())
+        completedMatch.complete("game-1")
+        given(repository.findById(matchId)).willReturn(completedMatch)
+        // when
+        val exception = assertFailsWith<IllegalStateException> { service.getScheduled(matchId) }
+        // then
+        assertEquals("Match $matchId is not in ${Status.SCHEDULED} state", exception.message)
     }
 
     @Test
@@ -126,12 +141,26 @@ internal class MatchServiceTest {
     }
 
     @Test
-    internal fun `Should remove match`() {
+    internal fun `Should complete match`() {
         // given
-        val matchId = "match-1"
+        val dateTime = LocalDateTime.now()
+        val matchToComplete = Match(matchId, leagueId, memberOne, memberTwo, dateTime)
+        given(repository.findById(matchId)).willReturn(matchToComplete)
+        val gameId = "game-1"
         // when
-        service.remove(matchId)
+        service.complete(matchId, gameId)
         // then
-        verify(repository, only()).delete(matchId)
+        verify(repository, times(1)).findById(matchId)
+        verify(repository, times(1)).save(any(Match::class.java))
+    }
+
+    @Test
+    internal fun `Should throw IllegalStateException when match does not exist during completing`() {
+        // given
+        given(repository.findById(matchId)).willReturn(null)
+        // when
+        val exception = assertFailsWith<IllegalStateException> { service.complete(matchId, "game-1") }
+        // then
+        assertEquals("Match $matchId is not found", exception.message)
     }
 }

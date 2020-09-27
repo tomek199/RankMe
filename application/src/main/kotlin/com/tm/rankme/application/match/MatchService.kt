@@ -5,11 +5,12 @@ import java.time.LocalDateTime
 
 interface MatchService {
     fun get(matchId: String): Match
+    fun getScheduled(matchId: String): Match
     fun create(
         leagueId: String,
         firstMemberId: String, secondMemberId: String,
         dateTime: LocalDateTime
     ): MatchModel
 
-    fun remove(matchId: String)
+    fun complete(matchId: String, gameId: String)
 }
