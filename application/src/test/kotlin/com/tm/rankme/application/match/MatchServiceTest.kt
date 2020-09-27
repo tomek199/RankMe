@@ -17,9 +17,11 @@ import org.mockito.Mockito.only
 import org.mockito.Mockito.verify
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.math.exp
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 internal class MatchServiceTest {
     private val repository: MatchRepository = mock(MatchRepository::class.java)
@@ -45,6 +47,25 @@ internal class MatchServiceTest {
         assertEquals(expectedMatch.memberOne, match.memberOne)
         assertEquals(expectedMatch.memberTwo, match.memberTwo)
         assertEquals(expectedMatch.dateTime, match.dateTime)
+        verify(repository, only()).findById(matchId)
+    }
+
+    @Test
+    internal fun `Should get scheduled match`() {
+        // given
+        val expectedMatch = Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now())
+        val gameId = "game-1"
+        given(repository.findById(matchId)).willReturn(expectedMatch)
+        // when
+        val match = service.getScheduled(matchId)
+        // then
+        assertEquals(expectedMatch.id, match.id)
+        assertEquals(expectedMatch.leagueId, match.leagueId)
+        assertEquals(expectedMatch.memberOne, match.memberOne)
+        assertEquals(expectedMatch.memberTwo, match.memberTwo)
+        assertEquals(expectedMatch.dateTime, match.dateTime)
+        assertEquals(Status.SCHEDULED, match.status)
+        assertNull(match.gameId)
         verify(repository, only()).findById(matchId)
     }
 
