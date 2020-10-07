@@ -1,15 +1,8 @@
 type Competitor {
     id: String!
     username: String!
-    statistics: CompetitorStatistics!
-}
-
-type CompetitorStatistics {
     deviation: Int!
     rating: Int!
-    won: Int!
-    lost: Int!
-    draw: Int!
     lastGame: LocalDate
 }
 

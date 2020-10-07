@@ -23,18 +23,18 @@ class GameFactory private constructor() {
             scoreTwo: Int
         ): GlickoService {
             return GlickoService(
-                deviationOne = competitorOne.statistics.deviation,
-                ratingOne = competitorOne.statistics.rating,
+                deviationOne = competitorOne.deviation,
+                ratingOne = competitorOne.rating,
                 scoreOne = scoreOne,
-                deviationTwo = competitorTwo.statistics.deviation,
-                ratingTwo = competitorTwo.statistics.rating,
+                deviationTwo = competitorTwo.deviation,
+                ratingTwo = competitorTwo.rating,
                 scoreTwo = scoreTwo
             )
         }
 
         private fun initPlayer(competitor: Competitor, deviation: Int, rating: Int, score: Int): Player {
             return competitor.id?.let {
-                val ratingDelta = rating - competitor.statistics.rating
+                val ratingDelta = rating - competitor.rating
                 Player(it, competitor.username, deviation, rating, score, ratingDelta)
             } ?: throw IllegalStateException("Competitor id cannot be null!")
         }

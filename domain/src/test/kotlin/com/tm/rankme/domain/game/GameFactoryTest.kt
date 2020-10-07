@@ -1,7 +1,6 @@
 package com.tm.rankme.domain.game
 
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.competitorId1
 import com.tm.rankme.domain.competitorId2
 import com.tm.rankme.domain.competitorName1
@@ -17,7 +16,7 @@ internal class GameFactoryTest {
     @Test
     internal fun `Should throw exception when first competitor id is null`() {
         // given
-        val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, Statistics())
+        val competitorTwo = Competitor(leagueId, competitorId2, competitorName2)
         val competitorOne = Competitor(leagueId, competitorName1)
         // when
         val exception = assertFailsWith<IllegalStateException> {
@@ -30,7 +29,7 @@ internal class GameFactoryTest {
     @Test
     internal fun `Should throw exception when second competitor id is null`() {
         // given
-        val competitorOne = Competitor(leagueId, competitorId1, competitorName1, Statistics())
+        val competitorOne = Competitor(leagueId, competitorId1, competitorName1)
         val competitorTwo = Competitor(leagueId, competitorName2)
         // when
         val exception = assertFailsWith<IllegalStateException> {
@@ -45,10 +44,8 @@ internal class GameFactoryTest {
     internal fun `Should create game`() {
         // given
         val lastGameDate = LocalDate.now()
-        val oneStats = Statistics(245, 1397, 0, 0, 0, lastGameDate)
-        val competitorOne = Competitor(leagueId, competitorId1, competitorName1, oneStats)
-        val twoStats = Statistics(224, 1874, 0, 0, 0, lastGameDate)
-        val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, twoStats)
+        val competitorOne = Competitor(leagueId, competitorId1, competitorName1, 245, 1397, lastGameDate)
+        val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, 224, 1874, lastGameDate)
         // when
         val game = GameFactory.create(competitorOne, 1, competitorTwo, 0, leagueId)
         // then
