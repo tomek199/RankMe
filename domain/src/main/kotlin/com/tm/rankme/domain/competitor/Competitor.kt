@@ -3,11 +3,7 @@ package com.tm.rankme.domain.competitor
 import com.tm.rankme.domain.game.Player
 import java.time.LocalDateTime
 
-class Competitor(
-    val leagueId: String, var username: String,
-    val statistics: Statistics = Statistics(), var status: Status = Status.ACTIVE
-) {
-
+class Competitor(val leagueId: String, var username: String, val statistics: Statistics = Statistics()) {
     var id: String? = null
         private set
 

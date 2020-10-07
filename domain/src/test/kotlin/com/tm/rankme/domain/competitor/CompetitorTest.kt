@@ -20,7 +20,6 @@ internal class CompetitorTest {
         // then
         assertEquals(leagueId, competitor.leagueId)
         assertEquals(username, competitor.username)
-        assertEquals(Status.ACTIVE, competitor.status)
         assertEquals(statistics.deviation, competitor.statistics.deviation)
         assertEquals(statistics.rating, competitor.statistics.rating)
         assertEquals(statistics.lastGame, competitor.statistics.lastGame)
@@ -41,7 +40,6 @@ internal class CompetitorTest {
         // then
         assertEquals(id, competitor.id)
         assertEquals(username, competitor.username)
-        assertEquals(Status.ACTIVE, competitor.status)
         assertEquals(statistics, competitor.statistics)
     }
 
