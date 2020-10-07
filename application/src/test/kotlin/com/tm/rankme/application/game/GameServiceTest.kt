@@ -6,15 +6,14 @@ import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.application.match.MatchService
 import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.match.Match
-import com.tm.rankme.domain.match.Member
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
+import com.tm.rankme.domain.match.Match
+import com.tm.rankme.domain.match.Member
 import graphql.relay.Connection
 import graphql.schema.DataFetchingEnvironment
-import org.dataloader.stats.Statistics
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.BDDMockito.given

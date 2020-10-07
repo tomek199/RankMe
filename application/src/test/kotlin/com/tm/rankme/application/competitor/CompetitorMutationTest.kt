@@ -1,6 +1,5 @@
 package com.tm.rankme.application.competitor
 
-import org.dataloader.stats.Statistics
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
