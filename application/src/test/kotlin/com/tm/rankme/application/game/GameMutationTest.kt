@@ -1,7 +1,6 @@
 package com.tm.rankme.application.game
 
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
@@ -15,8 +14,8 @@ internal class GameMutationTest {
     private val mutation = GameMutation(gameService)
 
     private val leagueId = "league-1"
-    private val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", Statistics())
-    private val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", Statistics())
+    private val firstCompetitor = Competitor(leagueId, "comp-1", "Batman")
+    private val secondCompetitor = Competitor(leagueId, "comp-2", "Superman")
 
     @Test
     internal fun `Should add new game`() {

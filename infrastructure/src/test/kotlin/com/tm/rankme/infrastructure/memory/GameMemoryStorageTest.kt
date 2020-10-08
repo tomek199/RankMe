@@ -1,7 +1,6 @@
 package com.tm.rankme.infrastructure.memory
 
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import org.junit.jupiter.api.BeforeEach
@@ -14,8 +13,8 @@ import kotlin.test.assertTrue
 
 internal class GameMemoryStorageTest {
     private val leagueId = "league-1"
-    private val competitor1 = Competitor(leagueId, "comp-1", "Spiderman", Statistics())
-    private val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
+    private val competitor1 = Competitor(leagueId, "comp-1", "Spiderman")
+    private val competitor2 = Competitor(leagueId, "comp-2", "Superman")
 
     private val repository: GameRepository = GameMemoryStorage()
 

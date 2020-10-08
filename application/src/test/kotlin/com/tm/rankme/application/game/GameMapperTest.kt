@@ -2,7 +2,6 @@ package com.tm.rankme.application.game
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.Player
@@ -41,8 +40,8 @@ internal class GameMapperTest {
     @Test
     internal fun `Should throw IllegalStateException when domain game id is null`() {
         // given
-        val competitorOne = Competitor(leagueId, "comp-1", "Batman", Statistics())
-        val competitorTwo = Competitor(leagueId, "comp-2", "Superman", Statistics())
+        val competitorOne = Competitor(leagueId, "comp-1", "Batman")
+        val competitorTwo = Competitor(leagueId, "comp-2", "Superman")
         val domain = GameFactory.create(competitorOne, 2, competitorTwo, 3, leagueId)
         // when
         val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }

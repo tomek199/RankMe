@@ -2,7 +2,6 @@ package com.tm.rankme.application.competitor
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
@@ -18,25 +17,21 @@ internal class CompetitorMapperTest {
     internal fun `Should map domain to model`() {
         // given
         val lastGame = LocalDate.of(2020, 3, 30)
-        val statistics = Statistics(154, 2564, 53, 34, 95, lastGame)
-        val domain = Competitor(leagueId, competitorId, competitorUsername, statistics)
+        val domain = Competitor(leagueId, competitorId, competitorUsername, 154, 2564, lastGame)
         // when
         val model = mapper.toModel(domain)
         // then
         assertEquals(domain.id, model.id)
         assertEquals(domain.username, model.username)
-        assertEquals(domain.statistics.deviation, model.statistics.deviation)
-        assertEquals(domain.statistics.rating, model.statistics.rating)
-        assertEquals(domain.statistics.won, model.statistics.won)
-        assertEquals(domain.statistics.lost, model.statistics.lost)
-        assertEquals(domain.statistics.draw, model.statistics.draw)
-        assertEquals(domain.statistics.lastGame, model.statistics.lastGame)
+        assertEquals(domain.deviation, model.deviation)
+        assertEquals(domain.rating, model.rating)
+        assertEquals(domain.lastGame, model.lastGame)
     }
 
     @Test
     internal fun `Should throw IllegalStateException when domain competitor id is null`() {
         // given
-        val domain = Competitor(leagueId, competitorUsername, Statistics())
+        val domain = Competitor(leagueId, competitorUsername)
         // when
         val exception = assertFailsWith<IllegalStateException> { mapper.toModel(domain) }
         // then

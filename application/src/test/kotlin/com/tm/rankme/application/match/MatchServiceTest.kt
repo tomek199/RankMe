@@ -4,7 +4,6 @@ import com.tm.rankme.application.any
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.match.Match
 import com.tm.rankme.domain.match.MatchRepository
 import com.tm.rankme.domain.match.Member
@@ -15,11 +14,8 @@ import org.mockito.BDDMockito.times
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.only
 import org.mockito.Mockito.verify
-import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlin.math.exp
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
@@ -54,7 +50,6 @@ internal class MatchServiceTest {
     internal fun `Should get scheduled match`() {
         // given
         val expectedMatch = Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now())
-        val gameId = "game-1"
         given(repository.findById(matchId)).willReturn(expectedMatch)
         // when
         val match = service.getScheduled(matchId)
@@ -94,21 +89,19 @@ internal class MatchServiceTest {
     @Test
     internal fun `Should create match`() {
         // given
-        val firstCompetitorStats = Statistics(243, 2945, 3, 5, 9, LocalDate.now())
         val firstCompetitorId = "comp-1"
-        val firstCompetitor = Competitor(leagueId, firstCompetitorId, "Batman", firstCompetitorStats)
-        val secondCompetitorStats = Statistics(195, 2877, 8, 7, 2, LocalDate.now())
+        val firstCompetitor = Competitor(leagueId, firstCompetitorId, "Batman", 243, 2945)
         val secondCompetitorId = "comp-2"
-        val secondCompetitor = Competitor(leagueId, secondCompetitorId, "Superman", secondCompetitorStats)
+        val secondCompetitor = Competitor(leagueId, secondCompetitorId, "Superman", 195, 2877)
         val matchDateTime = LocalDateTime.now()
         val expectedMatch = Match(
             matchId, leagueId,
             Member(
                 firstCompetitorId, firstCompetitor.username,
-                firstCompetitor.statistics.deviation, firstCompetitor.statistics.rating),
+                firstCompetitor.deviation, firstCompetitor.rating),
             Member(
                 secondCompetitorId, secondCompetitor.username,
-                secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating),
+                secondCompetitor.deviation, secondCompetitor.rating),
             matchDateTime
         )
         given(competitorService.getForLeague(firstCompetitorId, leagueId)).willReturn(firstCompetitor)
@@ -121,21 +114,21 @@ internal class MatchServiceTest {
         assertEquals(matchDateTime, match.dateTime)
         assertEquals(firstCompetitor.id, match.memberOne.competitorId)
         assertEquals(firstCompetitor.username, match.memberOne.username)
-        assertEquals(firstCompetitor.statistics.deviation, match.memberOne.deviation)
-        assertEquals(firstCompetitor.statistics.rating, match.memberOne.rating)
+        assertEquals(firstCompetitor.deviation, match.memberOne.deviation)
+        assertEquals(firstCompetitor.rating, match.memberOne.rating)
         assertEquals(secondCompetitor.id, match.memberTwo.competitorId)
         assertEquals(secondCompetitor.username, match.memberTwo.username)
-        assertEquals(secondCompetitor.statistics.deviation, match.memberTwo.deviation)
-        assertEquals(secondCompetitor.statistics.rating, match.memberTwo.rating)
+        assertEquals(secondCompetitor.deviation, match.memberTwo.deviation)
+        assertEquals(secondCompetitor.rating, match.memberTwo.rating)
     }
 
     @Test
     internal fun `Should throw IllegalStateException when first competitor does not have id`() {
         // given
         val firstCompetitorId = "comp-1"
-        val firstCompetitor = Competitor(leagueId, "Batman", Statistics())
+        val firstCompetitor = Competitor(leagueId, "Batman")
         val secondCompetitorId = "comp-2"
-        val secondCompetitor = Competitor(leagueId, secondCompetitorId, "Superman", Statistics())
+        val secondCompetitor = Competitor(leagueId, secondCompetitorId, "Superman")
         given(competitorService.getForLeague(firstCompetitorId, leagueId)).willReturn(firstCompetitor)
         given(competitorService.getForLeague(secondCompetitorId, leagueId)).willReturn(secondCompetitor)
         // when
@@ -149,9 +142,9 @@ internal class MatchServiceTest {
     internal fun `Should throw IllegalStateException when second competitor does not have id`() {
         // given
         val firstCompetitorId = "comp-1"
-        val firstCompetitor = Competitor(leagueId, firstCompetitorId, "Batman", Statistics())
+        val firstCompetitor = Competitor(leagueId, firstCompetitorId, "Batman")
         val secondCompetitorId = "comp-2"
-        val secondCompetitor = Competitor(leagueId, "Superman", Statistics())
+        val secondCompetitor = Competitor(leagueId, "Superman")
         given(competitorService.getForLeague(firstCompetitorId, leagueId)).willReturn(firstCompetitor)
         given(competitorService.getForLeague(secondCompetitorId, leagueId)).willReturn(secondCompetitor)
         // when

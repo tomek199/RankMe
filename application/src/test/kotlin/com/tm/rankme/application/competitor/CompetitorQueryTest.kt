@@ -17,8 +17,7 @@ internal class CompetitorQueryTest {
     internal fun `Should return competitor by id`() {
         val username = "Optimus Prime"
         // given
-        val statisticsModel = CompetitorStatisticsModel(145, 2359, 35, 34, 33, LocalDate.now())
-        given(competitorService.get(id)).willReturn(CompetitorModel(id, username, statisticsModel))
+        given(competitorService.get(id)).willReturn(CompetitorModel(id, username, 145, 2359, LocalDate.now()))
         // when
         val competitor: CompetitorModel? = query.competitor(id)
         // then
@@ -38,10 +37,9 @@ internal class CompetitorQueryTest {
     internal fun `Should return competitors list by league id`() {
         // given
         val leagueId = "league-1"
-        val statistics1 = CompetitorStatisticsModel(250, 1500, 0, 0, 0, LocalDate.now())
-        val competitor1 = CompetitorModel( "comp-1", "Optimus Prime", statistics1)
-        val statistics2 = CompetitorStatisticsModel(250, 1500, 0, 0, 0, LocalDate.now())
-        val competitor2 = CompetitorModel("comp-2", "Megatron", statistics2)
+        val lastGameDate = LocalDate.now()
+        val competitor1 = CompetitorModel( "comp-1", "Optimus Prime", 350, 1500, lastGameDate)
+        val competitor2 = CompetitorModel("comp-2", "Megatron", 350, 1500, lastGameDate)
         given(competitorService.getListForLeague(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
         val competitors: List<CompetitorModel> = query.competitorsByLeagueId(leagueId)

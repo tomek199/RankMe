@@ -42,9 +42,9 @@ internal class CompetitorServiceImpl(
     }
 
     override fun updateStatistic(firstCompetitor: Competitor, secondCompetitor: Competitor, game: Game) {
-        firstCompetitor.updateStatistics(game.playerOne, game.playerTwo.score, game.dateTime)
+        firstCompetitor.updateAfterGame(game.playerOne.deviation, game.playerOne.rating, game.dateTime)
         repository.save(firstCompetitor)
-        secondCompetitor.updateStatistics(game.playerTwo, game.playerOne.score, game.dateTime)
+        secondCompetitor.updateAfterGame(game.playerTwo.deviation, game.playerTwo.rating, game.dateTime)
         repository.save(secondCompetitor)
     }
 }

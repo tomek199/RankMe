@@ -6,13 +6,12 @@ import com.tm.rankme.application.competitor.CompetitorService
 import com.tm.rankme.application.match.MatchService
 import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.competitor.Competitor
-import com.tm.rankme.domain.competitor.Statistics
-import com.tm.rankme.domain.match.Match
-import com.tm.rankme.domain.match.Member
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
+import com.tm.rankme.domain.match.Match
+import com.tm.rankme.domain.match.Member
 import graphql.relay.Connection
 import graphql.schema.DataFetchingEnvironment
 import org.junit.jupiter.api.Test
@@ -73,10 +72,9 @@ internal class GameServiceTest {
     @Test
     internal fun `Should create new game`() {
         // given
-        val firstCompetitorStats = Statistics(285, 1868, 4, 8, 6, LocalDate.now())
-        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", firstCompetitorStats)
-        val secondCompetitorStats = Statistics(182, 2593, 6, 5, 3, LocalDate.now())
-        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", secondCompetitorStats)
+        val lastGameDate = LocalDate.now()
+        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", 285, 1868, lastGameDate)
+        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", 182, 2593, lastGameDate)
         given(competitorService.getForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
         given(competitorService.getForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
         val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
@@ -105,21 +103,20 @@ internal class GameServiceTest {
     @Test
     internal fun `Should complete match and create game`() {
         // given
-        val firstCompetitorStats = Statistics(285, 1868, 4, 8, 6, LocalDate.now())
-        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", firstCompetitorStats)
-        val secondCompetitorStats = Statistics(182, 2593, 6, 5, 3, LocalDate.now())
-        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", secondCompetitorStats)
+        val lastGameDate = LocalDate.now()
+        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", 285, 1868, lastGameDate)
+        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", 182, 2593, lastGameDate)
         given(competitorService.getForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
         given(competitorService.getForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
         val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         val memberOne = Member(
             firstCompetitor.id!!, firstCompetitor.username,
-            firstCompetitor.statistics.deviation, firstCompetitor.statistics.rating
+            firstCompetitor.deviation, firstCompetitor.rating
         )
         val memberTwo = Member(
             secondCompetitor.id!!, secondCompetitor.username,
-            secondCompetitor.statistics.deviation, secondCompetitor.statistics.rating
+            secondCompetitor.deviation, secondCompetitor.rating
         )
         given(matchService.getScheduled(matchId)).willReturn(Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
         // when
@@ -188,10 +185,8 @@ internal class GameServiceTest {
     @Test
     internal fun `Should throw IllegalStateException when game id is null for connection`() {
         // given
-        val firstCompetitorStats = Statistics(285, 1868, 4, 8, 6, LocalDate.now())
-        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", firstCompetitorStats)
-        val secondCompetitorStats = Statistics(182, 2593, 6, 5, 3, LocalDate.now())
-        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", secondCompetitorStats)
+        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman")
+        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman")
         val game = GameFactory.create(firstCompetitor, 2, secondCompetitor, 3, leagueId)
         val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
         given(gameRepository.findByLeagueId(leagueId, 1)).willReturn(side)

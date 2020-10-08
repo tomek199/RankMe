@@ -5,7 +5,6 @@ import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.league.LeagueService
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
-import com.tm.rankme.domain.competitor.Statistics
 import com.tm.rankme.domain.game.GameFactory
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -31,7 +30,7 @@ internal class CompetitorServiceTest {
     @Test
     internal fun `Should return competitor for league`() {
         // given
-        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
+        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime")
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
         val competitor = service.getForLeague(competitorId, leagueId)
@@ -39,25 +38,21 @@ internal class CompetitorServiceTest {
         assertEquals(expectedCompetitor.id, competitor.id)
         assertEquals(expectedCompetitor.leagueId, competitor.leagueId)
         assertEquals(expectedCompetitor.username, competitor.username)
-        assertEquals(expectedCompetitor.statistics, competitor.statistics)
     }
 
     @Test
     internal fun `Should return competitor by id`() {
         // given
-        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime", Statistics())
+        val expectedCompetitor = Competitor(leagueId, competitorId, "Optimus Prime")
         given(repository.findById(competitorId)).willReturn(expectedCompetitor)
         // when
         val competitor: CompetitorModel = service.get(competitorId)
         // then
         assertEquals(expectedCompetitor.id, competitor.id)
         assertEquals(expectedCompetitor.username, competitor.username)
-        assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
-        assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
-        assertEquals(expectedCompetitor.statistics.draw, competitor.statistics.draw)
-        assertEquals(expectedCompetitor.statistics.lost, competitor.statistics.lost)
-        assertEquals(expectedCompetitor.statistics.won, competitor.statistics.won)
-        assertEquals(expectedCompetitor.statistics.lastGame, competitor.statistics.lastGame)
+        assertEquals(expectedCompetitor.deviation, competitor.deviation)
+        assertEquals(expectedCompetitor.rating, competitor.rating)
+        assertEquals(expectedCompetitor.lastGame, competitor.lastGame)
     }
 
     @Test
@@ -87,8 +82,8 @@ internal class CompetitorServiceTest {
     @Test
     internal fun `Should return competitors list by league id`() {
         // given
-        val competitor1 = Competitor(leagueId, "comp-1", "Batman", Statistics())
-        val competitor2 = Competitor(leagueId, "comp-2", "Superman", Statistics())
+        val competitor1 = Competitor(leagueId, "comp-1", "Batman")
+        val competitor2 = Competitor(leagueId, "comp-2", "Superman")
         given(repository.findByLeagueId(leagueId)).willReturn(listOf(competitor1, competitor2))
         // when
         val competitors: List<CompetitorModel> = service.getListForLeague(leagueId)
@@ -115,7 +110,7 @@ internal class CompetitorServiceTest {
         // given
         val competitorId = "comp-1"
         val leagueId = "league-1"
-        val competitor = Competitor("other-league-1", competitorId, "Optimus Prime", Statistics())
+        val competitor = Competitor("other-league-1", competitorId, "Optimus Prime")
         given(repository.findById(competitorId)).willReturn(competitor)
         // when
         val exception = assertFailsWith<IllegalStateException> {
@@ -129,16 +124,16 @@ internal class CompetitorServiceTest {
     internal fun `Should create competitor`() {
         // given
         val username = "Optimus Prime"
-        val expectedCompetitor = Competitor(leagueId, competitorId, username, Statistics())
+        val expectedCompetitor = Competitor(leagueId, competitorId, username)
         given(repository.save(any(Competitor::class.java))).willReturn(expectedCompetitor)
         // when
         val competitor: CompetitorModel = service.create(leagueId, username)
         // then
         assertNotNull(competitor.id)
         assertEquals(expectedCompetitor.username, competitor.username)
-        assertEquals(expectedCompetitor.statistics.deviation, competitor.statistics.deviation)
-        assertEquals(expectedCompetitor.statistics.rating, competitor.statistics.rating)
-        assertNull(competitor.statistics.lastGame)
+        assertEquals(expectedCompetitor.deviation, competitor.deviation)
+        assertEquals(expectedCompetitor.rating, competitor.rating)
+        assertNull(competitor.lastGame)
         verify(repository, only()).save(any(Competitor::class.java))
     }
 
@@ -153,8 +148,8 @@ internal class CompetitorServiceTest {
     @Test
     internal fun `Should update competitors statistic`() {
         // given
-        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman", Statistics())
-        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", Statistics())
+        val firstCompetitor = Competitor(leagueId, "comp-1", "Batman")
+        val secondCompetitor = Competitor(leagueId, "comp-2", "Superman")
         val game = GameFactory.create(firstCompetitor, 2, secondCompetitor, 1, leagueId)
         // when
         service.updateStatistic(firstCompetitor, secondCompetitor, game)

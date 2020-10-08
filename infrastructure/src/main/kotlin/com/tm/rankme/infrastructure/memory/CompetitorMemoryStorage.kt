@@ -2,7 +2,6 @@ package com.tm.rankme.infrastructure.memory
 
 import com.tm.rankme.domain.competitor.Competitor
 import com.tm.rankme.domain.competitor.CompetitorRepository
-import com.tm.rankme.domain.competitor.Statistics
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
@@ -13,7 +12,7 @@ class CompetitorMemoryStorage : CompetitorRepository {
     override fun save(entity: Competitor): Competitor {
         if (entity.id == null) {
             val id = (competitors.size + 1).toString()
-            val competitor = Competitor(entity.leagueId, id, entity.username, Statistics())
+            val competitor = Competitor(entity.leagueId, id, entity.username)
             competitors.add(competitor)
             return competitor
         }

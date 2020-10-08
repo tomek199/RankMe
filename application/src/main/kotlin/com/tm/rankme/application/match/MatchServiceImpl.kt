@@ -42,7 +42,7 @@ internal class MatchServiceImpl(
     private fun createMember(competitorId: String, leagueId: String): Member {
         val competitor = competitorService.getForLeague(competitorId, leagueId)
         val id = competitor.id ?: throw IllegalStateException("Competitor ${competitor.username} id is null")
-        return Member(id, competitor.username, competitor.statistics.deviation, competitor.statistics.rating)
+        return Member(id, competitor.username, competitor.deviation, competitor.rating)
     }
 
     override fun complete(matchId: String, gameId: String) {
