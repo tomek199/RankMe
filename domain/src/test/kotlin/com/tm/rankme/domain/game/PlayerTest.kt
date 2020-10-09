@@ -1,16 +1,31 @@
 package com.tm.rankme.domain.game
 
-import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import org.junit.jupiter.api.Test
 
 internal class PlayerTest {
+    private val competitorId = "comp-1"
+    private val username = "Optimus Prime"
+    private val deviation = 248
+    private val rating = 1764
+
     @Test
-    internal fun `Should create player`() {
+    internal fun `Should create player without result`() {
+        // when
+        val player = Player(competitorId, username, deviation, rating)
+        // then
+        assertEquals(competitorId, player.competitorId)
+        assertEquals(username, player.username)
+        assertEquals(deviation, player.deviation)
+        assertEquals(rating, player.rating)
+        assertNull(player.result)
+    }
+
+    @Test
+    internal fun `Should create player with result`() {
         // given
-        val competitorId = "comp-1"
-        val username = "Optimus Prime"
-        val deviation = 248
-        val rating = 1764
         val score = 3
         val ratingDelta = -74
         // when
@@ -19,8 +34,9 @@ internal class PlayerTest {
         assertEquals(competitorId, player.competitorId)
         assertEquals(username, player.username)
         assertEquals(deviation, player.deviation)
-        assertEquals(rating, player.rating)
-        assertEquals(score, player.result.score)
-        assertEquals(ratingDelta, player.result.ratingDelta)
+        assertEquals(rating + ratingDelta, player.rating)
+        assertNotNull(player.result)
+        assertEquals(score, player.result!!.score)
+        assertEquals(ratingDelta, player.result!!.ratingDelta)
     }
 }

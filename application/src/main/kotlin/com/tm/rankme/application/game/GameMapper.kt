@@ -15,6 +15,6 @@ class GameMapper : Mapper<Game, GameModel> {
     }
 
     private fun mapPlayer(player: Player): PlayerModel {
-        return PlayerModel(player.competitorId, player.username, player.rating, player.result.score)
+        return PlayerModel(player.competitorId, player.username, player.rating, player.result?.score)
     }
 }

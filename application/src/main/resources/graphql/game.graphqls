@@ -9,7 +9,7 @@ type Player {
     competitorId: String!
     username: String!
     rating: Int!
-    score: Int!
+    score: Int
 }
 
 input AddGameInput {

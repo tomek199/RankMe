@@ -31,11 +31,11 @@ internal class GameMapperTest {
         assertEquals(playerOne.competitorId, model.playerOne.competitorId)
         assertEquals(playerOne.username, model.playerOne.username)
         assertEquals(playerOne.rating, model.playerOne.rating)
-        assertEquals(playerOne.result.score, model.playerOne.score)
+        assertEquals(playerOne.result!!.score, model.playerOne.score)
         assertEquals(playerTwo.competitorId, model.playerTwo.competitorId)
         assertEquals(playerTwo.username, model.playerTwo.username)
         assertEquals(playerTwo.rating, model.playerTwo.rating)
-        assertEquals(playerTwo.result.score, model.playerTwo.score)
+        assertEquals(playerTwo.result!!.score, model.playerTwo.score)
     }
 
     @Test

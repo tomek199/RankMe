@@ -15,13 +15,6 @@ import com.tm.rankme.domain.match.Match
 import com.tm.rankme.domain.match.Member
 import graphql.relay.Connection
 import graphql.schema.DataFetchingEnvironment
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import org.mockito.BDDMockito.given
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.only
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -29,6 +22,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.only
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 
 internal class GameServiceTest {
     private val gameRepository: GameRepository = mock(GameRepository::class.java)
@@ -82,8 +82,8 @@ internal class GameServiceTest {
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         // when
         val game: GameModel = service.create(
-            leagueId, firstCompetitor.id!!, playerOne.result.score,
-            secondCompetitor.id!!, playerTwo.result.score
+            leagueId, firstCompetitor.id!!, playerOne.result!!.score,
+            secondCompetitor.id!!, playerTwo.result!!.score
         )
         // then
         verify(gameRepository, only()).save(any(Game::class.java))
@@ -94,11 +94,11 @@ internal class GameServiceTest {
         assertEquals(firstCompetitor.id, game.playerOne.competitorId)
         assertEquals(firstCompetitor.username, playerOne.username)
         assertEquals(playerOne.rating, game.playerOne.rating)
-        assertEquals(playerOne.result.score, game.playerOne.score)
+        assertEquals(playerOne.result!!.score, game.playerOne.score)
         assertEquals(secondCompetitor.id, game.playerTwo.competitorId)
         assertEquals(secondCompetitor.username, playerTwo.username)
         assertEquals(playerTwo.rating, game.playerTwo.rating)
-        assertEquals(playerTwo.result.score, game.playerTwo.score)
+        assertEquals(playerTwo.result!!.score, game.playerTwo.score)
     }
 
     @Test
@@ -121,7 +121,7 @@ internal class GameServiceTest {
         )
         given(matchService.getScheduled(matchId)).willReturn(Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
         // when
-        val game: GameModel = service.complete(matchId, playerOne.result.score, playerTwo.result.score)
+        val game: GameModel = service.complete(matchId, playerOne.result!!.score, playerTwo.result!!.score)
         // then
         verify(gameRepository, only()).save(any(Game::class.java))
         verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
@@ -133,11 +133,11 @@ internal class GameServiceTest {
         assertEquals(firstCompetitor.id, game.playerOne.competitorId)
         assertEquals(firstCompetitor.username, playerOne.username)
         assertEquals(playerOne.rating, game.playerOne.rating)
-        assertEquals(playerOne.result.score, game.playerOne.score)
+        assertEquals(playerOne.result!!.score, game.playerOne.score)
         assertEquals(secondCompetitor.id, game.playerTwo.competitorId)
         assertEquals(secondCompetitor.username, playerTwo.username)
         assertEquals(playerTwo.rating, game.playerTwo.rating)
-        assertEquals(playerTwo.result.score, game.playerTwo.score)
+        assertEquals(playerTwo.result!!.score, game.playerTwo.score)
     }
 
     @Test

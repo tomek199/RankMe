@@ -6,11 +6,11 @@ import com.tm.rankme.domain.competitorId2
 import com.tm.rankme.domain.competitorName1
 import com.tm.rankme.domain.competitorName2
 import com.tm.rankme.domain.leagueId
-import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import org.junit.jupiter.api.Test
 
 internal class GameFactoryTest {
     @Test
@@ -54,10 +54,10 @@ internal class GameFactoryTest {
 
         assertEquals(236, game.playerOne.deviation)
         assertEquals(1631, game.playerOne.rating)
-        assertEquals(234, game.playerOne.result.ratingDelta)
+        assertEquals(234, game.playerOne.result!!.ratingDelta)
 
         assertEquals(218, game.playerTwo.deviation)
         assertEquals(1681, game.playerTwo.rating)
-        assertEquals(-193, game.playerTwo.result.ratingDelta)
+        assertEquals(-193, game.playerTwo.result!!.ratingDelta)
     }
 }
