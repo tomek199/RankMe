@@ -54,10 +54,10 @@ internal class GameFactoryTest {
 
         assertEquals(236, game.playerOne.deviation)
         assertEquals(1631, game.playerOne.rating)
-        assertEquals(234, game.playerOne.ratingDelta)
+        assertEquals(234, game.playerOne.result.ratingDelta)
 
         assertEquals(218, game.playerTwo.deviation)
         assertEquals(1681, game.playerTwo.rating)
-        assertEquals(-193, game.playerTwo.ratingDelta)
+        assertEquals(-193, game.playerTwo.result.ratingDelta)
     }
 }

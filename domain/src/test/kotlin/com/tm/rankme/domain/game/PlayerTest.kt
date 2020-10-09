@@ -14,13 +14,13 @@ internal class PlayerTest {
         val score = 3
         val ratingDelta = -74
         // when
-        val player = Player(competitorId, username, deviation, rating, score, ratingDelta)
+        val player = Player(competitorId, username, deviation, rating, Result(score, ratingDelta))
         // then
         assertEquals(competitorId, player.competitorId)
         assertEquals(username, player.username)
         assertEquals(deviation, player.deviation)
         assertEquals(rating, player.rating)
-        assertEquals(score, player.score)
-        assertEquals(ratingDelta, player.ratingDelta)
+        assertEquals(score, player.result.score)
+        assertEquals(ratingDelta, player.result.ratingDelta)
     }
 }

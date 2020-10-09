@@ -10,6 +10,7 @@ import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
+import com.tm.rankme.domain.game.Result
 import com.tm.rankme.domain.match.Match
 import com.tm.rankme.domain.match.Member
 import graphql.relay.Connection
@@ -40,8 +41,8 @@ internal class GameServiceTest {
     private val gameId = "game-1"
     private val leagueId = "league-1"
     private val matchId = "match-1"
-    private val playerOne = Player("comp-1", "Batman", 235, 1683, 3, 46)
-    private val playerTwo = Player("comp-2", "Superman", 386, 2748, 1, -46)
+    private val playerOne = Player("comp-1", "Batman", 235, 1683, Result(3, 46))
+    private val playerTwo = Player("comp-2", "Superman", 386, 2748, Result(1, -46))
 
     @Test
     internal fun `Should return game`() {
@@ -81,8 +82,8 @@ internal class GameServiceTest {
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         // when
         val game: GameModel = service.create(
-            leagueId, firstCompetitor.id!!, playerOne.score,
-            secondCompetitor.id!!, playerTwo.score
+            leagueId, firstCompetitor.id!!, playerOne.result.score,
+            secondCompetitor.id!!, playerTwo.result.score
         )
         // then
         verify(gameRepository, only()).save(any(Game::class.java))
@@ -93,11 +94,11 @@ internal class GameServiceTest {
         assertEquals(firstCompetitor.id, game.playerOne.competitorId)
         assertEquals(firstCompetitor.username, playerOne.username)
         assertEquals(playerOne.rating, game.playerOne.rating)
-        assertEquals(playerOne.score, game.playerOne.score)
+        assertEquals(playerOne.result.score, game.playerOne.score)
         assertEquals(secondCompetitor.id, game.playerTwo.competitorId)
         assertEquals(secondCompetitor.username, playerTwo.username)
         assertEquals(playerTwo.rating, game.playerTwo.rating)
-        assertEquals(playerTwo.score, game.playerTwo.score)
+        assertEquals(playerTwo.result.score, game.playerTwo.score)
     }
 
     @Test
@@ -120,7 +121,7 @@ internal class GameServiceTest {
         )
         given(matchService.getScheduled(matchId)).willReturn(Match(matchId, leagueId, memberOne, memberTwo, LocalDateTime.now()))
         // when
-        val game: GameModel = service.complete(matchId, playerOne.score, playerTwo.score)
+        val game: GameModel = service.complete(matchId, playerOne.result.score, playerTwo.result.score)
         // then
         verify(gameRepository, only()).save(any(Game::class.java))
         verify(competitorService, times(1)).getForLeague(firstCompetitor.id!!, leagueId)
@@ -132,11 +133,11 @@ internal class GameServiceTest {
         assertEquals(firstCompetitor.id, game.playerOne.competitorId)
         assertEquals(firstCompetitor.username, playerOne.username)
         assertEquals(playerOne.rating, game.playerOne.rating)
-        assertEquals(playerOne.score, game.playerOne.score)
+        assertEquals(playerOne.result.score, game.playerOne.score)
         assertEquals(secondCompetitor.id, game.playerTwo.competitorId)
         assertEquals(secondCompetitor.username, playerTwo.username)
         assertEquals(playerTwo.rating, game.playerTwo.rating)
-        assertEquals(playerTwo.score, game.playerTwo.score)
+        assertEquals(playerTwo.result.score, game.playerTwo.score)
     }
 
     @Test

@@ -35,7 +35,8 @@ class GameFactory private constructor() {
         private fun initPlayer(competitor: Competitor, deviation: Int, rating: Int, score: Int): Player {
             return competitor.id?.let {
                 val ratingDelta = rating - competitor.rating
-                Player(it, competitor.username, deviation, rating, score, ratingDelta)
+                val result = Result(score, ratingDelta)
+                Player(it, competitor.username, deviation, rating, result)
             } ?: throw IllegalStateException("Competitor id cannot be null!")
         }
     }
