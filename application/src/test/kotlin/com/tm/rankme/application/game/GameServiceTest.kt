@@ -188,7 +188,7 @@ internal class GameServiceTest {
         // given
         val firstCompetitor = Competitor(leagueId, "comp-1", "Batman")
         val secondCompetitor = Competitor(leagueId, "comp-2", "Superman")
-        val game = GameFactory.create(firstCompetitor, 2, secondCompetitor, 3, leagueId)
+        val game = GameFactory.completed(firstCompetitor, 2, secondCompetitor, 3, leagueId)
         val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
         given(gameRepository.findByLeagueId(leagueId, 1)).willReturn(side)
         // when

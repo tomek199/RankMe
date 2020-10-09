@@ -57,7 +57,7 @@ internal class GameServiceImpl(
     ): Game {
         val firstCompetitor = competitorService.getForLeague(firstCompetitorId, leagueId)
         val secondCompetitor = competitorService.getForLeague(secondCompetitorId, leagueId)
-        val game = GameFactory.create(firstCompetitor, firstScore, secondCompetitor, secondScore, leagueId)
+        val game = GameFactory.completed(firstCompetitor, firstScore, secondCompetitor, secondScore, leagueId)
         val createdGame = gameRepository.save(game)
         competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
         return createdGame

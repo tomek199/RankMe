@@ -5,7 +5,13 @@ import java.time.LocalDateTime
 
 class GameFactory private constructor() {
     companion object {
-        fun create(
+        fun scheduled(competitorOne: Competitor, competitorTwo: Competitor, leagueId: String, dateTime: LocalDateTime): Game {
+            val playerOne = initPlayer(competitorOne)
+            val playerTwo = initPlayer(competitorTwo)
+            return Game(playerOne, playerTwo, leagueId, dateTime)
+        }
+
+        fun completed(
             competitorOne: Competitor, scoreOne: Int,
             competitorTwo: Competitor, scoreTwo: Int,
             leagueId: String
@@ -30,6 +36,11 @@ class GameFactory private constructor() {
                 ratingTwo = competitorTwo.rating,
                 scoreTwo = scoreTwo
             )
+        }
+
+        private fun initPlayer(competitor: Competitor): Player {
+            val competitorId = competitor.id ?: throw IllegalStateException("Competitor id cannot be null!")
+            return Player(competitorId, competitor.username, competitor.deviation, competitor.rating)
         }
 
         private fun initPlayer(competitor: Competitor, deviation: Int, rating: Int, score: Int): Player {
