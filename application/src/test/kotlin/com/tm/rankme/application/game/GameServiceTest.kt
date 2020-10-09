@@ -41,8 +41,8 @@ internal class GameServiceTest {
     private val gameId = "game-1"
     private val leagueId = "league-1"
     private val matchId = "match-1"
-    private val playerOne = Player("comp-1", "Batman", 235, 1683, Result(3, 46))
-    private val playerTwo = Player("comp-2", "Superman", 386, 2748, Result(1, -46))
+    private val playerOne = Player("comp-1", "Batman", 235, 1683, Result(3, -8,46))
+    private val playerTwo = Player("comp-2", "Superman", 386, 2748, Result(1, -9,-46))
 
     @Test
     internal fun `Should return game`() {

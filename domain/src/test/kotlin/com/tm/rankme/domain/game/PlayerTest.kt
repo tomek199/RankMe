@@ -27,13 +27,14 @@ internal class PlayerTest {
     internal fun `Should create player with result`() {
         // given
         val score = 3
+        val deviationDelta = -23
         val ratingDelta = -74
         // when
-        val player = Player(competitorId, username, deviation, rating, Result(score, ratingDelta))
+        val player = Player(competitorId, username, deviation, rating, Result(score, deviationDelta, ratingDelta))
         // then
         assertEquals(competitorId, player.competitorId)
         assertEquals(username, player.username)
-        assertEquals(deviation, player.deviation)
+        assertEquals(deviation + deviationDelta, player.deviation)
         assertEquals(rating + ratingDelta, player.rating)
         assertNotNull(player.result)
         assertEquals(score, player.result!!.score)

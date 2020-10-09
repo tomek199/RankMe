@@ -6,6 +6,10 @@ class Player(
 ) {
     var deviation: Int = deviation
         private set
+        get() {
+            if (result == null) return field
+            return field + result.deviationDelta
+        }
     var rating: Int = rating
         private set
         get() {
