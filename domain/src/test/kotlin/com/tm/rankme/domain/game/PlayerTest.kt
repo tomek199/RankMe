@@ -40,4 +40,25 @@ internal class PlayerTest {
         assertEquals(score, player.result!!.score)
         assertEquals(ratingDelta, player.result!!.ratingDelta)
     }
+
+    @Test
+    internal fun `Should add result`() {
+        // given
+        val oldDeviation = 250
+        val newDeviation = 236
+        val oldRating = 1345
+        val newRating = 1367
+        val score = 3
+        val player = Player(competitorId, username, deviation, rating)
+        // when
+        player.addResult(oldDeviation, newDeviation, oldRating, newRating, score)
+        // then
+        assertEquals(oldDeviation - 14, player.deviation)
+        assertEquals(newDeviation, player.deviation)
+        assertEquals(-14, player.result!!.deviationDelta)
+        assertEquals(oldRating + 22, player.rating)
+        assertEquals(newRating, player.rating)
+        assertEquals(score, player.result!!.score)
+        assertEquals(22, player.result!!.ratingDelta)
+    }
 }
