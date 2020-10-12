@@ -22,7 +22,7 @@ internal class GameFactoryTest {
         val competitorOne = Competitor(leagueId, competitorName1)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            GameFactory.scheduled(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+            GameFactory.scheduled(competitorOne, competitorTwo, LocalDateTime.now())
         }
         // then
         assertEquals("Competitor id cannot be null!", exception.message)
@@ -35,10 +35,23 @@ internal class GameFactoryTest {
         val competitorTwo = Competitor(leagueId, competitorName2)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            GameFactory.scheduled(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+            GameFactory.scheduled(competitorOne, competitorTwo, LocalDateTime.now())
         }
         // then
         assertEquals("Competitor id cannot be null!", exception.message)
+    }
+
+    @Test
+    internal fun `Should throw exception when competitors are from different leagues when creating scheduled game`() {
+        // given
+        val competitorOne = Competitor(leagueId, competitorId1, competitorName1)
+        val competitorTwo = Competitor("league-2", competitorId2, competitorName2)
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            GameFactory.scheduled(competitorOne, competitorTwo, LocalDateTime.now())
+        }
+        // then
+        assertEquals("Competitors do not belong to the same league!", exception.message)
     }
 
     @Test
@@ -48,7 +61,7 @@ internal class GameFactoryTest {
         val competitorOne = Competitor(leagueId, competitorId1, competitorName1, 245, 1397, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, 224, 1874, lastGameDate)
         // when
-        val game = GameFactory.scheduled(competitorOne, competitorTwo, leagueId, LocalDateTime.now())
+        val game = GameFactory.scheduled(competitorOne, competitorTwo, LocalDateTime.now())
         // then
         assertNotNull(game.dateTime)
         assertEquals(leagueId, game.leagueId)
@@ -73,7 +86,7 @@ internal class GameFactoryTest {
         val competitorOne = Competitor(leagueId, competitorName1)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            GameFactory.completed(competitorOne, 2, competitorTwo, 1, leagueId)
+            GameFactory.completed(competitorOne, 2, competitorTwo, 1)
         }
         // then
         assertEquals("Competitor id cannot be null!", exception.message)
@@ -86,10 +99,23 @@ internal class GameFactoryTest {
         val competitorTwo = Competitor(leagueId, competitorName2)
         // when
         val exception = assertFailsWith<IllegalStateException> {
-            GameFactory.completed(competitorOne, 3, competitorTwo, 2, leagueId)
+            GameFactory.completed(competitorOne, 3, competitorTwo, 2)
         }
         // then
         assertEquals("Competitor id cannot be null!", exception.message)
+    }
+
+    @Test
+    internal fun `Should throw exception when competitors are from different leagues when creating completed game`() {
+        // given
+        val competitorOne = Competitor("league-2", competitorId1, competitorName1)
+        val competitorTwo = Competitor(leagueId, competitorId2, competitorName2)
+        // when
+        val exception = assertFailsWith<IllegalStateException> {
+            GameFactory.completed(competitorOne, 1, competitorTwo, 2)
+        }
+        // then
+        assertEquals("Competitors do not belong to the same league!", exception.message)
     }
 
     @Test
@@ -99,7 +125,7 @@ internal class GameFactoryTest {
         val competitorOne = Competitor(leagueId, competitorId1, competitorName1, 245, 1397, lastGameDate)
         val competitorTwo = Competitor(leagueId, competitorId2, competitorName2, 224, 1874, lastGameDate)
         // when
-        val game = GameFactory.completed(competitorOne, 1, competitorTwo, 0, leagueId)
+        val game = GameFactory.completed(competitorOne, 1, competitorTwo, 0)
         // then
         assertNotNull(game.dateTime)
         assertEquals(leagueId, game.leagueId)

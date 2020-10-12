@@ -150,7 +150,7 @@ internal class CompetitorServiceTest {
         // given
         val firstCompetitor = Competitor(leagueId, "comp-1", "Batman")
         val secondCompetitor = Competitor(leagueId, "comp-2", "Superman")
-        val game = GameFactory.completed(firstCompetitor, 2, secondCompetitor, 1, leagueId)
+        val game = GameFactory.completed(firstCompetitor, 2, secondCompetitor, 1)
         // when
         service.updateStatistic(firstCompetitor, secondCompetitor, game)
         // then

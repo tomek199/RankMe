@@ -14,8 +14,8 @@ import graphql.relay.DefaultEdge
 import graphql.relay.DefaultPageInfo
 import graphql.relay.SimpleListConnection
 import graphql.schema.DataFetchingEnvironment
-import org.springframework.stereotype.Service
 import java.util.*
+import org.springframework.stereotype.Service
 
 @Service
 internal class GameServiceImpl(
@@ -57,7 +57,7 @@ internal class GameServiceImpl(
     ): Game {
         val firstCompetitor = competitorService.getForLeague(firstCompetitorId, leagueId)
         val secondCompetitor = competitorService.getForLeague(secondCompetitorId, leagueId)
-        val game = GameFactory.completed(firstCompetitor, firstScore, secondCompetitor, secondScore, leagueId)
+        val game = GameFactory.completed(firstCompetitor, firstScore, secondCompetitor, secondScore)
         val createdGame = gameRepository.save(game)
         competitorService.updateStatistic(firstCompetitor, secondCompetitor, game)
         return createdGame
