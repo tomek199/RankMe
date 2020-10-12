@@ -8,6 +8,7 @@ import com.tm.rankme.domain.gameId
 import com.tm.rankme.domain.leagueId
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import org.junit.jupiter.api.Test
 
@@ -19,8 +20,9 @@ internal class GameTest {
         val playerTwo = Player(competitorId2, competitorName2, 186, 2194)
         val dateTime = LocalDateTime.now()
         // when
-        val game = Game(gameId, playerOne, playerTwo, leagueId, dateTime)
+        val game = Game(gameId, playerOne, playerTwo, leagueId, dateTime,Type.SCHEDULED)
         // then
+        assertEquals(Type.SCHEDULED, game.type)
         assertEquals(leagueId, game.leagueId)
         assertEquals(gameId, game.id)
         assertEquals(dateTime, game.dateTime)
@@ -41,8 +43,9 @@ internal class GameTest {
         val playerTwo = Player(competitorId2, competitorName2, 230, 1758, Result(1, -8,-48))
         val dateTime = LocalDateTime.now()
         // when
-        val game = Game(gameId, playerOne, playerTwo, leagueId, dateTime)
+        val game = Game(gameId, playerOne, playerTwo, leagueId, dateTime, Type.COMPLETED)
         // then
+        assertEquals(Type.COMPLETED, game.type)
         assertEquals(leagueId, game.leagueId)
         assertEquals(gameId, game.id)
         assertEquals(dateTime, game.dateTime)
@@ -57,15 +60,28 @@ internal class GameTest {
     }
 
     @Test
+    internal fun `Should throw exception when game is already completed`() {
+        // given
+        val playerOne = Player(competitorId1, competitorName1, 180, 1343, Result(2, -12, 48))
+        val playerTwo = Player(competitorId2, competitorName2, 230, 1758, Result(1, -8,-48))
+        val game = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now(), Type.COMPLETED)
+        // when
+        val exception = assertFailsWith<IllegalStateException> { game.complete(185, 1350, 2, 235, 1734, 1) }
+        // then
+        assertEquals("Game is already completed!", exception.message)
+    }
+
+    @Test
     internal fun `Should complete game`() {
         // given
         val playerOne = Player(competitorId1, competitorName1, 350, 1500)
         val playerTwo = Player(competitorId2, competitorName2, 350, 1500)
         val dateTime = LocalDateTime.now()
-        val game = Game(gameId, playerOne, playerTwo, leagueId, dateTime)
+        val game = Game(gameId, playerOne, playerTwo, leagueId, dateTime, Type.SCHEDULED)
         // when
         game.complete(193, 1736, 1, 147, 2093, 3)
         // then
+        assertEquals(Type.COMPLETED, game.type)
         assertEquals(leagueId, game.leagueId)
         assertEquals(gameId, game.id)
         assertEquals(dateTime, game.dateTime)

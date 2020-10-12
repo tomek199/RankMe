@@ -63,6 +63,7 @@ internal class GameFactoryTest {
         // when
         val game = GameFactory.scheduled(competitorOne, competitorTwo, LocalDateTime.now())
         // then
+        assertEquals(Type.SCHEDULED, game.type)
         assertNotNull(game.dateTime)
         assertEquals(leagueId, game.leagueId)
 
@@ -127,6 +128,7 @@ internal class GameFactoryTest {
         // when
         val game = GameFactory.completed(competitorOne, 1, competitorTwo, 0)
         // then
+        assertEquals(Type.COMPLETED, game.type)
         assertNotNull(game.dateTime)
         assertEquals(leagueId, game.leagueId)
 

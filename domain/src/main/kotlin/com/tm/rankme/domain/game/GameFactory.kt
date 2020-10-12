@@ -14,22 +14,13 @@ class GameFactory private constructor() {
 
         fun completed(competitorOne: Competitor, scoreOne: Int, competitorTwo: Competitor, scoreTwo: Int): Game {
             val leagueId = getLeagueId(competitorOne.leagueId, competitorTwo.leagueId)
-            val glicko = initGlicko(competitorOne, scoreOne, competitorTwo, scoreTwo)
-            val playerOne = initPlayer(competitorOne, glicko.playerOneDeviation, glicko.playerOneRating, scoreOne)
-            val playerTwo = initPlayer(competitorTwo, glicko.playerTwoDeviation, glicko.playerTwoRating, scoreTwo)
-            return Game(playerOne, playerTwo, leagueId, LocalDateTime.now())
-        }
-
-        private fun initGlicko(
-            competitorOne: Competitor,
-            scoreOne: Int,
-            competitorTwo: Competitor,
-            scoreTwo: Int
-        ): GlickoService {
-            return GlickoService(
+            val glicko = GlickoService(
                 deviationOne = competitorOne.deviation, ratingOne = competitorOne.rating, scoreOne = scoreOne,
                 deviationTwo = competitorTwo.deviation, ratingTwo = competitorTwo.rating, scoreTwo = scoreTwo
             )
+            val playerOne = initPlayer(competitorOne, glicko.playerOneDeviation, glicko.playerOneRating, scoreOne)
+            val playerTwo = initPlayer(competitorTwo, glicko.playerTwoDeviation, glicko.playerTwoRating, scoreTwo)
+            return Game(playerOne, playerTwo, leagueId, LocalDateTime.now(), Type.COMPLETED)
         }
 
         private fun initPlayer(competitor: Competitor): Player {

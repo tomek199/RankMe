@@ -6,6 +6,7 @@ import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.Player
 import com.tm.rankme.domain.game.Result
+import com.tm.rankme.domain.game.Type
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -22,7 +23,7 @@ internal class GameMapperTest {
         val dateTime = LocalDateTime.now()
         val playerTwo = Player("comp-2", "Batman", 196, 2578, Result(2, -5, 96))
         val playerOne = Player("comp-1", "Superman", 258, 1345, Result(0, -8, -96))
-        val domain = Game(id, playerOne, playerTwo, leagueId, dateTime)
+        val domain = Game(id, playerOne, playerTwo, leagueId, dateTime, Type.COMPLETED)
         // when
         val model = mapper.toModel(domain)
         // then

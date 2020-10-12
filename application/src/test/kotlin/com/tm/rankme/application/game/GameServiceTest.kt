@@ -11,6 +11,7 @@ import com.tm.rankme.domain.game.GameFactory
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.Player
 import com.tm.rankme.domain.game.Result
+import com.tm.rankme.domain.game.Type
 import com.tm.rankme.domain.match.Match
 import com.tm.rankme.domain.match.Member
 import graphql.relay.Connection
@@ -46,7 +47,7 @@ internal class GameServiceTest {
 
     @Test
     internal fun `Should return game`() {
-        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
+        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now(), Type.COMPLETED)
         given(gameRepository.findById(gameId)).willReturn(expectedGame)
         // when
         val game: GameModel = service.get(gameId)
@@ -78,7 +79,7 @@ internal class GameServiceTest {
         val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", 182, 2593, lastGameDate)
         given(competitorService.getForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
         given(competitorService.getForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
-        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
+        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now(), Type.COMPLETED)
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         // when
         val game: GameModel = service.create(
@@ -109,7 +110,7 @@ internal class GameServiceTest {
         val secondCompetitor = Competitor(leagueId, "comp-2", "Superman", 182, 2593, lastGameDate)
         given(competitorService.getForLeague(firstCompetitor.id!!, leagueId)).willReturn(firstCompetitor)
         given(competitorService.getForLeague(secondCompetitor.id!!, leagueId)).willReturn(secondCompetitor)
-        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
+        val expectedGame = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now(), Type.COMPLETED)
         given(gameRepository.save(any(Game::class.java))).willReturn(expectedGame)
         val memberOne = Member(
             firstCompetitor.id!!, firstCompetitor.username,
@@ -151,7 +152,7 @@ internal class GameServiceTest {
     @Test
     internal fun `Should return games connection by league id`() {
         // given
-        val game = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now())
+        val game = Game(gameId, playerOne, playerTwo, leagueId, LocalDateTime.now(), Type.COMPLETED)
         val side = Side(listOf(game), 1, hasPrevious = false, hasNext = false)
         given(gameRepository.findByLeagueId(leagueId, 1)).willReturn(side)
         // when
