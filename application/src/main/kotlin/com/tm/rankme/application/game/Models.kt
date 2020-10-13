@@ -13,7 +13,7 @@ data class PlayerModel(
     val competitorId: String,
     val username: String,
     val rating: Int,
-    val score: Int
+    val score: Int?
 )
 
 data class AddGameInput(
@@ -21,11 +21,5 @@ data class AddGameInput(
     val playerOneId: String,
     val playerOneScore: Int,
     val playerTwoId: String,
-    val playerTwoScore: Int
-)
-
-data class CompleteGameInput(
-    val matchId: String,
-    val playerOneScore: Int,
     val playerTwoScore: Int
 )

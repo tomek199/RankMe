@@ -1,13 +1,13 @@
 package com.tm.rankme.application.game
 
 import com.tm.rankme.domain.competitor.Competitor
+import java.time.LocalDateTime
+import kotlin.test.assertNotNull
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.only
 import org.mockito.Mockito.verify
-import java.time.LocalDateTime
-import kotlin.test.assertNotNull
 
 internal class GameMutationTest {
     private val gameService = mock(GameService::class.java)
@@ -30,21 +30,5 @@ internal class GameMutationTest {
         // then
         assertNotNull(game)
         verify(gameService, only()).create(leagueId, firstCompetitor.id!!, 2, secondCompetitor.id!!, 1)
-    }
-
-    @Test
-    internal fun `Should create game base on existing match`() {
-        // given
-        val matchId = "match-1"
-        val playerOne = PlayerModel(firstCompetitor.id!!, firstCompetitor.username, 274, 1546)
-        val playerTwo = PlayerModel(secondCompetitor.id!!, secondCompetitor.username, 152, 2587)
-        val expectedGame = GameModel("game-1", playerOne, playerTwo, LocalDateTime.now())
-        given(gameService.complete(matchId, 1, 3)).willReturn(expectedGame)
-        val input = CompleteGameInput(matchId, 1, 3)
-        // when
-        val game: GameModel = mutation.completeGame(input)
-        // then
-        assertNotNull(game)
-        verify(gameService, only()).complete(matchId, 1, 3)
     }
 }

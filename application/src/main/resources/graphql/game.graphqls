@@ -9,7 +9,7 @@ type Player {
     competitorId: String!
     username: String!
     rating: Int!
-    score: Int!
+    score: Int
 }
 
 input AddGameInput {
@@ -17,11 +17,5 @@ input AddGameInput {
     playerOneId: String!
     playerOneScore: Int!
     playerTwoId: String!
-    playerTwoScore: Int!
-}
-
-input CompleteGameInput {
-    matchId: String!
-    playerOneScore: Int!
     playerTwoScore: Int!
 }

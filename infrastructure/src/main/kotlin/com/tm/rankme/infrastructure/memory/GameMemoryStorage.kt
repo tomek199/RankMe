@@ -14,7 +14,7 @@ class GameMemoryStorage : GameRepository {
     override fun save(entity: Game): Game {
         if (entity.id == null) {
             val id = (games.size + 1).toString()
-            val game = Game(id, entity.playerOne, entity.playerTwo, entity.leagueId, entity.dateTime)
+            val game = Game(id, entity.playerOne, entity.playerTwo, entity.leagueId, entity.dateTime, entity.type)
             games.add(game)
             return game
         }

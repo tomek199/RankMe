@@ -5,8 +5,6 @@ type MutationType {
     addLeague(input: AddLeagueInput!): League
     addCompetitor(input: AddCompetitorInput!): Competitor
     addGame(input: AddGameInput!): Game
-    addMatch(input: AddMatchInput!): Match
-    completeGame(input: CompleteGameInput): Game
 }
 
 type QueryType {
