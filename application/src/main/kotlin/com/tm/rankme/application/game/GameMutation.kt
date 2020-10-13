@@ -18,9 +18,4 @@ class GameMutation(private val gameService: GameService) : GraphQLMutationResolv
             secondScore = input.playerTwoScore
         )
     }
-
-    fun completeGame(input: CompleteGameInput): GameModel {
-        log.info("Complete game: $input")
-        return gameService.complete(input.matchId, input.playerOneScore, input.playerTwoScore)
-    }
 }

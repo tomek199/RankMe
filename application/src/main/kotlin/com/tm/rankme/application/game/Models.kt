@@ -23,9 +23,3 @@ data class AddGameInput(
     val playerTwoId: String,
     val playerTwoScore: Int
 )
-
-data class CompleteGameInput(
-    val matchId: String,
-    val playerOneScore: Int,
-    val playerTwoScore: Int
-)

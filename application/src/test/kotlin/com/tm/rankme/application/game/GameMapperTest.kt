@@ -10,6 +10,7 @@ import com.tm.rankme.domain.game.Type
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import org.junit.jupiter.api.Test
 
 internal class GameMapperTest {
@@ -17,7 +18,30 @@ internal class GameMapperTest {
     private val leagueId = "league-1"
 
     @Test
-    internal fun `Should map game domain to model`() {
+    internal fun `Should map scheduled game domain to model`() {
+        // given
+        val id = "game-1"
+        val dateTime = LocalDateTime.now()
+        val playerTwo = Player("comp-2", "Batman", 196, 2578)
+        val playerOne = Player("comp-1", "Superman", 258, 1345)
+        val domain = Game(id, playerOne, playerTwo, leagueId, dateTime, Type.SCHEDULED)
+        // when
+        val model = mapper.toModel(domain)
+        // then
+        assertEquals(id, model.id)
+        assertEquals(dateTime, model.dateTime)
+        assertEquals(playerOne.competitorId, model.playerOne.competitorId)
+        assertEquals(playerOne.username, model.playerOne.username)
+        assertEquals(playerOne.rating, model.playerOne.rating)
+        assertNull(model.playerOne.score)
+        assertEquals(playerTwo.competitorId, model.playerTwo.competitorId)
+        assertEquals(playerTwo.username, model.playerTwo.username)
+        assertEquals(playerTwo.rating, model.playerTwo.rating)
+        assertNull(model.playerTwo.score)
+    }
+
+    @Test
+    internal fun `Should map completed game domain to model`() {
         // given
         val id = "game-1"
         val dateTime = LocalDateTime.now()

@@ -2,7 +2,6 @@ package com.tm.rankme.application.game
 
 import com.tm.rankme.application.common.Mapper
 import com.tm.rankme.application.competitor.CompetitorService
-import com.tm.rankme.application.match.MatchService
 import com.tm.rankme.domain.Side
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameFactory
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service
 internal class GameServiceImpl(
     private val gameRepository: GameRepository,
     private val competitorService: CompetitorService,
-    private val matchService: MatchService,
     private val mapper: Mapper<Game, GameModel>
 ) : GameService {
 
@@ -36,17 +34,6 @@ internal class GameServiceImpl(
         secondCompetitorId: String, secondScore: Int
     ): GameModel {
         val createdGame = addNewGame(leagueId, firstCompetitorId, firstScore, secondCompetitorId, secondScore)
-        return mapper.toModel(createdGame)
-    }
-
-    override fun complete(matchId: String, playerOneScore: Int, playerTwoScore: Int): GameModel {
-        val match = matchService.getScheduled(matchId)
-        val createdGame = addNewGame(
-            match.leagueId,
-            match.memberOne.competitorId, playerOneScore,
-            match.memberTwo.competitorId, playerTwoScore
-        )
-        matchService.complete(matchId, createdGame.id!!)
         return mapper.toModel(createdGame)
     }
 
