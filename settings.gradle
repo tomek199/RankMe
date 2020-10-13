@@ -1,4 +1,0 @@
-include 'domain'
-include 'infrastructure'
-include 'application'
-
