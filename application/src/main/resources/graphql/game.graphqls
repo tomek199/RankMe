@@ -1,0 +1,21 @@
+type Game {
+    id: String!
+    playerOne: Player!
+    playerTwo: Player!
+    dateTime: LocalDateTime!
+}
+
+type Player {
+    competitorId: String!
+    username: String!
+    rating: Int!
+    score: Int
+}
+
+input AddGameInput {
+    leagueId: String!
+    playerOneId: String!
+    playerOneScore: Int!
+    playerTwoId: String!
+    playerTwoScore: Int!
+}

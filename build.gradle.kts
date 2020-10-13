@@ -1,12 +1,17 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
+
 plugins {
-    kotlin("jvm") version "1.3.50"
+    kotlin("jvm") version "1.4.0"
+    jacoco
+    id("org.sonarqube") version("2.7.1")
 }
 
 allprojects {
-    group = "com.tm.glicko"
-    version = "0.1-SNAPSHOT"
+    group = "com.tm.rankme"
+    version = "0.26-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -15,10 +20,19 @@ allprojects {
 
 subprojects {
     apply(plugin = "kotlin")
+    apply(plugin = "jacoco")
+
+    sonarqube { }
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
-        testCompile("org.junit.jupiter:junit-jupiter:5.5.2")
+        testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+        testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
+        testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
+    }
+
+    tasks.register("stage") {
+        dependsOn("build")
     }
 
     tasks.withType<KotlinCompile> {
@@ -27,5 +41,19 @@ subprojects {
 
     tasks.test {
         useJUnitPlatform()
+        finalizedBy(tasks.jacocoTestReport)
     }
+
+    tasks.jacocoTestReport {
+        reports {
+            xml.isEnabled = true
+            csv.isEnabled = false
+        }
+    }
+}
+
+tasks.register("stage") {
+    group = "Build"
+    description = "Assembles and test this project for Heroku deployment"
+    dependsOn("build")
 }

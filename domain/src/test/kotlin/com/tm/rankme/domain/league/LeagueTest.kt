@@ -1,42 +1,40 @@
 package com.tm.rankme.domain.league
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import com.tm.rankme.domain.leagueName
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class LeagueTest {
     @Test
-    internal fun `should create league with default params`() {
-        // given
-        val name = "Tennis masters"
+    internal fun `Should create league with default params`() {
         // when
-        val league = League(name)
-        assertEquals(name, league.name)
+        val league = League(leagueName)
         // then
         assertNull(league.id)
+        assertEquals(leagueName, league.name)
         assertNotNull(league.settings)
         assertEquals(false, league.settings.allowDraws)
         assertEquals(2, league.settings.maxScore)
     }
 
     @Test
-    internal fun `should create league with id`() {
+    internal fun `Should create league with id`() {
         // given
-        val id = "league-111"
-        val name = "Tennis masters"
+        val id = "league-1"
         // when
-        val league = League(id, name)
+        val league = League(id, leagueName)
         // then
         assertEquals(id, league.id)
-        assertEquals(name, league.name)
+        assertEquals(leagueName, league.name)
     }
 
     @Test
-    internal fun `should change allow draws setting`() {
+    internal fun `Should change allow draws setting`() {
         // given
-        val league = League("Tennis masters")
+        val league = League(leagueName)
         // when
         league.setAllowDraws(true)
         // then
@@ -44,9 +42,9 @@ internal class LeagueTest {
     }
 
     @Test
-    internal fun `should change max score setting`() {
+    internal fun `Should change max score setting`() {
         // given
-        val league = League("Tennis masters")
+        val league = League(leagueName)
         // when
         league.setMaxScore(8)
         // then

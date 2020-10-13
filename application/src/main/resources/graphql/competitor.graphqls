@@ -1,0 +1,12 @@
+type Competitor {
+    id: String!
+    username: String!
+    deviation: Int!
+    rating: Int!
+    lastGame: LocalDate
+}
+
+input AddCompetitorInput {
+    leagueId: String!
+    username: String!
+}
