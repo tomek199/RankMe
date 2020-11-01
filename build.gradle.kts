@@ -25,7 +25,6 @@ subprojects {
     sonarqube { }
 
     dependencies {
-        implementation(kotlin("stdlib-jdk11"))
         testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
         testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
         testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
