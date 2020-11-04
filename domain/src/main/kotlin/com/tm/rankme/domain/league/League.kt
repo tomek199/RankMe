@@ -22,7 +22,7 @@ class League private constructor(
             return league
         }
 
-        fun from(events: List<Event<League>>): League {
+        internal fun from(events: List<Event<League>>): League {
             val league = League()
             events.forEach { event -> event.apply(league) }
             league.version = events.last().version
