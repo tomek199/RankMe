@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
-internal class CreateLeagueCommandHandlerTest {
+internal class CreateLeagueHandlerTest {
     private val repository: LeagueRepository = mock(LeagueRepository::class.java)
-    private val handler: CommandHandler<CreateLeagueCommand> = CreateLeagueCommandHandler(repository)
+    private val handler: CommandHandler<CreateLeagueCommand> = CreateLeagueHandler(repository)
 
     @Test
     internal fun `Should create league`() {
