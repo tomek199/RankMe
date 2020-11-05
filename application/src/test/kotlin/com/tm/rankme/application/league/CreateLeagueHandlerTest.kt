@@ -1,9 +1,12 @@
 package com.tm.rankme.application.league
 
-import com.tm.rankme.application.anyClass
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.tm.rankme.application.cqrs.CommandHandler
 import com.tm.rankme.domain.league.League
+import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRepository
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -19,6 +22,9 @@ internal class CreateLeagueHandlerTest {
         // when
         handler.dispatch(command)
         // then
-        verify(repository).store(anyClass(League::class.java))
+        val leagueCaptor = argumentCaptor<League>()
+        verify(repository).store(leagueCaptor.capture())
+        assertEquals(command.name, leagueCaptor.firstValue.name)
+        assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueCreated)
     }
 }
