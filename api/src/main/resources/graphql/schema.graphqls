@@ -1,5 +1,12 @@
+schema {
+    mutation: Mutation
+    query: Query
+}
+
 type Mutation {
     createLeague(command: CreateLeagueCommand): Result!
+    changeLeagueName(command: ChangeLeagueNameCommand): Result!
+    changeLeagueSettings(command: ChangeLeagueSettingsCommand): Result!
 }
 
 type Query {
@@ -10,6 +17,9 @@ type Result {
     status: Status!
     message: String
 }
+
+scalar UUID
+
 enum Status {
     SUCCESS, FAILURE
 }
@@ -18,7 +28,13 @@ input CreateLeagueCommand {
     name: String!
 }
 
-schema {
-    mutation: Mutation
-    query: Query
+input ChangeLeagueNameCommand {
+    id: UUID!
+    name: String!
+}
+
+input ChangeLeagueSettingsCommand {
+    id: UUID!
+    allowDraws: Boolean!
+    maxScore: Int!
 }
