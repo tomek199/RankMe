@@ -27,7 +27,6 @@ subprojects {
     dependencies {
         testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
         testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-        testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
         testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     }
 

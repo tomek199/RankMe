@@ -2,6 +2,7 @@ package com.tm.rankme.application.league
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.mock
 import com.tm.rankme.application.cqrs.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.league.League
@@ -14,11 +15,10 @@ import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.willDoNothing
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
 internal class ChangeLeagueNameHandlerTest {
-    private val repository: LeagueRepository = mock(LeagueRepository::class.java)
+    private val repository: LeagueRepository = mock()
     private val handler: CommandHandler<ChangeLeagueNameCommand> = ChangeLeagueNameHandler(repository)
 
     @Test

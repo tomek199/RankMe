@@ -1,0 +1,24 @@
+type Mutation {
+    createLeague(command: CreateLeagueCommand): Result!
+}
+
+type Query {
+    info: String!
+}
+
+type Result {
+    status: Status!
+    message: String
+}
+enum Status {
+    SUCCESS, FAILURE
+}
+
+input CreateLeagueCommand {
+    name: String!
+}
+
+schema {
+    mutation: Mutation
+    query: Query
+}
