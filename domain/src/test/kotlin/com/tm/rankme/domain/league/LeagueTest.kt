@@ -32,12 +32,12 @@ internal class LeagueTest {
         val league = League.from(listOf(leagueCreated))
         val newLeagueName = "Transformers"
         // when
-        league.name(newLeagueName)
+        league.rename(newLeagueName)
         // then
         assertEquals(2, league.version)
         assertEquals(newLeagueName, league.name)
         assertEquals(1, league.pendingEvents.size)
-        assertTrue(league.pendingEvents[0] is LeagueNameChanged)
+        assertTrue(league.pendingEvents[0] is LeagueRenamed)
         assertEquals(league.id, league.pendingEvents[0].aggregateId)
         assertEquals(2, league.pendingEvents[0].version)
     }
@@ -79,7 +79,7 @@ internal class LeagueTest {
     @Test
     internal fun `Should init league aggregate from all events`() {
         // given
-        val nameChanged = LeagueNameChanged(leagueCreated.aggregateId, 2, "Transformers")
+        val nameChanged = LeagueRenamed(leagueCreated.aggregateId, 2, "Transformers")
         val settingsChanged = LeagueSettingsChanged(leagueCreated.aggregateId, 3, true, 4)
         // when
         val league = League.from(listOf(leagueCreated, nameChanged, settingsChanged))

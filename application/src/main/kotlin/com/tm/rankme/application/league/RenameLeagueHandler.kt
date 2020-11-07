@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ChangeLeagueNameHandler @Autowired constructor(
+class RenameLeagueHandler @Autowired constructor(
     private val repository: LeagueRepository
-) : CommandHandler<ChangeLeagueNameCommand> {
+) : CommandHandler<RenameLeagueCommand> {
 
-    override fun dispatch(command: ChangeLeagueNameCommand) {
+    override fun dispatch(command: RenameLeagueCommand) {
         val league = repository.byId(command.id)
-        league.name(command.name)
+        league.rename(command.name)
         repository.store(league)
     }
 }

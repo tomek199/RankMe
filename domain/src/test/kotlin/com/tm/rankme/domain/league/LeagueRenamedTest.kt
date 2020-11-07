@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import org.junit.jupiter.api.Test
 
-internal class LeagueNameChangedTest {
+internal class LeagueRenamedTest {
     @Test
     internal fun `Should create event`() {
         // given
@@ -13,9 +13,9 @@ internal class LeagueNameChangedTest {
         val version = 2
         val name = "Transformers"
         // when
-        val event = LeagueNameChanged(aggregateId, version, name)
+        val event = LeagueRenamed(aggregateId, version, name)
         // then
-        assertEquals("league-name-changed", event.type)
+        assertEquals("league-renamed", event.type)
         assertEquals(aggregateId, event.aggregateId)
         assertEquals(version, event.version)
         assertNotNull(event.timestamp)

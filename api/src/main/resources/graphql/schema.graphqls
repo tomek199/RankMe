@@ -5,7 +5,7 @@ schema {
 
 type Mutation {
     createLeague(command: CreateLeagueCommand): Result!
-    changeLeagueName(command: ChangeLeagueNameCommand): Result!
+    renameLeague(command: RenameLeagueCommand): Result!
     changeLeagueSettings(command: ChangeLeagueSettingsCommand): Result!
 }
 
@@ -28,7 +28,7 @@ input CreateLeagueCommand {
     name: String!
 }
 
-input ChangeLeagueNameCommand {
+input RenameLeagueCommand {
     id: UUID!
     name: String!
 }

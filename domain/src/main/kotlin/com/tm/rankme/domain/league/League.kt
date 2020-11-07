@@ -30,8 +30,8 @@ class League private constructor(
         }
     }
 
-    fun name(name: String) {
-        add(LeagueNameChanged(id, ++version, name))
+    fun rename(name: String) {
+        add(LeagueRenamed(id, ++version, name))
     }
 
     fun settings(allowDraws: Boolean, maxScore: Int) {
@@ -51,7 +51,7 @@ class League private constructor(
         settings.maxScore = event.maxScore
     }
 
-    internal fun apply(event: LeagueNameChanged) {
+    internal fun apply(event: LeagueRenamed) {
         name = event.name
     }
 

@@ -6,7 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.tm.rankme.application.cqrs.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.league.League
-import com.tm.rankme.domain.league.LeagueNameChanged
+import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueRepository
 import java.util.*
 import kotlin.test.assertEquals
@@ -17,16 +17,16 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.willDoNothing
 import org.mockito.Mockito.verify
 
-internal class ChangeLeagueNameHandlerTest {
+internal class RenameLeagueHandlerTest {
     private val repository: LeagueRepository = mock()
-    private val handler: CommandHandler<ChangeLeagueNameCommand> = ChangeLeagueNameHandler(repository)
+    private val handler: CommandHandler<RenameLeagueCommand> = RenameLeagueHandler(repository)
 
     @Test
     internal fun `Should change league name`() {
         // given
         val name = "Star Wars"
         val league = League.create(name)
-        val command = ChangeLeagueNameCommand(league.id,"Transformers")
+        val command = RenameLeagueCommand(league.id,"Transformers")
         given(repository.byId(league.id)).willReturn(league)
         willDoNothing().given(repository).store(any())
         // when
@@ -37,7 +37,7 @@ internal class ChangeLeagueNameHandlerTest {
         verify(repository).store(leagueCaptor.capture())
         assertEquals(command.name, leagueCaptor.firstValue.name)
         assertEquals(2, leagueCaptor.firstValue.version)
-        assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueNameChanged)
+        assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueRenamed)
     }
 
     @Test
@@ -45,7 +45,7 @@ internal class ChangeLeagueNameHandlerTest {
         // given
         val id = UUID.randomUUID()
         val exceptionMessage = "League is not found"
-        val command = ChangeLeagueNameCommand(id, "Transformers")
+        val command = RenameLeagueCommand(id, "Transformers")
         given(repository.byId(id)).willThrow(AggregateException(exceptionMessage))
         // when
         val exception = assertFailsWith<AggregateException> { handler.dispatch(command) }

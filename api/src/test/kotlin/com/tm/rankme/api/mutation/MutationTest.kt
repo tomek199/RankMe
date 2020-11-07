@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.only
 import com.nhaarman.mockitokotlin2.verify
-import com.tm.rankme.application.league.ChangeLeagueNameCommand
+import com.tm.rankme.application.league.RenameLeagueCommand
 import com.tm.rankme.application.league.ChangeLeagueSettingsCommand
 import com.tm.rankme.application.league.CreateLeagueCommand
 import java.util.*
@@ -38,9 +38,9 @@ internal class MutationTest {
     @Test
     internal fun `Should execute "change league name" command`() {
         // given
-        val command = ChangeLeagueNameCommand(UUID.randomUUID(), "Transformers")
+        val command = RenameLeagueCommand(UUID.randomUUID(), "Transformers")
         // when
-        val result: Result = mutation.changeLeagueName(command)
+        val result: Result = mutation.renameLeague(command)
         // then
         verify(executor, only()).execute(command)
         assertEquals(Status.SUCCESS, result.status)
