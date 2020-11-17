@@ -16,7 +16,7 @@ internal class LeagueCreatedTest {
         // then
         assertEquals("league-created", event.type)
         assertNotNull(event.aggregateId)
-        assertEquals(1, event.version)
+        assertEquals(0, event.version)
         assertNotNull(event.timestamp)
         assertEquals(name, event.name)
         assertEquals(allowDraws, event.allowDraws)

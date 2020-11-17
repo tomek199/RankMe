@@ -7,7 +7,7 @@ class LeagueCreated(
     val name: String,
     val allowDraws: Boolean = false,
     val maxScore: Int = 2
-) : Event<League>(UUID.randomUUID(), version = 1)
+) : Event<League>(UUID.randomUUID(), version = 0)
 {
     override val type: String = "league-created"
 

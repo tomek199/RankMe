@@ -17,13 +17,13 @@ internal class LeagueTest {
         val league = League.create(name)
         // then
         assertNotNull(league.id)
-        assertEquals(1, league.version)
+        assertEquals(0, league.version)
         assertEquals(name, league.name)
         assertEquals(false, league.settings.allowDraws)
         assertEquals(2, league.settings.maxScore)
         assertEquals(1, league.pendingEvents.size)
         assertTrue(league.pendingEvents[0] is LeagueCreated)
-        assertEquals(1, league.pendingEvents[0].version)
+        assertEquals(0, league.pendingEvents[0].version)
     }
 
     @Test
@@ -34,12 +34,12 @@ internal class LeagueTest {
         // when
         league.rename(newLeagueName)
         // then
-        assertEquals(2, league.version)
+        assertEquals(1, league.version)
         assertEquals(newLeagueName, league.name)
         assertEquals(1, league.pendingEvents.size)
         assertTrue(league.pendingEvents[0] is LeagueRenamed)
         assertEquals(league.id, league.pendingEvents[0].aggregateId)
-        assertEquals(2, league.pendingEvents[0].version)
+        assertEquals(1, league.pendingEvents[0].version)
     }
 
     @Test
@@ -51,14 +51,14 @@ internal class LeagueTest {
         // when
         league.settings(newAllowDraws, newMaxScore)
         // then
-        assertEquals(2, league.version)
+        assertEquals(1, league.version)
         assertEquals(leagueCreated.name, league.name)
         assertEquals(newAllowDraws, league.settings.allowDraws)
         assertEquals(newMaxScore, league.settings.maxScore)
         assertEquals(1, league.pendingEvents.size)
         assertTrue(league.pendingEvents[0] is LeagueSettingsChanged)
         assertEquals(league.id, league.pendingEvents[0].aggregateId)
-        assertEquals(2, league.pendingEvents[0].version)
+        assertEquals(1, league.pendingEvents[0].version)
     }
 
     @Test
@@ -79,8 +79,8 @@ internal class LeagueTest {
     @Test
     internal fun `Should init league aggregate from all events`() {
         // given
-        val nameChanged = LeagueRenamed(leagueCreated.aggregateId, 2, "Transformers")
-        val settingsChanged = LeagueSettingsChanged(leagueCreated.aggregateId, 3, true, 4)
+        val nameChanged = LeagueRenamed(leagueCreated.aggregateId, 1, "Transformers")
+        val settingsChanged = LeagueSettingsChanged(leagueCreated.aggregateId, 2, true, 4)
         // when
         val league = League.from(listOf(leagueCreated, nameChanged, settingsChanged))
         // then

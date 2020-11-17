@@ -36,7 +36,7 @@ internal class ChangeLeagueSettingsHandlerTest {
         verify(repository).store(leagueCaptor.capture())
         assertEquals(command.allowDraws, leagueCaptor.firstValue.settings.allowDraws)
         assertEquals(command.maxScore, leagueCaptor.firstValue.settings.maxScore)
-        assertEquals(2, leagueCaptor.firstValue.version)
+        assertEquals(1, leagueCaptor.firstValue.version)
         assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueSettingsChanged)
     }
 

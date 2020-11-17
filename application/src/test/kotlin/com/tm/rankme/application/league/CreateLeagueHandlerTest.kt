@@ -25,7 +25,7 @@ internal class CreateLeagueHandlerTest {
         val leagueCaptor = argumentCaptor<League>()
         verify(repository).store(leagueCaptor.capture())
         assertEquals(command.name, leagueCaptor.firstValue.name)
-        assertEquals(1, leagueCaptor.firstValue.version)
+        assertEquals(0, leagueCaptor.firstValue.version)
         assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueCreated)
     }
 }

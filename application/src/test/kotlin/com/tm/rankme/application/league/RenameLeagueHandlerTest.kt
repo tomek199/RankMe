@@ -36,7 +36,7 @@ internal class RenameLeagueHandlerTest {
         verify(repository).byId(league.id)
         verify(repository).store(leagueCaptor.capture())
         assertEquals(command.name, leagueCaptor.firstValue.name)
-        assertEquals(2, leagueCaptor.firstValue.version)
+        assertEquals(1, leagueCaptor.firstValue.version)
         assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueRenamed)
     }
 
