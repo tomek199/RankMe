@@ -5,6 +5,7 @@ import com.tm.rankme.application.cqrs.Command
 import com.tm.rankme.application.cqrs.CommandBus
 import com.tm.rankme.application.cqrs.CommandHandler
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -22,6 +23,16 @@ internal class SpringCommandBusTest(@Autowired private val commandBus: CommandBu
         // then
         assertEquals(expectedValue, (command as TestCommand).testProperty)
     }
+
+    @Test
+    internal fun `Should throw exception when cannot find handler for command`() {
+        // given
+        val command: Command = CommandWithoutHandler("Initial value")
+        // when
+        val exception = assertFailsWith<IllegalStateException> { commandBus.execute(command) }
+        // then
+        assertEquals("Command type not found", exception.message)
+    }
 }
 
 @Component
@@ -32,3 +43,4 @@ private class TestHandler : CommandHandler<TestCommand> {
 }
 
 private data class TestCommand(var testProperty: String) : Command()
+private data class CommandWithoutHandler(var testProperty: String) : Command()
