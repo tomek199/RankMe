@@ -10,3 +10,7 @@ graphiql:
   cdn:
     enabled: false
     version: 0.13.0
+
+eventstore:
+  host: localhost
+  port: 2113
