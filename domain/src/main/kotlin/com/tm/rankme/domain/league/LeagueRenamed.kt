@@ -6,7 +6,7 @@ import java.util.*
 
 class LeagueRenamed(
     aggregateId: UUID,
-    version: Int,
+    version: Long,
     val name: String
 ) : Event<League>(aggregateId, version) {
 

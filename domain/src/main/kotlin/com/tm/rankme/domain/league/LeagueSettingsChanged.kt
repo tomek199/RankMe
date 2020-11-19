@@ -5,7 +5,7 @@ import java.util.*
 
 class LeagueSettingsChanged(
     aggregateId: UUID,
-    version: Int,
+    version: Long,
     val allowDraws: Boolean,
     val maxScore: Int
 ) : Event<League>(aggregateId, version) {

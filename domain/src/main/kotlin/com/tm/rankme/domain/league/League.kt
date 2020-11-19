@@ -9,7 +9,7 @@ class League private constructor(
 ) {
     lateinit var id: UUID
         private set
-    var version: Int = 0
+    var version: Long = 0
         private set
     lateinit var name: String
         private set
@@ -22,7 +22,7 @@ class League private constructor(
             return league
         }
 
-        internal fun from(events: List<Event<League>>): League {
+        fun from(events: List<Event<League>>): League {
             val league = League()
             events.forEach { event -> event.apply(league) }
             league.version = events.last().version

@@ -10,7 +10,7 @@ internal class LeagueRenamedTest {
     internal fun `Should create event`() {
         // given
         val aggregateId = UUID.randomUUID()
-        val version = 2
+        val version = 2L
         val name = "Transformers"
         // when
         val event = LeagueRenamed(aggregateId, version, name)

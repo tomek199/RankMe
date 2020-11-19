@@ -10,7 +10,7 @@ internal class LeagueSettingsChangedTest {
     internal fun `Should create event`() {
         // given
         val aggregateId = UUID.randomUUID()
-        val version = 2
+        val version = 2L
         val allowDraws = false
         val maxScore = 5
         // when

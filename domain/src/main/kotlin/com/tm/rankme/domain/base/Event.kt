@@ -5,7 +5,7 @@ import java.util.*
 
 abstract class Event<T>(
     val aggregateId: UUID,
-    val version: Int,
+    val version: Long,
     val timestamp: LocalDateTime = LocalDateTime.now())
 {
     abstract val type: String
