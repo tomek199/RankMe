@@ -6,8 +6,9 @@ import java.util.*
 class LeagueCreated(
     val name: String,
     val allowDraws: Boolean = false,
-    val maxScore: Int = 2
-) : Event<League>(UUID.randomUUID(), version = 0)
+    val maxScore: Int = 2,
+    aggregateId: UUID = UUID.randomUUID()
+) : Event<League>(aggregateId, 0)
 {
     override val type: String = "league-created"
 

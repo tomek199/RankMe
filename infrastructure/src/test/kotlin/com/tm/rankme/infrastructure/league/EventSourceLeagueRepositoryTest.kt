@@ -17,6 +17,7 @@ import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
+import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.infrastructure.EventStoreConnector
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -137,10 +138,38 @@ internal class EventSourceLeagueRepositoryTest {
     }
 
     @Test
-    internal fun `Should throw exception (method not yet implemented)`() {
+    internal fun `Should build league aggregate from events stream`() {
+        // given
+        val aggregateId = UUID.randomUUID()
+        given(streams.readStream(aggregateId.toString())).willReturn(readStream)
+        given(readStream.fromStart()).willReturn(readStream)
+        given(readStream.readThrough()).willReturn(readCompletableFuture)
+        given(readCompletableFuture.get()).willReturn(readResult)
+        given(readResult.events).willReturn(listOf(resolvedEvent, resolvedEvent, resolvedEvent))
+        given(resolvedEvent.originalEvent).willReturn(recordedEvent)
+        given(recordedEvent.eventType)
+            .willReturn("league-created")
+            .willReturn("league-renamed")
+            .willReturn("league-settings-changed")
+        given(recordedEvent.eventData)
+            .willReturn("""{"type": "league-created", "aggregateId": "$aggregateId", 
+                "version": 0, "timestamp": 0, "name": "Star Wars", "allowDraws": false, "maxScore": 2}""".toByteArray())
+            .willReturn("""{"type": "league-renamed", "aggregateId": "$aggregateId", 
+                "version": 1, "timestamp": 0, "name": "Transformers"}""".toByteArray())
+            .willReturn("""{"type": "league-settings-changed", "aggregateId": "$aggregateId", 
+                "version": 2, "timestamp": 0, "allowDraws": true, "maxScore": 10}""".toByteArray())
+        given(recordedEvent.getEventDataAs(LeagueRenamed::class.java))
+            .willReturn(LeagueRenamed(aggregateId, 1, "Transformers"))
+        given(recordedEvent.getEventDataAs(LeagueSettingsChanged::class.java))
+            .willReturn(LeagueSettingsChanged(aggregateId, 2, true, 5))
         // when
-        assertFailsWith<AggregateException> { repository.byId(UUID.randomUUID()) }
+        val league = repository.byId(aggregateId)
         // then
+        assertEquals(aggregateId, league.id)
+        assertEquals(2, league.version)
+        assertEquals("Transformers", league.name)
+        assertEquals(true, league.settings.allowDraws)
+        assertEquals(10, league.settings.maxScore)
     }
 
     private fun givenCheckVersion(streamId: String, version: Long) {
