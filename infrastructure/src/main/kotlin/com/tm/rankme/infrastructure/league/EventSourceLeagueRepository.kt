@@ -48,7 +48,7 @@ class EventSourceLeagueRepository @Autowired constructor(
                 val event = objectMapper.readValue(recordedEvent.eventData, SettingsChanged::class.java)
                 LeagueSettingsChanged(event.aggregateId, event.version, event.allowDraws, event.maxScore)
             }
-            else -> throw AggregateException("Event is not known")
+            else -> throw AggregateException("Event '${recordedEvent.eventType}' is not known")
         }
     }
 

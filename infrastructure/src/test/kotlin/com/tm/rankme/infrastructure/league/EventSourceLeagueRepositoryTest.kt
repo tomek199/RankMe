@@ -172,6 +172,24 @@ internal class EventSourceLeagueRepositoryTest {
         assertEquals(10, league.settings.maxScore)
     }
 
+    @Test
+    internal fun `Should throw exception when event from stream is not known`() {
+        // given
+        val aggregateId = UUID.randomUUID()
+        given(streams.readStream(aggregateId.toString())).willReturn(readStream)
+        given(readStream.fromStart()).willReturn(readStream)
+        given(readStream.readThrough()).willReturn(readCompletableFuture)
+        given(readCompletableFuture.get()).willReturn(readResult)
+        given(readResult.events).willReturn(listOf(resolvedEvent, resolvedEvent, resolvedEvent))
+        given(resolvedEvent.originalEvent).willReturn(recordedEvent)
+        given(recordedEvent.eventType)
+            .willReturn("unknown-event")
+        // when
+        val exception = assertFailsWith<AggregateException> { repository.byId(aggregateId) }
+        // then
+        assertEquals("Event 'unknown-event' is not known", exception.message)
+    }
+
     private fun givenCheckVersion(streamId: String, version: Long) {
         given(streams.readStream(streamId)).willReturn(readStream)
         given(readStream.fromEnd()).willReturn(readStream)
