@@ -70,8 +70,26 @@ class EventSourceLeagueRepository @Autowired constructor(
     }
 
     private fun addToStream(event: Event<League>) {
-        val proposedEvent = ProposedEvent.builderAsJson(event.type, event).build()
+        val proposedEvent = ProposedEvent.builderAsJson(event.type, serialize(event)).build()
         eventStoreConnector.stream.appendStream(event.aggregateId.toString())
             .addEvent(proposedEvent).execute().get()
+    }
+
+    private fun serialize(event: Event<League>): Any {
+        return when (event) {
+            is LeagueCreated -> Created(
+                event.type, event.aggregateId, event.version, event.timestamp,
+                event.name, event.allowDraws, event.maxScore
+            )
+            is LeagueRenamed -> Renamed(
+                event.type, event.aggregateId, event.version, event.timestamp,
+                event.name
+            )
+            is LeagueSettingsChanged -> SettingsChanged(
+                event.type, event.aggregateId, event.version, event.timestamp,
+                event.allowDraws, event.maxScore
+            )
+            else -> throw AggregateException("Event ${event.type} is not knows")
+        }
     }
 }
