@@ -12,9 +12,8 @@ class EventSourceLeagueRepository @Autowired constructor(
     private val eventStorage: EventStorage<League>
 ) : LeagueRepository {
 
-    override fun byId(id: UUID): League {
-        val events = eventStorage.events(id.toString())
-        return League.from(events)
+    override fun byId(id: UUID): League = eventStorage.events(id.toString()).let {
+        League.from(it)
     }
 
     override fun store(aggregate: League) = aggregate.pendingEvents.forEach(eventStorage::save)

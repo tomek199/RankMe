@@ -48,7 +48,7 @@ internal class LeagueEventStorageTest {
     @Test
     internal fun `Should save 'create' event with initial version 0`() {
         // given
-        val event = LeagueCreated("Star Wars", false, 2, UUID.randomUUID())
+        val event = LeagueCreated("Star Wars", aggregateId = UUID.randomUUID())
         given(streams.appendStream(event.aggregateId.toString())).willReturn(appendStream)
         given(appendStream.addEvent(any())).willReturn(appendStream)
         given(appendStream.execute()).willReturn(writeCompletableFuture)
