@@ -12,6 +12,7 @@ import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.infrastructure.EventStoreConnector
 import com.tm.rankme.infrastructure.EventStorage
 import com.tm.rankme.infrastructure.InfrastructureException
+import java.util.concurrent.ExecutionException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
@@ -64,10 +65,14 @@ class LeagueEventStorage @Autowired constructor(
     }
 
     override fun events(stream: String): List<Event<League>> {
-        return eventStoreConnector.stream.readStream(stream)
-            .fromStart().readThrough().get().events.map { deserialize(it.originalEvent) }.toList()
+        try {
+            return eventStoreConnector.stream.readStream(stream)
+                .fromStart().readThrough().get().events.map { deserialize(it.originalEvent) }.toList()
+        } catch (e: ExecutionException) {
+            throw InfrastructureException("Stream $stream is not found", e)
+        }
     }
-    
+
     private fun deserialize(recordedEvent: RecordedEvent): Event<League> {
         return when (recordedEvent.eventType) {
             "league-created" -> {

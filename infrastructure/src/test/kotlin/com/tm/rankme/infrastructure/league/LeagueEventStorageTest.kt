@@ -5,6 +5,7 @@ import com.eventstore.dbclient.ReadResult
 import com.eventstore.dbclient.ReadStream
 import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
+import com.eventstore.dbclient.StreamNotFoundException
 import com.eventstore.dbclient.StreamRevision
 import com.eventstore.dbclient.Streams
 import com.eventstore.dbclient.WriteResult
@@ -22,6 +23,7 @@ import com.tm.rankme.infrastructure.EventStoreConnector
 import com.tm.rankme.infrastructure.InfrastructureException
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutionException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.BeforeEach
@@ -188,6 +190,21 @@ internal class LeagueEventStorageTest {
         assertEquals(2, events[2].version)
         assertEquals(true, (events[2] as LeagueSettingsChanged).allowDraws)
         assertEquals(10, (events[2] as LeagueSettingsChanged).maxScore)
+    }
+
+    @Test
+    internal fun `Should throw exception when stream is not found`() {
+        // given
+        val aggregateId = UUID.randomUUID()
+        given(streams.readStream(aggregateId.toString())).willReturn(readStream)
+        given(readStream.fromStart()).willReturn(readStream)
+        given(readStream.readThrough()).willReturn(readCompletableFuture)
+        given(readCompletableFuture.get())
+            .willThrow(ExecutionException("Stream not found exception", StreamNotFoundException()))
+        // when
+        val exception = assertFailsWith<InfrastructureException> { eventStorage.events(aggregateId.toString()) }
+        // then
+        assertEquals("Stream $aggregateId is not found", exception.message)
     }
 
     @Test
