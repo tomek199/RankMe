@@ -13,13 +13,13 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
-import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.infrastructure.EventStoreConnector
+import com.tm.rankme.infrastructure.InfrastructureException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.test.assertEquals
@@ -116,7 +116,7 @@ internal class LeagueEventStorageTest {
         givenCheckVersion(event.aggregateId.toString(), 0)
         given(readResult.events).willReturn(emptyList())
         // when
-        val exception = assertFailsWith<AggregateException> { eventStorage.save(event) }
+        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
         // then
         assertEquals("Cannon get actual version of league id=${event.aggregateId}", exception.message)
     }
@@ -127,7 +127,7 @@ internal class LeagueEventStorageTest {
         val event = LeagueRenamed(UUID.randomUUID(), 1, "Transformers")
         givenCheckVersion(event.aggregateId.toString(), 15)
         // when
-        val exception = assertFailsWith<AggregateException> { eventStorage.save(event) }
+        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
         // then
         assertEquals("Version mismatch of league id=${event.aggregateId}", exception.message)
     }
@@ -141,7 +141,7 @@ internal class LeagueEventStorageTest {
         }
         givenCheckVersion(event.aggregateId.toString(), 0)
         // when
-        val exception = assertFailsWith<AggregateException> { eventStorage.save(event) }
+        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
         // then
         assertEquals("Cannot serialize event '${event.type}'", exception.message)
     }
@@ -203,7 +203,7 @@ internal class LeagueEventStorageTest {
         given(recordedEvent.eventType)
             .willReturn("unknown-event")
         // when
-        val exception = assertFailsWith<AggregateException> { eventStorage.events(aggregateId.toString()) }
+        val exception = assertFailsWith<InfrastructureException> { eventStorage.events(aggregateId.toString()) }
         // then
         assertEquals("Cannot deserialize event 'unknown-event'", exception.message)
     }
