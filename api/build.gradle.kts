@@ -16,9 +16,12 @@ dependencies {
     implementation("com.graphql-java-kickstart:graphql-java-tools:6.2.0")
     implementation("com.graphql-java-kickstart:graphiql-spring-boot-starter:8.0.0")
 
+    testImplementation("org.mockito:mockito-inline:3.6.28")
+    testImplementation("com.graphql-java-kickstart:graphql-spring-boot-starter-test:8.0.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+    testImplementation(project(":domain"))
 }
 
 springBoot {
