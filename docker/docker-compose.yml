@@ -15,14 +15,9 @@ services:
     ports:
       - "1113:1113"
       - "2113:2113"
-    volumes:
-      - type: volume
-        source: eventstore-volume-data
-        target: /Users/tomek/Documents/Projects/RankMe/docker/eventstore/data
-      - type: volume
-        source: eventstore-volume-logs
-        target: /Users/tomek/Documents/Projects/RankMe/docker/eventstore/logs
 
-volumes:
-  eventstore-volume-data:
-  eventstore-volume-logs:
+  rabbitmq:
+    image: library/rabbitmq:3.8.9-management
+    ports:
+      - 5672:5672
+      - 15672:15672
