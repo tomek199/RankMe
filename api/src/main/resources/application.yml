@@ -14,3 +14,10 @@ graphiql:
 eventstore:
   host: localhost
   port: 2113
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

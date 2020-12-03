@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":infrastructure"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
 
@@ -21,6 +22,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+//    testImplementation("org.springframework.amqp:spring-rabbit-test") // todo check
     testImplementation(project(":domain"))
 }
 

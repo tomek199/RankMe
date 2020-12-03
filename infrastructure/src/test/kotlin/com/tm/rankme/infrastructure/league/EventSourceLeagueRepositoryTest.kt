@@ -1,13 +1,10 @@
 package com.tm.rankme.infrastructure.league
 
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
-import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
@@ -19,7 +16,8 @@ import org.junit.jupiter.api.Test
 
 internal class EventSourceLeagueRepositoryTest {
     private val eventStorage: LeagueEventStorage = mock()
-    private val repository = EventSourceLeagueRepository(eventStorage)
+    private val eventEmitter: LeagueEventEmitter = mock()
+    private val repository = EventSourceLeagueRepository(eventStorage, eventEmitter)
 
     @Test
     internal fun `Should get league by id`() {
@@ -50,5 +48,6 @@ internal class EventSourceLeagueRepositoryTest {
         repository.store(league)
         // then
         verify(eventStorage, times(3)).save(any())
+        verify(eventEmitter, times(3)).emit(any())
     }
 }

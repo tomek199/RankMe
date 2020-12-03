@@ -9,15 +9,15 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.infrastructure.EventStoreConnector
 import com.tm.rankme.infrastructure.EventStorage
+import com.tm.rankme.infrastructure.EventStoreConnector
 import com.tm.rankme.infrastructure.InfrastructureException
 import java.util.concurrent.ExecutionException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-class LeagueEventStorage @Autowired constructor(
+open class LeagueEventStorage @Autowired constructor(
     private val eventStoreConnector: EventStoreConnector
 ) : EventStorage<League> {
 

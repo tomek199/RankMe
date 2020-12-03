@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
+import com.tm.rankme.infrastructure.league.LeagueEventEmitter
 import com.tm.rankme.infrastructure.league.LeagueEventStorage
 import java.util.*
 import kotlin.test.assertEquals
@@ -21,6 +22,8 @@ import org.springframework.boot.test.mock.mockito.MockBean
 internal class MutationIntegrationTest {
     @MockBean
     private lateinit var eventStorage: LeagueEventStorage
+    @MockBean
+    private lateinit var eventEmitter: LeagueEventEmitter
     @Autowired
     private lateinit var template: GraphQLTestTemplate
 
@@ -34,6 +37,11 @@ internal class MutationIntegrationTest {
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.createLeague.status"))
         assertNull(response.get("$.data.createLeague.message"))
+        val eventCaptor = argumentCaptor<LeagueCreated>()
+        verify(eventStorage).save(eventCaptor.capture())
+        verify(eventEmitter).emit(eventCaptor.firstValue)
+        assertEquals(0, eventCaptor.firstValue.version)
+        assertEquals("Star Wars", eventCaptor.firstValue.name)
     }
 
     @Test
@@ -51,6 +59,7 @@ internal class MutationIntegrationTest {
         assertNull(response.get("$.data.renameLeague.message"))
         val eventCaptor = argumentCaptor<LeagueRenamed>()
         verify(eventStorage).save(eventCaptor.capture())
+        verify(eventEmitter).emit(eventCaptor.firstValue)
         assertEquals(1, eventCaptor.firstValue.version)
         assertEquals(aggregateId, eventCaptor.firstValue.aggregateId.toString())
         assertEquals("Transformers", eventCaptor.firstValue.name)
@@ -74,6 +83,7 @@ internal class MutationIntegrationTest {
         assertNull(response.get("$.data.changeLeagueSettings.message"))
         val eventCaptor = argumentCaptor<LeagueSettingsChanged>()
         verify(eventStorage).save(eventCaptor.capture())
+        verify(eventEmitter).emit(eventCaptor.firstValue)
         assertEquals(2, eventCaptor.firstValue.version)
         assertEquals(aggregateId, eventCaptor.firstValue.aggregateId.toString())
         assertEquals(true, eventCaptor.firstValue.allowDraws)
