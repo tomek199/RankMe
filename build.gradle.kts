@@ -4,17 +4,20 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
 
 plugins {
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.10"
     jacoco
     id("org.sonarqube") version("2.7.1")
 }
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.26-SNAPSHOT"
+    version = "0.27-SNAPSHOT"
 
     repositories {
         mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
 }
 
@@ -25,10 +28,9 @@ subprojects {
     sonarqube { }
 
     dependencies {
-        implementation(kotlin("stdlib-jdk8"))
         testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
         testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-        testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
+        testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     }
 
     tasks.register("stage") {
@@ -36,7 +38,7 @@ subprojects {
     }
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "11"
     }
 
     tasks.test {

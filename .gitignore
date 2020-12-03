@@ -8,4 +8,4 @@ build
 .idea
 
 # GraphQL
-application-deprecated/out
+api/out
