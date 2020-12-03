@@ -22,8 +22,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-//    testImplementation("org.springframework.amqp:spring-rabbit-test") // todo check
-    testImplementation(project(":domain"))
 }
 
 springBoot {

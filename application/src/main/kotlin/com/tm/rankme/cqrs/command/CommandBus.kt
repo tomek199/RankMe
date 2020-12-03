@@ -1,4 +1,4 @@
-package com.tm.rankme.application.cqrs
+package com.tm.rankme.cqrs.command
 
 interface CommandBus {
     fun execute(command: Command)

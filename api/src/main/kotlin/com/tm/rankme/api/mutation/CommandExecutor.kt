@@ -1,7 +1,7 @@
 package com.tm.rankme.api.mutation
 
-import com.tm.rankme.application.cqrs.Command
-import com.tm.rankme.application.cqrs.CommandBus
+import com.tm.rankme.cqrs.command.Command
+import com.tm.rankme.cqrs.command.CommandBus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

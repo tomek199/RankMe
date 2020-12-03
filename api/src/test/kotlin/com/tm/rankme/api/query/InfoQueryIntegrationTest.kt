@@ -1,6 +1,7 @@
 package com.tm.rankme.api.query
 
 import com.graphql.spring.boot.test.GraphQLTestTemplate
+import com.tm.rankme.infrastructure.league.LeagueEventEmitter
 import com.tm.rankme.infrastructure.league.LeagueEventStorage
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -13,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean
 internal class InfoQueryIntegrationTest {
     @MockBean
     private lateinit var eventStorage: LeagueEventStorage
+    @MockBean
+    private lateinit var eventEmitter: LeagueEventEmitter
     @Autowired
     private lateinit var template: GraphQLTestTemplate
 
@@ -24,6 +27,6 @@ internal class InfoQueryIntegrationTest {
         val response = template.postForResource(request)
         // then
         assertTrue(response.isOk)
-        assertEquals("RankMe GraphQL API 0.27-SNAPSHOT", response.get("$.data.info"))
+        assertEquals("RankMe GraphQL API 0.28-SNAPSHOT", response.get("$.data.info"))
     }
 }

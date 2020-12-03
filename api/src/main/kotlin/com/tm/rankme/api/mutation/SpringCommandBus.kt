@@ -1,8 +1,8 @@
 package com.tm.rankme.api.mutation
 
-import com.tm.rankme.application.cqrs.Command
-import com.tm.rankme.application.cqrs.CommandBus
-import com.tm.rankme.application.cqrs.CommandHandler
+import com.tm.rankme.cqrs.command.Command
+import com.tm.rankme.cqrs.command.CommandBus
+import com.tm.rankme.cqrs.command.CommandHandler
 import org.springframework.context.ApplicationContext
 import org.springframework.core.GenericTypeResolver
 import org.springframework.stereotype.Component

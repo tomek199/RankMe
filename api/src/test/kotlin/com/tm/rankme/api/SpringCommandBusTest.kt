@@ -1,9 +1,9 @@
 package com.tm.rankme.api
 
 import com.tm.rankme.api.mutation.SpringCommandBus
-import com.tm.rankme.application.cqrs.Command
-import com.tm.rankme.application.cqrs.CommandBus
-import com.tm.rankme.application.cqrs.CommandHandler
+import com.tm.rankme.cqrs.command.Command
+import com.tm.rankme.cqrs.command.CommandBus
+import com.tm.rankme.cqrs.command.CommandHandler
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test

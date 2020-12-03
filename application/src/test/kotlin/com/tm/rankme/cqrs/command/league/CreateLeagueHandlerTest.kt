@@ -1,8 +1,8 @@
-package com.tm.rankme.application.league
+package com.tm.rankme.cqrs.command.league
 
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
-import com.tm.rankme.application.cqrs.CommandHandler
+import com.tm.rankme.cqrs.command.CommandHandler
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRepository

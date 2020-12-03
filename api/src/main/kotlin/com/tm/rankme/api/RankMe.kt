@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan
 @SpringBootApplication
 @ComponentScan(value = [
     "com.tm.rankme.api",
-    "com.tm.rankme.application",
+    "com.tm.rankme.cqrs.command",
     "com.tm.rankme.infrastructure"
 ])
 class RankMe {

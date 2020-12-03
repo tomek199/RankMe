@@ -4,8 +4,8 @@ import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import com.tm.rankme.application.cqrs.Command
-import com.tm.rankme.application.cqrs.CommandBus
+import com.tm.rankme.cqrs.command.Command
+import com.tm.rankme.cqrs.command.CommandBus
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import org.junit.jupiter.api.Test

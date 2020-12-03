@@ -1,5 +1,5 @@
 dependencies {
-    implementation(project(":domain"))
+    implementation(project(":application"))
     implementation("org.springframework:spring-context:5.3.0")
     implementation("org.springframework.amqp:spring-amqp:2.2.12.RELEASE")
     implementation("org.springframework.amqp:spring-rabbit:2.2.12.RELEASE")

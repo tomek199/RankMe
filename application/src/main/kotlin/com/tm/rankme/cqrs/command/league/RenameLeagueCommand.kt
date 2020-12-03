@@ -1,6 +1,6 @@
-package com.tm.rankme.application.league
+package com.tm.rankme.cqrs.command.league
 
-import com.tm.rankme.application.cqrs.Command
+import com.tm.rankme.cqrs.command.Command
 import java.util.*
 
 data class RenameLeagueCommand(val id: UUID, val name: String) : Command()

@@ -1,13 +1,13 @@
-package com.tm.rankme.application.league
+package com.tm.rankme.cqrs.command.league
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
-import com.tm.rankme.application.cqrs.CommandHandler
+import com.tm.rankme.cqrs.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.league.League
-import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueRepository
+import com.tm.rankme.domain.league.LeagueSettingsChanged
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -17,16 +17,15 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.willDoNothing
 import org.mockito.Mockito.verify
 
-internal class RenameLeagueHandlerTest {
+internal class ChangeLeagueSettingsHandlerTest {
     private val repository: LeagueRepository = mock()
-    private val handler: CommandHandler<RenameLeagueCommand> = RenameLeagueHandler(repository)
+    private val handler: CommandHandler<ChangeLeagueSettingsCommand> = ChangeLeagueSettingsHandler(repository)
 
     @Test
     internal fun `Should change league name`() {
         // given
-        val name = "Star Wars"
-        val league = League.create(name)
-        val command = RenameLeagueCommand(league.id,"Transformers")
+        val league = League.create("Star Wars")
+        val command = ChangeLeagueSettingsCommand(league.id, true, 5)
         given(repository.byId(league.id)).willReturn(league)
         willDoNothing().given(repository).store(any())
         // when
@@ -35,9 +34,10 @@ internal class RenameLeagueHandlerTest {
         val leagueCaptor = argumentCaptor<League>()
         verify(repository).byId(league.id)
         verify(repository).store(leagueCaptor.capture())
-        assertEquals(command.name, leagueCaptor.firstValue.name)
+        assertEquals(command.allowDraws, leagueCaptor.firstValue.settings.allowDraws)
+        assertEquals(command.maxScore, leagueCaptor.firstValue.settings.maxScore)
         assertEquals(1, leagueCaptor.firstValue.version)
-        assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueRenamed)
+        assertTrue(leagueCaptor.firstValue.pendingEvents.last() is LeagueSettingsChanged)
     }
 
     @Test
@@ -45,7 +45,7 @@ internal class RenameLeagueHandlerTest {
         // given
         val id = UUID.randomUUID()
         val exceptionMessage = "League is not found"
-        val command = RenameLeagueCommand(id, "Transformers")
+        val command = ChangeLeagueSettingsCommand(id, true, 5)
         given(repository.byId(id)).willThrow(AggregateException(exceptionMessage))
         // when
         val exception = assertFailsWith<AggregateException> { handler.dispatch(command) }

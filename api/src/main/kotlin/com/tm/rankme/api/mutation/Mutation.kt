@@ -1,8 +1,8 @@
 package com.tm.rankme.api.mutation
 
-import com.tm.rankme.application.league.ChangeLeagueSettingsCommand
-import com.tm.rankme.application.league.CreateLeagueCommand
-import com.tm.rankme.application.league.RenameLeagueCommand
+import com.tm.rankme.cqrs.command.league.ChangeLeagueSettingsCommand
+import com.tm.rankme.cqrs.command.league.CreateLeagueCommand
+import com.tm.rankme.cqrs.command.league.RenameLeagueCommand
 import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
