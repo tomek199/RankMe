@@ -7,6 +7,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.info.BuildProperties
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 
@@ -16,6 +17,8 @@ internal class InfoQueryIntegrationTest {
     private lateinit var eventStorage: LeagueEventStorage
     @MockBean
     private lateinit var eventEmitter: LeagueEventEmitter
+    @Autowired
+    private lateinit var buildProperties: BuildProperties
     @Autowired
     private lateinit var template: GraphQLTestTemplate
 
@@ -27,6 +30,6 @@ internal class InfoQueryIntegrationTest {
         val response = template.postForResource(request)
         // then
         assertTrue(response.isOk)
-        assertEquals("RankMe GraphQL API 0.28-SNAPSHOT", response.get("$.data.info"))
+        assertEquals("RankMe GraphQL API ${buildProperties.version}", response.get("$.data.info"))
     }
 }
