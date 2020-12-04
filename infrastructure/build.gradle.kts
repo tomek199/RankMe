@@ -20,6 +20,7 @@ dependencies {
 
     testImplementation("org.mockito:mockito-inline:3.6.28")
     testImplementation("com.graphql-java-kickstart:graphql-spring-boot-starter-test:8.0.0")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
