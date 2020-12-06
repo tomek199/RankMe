@@ -1,24 +1,22 @@
 package com.tm.rankme.api.mutation
 
-import com.nhaarman.mockitokotlin2.doNothing
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import com.tm.rankme.cqrs.command.Command
 import com.tm.rankme.cqrs.command.CommandBus
+import io.mockk.every
+import io.mockk.mockk
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import org.junit.jupiter.api.Test
 
 internal class CommandExecutorTest {
-    private val commandBus: CommandBus = mock()
-    private val command: Command = mock()
+    private val commandBus = mockk<CommandBus>()
+    private val command = mockk<Command>()
     private val executor = CommandExecutor(commandBus)
 
     @Test
     internal fun `Should execute command and return success result`() {
         // given
-        doNothing().whenever(commandBus).execute(command)
+        every { commandBus.execute(command) } answers { nothing }
         // when
         val result = executor.execute(command)
         // then
@@ -30,7 +28,7 @@ internal class CommandExecutorTest {
     internal fun `Should catch execution exception and return error result`() {
         // given
         val exception = IllegalStateException("Command not supported")
-        given(commandBus.execute(command)).willThrow(exception)
+        every { commandBus.execute(command) } throws exception
         // when
         val result = executor.execute(command)
         // then

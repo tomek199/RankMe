@@ -18,10 +18,16 @@ dependencies {
 
     implementation("com.github.EventStore:EventStoreDB-Client-Java:trunk-SNAPSHOT")
 
-    testImplementation("org.mockito:mockito-inline:3.6.28")
-    testImplementation("com.graphql-java-kickstart:graphql-spring-boot-starter-test:8.0.0")
+    testImplementation("com.ninja-squad:springmockk:2.0.3")
+    testImplementation("com.graphql-java-kickstart:graphql-spring-boot-starter-test:8.0.0") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "org.mockito", module = "mockito-core")
+        exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+    }
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "org.mockito", module = "mockito-core")
+        exclude(group = "org.mockito", module = "mockito-junit-jupiter")
     }
 }
 

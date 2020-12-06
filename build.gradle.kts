@@ -11,7 +11,7 @@ plugins {
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.28-SNAPSHOT"
+    version = "0.29-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -30,7 +30,7 @@ subprojects {
     dependencies {
         testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
         testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-        testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+        testImplementation("io.mockk:mockk:1.10.3")
     }
 
     tasks.register("stage") {

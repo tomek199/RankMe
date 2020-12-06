@@ -1,14 +1,15 @@
 package com.tm.rankme.api.mutation
 
 import com.graphql.spring.boot.test.GraphQLTestTemplate
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.verify
+import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.storage.write.league.LeagueEventEmitter
 import com.tm.rankme.storage.write.league.LeagueEventStorage
+import io.mockk.every
+import io.mockk.slot
+import io.mockk.verify
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -16,13 +17,12 @@ import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class MutationIntegrationTest {
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var eventStorage: LeagueEventStorage
-    @MockBean
+    @MockkBean(relaxed = true)
     private lateinit var eventEmitter: LeagueEventEmitter
     @Autowired
     private lateinit var template: GraphQLTestTemplate
@@ -37,19 +37,19 @@ internal class MutationIntegrationTest {
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.createLeague.status"))
         assertNull(response.get("$.data.createLeague.message"))
-        val eventCaptor = argumentCaptor<LeagueCreated>()
-        verify(eventStorage).save(eventCaptor.capture())
-        verify(eventEmitter).emit(eventCaptor.firstValue)
-        assertEquals(0, eventCaptor.firstValue.version)
-        assertEquals("Star Wars", eventCaptor.firstValue.name)
+        val eventSlot = slot<LeagueCreated>()
+        verify(exactly = 1) { eventStorage.save(capture(eventSlot)) }
+        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        assertEquals(0, eventSlot.captured.version)
+        assertEquals("Star Wars", eventSlot.captured.name)
     }
 
     @Test
     internal fun `Should execute 'rename name' command`() {
         // given
         val aggregateId = "c4fd7f32-0a57-455d-ac64-c7cec5676723"
-        given(eventStorage.events(aggregateId))
-            .willReturn(listOf(LeagueCreated("Star Wars", aggregateId = UUID.fromString(aggregateId))))
+        every { eventStorage.events(aggregateId) } returns
+            listOf(LeagueCreated("Star Wars", aggregateId = UUID.fromString(aggregateId)))
         val request = "graphql/rename-league.graphql"
         // when
         val response = template.postForResource(request)
@@ -57,23 +57,23 @@ internal class MutationIntegrationTest {
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.renameLeague.status"))
         assertNull(response.get("$.data.renameLeague.message"))
-        val eventCaptor = argumentCaptor<LeagueRenamed>()
-        verify(eventStorage).save(eventCaptor.capture())
-        verify(eventEmitter).emit(eventCaptor.firstValue)
-        assertEquals(1, eventCaptor.firstValue.version)
-        assertEquals(aggregateId, eventCaptor.firstValue.aggregateId.toString())
-        assertEquals("Transformers", eventCaptor.firstValue.name)
+        val eventSlot = slot<LeagueRenamed>()
+        verify(exactly = 1) { eventStorage.save(capture(eventSlot)) }
+        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        assertEquals(1, eventSlot.captured.version)
+        assertEquals(aggregateId, eventSlot.captured.aggregateId.toString())
+        assertEquals("Transformers", eventSlot.captured.name)
     }
 
     @Test
     internal fun `Should execute 'change league settings' command`() {
         // given
         val aggregateId = "0dcff3e1-5bae-4344-942c-1b2a34f97d18"
-        given(eventStorage.events(aggregateId))
-            .willReturn(listOf(
+        every { eventStorage.events(aggregateId) } returns
+            listOf(
                 LeagueCreated("Star Wars", aggregateId = UUID.fromString(aggregateId)),
                 LeagueRenamed(UUID.fromString(aggregateId), 1, "Transformers")
-            ))
+            )
         val request = "graphql/change-league-setting.graphql"
         // when
         val response = template.postForResource(request)
@@ -81,12 +81,12 @@ internal class MutationIntegrationTest {
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.changeLeagueSettings.status"))
         assertNull(response.get("$.data.changeLeagueSettings.message"))
-        val eventCaptor = argumentCaptor<LeagueSettingsChanged>()
-        verify(eventStorage).save(eventCaptor.capture())
-        verify(eventEmitter).emit(eventCaptor.firstValue)
-        assertEquals(2, eventCaptor.firstValue.version)
-        assertEquals(aggregateId, eventCaptor.firstValue.aggregateId.toString())
-        assertEquals(true, eventCaptor.firstValue.allowDraws)
-        assertEquals(10, eventCaptor.firstValue.maxScore)
+        val eventSlot = slot<LeagueSettingsChanged>()
+        verify(exactly = 1) { eventStorage.save(capture(eventSlot)) }
+        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        assertEquals(2, eventSlot.captured.version)
+        assertEquals(aggregateId, eventSlot.captured.aggregateId.toString())
+        assertEquals(true, eventSlot.captured.allowDraws)
+        assertEquals(10, eventSlot.captured.maxScore)
     }
 }
