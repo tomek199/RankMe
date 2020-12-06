@@ -1,6 +1,7 @@
 package com.tm.rankme.api.query
 
 import com.graphql.spring.boot.test.GraphQLTestTemplate
+import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.storage.write.league.LeagueEventEmitter
 import com.tm.rankme.storage.write.league.LeagueEventStorage
 import kotlin.test.assertEquals
@@ -9,13 +10,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.info.BuildProperties
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class InfoQueryIntegrationTest {
-    @MockBean
+    @MockkBean
     private lateinit var eventStorage: LeagueEventStorage
-    @MockBean
+    @MockkBean
     private lateinit var eventEmitter: LeagueEventEmitter
     @Autowired
     private lateinit var buildProperties: BuildProperties

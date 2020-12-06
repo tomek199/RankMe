@@ -1,25 +1,20 @@
 package com.tm.rankme.storage.write.league
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.storage.write.league.EventSourceLeagueRepository
-import com.tm.rankme.storage.write.league.LeagueEventEmitter
-import com.tm.rankme.storage.write.league.LeagueEventStorage
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verifySequence
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class EventSourceLeagueRepositoryTest {
-    private val eventStorage: LeagueEventStorage = mock()
-    private val eventEmitter: LeagueEventEmitter = mock()
+    private val eventStorage = mockk<LeagueEventStorage>(relaxed = true)
+    private val eventEmitter = mockk<LeagueEventEmitter>(relaxed = true)
     private val repository = EventSourceLeagueRepository(eventStorage, eventEmitter)
 
     @Test
@@ -29,7 +24,7 @@ internal class EventSourceLeagueRepositoryTest {
         val created = LeagueCreated("Star Wars", aggregateId = aggregateId)
         val renamed = LeagueRenamed(aggregateId, 1, "Transformers")
         val settingsChanged = LeagueSettingsChanged(aggregateId, 2, true, 7)
-        given(eventStorage.events(aggregateId.toString())).willReturn(listOf(created, renamed, settingsChanged))
+        every { eventStorage.events(aggregateId.toString()) } returns listOf(created, renamed, settingsChanged)
         // when
         val league = repository.byId(aggregateId)
         // then
@@ -50,7 +45,13 @@ internal class EventSourceLeagueRepositoryTest {
         // when
         repository.store(league)
         // then
-        verify(eventStorage, times(3)).save(any())
-        verify(eventEmitter, times(3)).emit(any())
+        verifySequence {
+            eventStorage.save(ofType(LeagueCreated::class))
+            eventEmitter.emit(ofType(LeagueCreated::class))
+            eventStorage.save(ofType(LeagueSettingsChanged::class))
+            eventEmitter.emit(ofType(LeagueSettingsChanged::class))
+            eventStorage.save(ofType(LeagueRenamed::class))
+            eventEmitter.emit(ofType(LeagueRenamed::class))
+        }
     }
 }

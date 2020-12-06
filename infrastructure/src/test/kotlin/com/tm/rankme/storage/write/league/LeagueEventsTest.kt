@@ -1,8 +1,5 @@
 package com.tm.rankme.storage.write.league
 
-import com.tm.rankme.storage.write.league.Created
-import com.tm.rankme.storage.write.league.Renamed
-import com.tm.rankme.storage.write.league.SettingsChanged
 import java.util.*
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
