@@ -4,6 +4,7 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
+import com.tm.rankme.storage.write.EventEmitter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifySequence
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test
 
 internal class EventSourceLeagueRepositoryTest {
     private val eventStorage = mockk<LeagueEventStorage>(relaxed = true)
-    private val eventEmitter = mockk<LeagueEventEmitter>(relaxed = true)
+    private val eventEmitter = mockk<EventEmitter>(relaxed = true)
     private val repository = EventSourceLeagueRepository(eventStorage, eventEmitter)
 
     @Test

@@ -1,18 +1,13 @@
 package com.tm.rankme.domain.league
 
+import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
-import java.util.*
 
-class League private constructor(
-    val settings: Settings = Settings(),
-    val pendingEvents: MutableList<Event<League>> = mutableListOf()
-) {
-    lateinit var id: UUID
-        private set
-    var version: Long = 0
-        private set
+class League private constructor() : AggregateRoot() {
+    val pendingEvents = mutableListOf<Event<League>>()
     lateinit var name: String
         private set
+    val settings: Settings = Settings()
 
     companion object {
         fun create(name: String): League {

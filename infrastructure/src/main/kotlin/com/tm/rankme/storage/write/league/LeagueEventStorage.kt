@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-open class LeagueEventStorage @Autowired constructor(
+class LeagueEventStorage @Autowired constructor(
     private val eventStoreConnector: EventStoreConnector
 ) : EventStorage<League> {
 
@@ -33,10 +33,10 @@ open class LeagueEventStorage @Autowired constructor(
             val readResult = eventStoreConnector.stream.readStream(event.aggregateId.toString())
                 .fromEnd().backward().execute(1).get()
             val currentVersion = readResult.events.getOrElse(0) {
-                throw InfrastructureException("Cannon get actual version of league id=${event.aggregateId}")
+                throw InfrastructureException("Cannon get actual version of aggregate id=${event.aggregateId}")
             }.event.streamRevision
             if (currentVersion.valueUnsigned != event.version - 1)
-                throw InfrastructureException("Version mismatch of league id=${event.aggregateId}")
+                throw InfrastructureException("Version mismatch of aggregate id=${event.aggregateId}")
         }
     }
 

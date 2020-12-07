@@ -2,7 +2,7 @@ package com.tm.rankme.api.query
 
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
-import com.tm.rankme.storage.write.league.LeagueEventEmitter
+import com.tm.rankme.storage.write.EventEmitter
 import com.tm.rankme.storage.write.league.LeagueEventStorage
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -16,7 +16,7 @@ internal class InfoQueryIntegrationTest {
     @MockkBean
     private lateinit var eventStorage: LeagueEventStorage
     @MockkBean
-    private lateinit var eventEmitter: LeagueEventEmitter
+    private lateinit var eventEmitter: EventEmitter
     @Autowired
     private lateinit var buildProperties: BuildProperties
     @Autowired

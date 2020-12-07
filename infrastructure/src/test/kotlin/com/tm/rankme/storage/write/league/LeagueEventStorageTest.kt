@@ -89,7 +89,7 @@ internal class LeagueEventStorageTest {
         // when
         val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
         // then
-        assertEquals("Cannon get actual version of league id=${event.aggregateId}", exception.message)
+        assertEquals("Cannon get actual version of aggregate id=${event.aggregateId}", exception.message)
     }
 
     @Test
@@ -102,7 +102,7 @@ internal class LeagueEventStorageTest {
         // when
         val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
         // then
-        assertEquals("Version mismatch of league id=${event.aggregateId}", exception.message)
+        assertEquals("Version mismatch of aggregate id=${event.aggregateId}", exception.message)
     }
 
     @Test

@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-open class EventSourceLeagueRepository @Autowired constructor(
+class EventSourceLeagueRepository @Autowired constructor(
     private val eventStorage: EventStorage<League>,
-    private val eventEmitter: EventEmitter<League>
+    private val eventEmitter: EventEmitter
 ) : LeagueRepository {
 
     override fun byId(id: UUID): League = eventStorage.events(id.toString()).let {

@@ -5,7 +5,7 @@ import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.storage.write.league.LeagueEventEmitter
+import com.tm.rankme.storage.write.EventEmitter
 import com.tm.rankme.storage.write.league.LeagueEventStorage
 import io.mockk.every
 import io.mockk.slot
@@ -23,7 +23,7 @@ internal class MutationIntegrationTest {
     @MockkBean(relaxed = true)
     private lateinit var eventStorage: LeagueEventStorage
     @MockkBean(relaxed = true)
-    private lateinit var eventEmitter: LeagueEventEmitter
+    private lateinit var eventEmitter: EventEmitter
     @Autowired
     private lateinit var template: GraphQLTestTemplate
 
