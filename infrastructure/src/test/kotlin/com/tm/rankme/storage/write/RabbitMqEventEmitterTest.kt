@@ -1,7 +1,6 @@
-package com.tm.rankme.storage.write.league
+package com.tm.rankme.storage.write
 
 import com.tm.rankme.domain.league.LeagueCreated
-import com.tm.rankme.storage.write.RabbitMqEventEmitter
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
