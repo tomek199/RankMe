@@ -16,12 +16,14 @@ class RabbitMqEventEmitter(
     private val exchange: TopicExchange
 ) : EventEmitter {
 
+    private val log = logger<EventEmitter>()
     private val objectMapper = jacksonObjectMapper()
     private val messageProperties = MessagePropertiesBuilder.newInstance()
         .setContentType(MessageProperties.CONTENT_TYPE_JSON)
         .build()
 
     override fun emit(event: Event<out AggregateRoot>) {
+        log.info("Emitting event ${event.type} for aggregate ${event.aggregateId}")
         val message = Message(objectMapper.writeValueAsBytes(event), messageProperties)
         template.send(exchange.name, event.type, message)
     }

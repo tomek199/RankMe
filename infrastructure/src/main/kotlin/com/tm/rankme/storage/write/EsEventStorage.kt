@@ -9,7 +9,10 @@ abstract class EsEventStorage<T>(
     private val eventStoreConnector: EventStoreConnector
 ) : EventStorage<T> {
 
+    private val log = logger<EsEventStorage<Any>>()
+
     override fun save(event: Event<T>) {
+        log.info("Saving event ${event.type} for aggregate ${event.aggregateId}")
         checkVersion(event)
         addToStream(event)
     }
@@ -33,6 +36,7 @@ abstract class EsEventStorage<T>(
     }
 
     override fun events(stream: String): List<Event<T>> {
+        log.info("Getting events for stream $stream")
         try {
             return eventStoreConnector.stream.readStream(stream)
                 .fromStart().readThrough().get().events.map { deserialize(it.originalEvent) }.toList()

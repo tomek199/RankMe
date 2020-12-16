@@ -2,6 +2,7 @@ package com.tm.rankme.storage.read.league
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tm.rankme.storage.read.MessageConsumer
+import com.tm.rankme.storage.read.logger
 import java.util.*
 import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
@@ -15,6 +16,8 @@ class LeagueCreatedConsumer @Autowired constructor(
     private val leagueAccessor: LeagueAccessor
 ) : MessageConsumer<LeagueCreatedMessage> {
 
+    private val log = logger<LeagueCreatedConsumer>()
+
     @RabbitListener(bindings = [
         QueueBinding(
             value = Queue(name = "league-created-queue"),
@@ -23,6 +26,7 @@ class LeagueCreatedConsumer @Autowired constructor(
         )
     ])
     override fun consume(message: LeagueCreatedMessage) {
+        log.info("Consuming message league-created for aggregate ${message.aggregateId}")
         val league = LeagueEntity(message.aggregateId, message.name, message.allowDraws, message.maxScore)
         leagueAccessor.save(league)
     }
