@@ -8,6 +8,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
+import org.springframework.data.repository.findByIdOrNull
 
 internal class MongoLeagueRepositoryTest {
     private val leagueAccessor: MongoLeagueAccessor = mockk()
@@ -17,7 +18,7 @@ internal class MongoLeagueRepositoryTest {
     internal fun `Should return league`() {
         // given
         val leagueEntity = LeagueEntity(UUID.randomUUID(), "Star Wars", false, 3)
-        every { leagueAccessor.findById(leagueEntity.id) } returns Optional.of(leagueEntity)
+        every { leagueAccessor.findByIdOrNull(leagueEntity.id) } returns leagueEntity
         // when
         val league = repository.byId(leagueEntity.id)
         // then
@@ -32,7 +33,7 @@ internal class MongoLeagueRepositoryTest {
     internal fun `Should return null when league does not exist`() {
         // given
         val id = UUID.randomUUID()
-        every { leagueAccessor.findById(id) } returns Optional.empty()
+        every { leagueAccessor.findByIdOrNull(id) } returns null
         // when
         val league = repository.byId(id)
         // then

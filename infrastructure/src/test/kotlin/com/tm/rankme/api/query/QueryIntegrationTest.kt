@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.info.BuildProperties
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.repository.findByIdOrNull
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class QueryIntegrationTest {
@@ -39,7 +40,7 @@ internal class QueryIntegrationTest {
         // given
         val id = UUID.fromString("83222ad3-219c-48b0-bcc2-817efb61cfda")
         val leagueEntity = LeagueEntity(id, "Star Wars", true, 5)
-        every { leagueAccessor.findById(id) } returns Optional.of(leagueEntity)
+        every { leagueAccessor.findByIdOrNull(id) } returns leagueEntity
         val request = "graphql/get-league.graphql"
         // when
         val response = template.postForResource(request)
@@ -55,7 +56,7 @@ internal class QueryIntegrationTest {
     internal fun `Should execute 'get league' query and return null`() {
         // given
         val id = UUID.fromString("83222ad3-219c-48b0-bcc2-817efb61cfda")
-        every { leagueAccessor.findById(id) } returns Optional.empty()
+        every { leagueAccessor.findByIdOrNull(id) } returns null
         val request = "graphql/get-league.graphql"
         // when
         val response = template.postForResource(request)
