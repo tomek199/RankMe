@@ -3,13 +3,14 @@ package com.tm.rankme.api.mutation
 import com.tm.rankme.cqrs.command.Command
 import com.tm.rankme.cqrs.command.CommandBus
 import com.tm.rankme.cqrs.command.CommandHandler
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.core.GenericTypeResolver
 import org.springframework.stereotype.Component
 
 @Component
 class SpringCommandBus(private val applicationContext: ApplicationContext) : CommandBus {
-    private val log = logger<SpringCommandBus>()
+    private val log = LoggerFactory.getLogger(SpringCommandBus::class.java)
     private val handlers: Map<Class<*>, String>
 
     init {

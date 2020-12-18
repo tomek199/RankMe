@@ -4,12 +4,13 @@ import com.eventstore.dbclient.ProposedEvent
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
 import java.util.concurrent.ExecutionException
+import org.slf4j.LoggerFactory
 
 abstract class EsEventStorage<T>(
     private val eventStoreConnector: EventStoreConnector
 ) : EventStorage<T> {
 
-    private val log = logger<EsEventStorage<Any>>()
+    private val log = LoggerFactory.getLogger(EsEventStorage::class.java)
 
     override fun save(event: Event<T>) {
         log.info("Saving event ${event.type} for aggregate ${event.aggregateId}")

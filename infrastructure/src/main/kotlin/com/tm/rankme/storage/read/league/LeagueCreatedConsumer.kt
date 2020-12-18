@@ -2,8 +2,8 @@ package com.tm.rankme.storage.read.league
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tm.rankme.storage.read.MessageConsumer
-import com.tm.rankme.storage.read.logger
 import java.util.*
+import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.QueueBinding
@@ -16,7 +16,7 @@ class LeagueCreatedConsumer @Autowired constructor(
     private val leagueAccessor: MongoLeagueAccessor
 ) : MessageConsumer<LeagueCreatedMessage> {
 
-    private val log = logger<LeagueCreatedConsumer>()
+    private val log = LoggerFactory.getLogger(LeagueCreatedConsumer::class.java)
 
     @RabbitListener(bindings = [
         QueueBinding(

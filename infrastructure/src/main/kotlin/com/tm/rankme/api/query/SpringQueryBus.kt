@@ -3,13 +3,14 @@ package com.tm.rankme.api.query
 import com.tm.rankme.cqrs.query.Query
 import com.tm.rankme.cqrs.query.QueryBus
 import com.tm.rankme.cqrs.query.QueryHandler
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.core.GenericTypeResolver
 import org.springframework.stereotype.Component
 
 @Component
 class SpringQueryBus(private val applicationContext: ApplicationContext) : QueryBus {
-    private val log = logger<SpringQueryBus>()
+    private val log = LoggerFactory.getLogger(SpringQueryBus::class.java)
     private val handlers: Map<Class<*>, String>
 
     init {
