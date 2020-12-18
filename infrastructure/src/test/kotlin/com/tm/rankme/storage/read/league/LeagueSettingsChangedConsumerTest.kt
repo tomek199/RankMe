@@ -10,18 +10,18 @@ import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 
-internal class LeagueRenamedConsumerTest {
+internal class LeagueSettingsChangedConsumerTest {
     private val leagueAccessor: MongoLeagueAccessor = mockk()
-    private val consumer: MessageConsumer<LeagueRenamedMessage> = LeagueRenamedConsumer(leagueAccessor)
+    private val consumer: MessageConsumer<LeagueSettingsChangedMessage> = LeagueSettingsChangedConsumer(leagueAccessor)
 
     @Test
-    internal fun `Should consume 'league-renamed' message and update league`() {
+    internal fun `Should consume 'league-setting-changed' message and update league`() {
         // given
         val aggregateId = UUID.randomUUID()
-        val entity = LeagueEntity(aggregateId, "Start Wars", false, 7)
+        val entity = LeagueEntity(aggregateId, "Start Wars", false, 2)
         every { leagueAccessor.findByIdOrNull(aggregateId) } returns entity
         every { leagueAccessor.save(ofType(LeagueEntity::class)) } answers { entity }
-        val message = LeagueRenamedMessage(aggregateId, "Transformers")
+        val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         // when
         consumer.consume(message)
         // then
@@ -29,16 +29,16 @@ internal class LeagueRenamedConsumerTest {
         verify(exactly = 1) { leagueAccessor.findByIdOrNull(aggregateId) }
         verify(exactly = 1) { leagueAccessor.save(capture(leagueSlot)) }
         assertEquals(entity.id, leagueSlot.captured.id)
-        assertEquals(message.name, leagueSlot.captured.name)
-        assertEquals(entity.allowDraws, leagueSlot.captured.allowDraws)
-        assertEquals(entity.maxScore, leagueSlot.captured.maxScore)
+        assertEquals(entity.name, leagueSlot.captured.name)
+        assertEquals(message.allowDraws, leagueSlot.captured.allowDraws)
+        assertEquals(message.maxScore, leagueSlot.captured.maxScore)
     }
 
     @Test
-    internal fun `Should consume 'league-renamed' message and do nothing when league is not found`() {
+    internal fun `Should consume 'league-setting-changed' message and do nothing when league is not found`() {
         // given
         val aggregateId = UUID.randomUUID()
-        val message = LeagueRenamedMessage(aggregateId, "Transformers")
+        val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         every { leagueAccessor.findByIdOrNull(aggregateId) } returns null
         // when
         consumer.consume(message)
