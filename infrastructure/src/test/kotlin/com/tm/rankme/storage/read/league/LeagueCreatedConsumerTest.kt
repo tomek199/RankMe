@@ -14,7 +14,7 @@ internal class LeagueCreatedConsumerTest {
     private val consumer: MessageConsumer<LeagueCreatedMessage> = LeagueCreatedConsumer(leagueAccessor)
 
     @Test
-    internal fun `Should consume message`() {
+    internal fun `Should consume 'league-created' message`() {
         // given
         val message = LeagueCreatedMessage(UUID.randomUUID(), "Star Wars", true, 3)
         val entity = LeagueEntity(message.aggregateId, message.name, message.allowDraws, message.maxScore)

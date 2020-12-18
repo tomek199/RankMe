@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "league")
 class LeagueEntity(
-    @Id var id: UUID,
-    val name: String,
-    val allowDraws: Boolean,
-    val maxScore: Int
+    @Id val id: UUID,
+    var name: String,
+    var allowDraws: Boolean,
+    var maxScore: Int
 )

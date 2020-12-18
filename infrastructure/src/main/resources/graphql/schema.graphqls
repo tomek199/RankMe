@@ -1,8 +1,8 @@
+# todo split file
 schema {
     mutation: Mutation
     query: Query
 }
-
 type Mutation {
     createLeague(command: CreateLeagueCommand): Result!
     renameLeague(command: RenameLeagueCommand): Result!
