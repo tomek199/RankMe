@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class LeagueCreatedConsumer @Autowired constructor(
-    private val leagueAccessor: LeagueAccessor
+    private val leagueAccessor: MongoLeagueAccessor
 ) : MessageConsumer<LeagueCreatedMessage> {
 
     private val log = logger<LeagueCreatedConsumer>()

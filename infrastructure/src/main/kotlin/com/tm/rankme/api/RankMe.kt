@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @ComponentScan(value = [
     "com.tm.rankme.api",
     "com.tm.rankme.cqrs.command",
+    "com.tm.rankme.cqrs.query",
     "com.tm.rankme.storage"
 ])
 @EnableMongoRepositories(value = [

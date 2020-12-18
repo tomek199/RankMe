@@ -11,11 +11,19 @@ type Mutation {
 
 type Query {
     info: String!
+    getLeague(query: GetLeagueQuery): League
 }
 
 type Result {
     status: Status!
     message: String
+}
+
+type League {
+    id: UUID!
+    name: String!
+    allowDraws: Boolean!
+    maxScore: Int!
 }
 
 scalar UUID
@@ -37,4 +45,8 @@ input ChangeLeagueSettingsCommand {
     id: UUID!
     allowDraws: Boolean!
     maxScore: Int!
+}
+
+input GetLeagueQuery {
+    id: UUID!
 }

@@ -10,14 +10,15 @@ import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class LeagueCreatedConsumerTest {
-    private val leagueAccessor: LeagueAccessor = mockk()
+    private val leagueAccessor: MongoLeagueAccessor = mockk()
     private val consumer: MessageConsumer<LeagueCreatedMessage> = LeagueCreatedConsumer(leagueAccessor)
 
     @Test
     internal fun `Should consume message`() {
         // given
         val message = LeagueCreatedMessage(UUID.randomUUID(), "Star Wars", true, 3)
-        every { leagueAccessor.save(ofType(LeagueEntity::class)) } answers { nothing }
+        val entity = LeagueEntity(message.aggregateId, message.name, message.allowDraws, message.maxScore)
+        every { leagueAccessor.save(ofType(LeagueEntity::class)) } answers { entity }
         // when
         consumer.consume(message)
         // then

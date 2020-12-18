@@ -1,0 +1,10 @@
+query {
+    getLeague(query: {
+        id: "83222ad3-219c-48b0-bcc2-817efb61cfda"
+    }) {
+        id
+        name
+        allowDraws
+        maxScore
+    }
+}
