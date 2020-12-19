@@ -1,0 +1,24 @@
+input CreateLeagueCommand {
+    name: String!
+}
+
+input RenameLeagueCommand {
+    id: UUID!
+    name: String!
+}
+
+input ChangeLeagueSettingsCommand {
+    id: UUID!
+    allowDraws: Boolean!
+    maxScore: Int!
+}
+
+input GetLeagueQuery {
+    id: UUID!
+}
+type League {
+    id: UUID!
+    name: String!
+    allowDraws: Boolean!
+    maxScore: Int!
+}

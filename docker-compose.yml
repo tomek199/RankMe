@@ -13,11 +13,16 @@ services:
       - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
       - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
     ports:
-      - "1113:1113"
-      - "2113:2113"
+      - 1113:1113
+      - 2113:2113
 
   rabbitmq:
     image: library/rabbitmq:3.8.9-management
     ports:
       - 5672:5672
       - 15672:15672
+
+  mongodb:
+    image: library/mongo:4.4.2
+    ports:
+      - 27017:27017

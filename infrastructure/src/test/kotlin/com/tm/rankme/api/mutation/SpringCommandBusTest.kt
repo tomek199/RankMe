@@ -1,6 +1,5 @@
-package com.tm.rankme.api
+package com.tm.rankme.api.mutation
 
-import com.tm.rankme.api.mutation.SpringCommandBus
 import com.tm.rankme.cqrs.command.Command
 import com.tm.rankme.cqrs.command.CommandBus
 import com.tm.rankme.cqrs.command.CommandHandler
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 
-@SpringBootTest(classes = [SpringCommandBus::class, TestHandler::class])
+@SpringBootTest(classes = [SpringCommandBus::class, TestCommandHandler::class])
 internal class SpringCommandBusTest(@Autowired private val commandBus: CommandBus) {
     @Test
     internal fun `Should execute command`() {
@@ -36,8 +35,8 @@ internal class SpringCommandBusTest(@Autowired private val commandBus: CommandBu
 }
 
 @Component
-private class TestHandler : CommandHandler<TestCommand> {
-    override fun dispatch(command: TestCommand ) {
+private class TestCommandHandler : CommandHandler<TestCommand> {
+    override fun dispatch(command: TestCommand) {
         command.testProperty = "Value changed"
     }
 }

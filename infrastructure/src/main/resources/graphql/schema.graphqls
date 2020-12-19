@@ -11,6 +11,7 @@ type Mutation {
 
 type Query {
     info: String!
+    getLeague(query: GetLeagueQuery): League
 }
 
 type Result {
@@ -22,19 +23,4 @@ scalar UUID
 
 enum Status {
     SUCCESS, FAILURE
-}
-
-input CreateLeagueCommand {
-    name: String!
-}
-
-input RenameLeagueCommand {
-    id: UUID!
-    name: String!
-}
-
-input ChangeLeagueSettingsCommand {
-    id: UUID!
-    allowDraws: Boolean!
-    maxScore: Int!
 }

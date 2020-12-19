@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.league
+package com.tm.rankme.storage.write
 
 import com.tm.rankme.domain.league.LeagueCreated
 import io.mockk.mockk
@@ -8,10 +8,10 @@ import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 
-internal class LeagueEventEmitterTest {
+internal class RabbitMqEventEmitterTest {
     private val template = mockk<RabbitTemplate>(relaxed = true)
     private val exchange = mockk<TopicExchange>(relaxed = true)
-    private val eventEmitter = LeagueEventEmitter(template, exchange)
+    private val eventEmitter = RabbitMqEventEmitter(template, exchange)
 
     @Test
     internal fun `Should emit event`() {
