@@ -1,8 +1,8 @@
-# todo split file
 schema {
     mutation: Mutation
     query: Query
 }
+
 type Mutation {
     createLeague(command: CreateLeagueCommand): Result!
     renameLeague(command: RenameLeagueCommand): Result!
@@ -19,34 +19,8 @@ type Result {
     message: String
 }
 
-type League {
-    id: UUID!
-    name: String!
-    allowDraws: Boolean!
-    maxScore: Int!
-}
-
 scalar UUID
 
 enum Status {
     SUCCESS, FAILURE
-}
-
-input CreateLeagueCommand {
-    name: String!
-}
-
-input RenameLeagueCommand {
-    id: UUID!
-    name: String!
-}
-
-input ChangeLeagueSettingsCommand {
-    id: UUID!
-    allowDraws: Boolean!
-    maxScore: Int!
-}
-
-input GetLeagueQuery {
-    id: UUID!
 }
