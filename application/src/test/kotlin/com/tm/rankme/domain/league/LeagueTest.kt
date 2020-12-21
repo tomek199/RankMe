@@ -62,7 +62,7 @@ internal class LeagueTest {
     }
 
     @Test
-    internal fun `Should init league aggregate from 'league created' event`() {
+    internal fun `Should init league aggregate from 'league-created' event`() {
         // given
         val event = LeagueCreated("Star Wars")
         // when

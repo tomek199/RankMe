@@ -8,8 +8,8 @@ class LeagueCreated(
     val allowDraws: Boolean = false,
     val maxScore: Int = 2,
     aggregateId: UUID = UUID.randomUUID()
-) : Event<League>(aggregateId, 0)
-{
+) : Event<League>(aggregateId, 0) {
+
     override val type: String = "league-created"
 
     override fun apply(aggregate: League) {
