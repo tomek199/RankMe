@@ -3,6 +3,7 @@ package com.tm.rankme.storage.write
 import com.eventstore.dbclient.ProposedEvent
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
+import com.tm.rankme.domain.base.EventStorage
 import java.util.concurrent.ExecutionException
 import org.slf4j.LoggerFactory
 

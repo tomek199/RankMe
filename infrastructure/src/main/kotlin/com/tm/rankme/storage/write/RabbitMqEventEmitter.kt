@@ -3,6 +3,7 @@ package com.tm.rankme.storage.write
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
+import com.tm.rankme.domain.base.EventEmitter
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageProperties
