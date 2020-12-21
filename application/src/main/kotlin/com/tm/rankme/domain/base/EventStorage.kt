@@ -1,6 +1,4 @@
-package com.tm.rankme.storage.write
-
-import com.tm.rankme.domain.base.Event
+package com.tm.rankme.domain.base
 
 interface EventStorage<T> {
     fun save(event: Event<T>)

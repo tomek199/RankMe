@@ -5,7 +5,7 @@ import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.storage.write.EventEmitter
+import com.tm.rankme.domain.base.EventEmitter
 import com.tm.rankme.storage.write.league.LeagueEventStorage
 import io.mockk.every
 import io.mockk.slot

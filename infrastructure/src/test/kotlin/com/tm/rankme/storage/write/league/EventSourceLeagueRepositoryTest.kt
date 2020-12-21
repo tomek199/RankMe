@@ -4,7 +4,7 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.storage.write.EventEmitter
+import com.tm.rankme.domain.base.EventEmitter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifySequence
