@@ -2,6 +2,8 @@ package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.ProposedEvent
 import com.eventstore.dbclient.RecordedEvent
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventStorage
 import java.util.concurrent.ExecutionException
@@ -12,7 +14,8 @@ abstract class EsEventStorage<T>(
 ) : EventStorage<T> {
 
     private val log = LoggerFactory.getLogger(EsEventStorage::class.java)
-
+    protected val objectMapper: ObjectMapper = jacksonObjectMapper()
+    
     override fun save(event: Event<T>) {
         log.info("Saving event ${event.type} for aggregate ${event.aggregateId}")
         checkVersion(event)

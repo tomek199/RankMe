@@ -1,8 +1,6 @@
 package com.tm.rankme.storage.write.league
 
 import com.eventstore.dbclient.RecordedEvent
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
@@ -11,6 +9,7 @@ import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.storage.write.EsEventStorage
 import com.tm.rankme.storage.write.EventStoreConnector
 import com.tm.rankme.storage.write.InfrastructureException
+import java.util.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Repository
 class LeagueEventStorage @Autowired constructor(
     eventStoreConnector: EventStoreConnector
 ) : EsEventStorage<League>(eventStoreConnector) {
-
-    private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
     override fun serialize(event: Event<League>): Any {
         return when (event) {
@@ -56,4 +53,31 @@ class LeagueEventStorage @Autowired constructor(
             else -> throw InfrastructureException("Cannot deserialize event '${recordedEvent.eventType}'")
         }
     }
+
+    internal data class Created(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val name: String,
+        val allowDraws: Boolean = false,
+        val maxScore: Int = 2
+    )
+
+    internal data class Renamed(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val name: String
+    )
+
+    internal data class SettingsChanged(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val allowDraws: Boolean = false,
+        val maxScore: Int = 2
+    )
 }
