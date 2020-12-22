@@ -8,3 +8,12 @@ data class ChangeLeagueSettingsCommand(
     val allowDraws: Boolean,
     val maxScore: Int
 ) : Command()
+
+data class CreateLeagueCommand(
+    val name: String
+) : Command()
+
+data class RenameLeagueCommand(
+    val id: UUID,
+    val name: String
+) : Command()
