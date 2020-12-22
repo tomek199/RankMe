@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class LeagueEventStorage @Autowired constructor(
-    eventStoreConnector: EventStoreConnector
-) : EsEventStorage<League>(eventStoreConnector) {
+    connector: EventStoreConnector
+) : EsEventStorage<League>(connector) {
 
     override fun serialize(event: Event<League>): Any {
         return when (event) {
@@ -38,17 +38,14 @@ class LeagueEventStorage @Autowired constructor(
 
     override fun deserialize(recordedEvent: RecordedEvent): Event<League> {
         return when (recordedEvent.eventType) {
-            "league-created" -> {
-                val event = objectMapper.readValue(recordedEvent.eventData, Created::class.java)
-                LeagueCreated(event.name, event.allowDraws, event.maxScore, event.aggregateId)
+            "league-created" -> objectMapper.readValue(recordedEvent.eventData, Created::class.java).let {
+                LeagueCreated(it.name, it.allowDraws, it.maxScore, it.aggregateId)
             }
-            "league-renamed" -> {
-                val event = objectMapper.readValue(recordedEvent.eventData, Renamed::class.java)
-                LeagueRenamed(event.aggregateId, event.version, event.name)
+            "league-renamed" -> objectMapper.readValue(recordedEvent.eventData, Renamed::class.java).let {
+                LeagueRenamed(it.aggregateId, it.version, it.name)
             }
-            "league-settings-changed" -> {
-                val event = objectMapper.readValue(recordedEvent.eventData, SettingsChanged::class.java)
-                LeagueSettingsChanged(event.aggregateId, event.version, event.allowDraws, event.maxScore)
+            "league-settings-changed" -> objectMapper.readValue(recordedEvent.eventData, SettingsChanged::class.java).let {
+                LeagueSettingsChanged(it.aggregateId, it.version, it.allowDraws, it.maxScore)
             }
             else -> throw InfrastructureException("Cannot deserialize event '${recordedEvent.eventType}'")
         }

@@ -10,12 +10,12 @@ import java.util.concurrent.ExecutionException
 import org.slf4j.LoggerFactory
 
 abstract class EsEventStorage<T>(
-    private val eventStoreConnector: EventStoreConnector
+    private val connector: EventStoreConnector
 ) : EventStorage<T> {
 
     private val log = LoggerFactory.getLogger(EsEventStorage::class.java)
     protected val objectMapper: ObjectMapper = jacksonObjectMapper()
-    
+
     override fun save(event: Event<T>) {
         log.info("Saving event ${event.type} for aggregate ${event.aggregateId}")
         checkVersion(event)
@@ -24,7 +24,7 @@ abstract class EsEventStorage<T>(
 
     private fun checkVersion(event: Event<T>) {
         if (event.version != 0L) {
-            val readResult = eventStoreConnector.stream.readStream(event.aggregateId.toString())
+            val readResult = connector.stream.readStream(event.aggregateId.toString())
                 .fromEnd().backward().execute(1).get()
             val currentVersion = readResult.events.getOrElse(0) {
                 throw InfrastructureException("Cannon get actual version of aggregate id=${event.aggregateId}")
@@ -36,21 +36,20 @@ abstract class EsEventStorage<T>(
 
     private fun addToStream(event: Event<T>) {
         val proposedEvent = ProposedEvent.builderAsJson(event.type, serialize(event)).build()
-        eventStoreConnector.stream.appendStream(event.aggregateId.toString())
+        connector.stream.appendStream(event.aggregateId.toString())
             .addEvent(proposedEvent).execute().get()
     }
 
     override fun events(stream: String): List<Event<T>> {
         log.info("Getting events for stream $stream")
         try {
-            return eventStoreConnector.stream.readStream(stream)
+            return connector.stream.readStream(stream)
                 .fromStart().readThrough().get().events.map { deserialize(it.originalEvent) }.toList()
         } catch (e: ExecutionException) {
             throw InfrastructureException("Stream $stream is not found", e)
         }
     }
 
-    protected abstract fun deserialize(recordedEvent: RecordedEvent): Event<T>
-
     protected abstract fun serialize(event: Event<T>): Any
+    protected abstract fun deserialize(recordedEvent: RecordedEvent): Event<T>
 }

@@ -5,6 +5,7 @@ import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
 import com.eventstore.dbclient.StreamRevision
 import com.eventstore.dbclient.Streams
+import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
@@ -80,7 +81,7 @@ internal class LeagueEventStorageTest {
     @Test
     internal fun `Should throw exception when cannot serialize event`() {
         // given
-        val event = object : Event<League>(UUID.randomUUID(), 1, 0) {
+        val event = object : Event<League>(UUID.randomUUID(), 1) {
             override val type: String = "unknown-event"
             override fun apply(aggregate: League) { }
         }
@@ -109,10 +110,6 @@ internal class LeagueEventStorageTest {
             """{"type": "league-settings-changed", "aggregateId": "$aggregateId", 
                 "version": 2, "timestamp": 0, "allowDraws": true, "maxScore": 10}""".toByteArray()
         )
-        every { recordedEvent.getEventDataAs(LeagueRenamed::class.java) } returns
-            LeagueRenamed(aggregateId, 1, "Transformers")
-        every { recordedEvent.getEventDataAs(LeagueSettingsChanged::class.java) } returns
-            LeagueSettingsChanged(aggregateId, 2, true, 5)
         // when
         val events = eventStorage.events(aggregateId.toString())
         // then
@@ -133,7 +130,23 @@ internal class LeagueEventStorageTest {
     }
 
     @Test
-    internal fun `Should throw exception when cannot deserialize event`() {
+    internal fun `Should throw exception when cannot deserialize invalid event json`() {
+        // given
+        val events = listOf("league-created", "league-renamed", "league-settings-changed")
+        // when
+        events.forEach {
+            val aggregateId = UUID.randomUUID()
+            every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get().events } returns listOf(resolvedEvent)
+            every { resolvedEvent.originalEvent } returns recordedEvent
+            every { recordedEvent.eventType } returns it
+            every { recordedEvent.eventData } returns "${it}-invalid-json".toByteArray()
+            // then
+            assertFailsWith<JsonParseException> { eventStorage.events(aggregateId.toString()) }
+        }
+    }
+
+    @Test
+    internal fun `Should throw exception when cannot deserialize unknown event`() {
         // given
         val aggregateId = UUID.randomUUID()
         every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get() } returns readResult
