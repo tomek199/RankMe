@@ -6,7 +6,6 @@ import com.eventstore.dbclient.ResolvedEvent
 import com.eventstore.dbclient.StreamNotFoundException
 import com.eventstore.dbclient.StreamRevision
 import com.eventstore.dbclient.Streams
-import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
 import io.mockk.every
 import io.mockk.mockk
@@ -19,19 +18,18 @@ import org.junit.jupiter.api.Test
 
 internal class EsEventStorageTest {
     private val connector = mockk<EventStoreConnector>()
-    private val eventStorage = object : EsEventStorage<TestAggregate>(connector) {
-        override fun deserialize(recordedEvent: RecordedEvent): Event<TestAggregate> {
+    private val eventStorage = object : EsEventStorage<Any>(connector) {
+        override fun deserialize(recordedEvent: RecordedEvent): Event<Any> {
             throw InfrastructureException("Cannot deserialize event")
         }
-        override fun serialize(event: Event<TestAggregate>): Any {
-            return if (event.type == "test-event") Any() else throw InfrastructureException("Cannot serialize event")
+        override fun serialize(event: Event<Any>): Any {
+            throw InfrastructureException("Cannot serialize event")
         }
     }
 
     private val streams = mockk<Streams>()
     private val readResult = mockk<ReadResult>()
     private val resolvedEvent = mockk<ResolvedEvent>()
-    private val recordedEvent = mockk<RecordedEvent>()
 
     @BeforeEach
     internal fun setUp() {
@@ -76,11 +74,9 @@ internal class EsEventStorageTest {
         assertEquals("Stream $aggregateId is not found", exception.message)
     }
 
-    private class TestEvent(version: Long = 1) : Event<TestAggregate>(UUID.randomUUID(), version) {
+    private class TestEvent(version: Long = 1) : Event<Any>(UUID.randomUUID(), version) {
         override val type: String = "test-event"
-        override fun apply(aggregate: TestAggregate) { }
+        override fun apply(aggregate: Any) { }
     }
-
-    private class TestAggregate : AggregateRoot()
 }
 
