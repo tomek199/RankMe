@@ -97,7 +97,9 @@ internal class MutationIntegrationTest {
     @Test
     internal fun `Should execute 'create player' command`() {
         // given
+        val leagueId = "40efa486-d059-4cd2-b5e7-f4ba73b08345"
         val request = "graphql/create-player.graphql"
+        every { leagueEventStorage.events(leagueId) } returns listOf(LeagueCreated("Transformers"))
         // when
         val response = template.postForResource(request)
         // then
@@ -108,7 +110,7 @@ internal class MutationIntegrationTest {
         verify(exactly = 1) { playerEventStorage.save(capture(eventSlot)) }
         verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
         assertEquals(0, eventSlot.captured.version)
-        assertEquals("40efa486-d059-4cd2-b5e7-f4ba73b08345", eventSlot.captured.leagueId.toString())
+        assertEquals(leagueId, eventSlot.captured.leagueId.toString())
         assertEquals("Optimus Prime", eventSlot.captured.name)
     }
 }
