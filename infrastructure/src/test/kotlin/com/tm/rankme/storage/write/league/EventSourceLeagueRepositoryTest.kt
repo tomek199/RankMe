@@ -16,7 +16,7 @@ internal class EventSourceLeagueRepositoryTest {
     private val repository = EventSourceLeagueRepository(eventStorage, eventEmitter)
 
     @Test
-    internal fun `Should return true when league exist`() {
+    internal fun `Should return true when stream exist`() {
         // given
         val leagueId = UUID.randomUUID()
         every { eventStorage.events(leagueId.toString()) } returns listOf(LeagueCreated("Transformers"))
@@ -25,10 +25,19 @@ internal class EventSourceLeagueRepositoryTest {
     }
 
     @Test
-    internal fun `Should return false when league does not exist`() {
+    internal fun `Should return false when stream does not exist`() {
         // given
         val leagueId = UUID.randomUUID()
         every { eventStorage.events(leagueId.toString()) } throws InfrastructureException("Stream is not found")
+        // then
+        assertFalse(repository.exist(leagueId))
+    }
+
+    @Test
+    internal fun `Should return false when stream does not contain any event`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        every { eventStorage.events(leagueId.toString()) } returns emptyList()
         // then
         assertFalse(repository.exist(leagueId))
     }
