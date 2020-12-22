@@ -1,8 +1,6 @@
 package com.tm.rankme.storage.write.league
 
 import com.eventstore.dbclient.RecordedEvent
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
@@ -11,15 +9,14 @@ import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.storage.write.EsEventStorage
 import com.tm.rankme.storage.write.EventStoreConnector
 import com.tm.rankme.storage.write.InfrastructureException
+import java.util.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
 class LeagueEventStorage @Autowired constructor(
-    eventStoreConnector: EventStoreConnector
-) : EsEventStorage<League>(eventStoreConnector) {
-
-    private val objectMapper: ObjectMapper = jacksonObjectMapper()
+    connector: EventStoreConnector
+) : EsEventStorage<League>(connector) {
 
     override fun serialize(event: Event<League>): Any {
         return when (event) {
@@ -41,19 +38,43 @@ class LeagueEventStorage @Autowired constructor(
 
     override fun deserialize(recordedEvent: RecordedEvent): Event<League> {
         return when (recordedEvent.eventType) {
-            "league-created" -> {
-                val event = objectMapper.readValue(recordedEvent.eventData, Created::class.java)
-                LeagueCreated(event.name, event.allowDraws, event.maxScore, event.aggregateId)
+            "league-created" -> objectMapper.readValue(recordedEvent.eventData, Created::class.java).let {
+                LeagueCreated(it.name, it.allowDraws, it.maxScore, it.aggregateId)
             }
-            "league-renamed" -> {
-                val event = objectMapper.readValue(recordedEvent.eventData, Renamed::class.java)
-                LeagueRenamed(event.aggregateId, event.version, event.name)
+            "league-renamed" -> objectMapper.readValue(recordedEvent.eventData, Renamed::class.java).let {
+                LeagueRenamed(it.aggregateId, it.version, it.name)
             }
-            "league-settings-changed" -> {
-                val event = objectMapper.readValue(recordedEvent.eventData, SettingsChanged::class.java)
-                LeagueSettingsChanged(event.aggregateId, event.version, event.allowDraws, event.maxScore)
+            "league-settings-changed" -> objectMapper.readValue(recordedEvent.eventData, SettingsChanged::class.java).let {
+                LeagueSettingsChanged(it.aggregateId, it.version, it.allowDraws, it.maxScore)
             }
             else -> throw InfrastructureException("Cannot deserialize event '${recordedEvent.eventType}'")
         }
     }
+
+    internal data class Created(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val name: String,
+        val allowDraws: Boolean = false,
+        val maxScore: Int = 2
+    )
+
+    internal data class Renamed(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val name: String
+    )
+
+    internal data class SettingsChanged(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val allowDraws: Boolean = false,
+        val maxScore: Int = 2
+    )
 }

@@ -1,58 +1,44 @@
 package com.tm.rankme.storage.write.league
 
-import com.tm.rankme.domain.league.League
-import com.tm.rankme.domain.league.LeagueCreated
-import com.tm.rankme.domain.league.LeagueRenamed
-import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.league.LeagueCreated
+import com.tm.rankme.storage.write.InfrastructureException
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verifySequence
 import java.util.*
-import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 
 internal class EventSourceLeagueRepositoryTest {
-    private val eventStorage = mockk<LeagueEventStorage>(relaxed = true)
-    private val eventEmitter = mockk<EventEmitter>(relaxed = true)
+    private val eventStorage = mockk<LeagueEventStorage>()
+    private val eventEmitter = mockk<EventEmitter>()
     private val repository = EventSourceLeagueRepository(eventStorage, eventEmitter)
 
     @Test
-    internal fun `Should get league by id`() {
+    internal fun `Should return true when stream exist`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val created = LeagueCreated("Star Wars", aggregateId = aggregateId)
-        val renamed = LeagueRenamed(aggregateId, 1, "Transformers")
-        val settingsChanged = LeagueSettingsChanged(aggregateId, 2, true, 7)
-        every { eventStorage.events(aggregateId.toString()) } returns listOf(created, renamed, settingsChanged)
-        // when
-        val league = repository.byId(aggregateId)
+        val leagueId = UUID.randomUUID()
+        every { eventStorage.events(leagueId.toString()) } returns listOf(LeagueCreated("Transformers"))
         // then
-        assertEquals(aggregateId, league.id)
-        assertEquals(2, league.version)
-        assertTrue(league.pendingEvents.isEmpty())
-        assertEquals(renamed.name, league.name)
-        assertEquals(settingsChanged.allowDraws, league.settings.allowDraws)
-        assertEquals(settingsChanged.maxScore, league.settings.maxScore)
+        assertTrue(repository.exist(leagueId))
     }
 
     @Test
-    internal fun `Should store league`() {
+    internal fun `Should return false when stream does not exist`() {
         // given
-        val league = League.create("Star Wars")
-        league.settings(true, 7)
-        league.rename("Transformers")
-        // when
-        repository.store(league)
+        val leagueId = UUID.randomUUID()
+        every { eventStorage.events(leagueId.toString()) } throws InfrastructureException("Stream is not found")
         // then
-        verifySequence {
-            eventStorage.save(ofType(LeagueCreated::class))
-            eventEmitter.emit(ofType(LeagueCreated::class))
-            eventStorage.save(ofType(LeagueSettingsChanged::class))
-            eventEmitter.emit(ofType(LeagueSettingsChanged::class))
-            eventStorage.save(ofType(LeagueRenamed::class))
-            eventEmitter.emit(ofType(LeagueRenamed::class))
-        }
+        assertFalse(repository.exist(leagueId))
+    }
+
+    @Test
+    internal fun `Should return false when stream does not contain any event`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        every { eventStorage.events(leagueId.toString()) } returns emptyList()
+        // then
+        assertFalse(repository.exist(leagueId))
     }
 }

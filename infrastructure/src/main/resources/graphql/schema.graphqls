@@ -7,6 +7,7 @@ type Mutation {
     createLeague(command: CreateLeagueCommand): Result!
     renameLeague(command: RenameLeagueCommand): Result!
     changeLeagueSettings(command: ChangeLeagueSettingsCommand): Result!
+    createPlayer(command: CreatePlayerCommand): Result!
 }
 
 type Query {
@@ -19,8 +20,8 @@ type Result {
     message: String
 }
 
-scalar UUID
-
 enum Status {
     SUCCESS, FAILURE
 }
+
+scalar UUID
