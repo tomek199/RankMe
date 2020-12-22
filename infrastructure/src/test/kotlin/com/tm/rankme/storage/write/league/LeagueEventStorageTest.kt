@@ -3,7 +3,6 @@ package com.tm.rankme.storage.write.league
 import com.eventstore.dbclient.ReadResult
 import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
-import com.eventstore.dbclient.StreamNotFoundException
 import com.eventstore.dbclient.StreamRevision
 import com.eventstore.dbclient.Streams
 import com.tm.rankme.domain.base.Event
@@ -17,7 +16,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import java.util.*
-import java.util.concurrent.ExecutionException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.BeforeEach
@@ -80,32 +78,6 @@ internal class LeagueEventStorageTest {
     }
 
     @Test
-    internal fun `Should throw exception when cannot get actual aggregate version`() {
-        // given
-        val event = LeagueRenamed(UUID.randomUUID(), 1, "Star Wars")
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
-        every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
-        every { readResult.events } returns emptyList()
-        // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
-        // then
-        assertEquals("Cannon get actual version of aggregate id=${event.aggregateId}", exception.message)
-    }
-
-    @Test
-    internal fun `Should throw exception when event version is out of date`() {
-        // given
-        val event = LeagueRenamed(UUID.randomUUID(), 1, "Transformers")
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
-        every { readResult.events } returns listOf(resolvedEvent)
-        every { resolvedEvent.event.streamRevision } returns StreamRevision(15)
-        // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
-        // then
-        assertEquals("Version mismatch of aggregate id=${event.aggregateId}", exception.message)
-    }
-
-    @Test
     internal fun `Should throw exception when cannot serialize event`() {
         // given
         val event = object : Event<League>(UUID.randomUUID(), 1, 0) {
@@ -158,18 +130,6 @@ internal class LeagueEventStorageTest {
         assertEquals(2, events[2].version)
         assertEquals(true, (events[2] as LeagueSettingsChanged).allowDraws)
         assertEquals(10, (events[2] as LeagueSettingsChanged).maxScore)
-    }
-
-    @Test
-    internal fun `Should throw exception when stream is not found`() {
-        // given
-        val aggregateId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get() } throws
-            ExecutionException("Stream not found exception", StreamNotFoundException())
-        // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.events(aggregateId.toString()) }
-        // then
-        assertEquals("Stream $aggregateId is not found", exception.message)
     }
 
     @Test
