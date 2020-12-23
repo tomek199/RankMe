@@ -11,7 +11,7 @@ plugins {
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.32-SNAPSHOT"
+    version = "0.33-SNAPSHOT"
 
     repositories {
         mavenCentral()

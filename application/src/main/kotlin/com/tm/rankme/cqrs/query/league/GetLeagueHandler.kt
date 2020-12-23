@@ -11,7 +11,5 @@ class GetLeagueHandler @Autowired constructor(
     private val repository: LeagueRepository
 ) : QueryHandler<GetLeagueQuery, League?> {
 
-    override fun handle(query: GetLeagueQuery): League? {
-        return repository.byId(query.id)
-    }
+    override fun handle(query: GetLeagueQuery): League? = repository.byId(query.id)
 }
