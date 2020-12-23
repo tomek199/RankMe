@@ -14,7 +14,7 @@ class UUIDCoercing : Coercing<UUID?, String?> {
         try {
             return UUID.fromString(input)
         } catch (e: IllegalArgumentException) {
-            throw CoercingParseValueException("Could not parse value $input for UUID")
+            throw CoercingParseValueException("Could not parse value $input for UUID", e)
         }
     }
 
@@ -23,7 +23,7 @@ class UUIDCoercing : Coercing<UUID?, String?> {
         try {
             return UUID.fromString(input.value)
         } catch (e: IllegalArgumentException) {
-            throw CoercingParseLiteralException("Could not parse literal $input for UUID")
+            throw CoercingParseLiteralException("Could not parse literal $input for UUID", e)
         }
     }
 
@@ -34,7 +34,7 @@ class UUIDCoercing : Coercing<UUID?, String?> {
                 try {
                     return UUID.fromString(dataFetcherResult).toString()
                 } catch (e: IllegalArgumentException) {
-                    throw CoercingSerializeException("Could not serialize object $dataFetcherResult")
+                    throw CoercingSerializeException("Could not serialize object $dataFetcherResult", e)
                 }
         }
         return null
