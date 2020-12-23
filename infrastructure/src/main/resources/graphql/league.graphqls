@@ -16,6 +16,7 @@ input ChangeLeagueSettingsCommand {
 input GetLeagueQuery {
     id: UUID!
 }
+
 type League {
     id: UUID!
     name: String!

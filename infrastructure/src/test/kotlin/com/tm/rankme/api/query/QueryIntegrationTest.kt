@@ -4,6 +4,8 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.storage.read.league.LeagueEntity
 import com.tm.rankme.storage.read.league.MongoLeagueAccessor
+import com.tm.rankme.storage.read.player.MongoPlayerAccessor
+import com.tm.rankme.storage.read.player.PlayerEntity
 import io.mockk.every
 import java.util.*
 import kotlin.test.assertEquals
@@ -19,6 +21,8 @@ import org.springframework.data.repository.findByIdOrNull
 internal class QueryIntegrationTest {
     @MockkBean
     private lateinit var leagueAccessor: MongoLeagueAccessor
+    @MockkBean
+    private lateinit var playerAccessor: MongoPlayerAccessor
     @Autowired
     private lateinit var buildProperties: BuildProperties
     @Autowired
@@ -63,5 +67,35 @@ internal class QueryIntegrationTest {
         // then
         assertTrue(response.isOk)
         assertNull(response.get("$.data.getLeague"))
+    }
+
+    @Test
+    internal fun `Should execute 'get player' query and return player`() {
+        // given
+        val id = UUID.fromString("f9f9d3e6-098d-4771-b713-27a2507faa32")
+        val playerEntity = PlayerEntity(id, UUID.randomUUID(), "Optimus Prime", 286, 1497)
+        every { playerAccessor.findByIdOrNull(id) } returns playerEntity
+        val request = "graphql/get-player.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(id.toString(), response.get("$.data.getPlayer.id"))
+        assertEquals(playerEntity.name, response.get("$.data.getPlayer.name"))
+        assertEquals(playerEntity.deviation, response.get("$.data.getPlayer.deviation", Int::class.java))
+        assertEquals(playerEntity.rating, response.get("$.data.getPlayer.rating", Int::class.java))
+    }
+
+    @Test
+    internal fun `Should execute 'get player' query and return null`() {
+        // given
+        val id = UUID.fromString("f9f9d3e6-098d-4771-b713-27a2507faa32")
+        every { playerAccessor.findByIdOrNull(id) } returns null
+        val request = "graphql/get-player.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertNull(response.get("$.data.getPlayer"))
     }
 }
