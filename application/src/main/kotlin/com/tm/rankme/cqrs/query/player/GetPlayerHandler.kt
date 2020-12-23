@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class GetPlayerHandler @Autowired constructor(
-    val repository: PlayerRepository
+    private val repository: PlayerRepository
 ) : QueryHandler<GetPlayerQuery, Player?> {
 
     override fun handle(query: GetPlayerQuery): Player? = repository.byId(query.id)
