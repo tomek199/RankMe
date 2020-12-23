@@ -17,7 +17,7 @@ internal class GetLeagueHandlerTest {
     private val handler: QueryHandler<GetLeagueQuery, League?> = GetLeagueHandler(repository)
 
     @Test
-    internal fun `Should get league`() {
+    internal fun `Should return league`() {
         // given
         val query = GetLeagueQuery(UUID.randomUUID())
         val expectedLeague = League(query.id, "Star Wars", false, 4)
