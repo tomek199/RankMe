@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.verifySequence
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -15,6 +16,15 @@ internal class LeagueRepositoryTest {
     private val eventEmitter = mockk<EventEmitter>(relaxed = true)
     private val repository = object : LeagueRepository(eventStorage, eventEmitter) {
         override fun exist(id: UUID): Boolean = false
+        fun storage() = eventStorage
+        fun emitter() = eventEmitter
+    }
+
+    @Test
+    internal fun `Should have access to storage and emitter`() {
+        // then
+        assertNotNull(repository.storage())
+        assertNotNull(repository.emitter())
     }
 
     @Test

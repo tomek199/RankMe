@@ -2,6 +2,7 @@ package com.tm.rankme.api.mutation
 
 import com.tm.rankme.cqrs.command.Command
 import com.tm.rankme.cqrs.command.CommandBus
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -9,12 +10,15 @@ import org.springframework.stereotype.Component
 class CommandExecutor @Autowired constructor(
     private val commandBus: CommandBus
 ) {
+    private val log = LoggerFactory.getLogger(CommandExecutor::class.java)
+
     fun execute(command: Command): Result {
-        try {
+        return try {
             commandBus.execute(command)
+            Result()
         } catch (exception: RuntimeException) {
-            return Result(Status.FAILURE, exception.message)
+            log.error(exception.message)
+            Result(Status.FAILURE, exception.message)
         }
-        return Result()
     }
 }
