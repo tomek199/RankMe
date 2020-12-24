@@ -5,11 +5,10 @@ import com.tm.rankme.cqrs.command.league.CreateLeagueCommand
 import com.tm.rankme.cqrs.command.league.RenameLeagueCommand
 import com.tm.rankme.cqrs.command.player.CreatePlayerCommand
 import graphql.kickstart.tools.GraphQLMutationResolver
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class Mutation @Autowired constructor(
+class Mutation(
     private val executor: CommandExecutor
 ) : GraphQLMutationResolver {
 

@@ -5,11 +5,10 @@ import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.player.LeaguePort
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class CreatePlayerHandler @Autowired constructor(
+class CreatePlayerHandler(
     private val repository: PlayerRepository,
     private val leaguePort: LeaguePort
 ) : CommandHandler<CreatePlayerCommand> {

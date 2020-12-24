@@ -3,12 +3,11 @@ package com.tm.rankme.storage.read.player
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
 import java.util.*
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
-class MongoPlayerRepository @Autowired constructor(
+class MongoPlayerRepository(
     private val playerAccessor: MongoPlayerAccessor
 ) : PlayerRepository {
 

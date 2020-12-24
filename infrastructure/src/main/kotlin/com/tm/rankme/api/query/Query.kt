@@ -6,12 +6,11 @@ import com.tm.rankme.cqrs.query.player.GetPlayerQuery
 import com.tm.rankme.model.league.League
 import com.tm.rankme.model.player.Player
 import graphql.kickstart.tools.GraphQLQueryResolver
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.info.BuildProperties
 import org.springframework.stereotype.Service
 
 @Service
-class Query @Autowired constructor(
+class Query(
     private val buildProperties: BuildProperties,
     private val queryBus: QueryBus
 ) : GraphQLQueryResolver {

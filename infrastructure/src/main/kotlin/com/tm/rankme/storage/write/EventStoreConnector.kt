@@ -3,12 +3,11 @@ package com.tm.rankme.storage.write
 import com.eventstore.dbclient.Connections
 import com.eventstore.dbclient.EventStoreDBConnection
 import com.eventstore.dbclient.Streams
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 
 @Component
-class EventStoreConnector @Autowired constructor(
+class EventStoreConnector(
     environment: Environment
 ) {
     final val stream: Streams
