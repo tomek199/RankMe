@@ -1,6 +1,6 @@
 package com.tm.rankme.storage.write
 
-import com.eventstore.dbclient.ProposedEvent
+import com.eventstore.dbclient.EventData
 import com.eventstore.dbclient.RecordedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -35,9 +35,9 @@ abstract class EsEventStorage<T>(
     }
 
     private fun addToStream(event: Event<T>) {
-        val proposedEvent = ProposedEvent.builderAsJson(event.type, serialize(event)).build()
+        val eventData = EventData.builderAsJson(event.type, serialize(event)).build()
         connector.stream.appendStream(event.aggregateId.toString())
-            .addEvent(proposedEvent).execute().get()
+            .addEvent(eventData).execute().get()
     }
 
     override fun events(stream: String): List<Event<T>> {

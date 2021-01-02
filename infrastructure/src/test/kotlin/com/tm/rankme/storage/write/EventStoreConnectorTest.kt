@@ -15,8 +15,7 @@ internal class EventStoreConnectorTest {
 
     @BeforeEach
     internal fun setUp() {
-        every { environment.getProperty("eventstore.host", "localhost") } returns "host"
-        every { environment.getProperty("eventstore.port", "2113") } returns "1234"
+        every { environment.getProperty("eventstore.endpoint", "esdb://localhost:2113") } returns "esdb://localhost:2113"
     }
 
     @Test
@@ -26,8 +25,7 @@ internal class EventStoreConnectorTest {
         // when
         val stream: Streams = connection.stream
         // then
-        verify { environment.getProperty("eventstore.host", "localhost") }
-        verify { environment.getProperty("eventstore.port", "2113") }
+        verify { environment.getProperty("eventstore.endpoint", "esdb://localhost:2113") }
         assertNotNull(stream)
     }
 }
