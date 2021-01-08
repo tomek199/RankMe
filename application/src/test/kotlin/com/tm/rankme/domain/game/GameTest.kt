@@ -29,4 +29,24 @@ internal class GameTest {
         assertEquals(playerOneResult, game.result?.first)
         assertEquals(playerTwoResult, game.result?.second)
     }
+
+    @Test
+    internal fun `Should init game aggregate from 'game-played' event`() {
+        // given
+        val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 2, -32, -56,
+            UUID.randomUUID(), 5, -42, 98, UUID.randomUUID())
+        // when
+        val game = Game.from(listOf(event))
+        // then
+        assertEquals(event.aggregateId, game.id)
+        assertEquals(event.version, game.version)
+        assertEquals(event.leagueId, game.leagueId)
+        assertEquals(Pair(event.firstId, event.secondId), game.playerIds)
+        assertEquals(event.firstDeviationDelta, game.result!!.first.deviationDelta)
+        assertEquals(event.firstRatingDelta, game.result!!.first.ratingDelta)
+        assertEquals(event.firstScore, game.result!!.first.score)
+        assertEquals(event.secondDeviationDelta, game.result!!.second.deviationDelta)
+        assertEquals(event.secondRatingDelta, game.result!!.second.ratingDelta)
+        assertEquals(event.secondScore, game.result!!.second.score)
+    }
 }

@@ -26,6 +26,13 @@ class Game private constructor() : AggregateRoot() {
             game.add(event)
             return game
         }
+
+        fun from(events: List<Event<Game>>): Game {
+            val game = Game()
+            events.forEach { event -> event.apply(game) }
+            game.version = events.last().version
+            return game
+        }
     }
 
     private fun add(event: Event<Game>) {
