@@ -6,10 +6,7 @@ import java.util.*
 import org.springframework.stereotype.Service
 
 @Service
-class LeagueAdapter(
-    private val repository: LeagueRepository
-) : LeaguePort {
-
+class LeagueAdapter(private val repository: LeagueRepository) : LeaguePort {
     override fun exist(leagueId: UUID): Boolean {
         return repository.exist(leagueId)
     }

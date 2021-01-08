@@ -39,19 +39,19 @@ class Player private constructor() : AggregateRoot() {
         }
     }
 
-    fun playedWith(opponent: Player, firstScore: Int, secondScore: Int): GameResult {
+    fun playedWith(opponent: Player, playerScore: Int, opponentScore: Int): GameResult {
         val glicko = GlickoService(
-            this.newDeviation(), this.rating, firstScore,
-            opponent.newDeviation(), opponent.rating, secondScore
+            this.newDeviation(), this.rating, playerScore,
+            opponent.newDeviation(), opponent.rating, opponentScore
         )
         val playerEvent = PlayerPlayedGame(
             glicko.playerOneDeviation - this.deviation, glicko.playerOneRating - this.rating,
-            firstScore, this.id, ++this.version
+            playerScore, this.id, ++this.version
         )
         this.add(playerEvent)
         val opponentEvent = PlayerPlayedGame(
             glicko.playerTwoDeviation - opponent.deviation, glicko.playerTwoRating - opponent.rating,
-            secondScore, opponent.id, ++opponent.version
+            opponentScore, opponent.id, ++opponent.version
         )
         opponent.add(opponentEvent)
         return GameResult(playerEvent, opponentEvent)
