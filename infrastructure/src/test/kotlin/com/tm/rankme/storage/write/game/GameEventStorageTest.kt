@@ -1,10 +1,12 @@
 package com.tm.rankme.storage.write.game
 
+import com.eventstore.dbclient.EventData
+import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.ReadResult
+import com.eventstore.dbclient.ReadStreamOptions
 import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
 import com.eventstore.dbclient.StreamRevision
-import com.eventstore.dbclient.Streams
 import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
@@ -24,14 +26,14 @@ internal class GameEventStorageTest {
     private val connector = mockk<EventStoreConnector>()
     private val eventStorage = GameEventStorage(connector)
 
-    private val streams = mockk<Streams>()
+    private val client = mockk<EventStoreDBClient>()
     private val readResult = mockk<ReadResult>()
     private val resolvedEvent = mockk<ResolvedEvent>()
     private val recordedEvent = mockk<RecordedEvent>()
 
     @BeforeEach
     internal fun setUp() {
-        every { connector.stream } returns streams
+        every { connector.client } returns client
     }
 
     @Test
@@ -39,12 +41,12 @@ internal class GameEventStorageTest {
         // given
         val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 3, -42, 145,
             UUID.randomUUID(), 2, -52, -143, UUID.randomUUID())
-        every { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() } returns mockk()
+        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
         eventStorage.save(event)
         // then
-        verify(exactly = 0) { streams.readStream(any()) }
-        verify(exactly = 1) { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() }
+        verify(exactly = 0) { client.readStream(any()) }
+        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
     }
 
     @Test
@@ -54,7 +56,7 @@ internal class GameEventStorageTest {
             override val type: String = "unknown-event"
             override fun apply(aggregate: Game) { }
         }
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
+        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         // when
@@ -68,7 +70,7 @@ internal class GameEventStorageTest {
         // given
         val aggregateId = UUID.randomUUID()
         val leagueId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get().events } returns
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("game-played")
@@ -103,7 +105,7 @@ internal class GameEventStorageTest {
     internal fun `Should throw exception when cannot deserialize invalid event json`() {
         // given
         val aggregateId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get().events } returns listOf(resolvedEvent)
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns listOf(resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returns "game-played"
         every { recordedEvent.eventData } returns "game-played-invalid-json".toByteArray()
@@ -115,7 +117,7 @@ internal class GameEventStorageTest {
     internal fun `Should throw exception when cannot deserialize unknown event`() {
         // given
         val aggregateId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get() } returns readResult
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returns "unknown-event"

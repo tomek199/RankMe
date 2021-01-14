@@ -1,11 +1,12 @@
 package com.tm.rankme.storage.write
 
+import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.ReadResult
+import com.eventstore.dbclient.ReadStreamOptions
 import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
 import com.eventstore.dbclient.StreamNotFoundException
 import com.eventstore.dbclient.StreamRevision
-import com.eventstore.dbclient.Streams
 import com.tm.rankme.domain.base.Event
 import io.mockk.every
 import io.mockk.mockk
@@ -27,20 +28,20 @@ internal class EsEventStorageTest {
         }
     }
 
-    private val streams = mockk<Streams>()
+    private val client = mockk<EventStoreDBClient>()
     private val readResult = mockk<ReadResult>()
     private val resolvedEvent = mockk<ResolvedEvent>()
 
     @BeforeEach
     internal fun setUp() {
-        every { connector.stream } returns streams
+        every { connector.client } returns client
     }
 
     @Test
     internal fun `Should throw exception when cannot get actual aggregate version`() {
         // given
         val event = TestEvent(1)
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
+        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         every { readResult.events } returns emptyList()
         // when
@@ -53,7 +54,7 @@ internal class EsEventStorageTest {
     internal fun `Should throw exception when event version is out of date`() {
         // given
         val event = TestEvent(1)
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
+        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(15)
         // when
@@ -66,7 +67,7 @@ internal class EsEventStorageTest {
     internal fun `Should throw exception when stream is not found`() {
         // given
         val aggregateId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get() } throws
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } throws
             ExecutionException("Stream not found exception", StreamNotFoundException())
         // when
         val exception = assertFailsWith<InfrastructureException> { eventStorage.events(aggregateId.toString()) }

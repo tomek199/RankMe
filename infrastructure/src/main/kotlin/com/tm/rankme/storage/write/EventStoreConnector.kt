@@ -1,22 +1,23 @@
 package com.tm.rankme.storage.write
 
-import com.eventstore.dbclient.Client
-import com.eventstore.dbclient.ClientSettings
-import com.eventstore.dbclient.ConnectionString
-import com.eventstore.dbclient.Streams
+import com.eventstore.dbclient.EventStoreDBClient
+import com.eventstore.dbclient.EventStoreDBClientSettings
+import com.eventstore.dbclient.EventStoreDBConnectionString
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
+
+
+
 
 @Component
 class EventStoreConnector(
     environment: Environment
 ) {
-    final val stream: Streams
+    final val client: EventStoreDBClient
 
     init {
         val endpoint = environment.getProperty("eventstore.endpoint", "esdb://localhost:2113")
-        val settings: ClientSettings = ConnectionString.parseOrThrow(endpoint)
-        val client = Client.create(settings)
-        stream = client.streams()
+        val settings: EventStoreDBClientSettings = EventStoreDBConnectionString.parseOrThrow(endpoint)
+        client = EventStoreDBClient.create(settings)
     }
 }

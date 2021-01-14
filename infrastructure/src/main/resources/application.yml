@@ -12,7 +12,7 @@ graphiql:
     version: 0.13.0
 
 eventstore:
-  endpoint: esdb://localhost:2113
+  endpoint: esdb://localhost:2113?tls=false
 
 spring:
   rabbitmq:

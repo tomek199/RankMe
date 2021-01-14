@@ -1,10 +1,12 @@
 package com.tm.rankme.storage.write.league
 
+import com.eventstore.dbclient.EventData
+import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.ReadResult
+import com.eventstore.dbclient.ReadStreamOptions
 import com.eventstore.dbclient.RecordedEvent
 import com.eventstore.dbclient.ResolvedEvent
 import com.eventstore.dbclient.StreamRevision
-import com.eventstore.dbclient.Streams
 import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
@@ -26,56 +28,56 @@ internal class LeagueEventStorageTest {
     private val connector = mockk<EventStoreConnector>()
     private val eventStorage = LeagueEventStorage(connector)
 
-    private val streams = mockk<Streams>()
+    private val client = mockk<EventStoreDBClient>()
     private val readResult = mockk<ReadResult>()
     private val resolvedEvent = mockk<ResolvedEvent>()
     private val recordedEvent = mockk<RecordedEvent>()
 
     @BeforeEach
     internal fun setUp() {
-        every { connector.stream } returns streams
+        every { connector.client } returns client
     }
 
     @Test
     internal fun `Should save 'create' event with initial version 0`() {
         // given
         val event = LeagueCreated("Star Wars", aggregateId = UUID.randomUUID())
-        every { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() } returns mockk()
+        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
         eventStorage.save(event)
         // then
-        verify(exactly = 0) { streams.readStream(any()) }
-        verify(exactly = 1) { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() }
+        verify(exactly = 0) { client.readStream(any()) }
+        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should save 'rename' event with version 1`() {
         // given
         val event = LeagueRenamed(UUID.randomUUID(), 1, "Transformers")
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
+        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
-        every { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() } returns mockk()
+        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
         eventStorage.save(event)
         // then
-        verify(exactly = 1) { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() }
-        verify(exactly = 1) { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() }
+        verify(exactly = 1) { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() }
+        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should save 'change settings' event with version 2`() {
         // given
         val event = LeagueSettingsChanged(UUID.randomUUID(), 2, true, 4)
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
+        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(1)
-        every { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() } returns mockk()
+        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
         eventStorage.save(event)
         // then
-        verify(exactly = 1) { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() }
-        verify(exactly = 1) { streams.appendStream(event.aggregateId.toString()).addEvent(any()).execute().get() }
+        verify(exactly = 1) { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() }
+        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
     }
 
     @Test
@@ -85,7 +87,7 @@ internal class LeagueEventStorageTest {
             override val type: String = "unknown-event"
             override fun apply(aggregate: League) { }
         }
-        every { streams.readStream(event.aggregateId.toString()).fromEnd().backward().execute(1).get() } returns readResult
+        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         // when
@@ -98,7 +100,7 @@ internal class LeagueEventStorageTest {
     internal fun `Should return events for aggregate`() {
         // given
         val aggregateId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get().events } returns
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("league-created", "league-renamed", "league-settings-changed")
@@ -136,7 +138,7 @@ internal class LeagueEventStorageTest {
         // when
         events.forEach {
             val aggregateId = UUID.randomUUID()
-            every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get().events } returns listOf(resolvedEvent)
+            every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns listOf(resolvedEvent)
             every { resolvedEvent.originalEvent } returns recordedEvent
             every { recordedEvent.eventType } returns it
             every { recordedEvent.eventData } returns "${it}-invalid-json".toByteArray()
@@ -149,7 +151,7 @@ internal class LeagueEventStorageTest {
     internal fun `Should throw exception when cannot deserialize unknown event`() {
         // given
         val aggregateId = UUID.randomUUID()
-        every { streams.readStream(aggregateId.toString()).fromStart().readThrough().get() } returns readResult
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returns "unknown-event"

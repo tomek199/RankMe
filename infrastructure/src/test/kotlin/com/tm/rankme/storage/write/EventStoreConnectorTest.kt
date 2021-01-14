@@ -1,6 +1,6 @@
 package com.tm.rankme.storage.write
 
-import com.eventstore.dbclient.Streams
+import com.eventstore.dbclient.EventStoreDBClient
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,9 +23,9 @@ internal class EventStoreConnectorTest {
         // given
         connection = EventStoreConnector(environment)
         // when
-        val stream: Streams = connection.stream
+        val client: EventStoreDBClient = connection.client
         // then
         verify { environment.getProperty("eventstore.endpoint", "esdb://localhost:2113") }
-        assertNotNull(stream)
+        assertNotNull(client)
     }
 }

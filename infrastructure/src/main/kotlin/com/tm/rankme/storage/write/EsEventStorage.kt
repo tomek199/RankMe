@@ -1,6 +1,7 @@
 package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.EventData
+import com.eventstore.dbclient.ReadStreamOptions
 import com.eventstore.dbclient.RecordedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -24,8 +25,8 @@ abstract class EsEventStorage<T>(
 
     private fun checkVersion(event: Event<T>) {
         if (event.version != 0L) {
-            val readResult = connector.stream.readStream(event.aggregateId.toString())
-                .fromEnd().backward().execute(1).get()
+            val readOptions = ReadStreamOptions.get().fromEnd().backwards()
+            val readResult = connector.client.readStream(event.aggregateId.toString(), 1, readOptions).get()
             val currentVersion = readResult.events.getOrElse(0) {
                 throw InfrastructureException("Cannon get actual version of aggregate id=${event.aggregateId}")
             }.event.streamRevision
@@ -36,15 +37,16 @@ abstract class EsEventStorage<T>(
 
     private fun addToStream(event: Event<T>) {
         val eventData = EventData.builderAsJson(event.type, serialize(event)).build()
-        connector.stream.appendStream(event.aggregateId.toString())
-            .addEvent(eventData).execute().get()
+        connector.client.appendToStream(event.aggregateId.toString(), eventData).get()
     }
 
     override fun events(stream: String): List<Event<T>> {
         log.info("Getting events for stream $stream")
         try {
-            return connector.stream.readStream(stream)
-                .fromStart().readThrough().get().events.map { deserialize(it.originalEvent) }.toList()
+            val readOptions = ReadStreamOptions.get().fromStart().forwards()
+            return connector.client.readStream(stream, readOptions).get().events.map {
+                deserialize(it.originalEvent)
+            }.toList()
         } catch (e: ExecutionException) {
             throw InfrastructureException("Stream $stream is not found", e)
         }
