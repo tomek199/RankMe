@@ -6,9 +6,6 @@ import com.eventstore.dbclient.EventStoreDBConnectionString
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 
-
-
-
 @Component
 class EventStoreConnector(
     environment: Environment
