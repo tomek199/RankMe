@@ -8,6 +8,7 @@ type Mutation {
     renameLeague(command: RenameLeagueCommand): Result!
     changeLeagueSettings(command: ChangeLeagueSettingsCommand): Result!
     createPlayer(command: CreatePlayerCommand): Result!
+    playGame(command: PlayGameCommand): Result!
 }
 
 type Query {

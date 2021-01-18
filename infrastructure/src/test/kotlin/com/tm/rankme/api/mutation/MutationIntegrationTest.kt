@@ -3,15 +3,19 @@ package com.tm.rankme.api.mutation
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.domain.player.PlayerCreated
+import com.tm.rankme.domain.player.PlayerPlayedGame
+import com.tm.rankme.storage.write.game.GameEventStorage
 import com.tm.rankme.storage.write.league.LeagueEventStorage
 import com.tm.rankme.storage.write.player.PlayerEventStorage
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
+import io.mockk.verifyOrder
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -26,6 +30,8 @@ internal class MutationIntegrationTest {
     private lateinit var leagueEventStorage: LeagueEventStorage
     @MockkBean(relaxed = true)
     private lateinit var playerEventStorage: PlayerEventStorage
+    @MockkBean(relaxed = true)
+    private lateinit var gameEventStorage: GameEventStorage
     @MockkBean(relaxed = true)
     private lateinit var eventEmitter: EventEmitter
     @Autowired
@@ -112,5 +118,63 @@ internal class MutationIntegrationTest {
         assertEquals(0, eventSlot.captured.version)
         assertEquals(leagueId, eventSlot.captured.leagueId.toString())
         assertEquals("Optimus Prime", eventSlot.captured.name)
+    }
+
+    @Test
+    internal fun `Should execute 'play-game' command`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val playerOneId = "8fb3af2e-1b72-4771-9533-c4793714372a"
+        val playerTwoId = "3c383cad-845a-477e-a1b2-565a5080ba5f"
+        every { playerEventStorage.events(playerOneId) } returns listOf(
+            PlayerCreated(leagueId, "Batman", aggregateId = UUID.fromString(playerOneId))
+        )
+        every { playerEventStorage.events(playerTwoId) } returns listOf(
+            PlayerCreated(leagueId, "Superman", aggregateId = UUID.fromString(playerTwoId))
+        )
+        val request = "graphql/play-game.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(Status.SUCCESS.name, response.get("$.data.playGame.status"))
+        val gameSlot = slot<GamePlayed>()
+        verify(exactly = 1) { gameEventStorage.save(capture(gameSlot))}
+        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured)}
+        gameSlot.captured.let {
+            assertEquals(leagueId, it.leagueId)
+            assertEquals(UUID.fromString(playerOneId), it.firstId)
+            assertEquals(3, it.firstScore)
+            assertEquals(-60, it.firstDeviationDelta)
+            assertEquals(-162, it.firstRatingDelta)
+            assertEquals(UUID.fromString(playerTwoId), it.secondId)
+            assertEquals(5, it.secondScore)
+            assertEquals(-60, it.secondDeviationDelta)
+            assertEquals(162, it.secondRatingDelta)
+        }
+        verifyOrder {
+            playerEventStorage.events(playerOneId)
+            playerEventStorage.events(playerTwoId)
+        }
+        val playerOneSlot = slot<PlayerPlayedGame>()
+        val playerTwoSlot = slot<PlayerPlayedGame>()
+        verifyOrder {
+            playerEventStorage.save(capture(playerOneSlot))
+            playerEventStorage.save(capture(playerTwoSlot))
+        }
+        verifyOrder {
+            eventEmitter.emit(playerOneSlot.captured)
+            eventEmitter.emit(playerTwoSlot.captured)
+        }
+        playerOneSlot.captured.let {
+            assertEquals(3, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(-162, it.ratingDelta)
+        }
+        playerTwoSlot.captured.let {
+            assertEquals(5, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(162, it.ratingDelta)
+        }
     }
 }

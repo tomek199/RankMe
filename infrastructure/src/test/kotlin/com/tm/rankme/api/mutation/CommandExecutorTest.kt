@@ -2,7 +2,9 @@ package com.tm.rankme.api.mutation
 
 import com.tm.rankme.cqrs.command.Command
 import com.tm.rankme.cqrs.command.CommandBus
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -16,7 +18,7 @@ internal class CommandExecutorTest {
     @Test
     internal fun `Should execute command and return success result`() {
         // given
-        every { commandBus.execute(command) } answers { nothing }
+        every { commandBus.execute(command) } just Runs
         // when
         val result = executor.execute(command)
         // then

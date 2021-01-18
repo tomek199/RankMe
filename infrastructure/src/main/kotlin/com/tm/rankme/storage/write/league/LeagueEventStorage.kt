@@ -10,11 +10,10 @@ import com.tm.rankme.storage.write.EsEventStorage
 import com.tm.rankme.storage.write.EventStoreConnector
 import com.tm.rankme.storage.write.InfrastructureException
 import java.util.*
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-class LeagueEventStorage @Autowired constructor(
+class LeagueEventStorage(
     connector: EventStoreConnector
 ) : EsEventStorage<League>(connector) {
 

@@ -8,11 +8,10 @@ import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.QueueBinding
 import org.springframework.amqp.rabbit.annotation.RabbitListener
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class LeagueCreatedConsumer @Autowired constructor(
+class LeagueCreatedConsumer(
     private val leagueAccessor: MongoLeagueAccessor
 ) : MessageConsumer<LeagueCreatedMessage> {
 

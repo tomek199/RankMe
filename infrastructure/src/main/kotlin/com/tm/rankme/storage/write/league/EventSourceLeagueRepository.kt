@@ -6,11 +6,10 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
 import com.tm.rankme.storage.write.InfrastructureException
 import java.util.*
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 
 @Repository
-class EventSourceLeagueRepository @Autowired constructor(
+class EventSourceLeagueRepository(
     eventStorage: EventStorage<League>,
     eventEmitter: EventEmitter
 ) : LeagueRepository(eventStorage, eventEmitter) {
