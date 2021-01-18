@@ -7,7 +7,9 @@ import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.PlayerPort
 import com.tm.rankme.domain.game.Result
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -32,7 +34,7 @@ internal class PlayGameHandlerTest {
         every {
             playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
         } returns Game.played(leagueId, command.playerOneId, command.playerTwoId, firstResult, secondResult)
-        every { repository.store(any()) } answers { nothing }
+        every { repository.store(any()) } just Runs
         // when
         handler.dispatch(command)
         // then

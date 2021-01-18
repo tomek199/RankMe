@@ -5,7 +5,9 @@ import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueRepository
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -26,7 +28,7 @@ internal class RenameLeagueHandlerTest {
         val league = League.create(name)
         val command = RenameLeagueCommand(league.id,"Transformers")
         every { repository.byId(league.id) } returns league
-        every { repository.store(any()) } answers { nothing }
+        every { repository.store(any()) } just Runs
         // when
         handler.dispatch(command)
         // then

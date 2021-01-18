@@ -1,5 +1,6 @@
 package com.tm.rankme.api.mutation
 
+import com.tm.rankme.cqrs.command.game.PlayGameCommand
 import com.tm.rankme.cqrs.command.league.ChangeLeagueSettingsCommand
 import com.tm.rankme.cqrs.command.league.CreateLeagueCommand
 import com.tm.rankme.cqrs.command.league.RenameLeagueCommand
@@ -19,4 +20,6 @@ class Mutation(
     fun changeLeagueSettings(command: ChangeLeagueSettingsCommand) = executor.execute(command)
 
     fun createPlayer(command: CreatePlayerCommand) = executor.execute(command)
+
+    fun playGame(command: PlayGameCommand) = executor.execute(command)
 }

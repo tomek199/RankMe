@@ -3,8 +3,11 @@ package com.tm.rankme.storage.write.player
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verifySequence
 import java.util.*
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
@@ -22,6 +25,7 @@ internal class PlayerAdapterTest {
         val playerTwo = Player.create(leagueId, "Superman")
         every { repository.byId(playerOne.id) } returns playerOne
         every { repository.byId(playerTwo.id) } returns playerTwo
+        every { repository.store(ofType(Player::class))} just Runs
         // when
         val game = adapter.playGame(playerOne.id, playerTwo.id, 3, 1)
         // then
@@ -33,6 +37,12 @@ internal class PlayerAdapterTest {
         assertEquals(1, game.result!!.second.score)
         assertEquals(-60, game.result!!.second.deviationDelta)
         assertEquals(-162, game.result!!.second.ratingDelta)
+        verifySequence {
+            repository.byId(playerOne.id)
+            repository.byId(playerTwo.id)
+            repository.store(ofType(Player::class))
+            repository.store(ofType(Player::class))
+        }
     }
 
     @Test

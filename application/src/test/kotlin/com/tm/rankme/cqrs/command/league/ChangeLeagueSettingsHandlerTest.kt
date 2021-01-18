@@ -5,7 +5,9 @@ import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueRepository
 import com.tm.rankme.domain.league.LeagueSettingsChanged
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -25,7 +27,7 @@ internal class ChangeLeagueSettingsHandlerTest {
         val league = League.create("Star Wars")
         val command = ChangeLeagueSettingsCommand(league.id, true, 5)
         every { repository.byId(league.id) } returns league
-        every { repository.store(any()) } answers { nothing }
+        every { repository.store(any()) } just Runs
         // when
         handler.dispatch(command)
         // then

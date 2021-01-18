@@ -1,0 +1,6 @@
+input PlayGameCommand {
+    playerOneId: String!
+    playerTwoId: String!
+    playerOneScore: Int!
+    playerTwoScore: Int!
+}

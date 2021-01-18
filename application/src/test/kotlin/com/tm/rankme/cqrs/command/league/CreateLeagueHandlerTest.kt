@@ -4,7 +4,9 @@ import com.tm.rankme.cqrs.command.CommandHandler
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRepository
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -20,7 +22,7 @@ internal class CreateLeagueHandlerTest {
     internal fun `Should create league`() {
         // given
         val command = CreateLeagueCommand("Start Wars")
-        every { repository.store(any()) } answers { nothing }
+        every { repository.store(any()) } just Runs
         // when
         handler.dispatch(command)
         // then

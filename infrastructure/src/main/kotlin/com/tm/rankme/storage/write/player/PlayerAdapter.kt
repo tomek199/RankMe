@@ -16,14 +16,22 @@ class PlayerAdapter(private val repository: PlayerRepository) : PlayerPort {
         val secondPlayer = repository.byId(secondPlayerId)
         val leagueId = extractLeagueId(firstPlayer, secondPlayer)
         val result = firstPlayer.playedWith(secondPlayer, firstScore, secondScore)
-        val firstPlayerResult = Result(result.firstScore, result.firstDeviationDelta, result.firstRatingDelta)
-        val secondPlayerResult = Result(result.secondScore, result.secondDeviationDelta, result.secondRatingDelta)
-        return Game.played(leagueId, firstPlayerId, secondPlayerId, firstPlayerResult, secondPlayerResult)
+        savePlayers(firstPlayer, secondPlayer)
+        return Game.played(
+            leagueId, firstPlayerId, secondPlayerId,
+            Result(result.firstScore, result.firstDeviationDelta, result.firstRatingDelta),
+            Result(result.secondScore, result.secondDeviationDelta, result.secondRatingDelta)
+        )
     }
 
     private fun extractLeagueId(firstPlayer: Player, secondPlayer: Player): UUID  {
         if (firstPlayer.leagueId != secondPlayer.leagueId)
             throw AggregateException("Players ${firstPlayer.id} and ${secondPlayer.id} does not belong to the same league")
         return firstPlayer.leagueId
+    }
+
+    private fun savePlayers(firstPlayer: Player, secondPlayer: Player) {
+        repository.store(firstPlayer)
+        repository.store(secondPlayer)
     }
 }

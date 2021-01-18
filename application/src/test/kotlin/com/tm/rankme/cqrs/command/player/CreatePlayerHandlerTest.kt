@@ -6,7 +6,9 @@ import com.tm.rankme.domain.player.LeaguePort
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerRepository
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -26,7 +28,7 @@ internal class CreatePlayerHandlerTest {
         // given
         val command = CreatePlayerCommand(UUID.randomUUID(), "Optimus Prime")
         every { leaguePort.exist(command.leagueId) } returns true
-        every { repository.store(any()) } answers { nothing }
+        every { repository.store(any()) } just Runs
         // when
         handler.dispatch(command)
         // then
