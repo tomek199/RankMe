@@ -27,3 +27,5 @@ enum Status {
 }
 
 scalar UUID
+
+scalar LocalDateTime

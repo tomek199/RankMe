@@ -1,5 +1,6 @@
 package com.tm.rankme.api
 
+import com.tm.rankme.api.scalar.LocalDateTimeCoercing
 import com.tm.rankme.api.scalar.UUIDCoercing
 import graphql.schema.GraphQLScalarType
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -24,6 +25,13 @@ class RankMe {
         return GraphQLScalarType.newScalar()
             .name("UUID")
             .coercing(UUIDCoercing())
+            .build()
+    }
+
+    fun localDateTimeScalar(): GraphQLScalarType {
+        return GraphQLScalarType.newScalar()
+            .name("LocalDateTime")
+            .coercing(LocalDateTimeCoercing())
             .build()
     }
 }
