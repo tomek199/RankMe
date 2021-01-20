@@ -3,6 +3,7 @@ package com.tm.rankme.domain.game
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -28,6 +29,26 @@ internal class GameTest {
         assertEquals(playerTwoId, game.playerIds.second)
         assertEquals(playerOneResult, game.result?.first)
         assertEquals(playerTwoResult, game.result?.second)
+    }
+
+    @Test
+    internal fun `Should create scheduled game`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val playerOneId = UUID.randomUUID()
+        val playerTwoId = UUID.randomUUID()
+        // when
+        val game = Game.scheduled(leagueId, playerOneId, playerTwoId)
+        // then
+        assertNotNull(game.id)
+        assertEquals(0, game.version)
+        assertEquals(1, game.pendingEvents.size)
+        assertTrue(game.pendingEvents[0] is GameScheduled)
+        assertEquals(0, game.pendingEvents[0].version)
+        assertEquals(leagueId, game.leagueId)
+        assertEquals(playerOneId, game.playerIds.first)
+        assertEquals(playerTwoId, game.playerIds.second)
+        assertNull(game.result)
     }
 
     @Test

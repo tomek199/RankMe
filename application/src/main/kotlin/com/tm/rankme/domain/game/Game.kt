@@ -27,6 +27,13 @@ class Game private constructor() : AggregateRoot() {
             return game
         }
 
+        fun scheduled(leagueId: UUID, firstId: UUID, secondId: UUID): Game {
+            val game = Game()
+            val event = GameScheduled(leagueId, firstId, secondId)
+            game.add(event)
+            return game
+        }
+
         fun from(events: List<Event<Game>>): Game {
             val game = Game()
             events.forEach { event -> event.apply(game) }
@@ -49,5 +56,11 @@ class Game private constructor() : AggregateRoot() {
             Result(event.firstScore, event.firstDeviationDelta, event.firstRatingDelta),
             Result(event.secondScore, event.secondDeviationDelta, event.secondRatingDelta)
         )
+    }
+
+    internal fun apply(event: GameScheduled) {
+        id = event.aggregateId
+        leagueId = event.leagueId
+        playerIds = Pair(event.firstId, event.secondId)
     }
 }
