@@ -4,6 +4,7 @@ import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
+import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.storage.write.EsEventStorage
 import com.tm.rankme.storage.write.EventStoreConnector
 import com.tm.rankme.storage.write.InfrastructureException
@@ -22,6 +23,10 @@ class GameEventStorage(
                 event.firstId, event.firstScore, event.firstDeviationDelta, event.firstRatingDelta,
                 event.secondId, event.secondScore, event.secondDeviationDelta, event.secondRatingDelta
             )
+            is GameScheduled -> Scheduled(
+                event.type, event.aggregateId, event.version, event.timestamp, event.leagueId,
+                event.dateTime, event.firstId, event.secondId
+            )
             else -> throw InfrastructureException("Cannot serialize event '${event.type}'")
         }
     }
@@ -34,6 +39,9 @@ class GameEventStorage(
                     it.secondId, it.secondScore, it.secondDeviationDelta, it.secondRatingDelta,
                     it.dateTime, it.aggregateId
                 )
+            }
+            "game-scheduled" -> objectMapper.readValue(recordedEvent.eventData, Scheduled::class.java).let {
+                GameScheduled(it.leagueId, it.firstId, it.secondId, it.dateTime, it.aggregateId)
             }
             else -> throw InfrastructureException("Cannot deserialize event '${recordedEvent.eventType}'")
         }
@@ -54,5 +62,16 @@ class GameEventStorage(
         val secondScore: Int,
         val secondDeviationDelta: Int,
         val secondRatingDelta: Int
+    )
+
+    internal data class Scheduled(
+        val type: String,
+        val aggregateId: UUID,
+        val version: Long,
+        val timestamp: Long,
+        val leagueId: UUID,
+        val dateTime: Long,
+        val firstId: UUID,
+        val secondId: UUID
     )
 }
