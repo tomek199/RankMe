@@ -18,6 +18,7 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
@@ -151,6 +152,7 @@ internal class MutationIntegrationTest {
             assertEquals(5, it.secondScore)
             assertEquals(-60, it.secondDeviationDelta)
             assertEquals(162, it.secondRatingDelta)
+            assertNotNull(it.dateTime)
         }
         verifyOrder {
             playerEventStorage.events(playerOneId)

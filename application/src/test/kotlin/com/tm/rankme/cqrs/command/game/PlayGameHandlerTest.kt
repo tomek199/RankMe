@@ -16,6 +16,7 @@ import io.mockk.verify
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -40,10 +41,16 @@ internal class PlayGameHandlerTest {
         // then
         val gameSlot = slot<Game>()
         verify(exactly = 1) { repository.store(capture(gameSlot)) }
-        assertEquals(leagueId, gameSlot.captured.leagueId)
-        assertEquals(Pair(command.playerOneId, command.playerTwoId), gameSlot.captured.playerIds)
-        assertEquals(Pair(firstResult, secondResult), gameSlot.captured.result)
-        assertTrue(gameSlot.captured.pendingEvents.last() is GamePlayed)
+        verify(exactly = 1) {
+            playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
+        }
+        gameSlot.captured.let {
+            assertEquals(leagueId, it.leagueId)
+            assertEquals(Pair(command.playerOneId, command.playerTwoId), it.playerIds)
+            assertEquals(Pair(firstResult, secondResult), it.result)
+            assertNotNull(it.dateTime)
+            assertTrue(it.pendingEvents.last() is GamePlayed)
+        }
     }
 
     @Test

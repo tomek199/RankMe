@@ -34,12 +34,15 @@ internal class CreatePlayerHandlerTest {
         // then
         val playerSlot = slot<Player>()
         verify(exactly = 1) { repository.store(capture(playerSlot)) }
-        assertEquals(command.leagueId, playerSlot.captured.leagueId)
-        assertEquals(command.name, playerSlot.captured.name)
-        assertEquals(0, playerSlot.captured.version)
-        assertEquals(350, playerSlot.captured.deviation)
-        assertEquals(1500, playerSlot.captured.rating)
-        assertTrue(playerSlot.captured.pendingEvents.last() is PlayerCreated)
+        verify(exactly = 1) { leaguePort.exist(command.leagueId) }
+        playerSlot.captured.let {
+            assertEquals(command.leagueId, it.leagueId)
+            assertEquals(command.name, it.name)
+            assertEquals(0, it.version)
+            assertEquals(350, it.deviation)
+            assertEquals(1500, it.rating)
+            assertTrue(it.pendingEvents.last() is PlayerCreated)
+        }
     }
 
     @Test
