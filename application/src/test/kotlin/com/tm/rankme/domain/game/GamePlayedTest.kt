@@ -32,5 +32,6 @@ internal class GamePlayedTest {
         assertEquals(4, event.secondScore)
         assertEquals(-38, event.secondDeviationDelta)
         assertEquals(89, event.secondRatingDelta)
+        assertNotNull(event.dateTime)
     }
 }

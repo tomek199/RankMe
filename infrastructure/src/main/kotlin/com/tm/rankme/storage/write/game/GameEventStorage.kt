@@ -18,7 +18,7 @@ class GameEventStorage(
     override fun serialize(event: Event<Game>): Any {
         return when (event) {
             is GamePlayed -> Played(
-                event.type, event.aggregateId, event.version, event.timestamp, event.leagueId,
+                event.type, event.aggregateId, event.version, event.timestamp, event.leagueId, event.dateTime,
                 event.firstId, event.firstScore, event.firstDeviationDelta, event.firstRatingDelta,
                 event.secondId, event.secondScore, event.secondDeviationDelta, event.secondRatingDelta
             )
@@ -29,8 +29,11 @@ class GameEventStorage(
     override fun deserialize(recordedEvent: RecordedEvent): Event<Game> {
         return when (recordedEvent.eventType) {
             "game-played" -> objectMapper.readValue(recordedEvent.eventData, Played::class.java).let {
-                GamePlayed(it.leagueId, it.firstId, it.firstScore, it.firstDeviationDelta, it.firstRatingDelta,
-                it.secondId, it.secondScore, it.secondDeviationDelta, it.secondRatingDelta, it.aggregateId)
+                GamePlayed(
+                    it.leagueId, it.firstId, it.firstScore, it.firstDeviationDelta, it.firstRatingDelta,
+                    it.secondId, it.secondScore, it.secondDeviationDelta, it.secondRatingDelta,
+                    it.dateTime, it.aggregateId
+                )
             }
             else -> throw InfrastructureException("Cannot deserialize event '${recordedEvent.eventType}'")
         }
@@ -42,6 +45,7 @@ class GameEventStorage(
         val version: Long,
         val timestamp: Long,
         val leagueId: UUID,
+        val dateTime: Long,
         val firstId: UUID,
         val firstScore: Int,
         val firstDeviationDelta: Int,

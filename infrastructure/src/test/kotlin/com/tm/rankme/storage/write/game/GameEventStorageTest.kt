@@ -40,7 +40,7 @@ internal class GameEventStorageTest {
     internal fun `Should save 'game-played' event with initial version 0`() {
         // given
         val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 3, -42, 145,
-            UUID.randomUUID(), 2, -52, -143, UUID.randomUUID())
+            UUID.randomUUID(), 2, -52, -143, aggregateId = UUID.randomUUID())
         every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
         eventStorage.save(event)
@@ -79,7 +79,7 @@ internal class GameEventStorageTest {
             "firstId": "1e56a755-1134-4f17-94fe-e6f2abe8ec07", "firstScore": 4,
             "firstDeviationDelta": -23, "firstRatingDelta": 78,
             "secondId": "bb47a873-78ed-4320-a3b9-c214e63c9f6e", "secondScore": 3, 
-            "secondDeviationDelta": -35, "secondRatingDelta": -63}""".toByteArray()
+            "secondDeviationDelta": -35, "secondRatingDelta": -63, "dateTime": 1611176383}""".toByteArray()
         )
         // when
         val events = eventStorage.events(aggregateId.toString())
@@ -98,6 +98,7 @@ internal class GameEventStorageTest {
             assertEquals(3, it.secondScore)
             assertEquals(-35, it.secondDeviationDelta)
             assertEquals(-63, it.secondRatingDelta)
+            assertEquals(1611176383, it.dateTime)
         }
     }
 
