@@ -1,6 +1,12 @@
 input PlayGameCommand {
-    playerOneId: String!
-    playerTwoId: String!
+    playerOneId: UUID!
+    playerTwoId: UUID!
     playerOneScore: Int!
     playerTwoScore: Int!
+}
+
+input ScheduleGameCommand {
+    playerOneId: UUID!
+    playerTwoId: UUID!
+    dateTime: LocalDateTime!
 }

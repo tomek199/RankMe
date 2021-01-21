@@ -28,6 +28,7 @@ class RankMe {
             .build()
     }
 
+    @Bean
     fun localDateTimeScalar(): GraphQLScalarType {
         return GraphQLScalarType.newScalar()
             .name("LocalDateTime")
