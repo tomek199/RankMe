@@ -1,5 +1,6 @@
 package com.tm.rankme.domain.game
 
+import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
 import java.time.LocalDateTime
@@ -44,6 +45,18 @@ class Game private constructor() : AggregateRoot() {
             game.version = events.last().version
             return game
         }
+    }
+
+    fun complete(firstResult: Result, secondResult: Result) {
+        if (result != null) throw AggregateException("Game $id is already played")
+        val event = GamePlayed(leagueId = leagueId,
+            firstId = playerIds.first, firstScore = firstResult.score,
+            firstDeviationDelta = firstResult.deviationDelta, firstRatingDelta = firstResult.ratingDelta,
+            secondId = playerIds.second, secondScore = secondResult.score,
+            secondDeviationDelta = secondResult.deviationDelta, secondRatingDelta = secondResult.ratingDelta,
+            dateTime = dateTime.toEpochSecond(ZoneOffset.UTC), aggregateId = id, version = ++version
+        )
+        add(event)
     }
 
     private fun add(event: Event<Game>) {
