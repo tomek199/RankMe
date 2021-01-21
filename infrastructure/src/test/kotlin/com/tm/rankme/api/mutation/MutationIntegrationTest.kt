@@ -4,6 +4,7 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.domain.base.EventEmitter
 import com.tm.rankme.domain.game.GamePlayed
+import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
@@ -16,8 +17,12 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
+import io.mockk.verifySequence
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
@@ -139,8 +144,8 @@ internal class MutationIntegrationTest {
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.playGame.status"))
         val gameSlot = slot<GamePlayed>()
-        verify(exactly = 1) { gameEventStorage.save(capture(gameSlot))}
-        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured)}
+        verify(exactly = 1) { gameEventStorage.save(capture(gameSlot)) }
+        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured) }
         gameSlot.captured.let {
             assertEquals(leagueId, it.leagueId)
             assertEquals(UUID.fromString(playerOneId), it.firstId)
@@ -151,6 +156,7 @@ internal class MutationIntegrationTest {
             assertEquals(5, it.secondScore)
             assertEquals(-60, it.secondDeviationDelta)
             assertEquals(162, it.secondRatingDelta)
+            assertNotNull(it.dateTime)
         }
         verifyOrder {
             playerEventStorage.events(playerOneId)
@@ -175,6 +181,39 @@ internal class MutationIntegrationTest {
             assertEquals(5, it.score)
             assertEquals(-60, it.deviationDelta)
             assertEquals(162, it.ratingDelta)
+        }
+    }
+
+    @Test
+    internal fun `Should execute 'schedule-game' command`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val playerOneId = "ee50ada3-d73d-46a4-aa9e-08d232dd99b8"
+        val playerTwoId = "2f5df9b0-2469-49f1-ac03-ac2966ff9f30"
+        every { playerEventStorage.events(playerOneId) } returns listOf(
+            PlayerCreated(leagueId, "Batman", aggregateId = UUID.fromString(playerOneId))
+        )
+        every { playerEventStorage.events(playerTwoId) } returns listOf(
+            PlayerCreated(leagueId, "Superman", aggregateId = UUID.fromString(playerTwoId))
+        )
+        val request = "graphql/schedule-game.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(Status.SUCCESS.name, response.get("$.data.scheduleGame.status"))
+        val gameSlot = slot<GameScheduled>()
+        verifySequence {
+            playerEventStorage.events(playerOneId)
+            playerEventStorage.events(playerTwoId)
+        }
+        verify(exactly = 1) { gameEventStorage.save(capture(gameSlot)) }
+        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured) }
+        gameSlot.captured.let {
+            assertEquals(leagueId, it.leagueId)
+            assertEquals(UUID.fromString(playerOneId), it.firstId)
+            assertEquals(UUID.fromString(playerTwoId), it.secondId)
+            assertEquals(LocalDateTime.parse("2021-01-21T12:10:00").toEpochSecond(ZoneOffset.UTC), it.dateTime)
         }
     }
 }

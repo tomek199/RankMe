@@ -13,11 +13,20 @@ internal class RankMeTest {
     }
 
     @Test
-    internal fun `Should return LocalDate scalar`() {
+    internal fun `Should return UUID scalar`() {
         // when
         val scalar = RankMe().uuidScalar()
         // then
         assertNotNull(scalar)
         assertEquals("UUID", scalar.name)
+    }
+
+    @Test
+    internal fun `Should return LocalDateTime scalar`() {
+        // when
+        val scalar = RankMe().localDateTimeScalar()
+        // then
+        assertNotNull(scalar)
+        assertEquals("LocalDateTime", scalar.name)
     }
 }

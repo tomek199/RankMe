@@ -57,4 +57,18 @@ internal class PlayerAdapterTest {
         // then
         assertEquals("Players ${playerOne.id} and ${playerTwo.id} does not belong to the same league", exception.message)
     }
+
+    @Test
+    internal fun `Should extract league id by player ids`() {
+        // given
+        val expectedLeagueId = UUID.randomUUID()
+        val playerOne = Player.create(expectedLeagueId, "Batman")
+        val playerTwo = Player.create(expectedLeagueId, "Superman")
+        every { repository.byId(playerOne.id) } returns playerOne
+        every { repository.byId(playerTwo.id) } returns playerTwo
+        // when
+        val leagueId = adapter.extractLeagueId(playerOne.id, playerTwo.id)
+        // then
+        assertEquals(expectedLeagueId, leagueId)
+    }
 }

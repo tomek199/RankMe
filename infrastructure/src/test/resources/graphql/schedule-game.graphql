@@ -1,0 +1,10 @@
+ mutation {
+     scheduleGame(command: {
+         playerOneId: "ee50ada3-d73d-46a4-aa9e-08d232dd99b8"
+         playerTwoId: "2f5df9b0-2469-49f1-ac03-ac2966ff9f30"
+         dateTime: "2021-01-21T12:10:00"
+     }) {
+        status
+        message
+   }
+ }

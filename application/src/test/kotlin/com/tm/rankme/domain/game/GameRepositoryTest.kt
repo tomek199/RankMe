@@ -19,7 +19,7 @@ internal class GameRepositoryTest {
         // given
         val aggregateId = UUID.randomUUID()
         val gamePlayed = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 2, -32, -56,
-            UUID.randomUUID(), 5, -42, 98, UUID.randomUUID())
+            UUID.randomUUID(), 5, -42, 98, aggregateId = UUID.randomUUID())
         every { eventStorage.events(aggregateId.toString()) } returns listOf(gamePlayed)
         // when
         val game = repository.byId(aggregateId)

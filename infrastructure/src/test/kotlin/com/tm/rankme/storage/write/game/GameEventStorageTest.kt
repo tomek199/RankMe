@@ -11,11 +11,14 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
+import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.storage.write.EventStoreConnector
 import com.tm.rankme.storage.write.InfrastructureException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -40,7 +43,20 @@ internal class GameEventStorageTest {
     internal fun `Should save 'game-played' event with initial version 0`() {
         // given
         val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 3, -42, 145,
-            UUID.randomUUID(), 2, -52, -143, UUID.randomUUID())
+            UUID.randomUUID(), 2, -52, -143, aggregateId = UUID.randomUUID())
+        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
+        // when
+        eventStorage.save(event)
+        // then
+        verify(exactly = 0) { client.readStream(any()) }
+        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
+    }
+
+    @Test
+    internal fun `Should save 'game-scheduled' event with initial version 0`() {
+        // given
+        val event = GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
         every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
         eventStorage.save(event)
@@ -71,22 +87,33 @@ internal class GameEventStorageTest {
         val aggregateId = UUID.randomUUID()
         val leagueId = UUID.randomUUID()
         every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
-            listOf(resolvedEvent)
+            listOf(resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
-        every { recordedEvent.eventType } returnsMany listOf("game-played")
+        every { recordedEvent.eventType } returnsMany listOf("game-scheduled", "game-played")
         every { recordedEvent.eventData } returnsMany listOf(
-            """{"type": "game-played", "aggregateId": "$aggregateId", "version": 0, "timestamp": 0, "leagueId": "$leagueId", 
+            """{"type": "game-scheduled", "aggregateId": "$aggregateId", "version": 0, "timestamp": 0, "leagueId": "$leagueId", 
+            "firstId": "1e56a755-1134-4f17-94fe-e6f2abe8ec07", "secondId": "bb47a873-78ed-4320-a3b9-c214e63c9f6e", 
+            "dateTime": 1622276383}""".toByteArray(),
+            """{"type": "game-played", "aggregateId": "$aggregateId", "version": 1, "timestamp": 0, "leagueId": "$leagueId", 
             "firstId": "1e56a755-1134-4f17-94fe-e6f2abe8ec07", "firstScore": 4,
             "firstDeviationDelta": -23, "firstRatingDelta": 78,
             "secondId": "bb47a873-78ed-4320-a3b9-c214e63c9f6e", "secondScore": 3, 
-            "secondDeviationDelta": -35, "secondRatingDelta": -63}""".toByteArray()
+            "secondDeviationDelta": -35, "secondRatingDelta": -63, "dateTime": 1611176383}""".toByteArray()
         )
         // when
         val events = eventStorage.events(aggregateId.toString())
         // then
-        assertEquals(1, events.size)
+        assertEquals(2, events.size)
         events.forEach { assertEquals(aggregateId, it.aggregateId) }
-        (events[0] as GamePlayed).let {
+        (events[0] as GameScheduled).let {
+            assertEquals("game-scheduled", it.type)
+            assertEquals(0, it.version)
+            assertEquals(leagueId, it.leagueId)
+            assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), it.firstId)
+            assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), it.secondId)
+            assertEquals(1622276383, it.dateTime)
+        }
+        (events[1] as GamePlayed).let {
             assertEquals("game-played", it.type)
             assertEquals(0, it.version)
             assertEquals(leagueId, it.leagueId)
@@ -98,6 +125,7 @@ internal class GameEventStorageTest {
             assertEquals(3, it.secondScore)
             assertEquals(-35, it.secondDeviationDelta)
             assertEquals(-63, it.secondRatingDelta)
+            assertEquals(1611176383, it.dateTime)
         }
     }
 

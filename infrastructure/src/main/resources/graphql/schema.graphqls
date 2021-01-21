@@ -4,11 +4,12 @@ schema {
 }
 
 type Mutation {
-    createLeague(command: CreateLeagueCommand): Result!
-    renameLeague(command: RenameLeagueCommand): Result!
-    changeLeagueSettings(command: ChangeLeagueSettingsCommand): Result!
-    createPlayer(command: CreatePlayerCommand): Result!
-    playGame(command: PlayGameCommand): Result!
+    createLeague(command: CreateLeagueCommand!): Result!
+    renameLeague(command: RenameLeagueCommand!): Result!
+    changeLeagueSettings(command: ChangeLeagueSettingsCommand!): Result!
+    createPlayer(command: CreatePlayerCommand!): Result!
+    playGame(command: PlayGameCommand!): Result!
+    scheduleGame(command: ScheduleGameCommand!): Result
 }
 
 type Query {
@@ -27,3 +28,5 @@ enum Status {
 }
 
 scalar UUID
+
+scalar LocalDateTime

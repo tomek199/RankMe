@@ -24,6 +24,12 @@ class PlayerAdapter(private val repository: PlayerRepository) : PlayerPort {
         )
     }
 
+    override fun extractLeagueId(firstPlayerId: UUID, secondPlayerId: UUID): UUID {
+        val firstPlayer = repository.byId(firstPlayerId)
+        val secondPlayer = repository.byId(secondPlayerId)
+        return extractLeagueId(firstPlayer, secondPlayer)
+    }
+
     private fun extractLeagueId(firstPlayer: Player, secondPlayer: Player): UUID  {
         if (firstPlayer.leagueId != secondPlayer.leagueId)
             throw AggregateException("Players ${firstPlayer.id} and ${secondPlayer.id} does not belong to the same league")
