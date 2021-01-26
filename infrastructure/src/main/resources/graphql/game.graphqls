@@ -10,3 +10,9 @@ input ScheduleGameCommand {
     playerTwoId: UUID!
     dateTime: LocalDateTime!
 }
+
+input CompleteGameCommand {
+    gameId: UUID!
+    playerOneScore: Int!
+    playerTwoScore: Int!
+}
