@@ -48,7 +48,7 @@ class Game private constructor() : AggregateRoot() {
     }
 
     fun complete(firstResult: Result, secondResult: Result) {
-        if (result != null) throw AggregateException("Game $id is already played")
+        if (!canComplete()) throw AggregateException("Game $id is already played")
         val event = GamePlayed(leagueId = leagueId,
             firstId = playerIds.first, firstScore = firstResult.score,
             firstDeviationDelta = firstResult.deviationDelta, firstRatingDelta = firstResult.ratingDelta,
@@ -58,6 +58,8 @@ class Game private constructor() : AggregateRoot() {
         )
         add(event)
     }
+
+    fun canComplete() = result == null
 
     private fun add(event: Event<Game>) {
         pendingEvents.add(event)

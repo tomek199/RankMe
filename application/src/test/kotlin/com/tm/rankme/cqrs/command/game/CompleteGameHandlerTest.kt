@@ -68,9 +68,6 @@ internal class CompleteGameHandlerTest {
         val secondResult = Result(command.playerTwoScore, -45, 79)
         val game = Game.played(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), firstResult, secondResult)
         every { repository.byId(command.gameId) } returns game
-        every {
-            playerPort.playGame(game.playerIds.first, game.playerIds.second, command.playerOneScore, command.playerTwoScore)
-        } returns Game.played(game.leagueId, game.playerIds.first, game.playerIds.second, firstResult, secondResult)
         // when
         val exception = assertFailsWith<AggregateException> { handler.dispatch(command) }
         // then
