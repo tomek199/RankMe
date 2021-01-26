@@ -16,3 +16,9 @@ data class ScheduleGameCommand(
     val playerTwoId: UUID,
     val dateTime: LocalDateTime
 ) : Command()
+
+data class CompleteGameCommand(
+    val gameId: UUID,
+    val playerOneScore: Int,
+    val playerTwoScore: Int
+) : Command()
