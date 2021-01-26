@@ -16,8 +16,6 @@ class Query(
 ) : GraphQLQueryResolver {
 
     fun info(): String = "RankMe GraphQL API ${buildProperties.version}"
-
     fun getLeague(query: GetLeagueQuery): League? = queryBus.execute(query)
-
     fun getPlayer(query: GetPlayerQuery): Player? = queryBus.execute(query)
 }

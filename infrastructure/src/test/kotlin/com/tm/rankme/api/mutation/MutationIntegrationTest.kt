@@ -18,6 +18,7 @@ import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
 import io.mockk.verifySequence
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -214,6 +215,67 @@ internal class MutationIntegrationTest {
             assertEquals(UUID.fromString(playerOneId), it.firstId)
             assertEquals(UUID.fromString(playerTwoId), it.secondId)
             assertEquals(LocalDateTime.parse("2021-01-21T12:10:00").toEpochSecond(ZoneOffset.UTC), it.dateTime)
+        }
+    }
+
+    @Test
+    internal fun `Should execute 'complete-game' command`() {
+        // given
+        val gameId = UUID.fromString("ce75cea6-d8da-4ba6-8d54-95c0e1b44883");
+        val scheduledEvent = GameScheduled(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now().toEpochMilli(), gameId
+        )
+        every { gameEventStorage.events(gameId.toString()) } returns listOf(scheduledEvent)
+        every { playerEventStorage.events(scheduledEvent.firstId.toString()) } returns listOf(
+            PlayerCreated(scheduledEvent.leagueId, "Batman", aggregateId = scheduledEvent.firstId)
+        )
+        every { playerEventStorage.events(scheduledEvent.secondId.toString()) } returns listOf(
+            PlayerCreated(scheduledEvent.leagueId, "Superman", aggregateId = scheduledEvent.secondId)
+        )
+        val request = "graphql/complete-game.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(Status.SUCCESS.name, response.get("$.data.completeGame.status"))
+        val gameSlot = slot<GamePlayed>()
+        verify(exactly = 1) { gameEventStorage.save(capture(gameSlot)) }
+        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured) }
+        gameSlot.captured.let {
+            assertEquals(scheduledEvent.leagueId, it.leagueId)
+            assertEquals(scheduledEvent.firstId, it.firstId)
+            assertEquals(1, it.firstScore)
+            assertEquals(-60, it.firstDeviationDelta)
+            assertEquals(162, it.firstRatingDelta)
+            assertEquals(scheduledEvent.secondId, it.secondId)
+            assertEquals(0, it.secondScore)
+            assertEquals(-60, it.secondDeviationDelta)
+            assertEquals(-162, it.secondRatingDelta)
+            assertNotNull(it.dateTime)
+        }
+        verifyOrder {
+            playerEventStorage.events(scheduledEvent.firstId.toString())
+            playerEventStorage.events(scheduledEvent.secondId.toString())
+        }
+        val playerOneSlot = slot<PlayerPlayedGame>()
+        val playerTwoSlot = slot<PlayerPlayedGame>()
+        verifyOrder {
+            playerEventStorage.save(capture(playerOneSlot))
+            playerEventStorage.save(capture(playerTwoSlot))
+        }
+        verifyOrder {
+            eventEmitter.emit(playerOneSlot.captured)
+            eventEmitter.emit(playerTwoSlot.captured)
+        }
+        playerOneSlot.captured.let {
+            assertEquals(1, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(162, it.ratingDelta)
+        }
+        playerTwoSlot.captured.let {
+            assertEquals(0, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(-162, it.ratingDelta)
         }
     }
 }

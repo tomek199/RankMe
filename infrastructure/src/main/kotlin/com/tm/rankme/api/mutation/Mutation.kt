@@ -1,5 +1,6 @@
 package com.tm.rankme.api.mutation
 
+import com.tm.rankme.cqrs.command.game.CompleteGameCommand
 import com.tm.rankme.cqrs.command.game.PlayGameCommand
 import com.tm.rankme.cqrs.command.game.ScheduleGameCommand
 import com.tm.rankme.cqrs.command.league.ChangeLeagueSettingsCommand
@@ -15,14 +16,10 @@ class Mutation(
 ) : GraphQLMutationResolver {
 
     fun createLeague(command: CreateLeagueCommand) = executor.execute(command)
-
     fun renameLeague(command: RenameLeagueCommand) = executor.execute(command)
-
     fun changeLeagueSettings(command: ChangeLeagueSettingsCommand) = executor.execute(command)
-
     fun createPlayer(command: CreatePlayerCommand) = executor.execute(command)
-
     fun playGame(command: PlayGameCommand) = executor.execute(command)
-
     fun scheduleGame(command: ScheduleGameCommand) = executor.execute(command)
+    fun completeGame(command: CompleteGameCommand) = executor.execute(command)
 }

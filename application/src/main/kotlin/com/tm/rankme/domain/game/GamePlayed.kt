@@ -15,8 +15,9 @@ class GamePlayed(
     val secondDeviationDelta: Int,
     val secondRatingDelta: Int,
     val dateTime: Long = Instant.now().toEpochMilli(),
-    aggregateId: UUID = UUID.randomUUID()
-) : Event<Game>(aggregateId, 0) {
+    aggregateId: UUID = UUID.randomUUID(),
+    version: Long = 0
+) : Event<Game>(aggregateId, version) {
 
     override val type: String = "game-played"
 
