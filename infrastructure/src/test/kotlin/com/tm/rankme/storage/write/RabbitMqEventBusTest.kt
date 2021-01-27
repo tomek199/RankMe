@@ -8,10 +8,10 @@ import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 
-internal class RabbitMqEventEmitterTest {
+internal class RabbitMqEventBusTest {
     private val template = mockk<RabbitTemplate>(relaxed = true)
     private val exchange = mockk<TopicExchange>(relaxed = true)
-    private val eventEmitter = RabbitMqEventEmitter(template, exchange)
+    private val eventEmitter = RabbitMqEventBus(template, exchange)
 
     @Test
     internal fun `Should emit event`() {

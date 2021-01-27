@@ -1,6 +1,6 @@
 package com.tm.rankme.domain.game
 
-import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.base.EventStorage
 import io.mockk.every
 import io.mockk.mockk
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class GameRepositoryTest {
     private val eventStorage = mockk<EventStorage<Game>>(relaxed = true)
-    private val eventEmitter = mockk<EventEmitter>(relaxed = true)
+    private val eventEmitter = mockk<EventBus>(relaxed = true)
     private val repository = object : GameRepository(eventStorage, eventEmitter) {}
 
     @Test

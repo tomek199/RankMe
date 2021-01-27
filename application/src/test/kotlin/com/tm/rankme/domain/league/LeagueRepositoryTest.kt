@@ -1,6 +1,6 @@
 package com.tm.rankme.domain.league
 
-import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.base.EventStorage
 import io.mockk.every
 import io.mockk.mockk
@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test
 
 internal class LeagueRepositoryTest {
     private val eventStorage = mockk<EventStorage<League>>(relaxed = true)
-    private val eventEmitter = mockk<EventEmitter>(relaxed = true)
+    private val eventEmitter = mockk<EventBus>(relaxed = true)
     private val repository = object : LeagueRepository(eventStorage, eventEmitter) {
         override fun exist(id: UUID): Boolean = false
         fun storage() = eventStorage
-        fun emitter() = eventEmitter
+        fun emitter() = eventBus
     }
 
     @Test

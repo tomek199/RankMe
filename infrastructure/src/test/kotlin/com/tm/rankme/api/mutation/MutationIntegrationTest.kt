@@ -2,7 +2,7 @@ package com.tm.rankme.api.mutation
 
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
-import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.domain.league.LeagueCreated
@@ -39,7 +39,7 @@ internal class MutationIntegrationTest {
     @MockkBean(relaxed = true)
     private lateinit var gameEventStorage: GameEventStorage
     @MockkBean(relaxed = true)
-    private lateinit var eventEmitter: EventEmitter
+    private lateinit var eventBus: EventBus
     @Autowired
     private lateinit var template: GraphQLTestTemplate
 
@@ -55,7 +55,7 @@ internal class MutationIntegrationTest {
         assertNull(response.get("$.data.createLeague.message"))
         val eventSlot = slot<LeagueCreated>()
         verify(exactly = 1) { leagueEventStorage.save(capture(eventSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(eventSlot.captured) }
         assertEquals(0, eventSlot.captured.version)
         assertEquals("Star Wars", eventSlot.captured.name)
     }
@@ -75,7 +75,7 @@ internal class MutationIntegrationTest {
         assertNull(response.get("$.data.renameLeague.message"))
         val eventSlot = slot<LeagueRenamed>()
         verify(exactly = 1) { leagueEventStorage.save(capture(eventSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(eventSlot.captured) }
         assertEquals(1, eventSlot.captured.version)
         assertEquals(aggregateId, eventSlot.captured.aggregateId.toString())
         assertEquals("Transformers", eventSlot.captured.name)
@@ -99,7 +99,7 @@ internal class MutationIntegrationTest {
         assertNull(response.get("$.data.changeLeagueSettings.message"))
         val eventSlot = slot<LeagueSettingsChanged>()
         verify(exactly = 1) { leagueEventStorage.save(capture(eventSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(eventSlot.captured) }
         assertEquals(2, eventSlot.captured.version)
         assertEquals(aggregateId, eventSlot.captured.aggregateId.toString())
         assertEquals(true, eventSlot.captured.allowDraws)
@@ -120,7 +120,7 @@ internal class MutationIntegrationTest {
         assertNull(response.get("$.data.createPlayer.message"))
         val eventSlot = slot<PlayerCreated>()
         verify(exactly = 1) { playerEventStorage.save(capture(eventSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(eventSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(eventSlot.captured) }
         assertEquals(0, eventSlot.captured.version)
         assertEquals(leagueId, eventSlot.captured.leagueId.toString())
         assertEquals("Optimus Prime", eventSlot.captured.name)
@@ -146,7 +146,7 @@ internal class MutationIntegrationTest {
         assertEquals(Status.SUCCESS.name, response.get("$.data.playGame.status"))
         val gameSlot = slot<GamePlayed>()
         verify(exactly = 1) { gameEventStorage.save(capture(gameSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(gameSlot.captured) }
         gameSlot.captured.let {
             assertEquals(leagueId, it.leagueId)
             assertEquals(UUID.fromString(playerOneId), it.firstId)
@@ -170,8 +170,8 @@ internal class MutationIntegrationTest {
             playerEventStorage.save(capture(playerTwoSlot))
         }
         verifyOrder {
-            eventEmitter.emit(playerOneSlot.captured)
-            eventEmitter.emit(playerTwoSlot.captured)
+            eventBus.emit(playerOneSlot.captured)
+            eventBus.emit(playerTwoSlot.captured)
         }
         playerOneSlot.captured.let {
             assertEquals(3, it.score)
@@ -209,7 +209,7 @@ internal class MutationIntegrationTest {
             playerEventStorage.events(playerTwoId)
         }
         verify(exactly = 1) { gameEventStorage.save(capture(gameSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(gameSlot.captured) }
         gameSlot.captured.let {
             assertEquals(leagueId, it.leagueId)
             assertEquals(UUID.fromString(playerOneId), it.firstId)
@@ -240,7 +240,7 @@ internal class MutationIntegrationTest {
         assertEquals(Status.SUCCESS.name, response.get("$.data.completeGame.status"))
         val gameSlot = slot<GamePlayed>()
         verify(exactly = 1) { gameEventStorage.save(capture(gameSlot)) }
-        verify(exactly = 1) { eventEmitter.emit(gameSlot.captured) }
+        verify(exactly = 1) { eventBus.emit(gameSlot.captured) }
         gameSlot.captured.let {
             assertEquals(scheduledEvent.leagueId, it.leagueId)
             assertEquals(scheduledEvent.firstId, it.firstId)
@@ -264,8 +264,8 @@ internal class MutationIntegrationTest {
             playerEventStorage.save(capture(playerTwoSlot))
         }
         verifyOrder {
-            eventEmitter.emit(playerOneSlot.captured)
-            eventEmitter.emit(playerTwoSlot.captured)
+            eventBus.emit(playerOneSlot.captured)
+            eventBus.emit(playerTwoSlot.captured)
         }
         playerOneSlot.captured.let {
             assertEquals(1, it.score)

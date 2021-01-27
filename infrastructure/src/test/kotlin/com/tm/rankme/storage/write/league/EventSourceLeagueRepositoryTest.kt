@@ -1,6 +1,6 @@
 package com.tm.rankme.storage.write.league
 
-import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.storage.write.InfrastructureException
 import io.mockk.every
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class EventSourceLeagueRepositoryTest {
     private val eventStorage = mockk<LeagueEventStorage>()
-    private val eventEmitter = mockk<EventEmitter>()
+    private val eventEmitter = mockk<EventBus>()
     private val repository = EventSourceLeagueRepository(eventStorage, eventEmitter)
 
     @Test

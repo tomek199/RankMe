@@ -1,5 +1,5 @@
 package com.tm.rankme.domain.base
 
-interface EventEmitter {
+interface EventBus {
     fun emit(event: Event<out AggregateRoot>)
 }
