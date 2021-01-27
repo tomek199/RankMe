@@ -2,11 +2,14 @@ package com.tm.rankme.cqrs.command.game
 
 import com.tm.rankme.cqrs.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
+import com.tm.rankme.domain.base.Event
+import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.PlayerPort
 import com.tm.rankme.domain.game.Result
+import com.tm.rankme.domain.league.League
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -23,7 +26,8 @@ import org.junit.jupiter.api.Test
 internal class PlayGameHandlerTest {
     private val repository = mockk<GameRepository>()
     private val playerPort = mockk<PlayerPort>()
-    private val handler: CommandHandler<PlayGameCommand> = PlayGameHandler(repository, playerPort)
+    private val eventBus = mockk<EventBus>()
+    private val handler: CommandHandler<PlayGameCommand> = PlayGameHandler(repository, playerPort, eventBus)
 
     @Test
     internal fun `Should create played game`() {
@@ -36,6 +40,7 @@ internal class PlayGameHandlerTest {
             playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
         } returns Game.played(leagueId, command.playerOneId, command.playerTwoId, firstResult, secondResult)
         every { repository.store(any()) } just Runs
+        every { eventBus.emit(any()) } just Runs
         // when
         handler.dispatch(command)
         // then
@@ -44,6 +49,7 @@ internal class PlayGameHandlerTest {
         verify(exactly = 1) {
             playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
         }
+        verify(exactly = 1) { eventBus.emit(ofType<Event<League>>()) }
         gameSlot.captured.let {
             assertEquals(leagueId, it.leagueId)
             assertEquals(Pair(command.playerOneId, command.playerTwoId), it.playerIds)

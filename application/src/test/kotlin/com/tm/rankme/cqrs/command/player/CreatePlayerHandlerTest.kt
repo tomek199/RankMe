@@ -2,6 +2,9 @@ package com.tm.rankme.cqrs.command.player
 
 import com.tm.rankme.cqrs.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
+import com.tm.rankme.domain.base.Event
+import com.tm.rankme.domain.base.EventBus
+import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.player.LeaguePort
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
@@ -21,7 +24,8 @@ import org.junit.jupiter.api.Test
 internal class CreatePlayerHandlerTest {
     private val repository = mockk<PlayerRepository>()
     private val leaguePort = mockk<LeaguePort>()
-    private val handler: CommandHandler<CreatePlayerCommand> = CreatePlayerHandler(repository, leaguePort)
+    private val eventBus = mockk<EventBus>()
+    private val handler: CommandHandler<CreatePlayerCommand> = CreatePlayerHandler(repository, leaguePort, eventBus)
 
     @Test
     internal fun `Should create player`() {
@@ -29,12 +33,14 @@ internal class CreatePlayerHandlerTest {
         val command = CreatePlayerCommand(UUID.randomUUID(), "Optimus Prime")
         every { leaguePort.exist(command.leagueId) } returns true
         every { repository.store(any()) } just Runs
+        every { eventBus.emit(any()) } just Runs
         // when
         handler.dispatch(command)
         // then
         val playerSlot = slot<Player>()
         verify(exactly = 1) { repository.store(capture(playerSlot)) }
         verify(exactly = 1) { leaguePort.exist(command.leagueId) }
+        verify(exactly = 1) { eventBus.emit(ofType<Event<League>>()) }
         playerSlot.captured.let {
             assertEquals(command.leagueId, it.leagueId)
             assertEquals(command.name, it.name)

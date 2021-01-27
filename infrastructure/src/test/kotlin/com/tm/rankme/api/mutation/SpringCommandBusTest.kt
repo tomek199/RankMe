@@ -5,6 +5,7 @@ import com.tm.rankme.cqrs.command.CommandBus
 import com.tm.rankme.cqrs.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
+import com.tm.rankme.domain.base.EventBus
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.Test
@@ -37,7 +38,7 @@ internal class SpringCommandBusTest(@Autowired private val commandBus: CommandBu
 }
 
 @Component
-private class TestCommandHandler : CommandHandler<TestCommand>() {
+private class TestCommandHandler : CommandHandler<TestCommand>(TestEventBus()) {
     override fun execute(command: TestCommand): List<Event<AggregateRoot>> {
         command.testProperty = "Value changed"
         return emptyList()
@@ -46,3 +47,6 @@ private class TestCommandHandler : CommandHandler<TestCommand>() {
 
 private data class TestCommand(var testProperty: String) : Command()
 private data class CommandWithoutHandler(var testProperty: String) : Command()
+private class TestEventBus : EventBus {
+    override fun emit(event: Event<out AggregateRoot>) {}
+}
