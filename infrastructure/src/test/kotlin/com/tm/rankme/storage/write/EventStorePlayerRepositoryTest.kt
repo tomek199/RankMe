@@ -127,7 +127,21 @@ internal class EventStorePlayerRepositoryTest {
     }
 
     @Test
-    internal fun `Should throw exception when cannot deserialize unknown event`() {
+    internal fun `Should throw exception when cannot deserialize null event type`() {
+        // given
+        val aggregateId = UUID.randomUUID()
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { readResult.events } returns listOf(resolvedEvent, resolvedEvent, resolvedEvent)
+        every { resolvedEvent.originalEvent } returns recordedEvent
+        every { recordedEvent.eventType } returns null
+        // when
+        val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
+        // then
+        assertEquals("Cannot deserialize event 'null'", exception.message)
+    }
+
+    @Test
+    internal fun `Should throw exception when cannot deserialize unknown event type`() {
         // given
         val aggregateId = UUID.randomUUID()
         every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } returns readResult
