@@ -1,6 +1,7 @@
-package com.tm.rankme.storage.write.league
+package com.tm.rankme.storage.write
 
 import com.tm.rankme.domain.league.LeagueRepository
+import com.tm.rankme.storage.write.LeagueAdapter
 import io.mockk.every
 import io.mockk.mockk
 import java.util.*

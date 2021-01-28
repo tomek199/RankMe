@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.game
+package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
@@ -6,9 +6,6 @@ import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.GameScheduled
-import com.tm.rankme.storage.write.EventStoreRepository
-import com.tm.rankme.storage.write.EventStoreConnector
-import com.tm.rankme.storage.write.InfrastructureException
 import java.util.*
 import org.springframework.stereotype.Repository
 

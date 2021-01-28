@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.league
+package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
@@ -7,9 +7,6 @@ import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueRepository
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.storage.write.EventStoreConnector
-import com.tm.rankme.storage.write.EventStoreRepository
-import com.tm.rankme.storage.write.InfrastructureException
 import java.util.*
 import org.springframework.stereotype.Repository
 

@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.league
+package com.tm.rankme.storage.write
 
 import com.tm.rankme.domain.league.LeagueRepository
 import com.tm.rankme.domain.player.LeaguePort

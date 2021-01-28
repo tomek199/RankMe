@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.league
+package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.EventData
 import com.eventstore.dbclient.EventStoreDBClient
@@ -11,8 +11,6 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
-import com.tm.rankme.storage.write.EventStoreConnector
-import com.tm.rankme.storage.write.InfrastructureException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

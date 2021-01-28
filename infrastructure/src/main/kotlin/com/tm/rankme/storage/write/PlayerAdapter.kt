@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.player
+package com.tm.rankme.storage.write
 
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.EventBus
