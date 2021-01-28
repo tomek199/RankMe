@@ -4,17 +4,22 @@ import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
+import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.GameScheduled
-import com.tm.rankme.storage.write.EsEventStorage
+import com.tm.rankme.storage.write.EventStoreRepository
 import com.tm.rankme.storage.write.EventStoreConnector
 import com.tm.rankme.storage.write.InfrastructureException
 import java.util.*
 import org.springframework.stereotype.Repository
 
 @Repository
-class GameEventStorage(
-    connection: EventStoreConnector
-) : EsEventStorage<Game>(connection) {
+class EventStoreGameRepository(
+    connector: EventStoreConnector
+) : EventStoreRepository<Game>(connector), GameRepository {
+
+    override fun byId(id: UUID): Game = events(id.toString()).let { Game.from(it) }
+
+    override fun store(aggregate: Game) = aggregate.pendingEvents.forEach(this::save)
 
     override fun serialize(event: Event<Game>): Any {
         return when (event) {
@@ -33,15 +38,15 @@ class GameEventStorage(
 
     override fun deserialize(recordedEvent: RecordedEvent): Event<Game> {
         return when (recordedEvent.eventType) {
+            "game-scheduled" -> objectMapper.readValue(recordedEvent.eventData, Scheduled::class.java).let {
+                GameScheduled(it.leagueId, it.firstId, it.secondId, it.dateTime, it.aggregateId)
+            }
             "game-played" -> objectMapper.readValue(recordedEvent.eventData, Played::class.java).let {
                 GamePlayed(
                     it.leagueId, it.firstId, it.firstScore, it.firstDeviationDelta, it.firstRatingDelta,
                     it.secondId, it.secondScore, it.secondDeviationDelta, it.secondRatingDelta,
-                    it.dateTime, it.aggregateId
+                    it.dateTime, it.aggregateId, it.version
                 )
-            }
-            "game-scheduled" -> objectMapper.readValue(recordedEvent.eventData, Scheduled::class.java).let {
-                GameScheduled(it.leagueId, it.firstId, it.secondId, it.dateTime, it.aggregateId)
             }
             else -> throw InfrastructureException("Cannot deserialize event '${recordedEvent.eventType}'")
         }

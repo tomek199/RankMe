@@ -5,17 +5,30 @@ import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
+import com.tm.rankme.domain.league.LeagueRepository
 import com.tm.rankme.domain.league.LeagueSettingsChanged
-import com.tm.rankme.storage.write.EsEventStorage
 import com.tm.rankme.storage.write.EventStoreConnector
+import com.tm.rankme.storage.write.EventStoreRepository
 import com.tm.rankme.storage.write.InfrastructureException
 import java.util.*
 import org.springframework.stereotype.Repository
 
 @Repository
-class LeagueEventStorage(
+class EventStoreLeagueRepository(
     connector: EventStoreConnector
-) : EsEventStorage<League>(connector) {
+) : EventStoreRepository<League>(connector), LeagueRepository {
+
+    override fun byId(id: UUID): League = events(id.toString()).let { League.from(it) }
+
+    override fun store(aggregate: League) = aggregate.pendingEvents.forEach(this::save)
+
+    override fun exist(id: UUID): Boolean {
+        return try {
+            events(id.toString()).isNotEmpty()
+        } catch (e: InfrastructureException) {
+            false
+        }
+    }
 
     override fun serialize(event: Event<League>): Any {
         return when (event) {

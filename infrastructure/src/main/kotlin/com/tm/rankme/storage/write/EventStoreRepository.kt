@@ -6,18 +6,17 @@ import com.eventstore.dbclient.RecordedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.Event
-import com.tm.rankme.domain.base.EventStorage
 import java.util.concurrent.ExecutionException
 import org.slf4j.LoggerFactory
 
-abstract class EsEventStorage<T>(
+abstract class EventStoreRepository<T>(
     private val connector: EventStoreConnector
-) : EventStorage<T> {
+) {
 
-    private val log = LoggerFactory.getLogger(EsEventStorage::class.java)
+    private val log = LoggerFactory.getLogger(EventStoreRepository::class.java)
     protected val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-    override fun save(event: Event<T>) {
+    protected fun save(event: Event<T>) {
         log.info("Saving event ${event.type} for aggregate ${event.aggregateId}")
         checkVersion(event)
         addToStream(event)
@@ -40,7 +39,7 @@ abstract class EsEventStorage<T>(
         connector.client.appendToStream(event.aggregateId.toString(), eventData).get()
     }
 
-    override fun events(stream: String): List<Event<T>> {
+    protected fun events(stream: String): List<Event<T>> {
         log.info("Getting events for stream $stream")
         try {
             val readOptions = ReadStreamOptions.get().fromStart().forwards()
