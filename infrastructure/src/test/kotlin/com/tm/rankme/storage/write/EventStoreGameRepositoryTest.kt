@@ -1,4 +1,4 @@
-package com.tm.rankme.storage.write.game
+package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.EventData
 import com.eventstore.dbclient.EventStoreDBClient
@@ -10,25 +10,24 @@ import com.eventstore.dbclient.StreamRevision
 import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
-import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameScheduled
-import com.tm.rankme.storage.write.EventStoreConnector
-import com.tm.rankme.storage.write.InfrastructureException
+import com.tm.rankme.domain.game.Result
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class GameEventStorageTest {
+internal class EventStoreGameRepositoryTest {
     private val connector = mockk<EventStoreConnector>()
-    private val eventStorage = GameEventStorage(connector)
-
+    private val repository = EventStoreGameRepository(connector)
+    
     private val client = mockk<EventStoreDBClient>()
     private val readResult = mockk<ReadResult>()
     private val resolvedEvent = mockk<ResolvedEvent>()
@@ -42,47 +41,53 @@ internal class GameEventStorageTest {
     @Test
     internal fun `Should save 'game-played' event with initial version 0`() {
         // given
-        val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 3, -42, 145,
-            UUID.randomUUID(), 2, -52, -143, aggregateId = UUID.randomUUID())
-        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
+        val game = Game.played(
+            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            Result(0, -34, -176),
+            Result(1, -42, 148)
+        )
+        every { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
-        eventStorage.save(event)
+        repository.store(game)
         // then
         verify(exactly = 0) { client.readStream(any()) }
-        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should save 'game-scheduled' event with initial version 0`() {
         // given
-        val event = GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
-        every { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() } returns mockk()
+        val game = Game.scheduled(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(), UUID.randomUUID())
+        every { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() } returns mockk()
         // when
-        eventStorage.save(event)
+        repository.store(game)
         // then
         verify(exactly = 0) { client.readStream(any()) }
-        verify(exactly = 1) { client.appendToStream(event.aggregateId.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should throw exception when cannot serialize event`() {
         // given
-        val event = object : Event<Game>(UUID.randomUUID(), 1) {
+        val game = Game.from(listOf(
+            GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now().toEpochMilli())
+        ))
+        val event = object : Event<Game>(game.id, 1) {
             override val type: String = "unknown-event"
             override fun apply(aggregate: Game) { }
         }
-        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
+        game.pendingEvents.add(event)
+        every { client.readStream(game.id.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
+        val exception = assertFailsWith<InfrastructureException> { repository.store(game) }
         // then
         assertEquals("Cannot serialize event '${event.type}'", exception.message)
     }
 
     @Test
-    internal fun `Should return events for aggregate`() {
+    internal fun `Should return aggregate from events`() {
         // given
         val aggregateId = UUID.randomUUID()
         val leagueId = UUID.randomUUID()
@@ -101,48 +106,50 @@ internal class GameEventStorageTest {
             "secondDeviationDelta": -35, "secondRatingDelta": -63, "dateTime": 1611176383}""".toByteArray()
         )
         // when
-        val events = eventStorage.events(aggregateId.toString())
+        val game = repository.byId(aggregateId)
         // then
-        assertEquals(2, events.size)
-        events.forEach { assertEquals(aggregateId, it.aggregateId) }
-        (events[0] as GameScheduled).let {
-            assertEquals("game-scheduled", it.type)
-            assertEquals(0, it.version)
-            assertEquals(leagueId, it.leagueId)
-            assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), it.firstId)
-            assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), it.secondId)
-            assertEquals(1622276383, it.dateTime)
-        }
-        (events[1] as GamePlayed).let {
-            assertEquals("game-played", it.type)
-            assertEquals(0, it.version)
-            assertEquals(leagueId, it.leagueId)
-            assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), it.firstId)
-            assertEquals(4, it.firstScore)
-            assertEquals(-23, it.firstDeviationDelta)
-            assertEquals(78, it.firstRatingDelta)
-            assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), it.secondId)
-            assertEquals(3, it.secondScore)
-            assertEquals(-35, it.secondDeviationDelta)
-            assertEquals(-63, it.secondRatingDelta)
-            assertEquals(1611176383, it.dateTime)
-        }
+        assertEquals(aggregateId, game.id)
+        assertEquals(1, game.version)
+        assertTrue(game.pendingEvents.isEmpty())
+        assertEquals(leagueId, game.leagueId)
+        assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), game.playerIds.first)
+        assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), game.playerIds.second)
+        assertEquals(Result(4, -23, 78), game.result!!.first)
+        assertEquals(Result(3, -35, -63), game.result!!.second)
     }
 
     @Test
     internal fun `Should throw exception when cannot deserialize invalid event json`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns listOf(resolvedEvent)
-        every { resolvedEvent.originalEvent } returns recordedEvent
-        every { recordedEvent.eventType } returns "game-played"
-        every { recordedEvent.eventData } returns "game-played-invalid-json".toByteArray()
-        // then
-        assertFailsWith<JsonParseException> { eventStorage.events(aggregateId.toString()) }
+        val events = listOf("game-scheduled", "game-played")
+        // when
+        events.forEach {
+            val aggregateId = UUID.randomUUID()
+            every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns listOf(resolvedEvent)
+            every { resolvedEvent.originalEvent } returns recordedEvent
+            every { recordedEvent.eventType } returns it
+            every { recordedEvent.eventData } returns "$it-invalid-json".toByteArray()
+            // then
+            assertFailsWith<JsonParseException> { repository.byId(aggregateId) }
+        }
     }
 
     @Test
-    internal fun `Should throw exception when cannot deserialize unknown event`() {
+    internal fun `Should throw exception when cannot deserialize null event type`() {
+        // given
+        val aggregateId = UUID.randomUUID()
+        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { readResult.events } returns listOf(resolvedEvent, resolvedEvent, resolvedEvent)
+        every { resolvedEvent.originalEvent } returns recordedEvent
+        every { recordedEvent.eventType } returns null
+        // when
+        val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
+        // then
+        assertEquals("Cannot deserialize event 'null'", exception.message)
+    }
+
+    @Test
+    internal fun `Should throw exception when cannot deserialize unknown event type`() {
         // given
         val aggregateId = UUID.randomUUID()
         every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } returns readResult
@@ -150,7 +157,7 @@ internal class GameEventStorageTest {
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returns "unknown-event"
         // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.events(aggregateId.toString()) }
+        val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
         // then
         assertEquals("Cannot deserialize event 'unknown-event'", exception.message)
     }

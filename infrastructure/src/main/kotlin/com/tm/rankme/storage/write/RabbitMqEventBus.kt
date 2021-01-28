@@ -3,7 +3,7 @@ package com.tm.rankme.storage.write
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
-import com.tm.rankme.domain.base.EventEmitter
+import com.tm.rankme.domain.base.EventBus
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.core.MessageProperties
@@ -13,12 +13,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
 
 @Service
-class RabbitMqEventEmitter(
+class RabbitMqEventBus(
     private val template: RabbitTemplate,
     private val exchange: TopicExchange
-) : EventEmitter {
+) : EventBus {
 
-    private val log = LoggerFactory.getLogger(RabbitMqEventEmitter::class.java)
+    private val log = LoggerFactory.getLogger(RabbitMqEventBus::class.java)
     private val objectMapper = jacksonObjectMapper()
     private val messageProperties = MessagePropertiesBuilder.newInstance()
         .setContentType(MessageProperties.CONTENT_TYPE_JSON)

@@ -17,9 +17,11 @@ import kotlin.test.assertFailsWith
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class EsEventStorageTest {
+internal class EventStoreRepositoryTest {
     private val connector = mockk<EventStoreConnector>()
-    private val eventStorage = object : EsEventStorage<Any>(connector) {
+    private val repository = object : EventStoreRepository<Any>(connector) {
+        fun store(event: Event<Any>) = save(event)
+        fun byId(stream: String) = events(stream)
         override fun deserialize(recordedEvent: RecordedEvent): Event<Any> {
             throw InfrastructureException("Cannot deserialize event")
         }
@@ -45,7 +47,7 @@ internal class EsEventStorageTest {
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         every { readResult.events } returns emptyList()
         // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
+        val exception = assertFailsWith<InfrastructureException> { repository.store(event) }
         // then
         assertEquals("Cannon get actual version of aggregate id=${event.aggregateId}", exception.message)
     }
@@ -58,7 +60,7 @@ internal class EsEventStorageTest {
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(15)
         // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.save(event) }
+        val exception = assertFailsWith<InfrastructureException> { repository.store(event) }
         // then
         assertEquals("Version mismatch of aggregate id=${event.aggregateId}", exception.message)
     }
@@ -70,7 +72,7 @@ internal class EsEventStorageTest {
         every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } throws
             ExecutionException("Stream not found exception", StreamNotFoundException())
         // when
-        val exception = assertFailsWith<InfrastructureException> { eventStorage.events(aggregateId.toString()) }
+        val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId.toString()) }
         // then
         assertEquals("Stream $aggregateId is not found", exception.message)
     }

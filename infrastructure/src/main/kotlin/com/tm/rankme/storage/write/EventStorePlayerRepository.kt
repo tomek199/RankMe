@@ -1,20 +1,22 @@
-package com.tm.rankme.storage.write.player
+package com.tm.rankme.storage.write
 
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerPlayedGame
-import com.tm.rankme.storage.write.EsEventStorage
-import com.tm.rankme.storage.write.EventStoreConnector
-import com.tm.rankme.storage.write.InfrastructureException
+import com.tm.rankme.domain.player.PlayerRepository
 import java.util.*
 import org.springframework.stereotype.Repository
 
 @Repository
-class PlayerEventStorage(
+class EventStorePlayerRepository(
     connector: EventStoreConnector
-) : EsEventStorage<Player>(connector) {
+) : EventStoreRepository<Player>(connector), PlayerRepository {
+
+    override fun byId(id: UUID): Player = events(id.toString()).let { Player.from(it) }
+
+    override fun store(aggregate: Player) = aggregate.pendingEvents.forEach(this::save)
 
     override fun serialize(event: Event<Player>): Any {
         return when (event) {
