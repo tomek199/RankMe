@@ -1,7 +1,10 @@
 package com.tm.rankme.storage.write.player
 
 import com.tm.rankme.domain.base.AggregateException
+import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.player.Player
+import com.tm.rankme.domain.player.PlayerCreated
+import com.tm.rankme.domain.player.PlayerPlayedGame
 import com.tm.rankme.domain.player.PlayerRepository
 import io.mockk.Runs
 import io.mockk.every
@@ -15,17 +18,19 @@ import org.junit.jupiter.api.assertThrows
 
 internal class PlayerAdapterTest {
     private val repository = mockk<PlayerRepository>()
-    private val adapter = PlayerAdapter(repository)
+    private val eventBus = mockk<EventBus>()
+    private val adapter = PlayerAdapter(repository, eventBus)
 
     @Test
     internal fun `Should return Game`() {
         // given
         val leagueId = UUID.randomUUID()
-        val playerOne = Player.create(leagueId, "Batman")
-        val playerTwo = Player.create(leagueId, "Superman")
+        val playerOne = Player.from(listOf(PlayerCreated(leagueId, "Batman")))
+        val playerTwo = Player.from(listOf(PlayerCreated(leagueId, "Superman")))
         every { repository.byId(playerOne.id) } returns playerOne
         every { repository.byId(playerTwo.id) } returns playerTwo
         every { repository.store(ofType(Player::class))} just Runs
+        every { eventBus.emit(ofType(PlayerPlayedGame::class)) } just Runs
         // when
         val game = adapter.playGame(playerOne.id, playerTwo.id, 3, 1)
         // then
@@ -42,6 +47,8 @@ internal class PlayerAdapterTest {
             repository.byId(playerTwo.id)
             repository.store(ofType(Player::class))
             repository.store(ofType(Player::class))
+            eventBus.emit(ofType(PlayerPlayedGame::class))
+            eventBus.emit(ofType(PlayerPlayedGame::class))
         }
     }
 

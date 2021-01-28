@@ -155,9 +155,30 @@ internal class MutationIntegrationTest {
         // then
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.playGame.status"))
+        verifyOrder {
+            playerRepository.byId(playerOneId)
+            playerRepository.byId(playerTwoId)
+            playerRepository.store(ofType(Player::class))
+            playerRepository.store(ofType(Player::class))
+        }
+        val playerOneSlot = slot<PlayerPlayedGame>()
+        val playerTwoSlot = slot<PlayerPlayedGame>()
         val gameSlot = slot<GamePlayed>()
-        verify(exactly = 1) { gameRepository.store(ofType(Game::class)) }
-        verify(exactly = 1) { eventBus.emit(gameSlot.captured) }
+        verifyOrder {
+            eventBus.emit(capture(playerOneSlot))
+            eventBus.emit(capture(playerTwoSlot))
+            eventBus.emit(capture(gameSlot))
+        }
+        playerOneSlot.captured.let {
+            assertEquals(3, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(-162, it.ratingDelta)
+        }
+        playerTwoSlot.captured.let {
+            assertEquals(5, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(162, it.ratingDelta)
+        }
         gameSlot.captured.let {
             assertEquals(leagueId, it.leagueId)
             assertEquals(playerOneId, it.firstId)
@@ -170,31 +191,7 @@ internal class MutationIntegrationTest {
             assertEquals(162, it.secondRatingDelta)
             assertNotNull(it.dateTime)
         }
-        verifyOrder {
-            playerRepository.byId(playerOneId)
-            playerRepository.byId(playerTwoId)
-        }
-
-        verifyOrder {
-            playerRepository.store(ofType(Player::class))
-            playerRepository.store(ofType(Player::class))
-        }
-        val playerOneSlot = slot<PlayerPlayedGame>()
-        val playerTwoSlot = slot<PlayerPlayedGame>()
-        verifyOrder {
-            eventBus.emit(capture(playerOneSlot))
-            eventBus.emit(capture(playerTwoSlot))
-        }
-        playerOneSlot.captured.let {
-            assertEquals(3, it.score)
-            assertEquals(-60, it.deviationDelta)
-            assertEquals(-162, it.ratingDelta)
-        }
-        playerTwoSlot.captured.let {
-            assertEquals(5, it.score)
-            assertEquals(-60, it.deviationDelta)
-            assertEquals(162, it.ratingDelta)
-        }
+        verify(exactly = 1) { gameRepository.store(ofType(Game::class)) }
     }
 
     @Test
@@ -250,9 +247,30 @@ internal class MutationIntegrationTest {
         // then
         assertTrue(response.isOk)
         assertEquals(Status.SUCCESS.name, response.get("$.data.completeGame.status"))
+        verifyOrder {
+            playerRepository.byId(scheduledEvent.firstId)
+            playerRepository.byId(scheduledEvent.secondId)
+            playerRepository.store(ofType(Player::class))
+            playerRepository.store(ofType(Player::class))
+        }
+        val playerOneSlot = slot<PlayerPlayedGame>()
+        val playerTwoSlot = slot<PlayerPlayedGame>()
         val gameSlot = slot<GamePlayed>()
-        verify(exactly = 1) { gameRepository.store(ofType(Game::class)) }
-        verify(exactly = 1) { eventBus.emit(capture(gameSlot)) }
+        verifyOrder {
+            eventBus.emit(capture(playerOneSlot))
+            eventBus.emit(capture(playerTwoSlot))
+            eventBus.emit(capture(gameSlot))
+        }
+        playerOneSlot.captured.let {
+            assertEquals(1, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(162, it.ratingDelta)
+        }
+        playerTwoSlot.captured.let {
+            assertEquals(0, it.score)
+            assertEquals(-60, it.deviationDelta)
+            assertEquals(-162, it.ratingDelta)
+        }
         gameSlot.captured.let {
             assertEquals(scheduledEvent.leagueId, it.leagueId)
             assertEquals(scheduledEvent.firstId, it.firstId)
@@ -265,29 +283,6 @@ internal class MutationIntegrationTest {
             assertEquals(-162, it.secondRatingDelta)
             assertNotNull(it.dateTime)
         }
-        verifyOrder {
-            playerRepository.byId(scheduledEvent.firstId)
-            playerRepository.byId(scheduledEvent.secondId)
-        }
-        verifyOrder {
-            playerRepository.store(ofType(Player::class))
-            playerRepository.store(ofType(Player::class))
-        }
-        val playerOneSlot = slot<PlayerPlayedGame>()
-        val playerTwoSlot = slot<PlayerPlayedGame>()
-        verifyOrder {
-            eventBus.emit(playerOneSlot.captured)
-            eventBus.emit(playerTwoSlot.captured)
-        }
-        playerOneSlot.captured.let {
-            assertEquals(1, it.score)
-            assertEquals(-60, it.deviationDelta)
-            assertEquals(162, it.ratingDelta)
-        }
-        playerTwoSlot.captured.let {
-            assertEquals(0, it.score)
-            assertEquals(-60, it.deviationDelta)
-            assertEquals(-162, it.ratingDelta)
-        }
+        verify(exactly = 1) { gameRepository.store(ofType(Game::class)) }
     }
 }
