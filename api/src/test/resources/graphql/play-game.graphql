@@ -1,0 +1,8 @@
+ mutation {
+     playGame(command: {
+         playerOneId: "8fb3af2e-1b72-4771-9533-c4793714372a"
+         playerTwoId: "3c383cad-845a-477e-a1b2-565a5080ba5f"
+         playerOneScore: 3
+         playerTwoScore: 5
+     })
+ }

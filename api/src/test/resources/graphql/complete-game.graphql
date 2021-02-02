@@ -1,0 +1,7 @@
+ mutation {
+     completeGame(command: {
+         gameId: "ce75cea6-d8da-4ba6-8d54-95c0e1b44883"
+         playerOneScore: 1
+         playerTwoScore: 0
+     })
+ }

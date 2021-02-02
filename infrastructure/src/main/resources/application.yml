@@ -1,15 +1,5 @@
-graphql:
-  servlet:
-    mapping: /graphql
-    enabled: true
-    corsEnabled: true
-
-graphiql:
-  mapping: /graphiql
-  enabled: true
-  cdn:
-    enabled: false
-    version: 0.13.0
+server:
+  port: 9100
 
 eventstore:
   endpoint: esdb://localhost:2113?tls=false

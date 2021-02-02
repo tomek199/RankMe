@@ -1,0 +1,5 @@
+ mutation {
+     createLeague(command: {
+         name: "Star Wars"
+     })
+ }

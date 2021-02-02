@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class MessagingConfiguration {
+class MessagingConfiguration {
     @Bean
-    open fun jsonMessageConverter(): MessageConverter {
+    fun jsonMessageConverter(): MessageConverter {
         return Jackson2JsonMessageConverter(jacksonObjectMapper())
     }
 
     @Bean
-    open fun exchange(): TopicExchange {
+    fun exchange(): TopicExchange {
         return TopicExchange("rankme")
     }
 }

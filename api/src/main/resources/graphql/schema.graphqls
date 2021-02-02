@@ -1,0 +1,25 @@
+schema {
+    mutation: Mutation
+    query: Query
+}
+
+type Mutation {
+    createLeague(command: CreateLeagueCommand!): String
+    renameLeague(command: RenameLeagueCommand!): String
+    changeLeagueSettings(command: ChangeLeagueSettingsCommand!): String
+    createPlayer(command: CreatePlayerCommand!): String
+    playGame(command: PlayGameCommand!): String
+    scheduleGame(command: ScheduleGameCommand!): String
+    completeGame(command: CompleteGameCommand!): String
+}
+
+type Query {
+    info: String!
+#    todo implement bus and enable queries
+#    getLeague(query: GetLeagueQuery): League
+#    getPlayer(query: GetPlayerQuery): Player
+}
+
+scalar UUID
+
+scalar LocalDateTime

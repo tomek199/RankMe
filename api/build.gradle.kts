@@ -5,19 +5,20 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":application"))
-
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-//    implementation("com.fasterxml.jackson.core:jackson-core:2.11.1") fixme
-//    implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1") fixme
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
 
-    implementation("com.github.EventStore:EventStoreDB-Client-Java:trunk-SNAPSHOT")
+    implementation("com.graphql-java-kickstart:graphql-spring-boot-starter:8.0.0")
+    implementation("com.graphql-java-kickstart:graphql-java-tools:6.2.0")
+    implementation("com.graphql-java-kickstart:graphiql-spring-boot-starter:8.0.0")
 
     testImplementation("com.ninja-squad:springmockk:2.0.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "org.mockito", module = "mockito-core")
+        exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+    }
+    testImplementation("com.graphql-java-kickstart:graphql-spring-boot-starter-test:8.0.0") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito", module = "mockito-core")
         exclude(group = "org.mockito", module = "mockito-junit-jupiter")

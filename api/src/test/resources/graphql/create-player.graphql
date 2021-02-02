@@ -1,0 +1,6 @@
+ mutation {
+     createPlayer(command: {
+         leagueId: "40efa486-d059-4cd2-b5e7-f4ba73b08345"
+         name: "Optimus Prime"
+     })
+ }
