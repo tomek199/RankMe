@@ -15,7 +15,7 @@ class CommandBus(
     private val exchange: DirectExchange
 ) {
     private val log = LoggerFactory.getLogger(CommandBus::class.java)
-    private val objectMapper = jacksonObjectMapper()
+    private val objectMapper = jacksonObjectMapper().findAndRegisterModules()
     private val messageProperties = MessagePropertiesBuilder.newInstance()
         .setContentType(MessageProperties.CONTENT_TYPE_JSON)
         .build()
