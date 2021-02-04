@@ -1,5 +1,4 @@
 rootProject.name = "RankMe"
 
-include("application")
-include("infrastructure")
 include("api")
+include("command-service")
