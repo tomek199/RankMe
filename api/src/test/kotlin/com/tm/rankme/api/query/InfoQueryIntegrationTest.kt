@@ -9,7 +9,7 @@ import org.springframework.boot.info.BuildProperties
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-internal class QueryIntegrationTest {
+internal class InfoQueryIntegrationTest {
     @Autowired
     private lateinit var buildProperties: BuildProperties
     @Autowired

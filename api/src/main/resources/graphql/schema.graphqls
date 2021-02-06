@@ -15,9 +15,8 @@ type Mutation {
 
 type Query {
     info: String!
-#    todo implement bus and enable queries
-#    getLeague(query: GetLeagueQuery): League
-#    getPlayer(query: GetPlayerQuery): Player
+    getLeague(query: GetLeagueQuery): League
+    getPlayer(query: GetPlayerQuery): Player
 }
 
 scalar UUID
