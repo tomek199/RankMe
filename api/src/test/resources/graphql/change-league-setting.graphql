@@ -1,0 +1,7 @@
+ mutation {
+     changeLeagueSettings(command: {
+         id: "0dcff3e1-5bae-4344-942c-1b2a34f97d18"
+         allowDraws: true
+         maxScore: 10
+     })
+ }

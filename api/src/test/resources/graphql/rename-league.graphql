@@ -1,0 +1,6 @@
+ mutation {
+     renameLeague(command: {
+         id: "c4fd7f32-0a57-455d-ac64-c7cec5676723"
+         name: "Transformers"
+     })
+ }

@@ -1,0 +1,22 @@
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: true
+
+graphiql:
+  mapping: /graphiql
+  enabled: true
+  cdn:
+    enabled: false
+    version: 0.13.0
+
+server:
+  port: 9000
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
