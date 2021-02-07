@@ -5,6 +5,14 @@ eventstore:
   endpoint: esdb://localhost:2113?tls=false
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rankme
+    username: postgres
+    password: devpass
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
   rabbitmq:
     host: localhost
     port: 5672
