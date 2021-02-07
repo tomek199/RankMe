@@ -1,19 +1,17 @@
 package com.tm.rankme.projection
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.tm.rankme.infrastructure.MongoLeagueAccessor
+import com.tm.rankme.model.league.LeagueRepository
 import java.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.QueueBinding
 import org.springframework.amqp.rabbit.annotation.RabbitListener
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class LeagueRenamedConsumer(
-    private val leagueAccessor: MongoLeagueAccessor
+    private val repository: LeagueRepository
 ) : MessageConsumer<LeagueRenamedMessage> {
 
     private val log = LoggerFactory.getLogger(LeagueRenamedConsumer::class.java)
@@ -27,15 +25,14 @@ class LeagueRenamedConsumer(
     ])
     override fun consume(message: LeagueRenamedMessage) {
         log.info("Consuming message league-renamed for aggregate ${message.aggregateId}")
-        val entity = leagueAccessor.findByIdOrNull(message.aggregateId)
-        entity?.let {
+        val league = repository.byId(message.aggregateId)
+        league?.let {
             it.name = message.name
-            leagueAccessor.save(it)
+            repository.store(it)
         } ?: log.error("League ${message.aggregateId} cannot be found")
     }
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class LeagueRenamedMessage(
     val aggregateId: UUID,
     val name: String

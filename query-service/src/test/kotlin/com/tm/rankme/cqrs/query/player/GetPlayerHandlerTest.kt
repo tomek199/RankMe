@@ -20,7 +20,7 @@ internal class GetPlayerHandlerTest {
     internal fun `Should return player`() {
         // given
         val query = GetPlayerQuery(UUID.randomUUID())
-        val expectedPlayer = Player(query.id, "Optimus Prime", 321, 1686)
+        val expectedPlayer = Player(query.id, UUID.randomUUID(), "Optimus Prime", 321, 1686)
         every { repository.byId(query.id) } returns expectedPlayer
         // when
         val player = handler.handle(query)
@@ -28,6 +28,7 @@ internal class GetPlayerHandlerTest {
         verify(exactly = 1) { repository.byId(query.id) }
         assertNotNull(player)
         assertEquals(query.id, player.id)
+        assertEquals(expectedPlayer.leagueId, player.leagueId)
         assertEquals(expectedPlayer.name, player.name)
         assertEquals(expectedPlayer.deviation, player.deviation)
         assertEquals(expectedPlayer.rating, player.rating)

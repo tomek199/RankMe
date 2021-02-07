@@ -4,6 +4,7 @@ import java.util.*
 
 data class Player(
     val id: UUID,
+    val leagueId: UUID,
     val name: String,
     val deviation: Int,
     val rating: Int

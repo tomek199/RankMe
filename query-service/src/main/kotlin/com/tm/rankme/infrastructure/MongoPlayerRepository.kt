@@ -8,10 +8,15 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class MongoPlayerRepository(
-    private val playerAccessor: MongoPlayerAccessor
+    private val accessor: MongoPlayerAccessor
 ) : PlayerRepository {
 
-    override fun byId(id: UUID): Player? = playerAccessor.findByIdOrNull(id)?.let {
-        Player(it.id, it.name, it.deviation, it.rating)
+    override fun byId(id: UUID): Player? = accessor.findByIdOrNull(id)?.let {
+        Player(it.id, it.leagueId, it.name, it.deviation, it.rating)
+    }
+
+    override fun store(player: Player) {
+        val entity = PlayerEntity(player.id, player.leagueId, player.name, player.deviation, player.rating)
+        accessor.save(entity)
     }
 }

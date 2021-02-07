@@ -1,8 +1,10 @@
 package com.tm.rankme.projection
 
-import com.tm.rankme.infrastructure.LeagueEntity
-import com.tm.rankme.infrastructure.MongoLeagueAccessor
+import com.tm.rankme.model.league.League
+import com.tm.rankme.model.league.LeagueRepository
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -11,20 +13,19 @@ import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class LeagueCreatedConsumerTest {
-    private val leagueAccessor: MongoLeagueAccessor = mockk()
-    private val consumer: MessageConsumer<LeagueCreatedMessage> = LeagueCreatedConsumer(leagueAccessor)
+    private val repository: LeagueRepository = mockk()
+    private val consumer: MessageConsumer<LeagueCreatedMessage> = LeagueCreatedConsumer(repository)
 
     @Test
     internal fun `Should consume 'league-created' message`() {
         // given
         val message = LeagueCreatedMessage(UUID.randomUUID(), "Star Wars", true, 3)
-        val entity = LeagueEntity(message.aggregateId, message.name, message.allowDraws, message.maxScore)
-        every { leagueAccessor.save(ofType(LeagueEntity::class)) } answers { entity }
+        every { repository.store(ofType(League::class)) } just Runs
         // when
         consumer.consume(message)
         // then
-        val leagueSlot = slot<LeagueEntity>()
-        verify(exactly = 1) { leagueAccessor.save(capture(leagueSlot)) }
+        val leagueSlot = slot<League>()
+        verify(exactly = 1) { repository.store(capture(leagueSlot)) }
         assertEquals(message.aggregateId, leagueSlot.captured.id)
         assertEquals(message.name, leagueSlot.captured.name)
         assertEquals(message.allowDraws, leagueSlot.captured.allowDraws)
