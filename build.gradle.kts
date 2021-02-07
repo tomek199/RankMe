@@ -30,7 +30,7 @@ subprojects {
     dependencies {
         testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
         testImplementation("org.jetbrains.kotlin:kotlin-test:${kotlinVersion}")
-        testImplementation("io.mockk:mockk:1.10.3")
+        testImplementation("io.mockk:mockk:1.10.5")
     }
 
     tasks.register("stage") {

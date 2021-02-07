@@ -1,8 +1,8 @@
 package com.tm.rankme.projection
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.tm.rankme.infrastructure.MongoPlayerAccessor
-import com.tm.rankme.infrastructure.PlayerEntity
+import com.tm.rankme.model.player.Player
+import com.tm.rankme.model.player.PlayerRepository
 import java.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.Exchange
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class PlayerCreatedConsumer(
-    private val playerAccessor: MongoPlayerAccessor
+    private val repository: PlayerRepository
 ) : MessageConsumer<PlayerCreatedMessage> {
 
     private val log = LoggerFactory.getLogger(PlayerCreatedConsumer::class.java)
@@ -27,8 +27,8 @@ class PlayerCreatedConsumer(
     ])
     override fun consume(message: PlayerCreatedMessage) {
         log.info("Consuming message player-created for aggregate ${message.aggregateId}")
-        val player = PlayerEntity(message.aggregateId, message.leagueId, message.name, message.deviation, message.rating)
-        playerAccessor.save(player)
+        val player = Player(message.aggregateId, message.leagueId, message.name, message.deviation, message.rating)
+        repository.store(player)
     }
 }
 

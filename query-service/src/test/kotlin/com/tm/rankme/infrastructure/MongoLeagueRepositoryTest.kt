@@ -1,8 +1,11 @@
 package com.tm.rankme.infrastructure
 
+import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -11,14 +14,14 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
 
 internal class MongoLeagueRepositoryTest {
-    private val leagueAccessor: MongoLeagueAccessor = mockk()
-    private val repository: LeagueRepository = MongoLeagueRepository(leagueAccessor)
+    private val accessor: MongoLeagueAccessor = mockk()
+    private val repository: LeagueRepository = MongoLeagueRepository(accessor)
 
     @Test
     internal fun `Should return league`() {
         // given
         val leagueEntity = LeagueEntity(UUID.randomUUID(), "Star Wars", false, 3)
-        every { leagueAccessor.findByIdOrNull(leagueEntity.id) } returns leagueEntity
+        every { accessor.findByIdOrNull(leagueEntity.id) } returns leagueEntity
         // when
         val league = repository.byId(leagueEntity.id)
         // then
@@ -33,10 +36,28 @@ internal class MongoLeagueRepositoryTest {
     internal fun `Should return null when league does not exist`() {
         // given
         val id = UUID.randomUUID()
-        every { leagueAccessor.findByIdOrNull(id) } returns null
+        every { accessor.findByIdOrNull(id) } returns null
         // when
         val league = repository.byId(id)
         // then
         assertNull(league)
+    }
+
+    @Test
+    internal fun `Should store league`() {
+        // given
+        every { accessor.save(ofType(LeagueEntity::class)) } returns mockk()
+        val league = League(UUID.randomUUID(), "Star Wars", true, 3)
+        // when
+        repository.store(league)
+        // then
+        val entitySlot = slot<LeagueEntity>()
+        verify(exactly = 1) { accessor.save(capture(entitySlot)) }
+        entitySlot.captured.let {
+            assertEquals(league.id, it.id)
+            assertEquals(league.name, it.name)
+            assertEquals(league.allowDraws, it.allowDraws)
+            assertEquals(league.maxScore, it.maxScore)
+        }
     }
 }

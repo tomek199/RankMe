@@ -1,36 +1,40 @@
 package com.tm.rankme.projection
 
-import com.tm.rankme.infrastructure.LeagueEntity
-import com.tm.rankme.infrastructure.MongoLeagueAccessor
+import com.tm.rankme.model.league.League
+import com.tm.rankme.model.league.LeagueRepository
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import io.mockk.verifySequence
 import java.util.*
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
-import org.springframework.data.repository.findByIdOrNull
 
 internal class LeagueSettingsChangedConsumerTest {
-    private val leagueAccessor: MongoLeagueAccessor = mockk()
-    private val consumer: MessageConsumer<LeagueSettingsChangedMessage> = LeagueSettingsChangedConsumer(leagueAccessor)
+    private val repository: LeagueRepository = mockk()
+    private val consumer: MessageConsumer<LeagueSettingsChangedMessage> = LeagueSettingsChangedConsumer(repository)
 
     @Test
     internal fun `Should consume 'league-setting-changed' message and update league`() {
         // given
         val aggregateId = UUID.randomUUID()
-        val entity = LeagueEntity(aggregateId, "Start Wars", false, 2)
-        every { leagueAccessor.findByIdOrNull(aggregateId) } returns entity
-        every { leagueAccessor.save(ofType(LeagueEntity::class)) } answers { entity }
+        val league = League(aggregateId, "Start Wars", false, 2)
+        every { repository.byId(aggregateId) } returns league
+        every { repository.store(ofType(League::class)) } just Runs
         val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         // when
         consumer.consume(message)
         // then
-        val leagueSlot = slot<LeagueEntity>()
-        verify(exactly = 1) { leagueAccessor.findByIdOrNull(aggregateId) }
-        verify(exactly = 1) { leagueAccessor.save(capture(leagueSlot)) }
-        assertEquals(entity.id, leagueSlot.captured.id)
-        assertEquals(entity.name, leagueSlot.captured.name)
+        val leagueSlot = slot<League>()
+        verifySequence {
+            repository.byId(aggregateId)
+            repository.store(capture(leagueSlot))
+        }
+        assertEquals(league.id, leagueSlot.captured.id)
+        assertEquals(league.name, leagueSlot.captured.name)
         assertEquals(message.allowDraws, leagueSlot.captured.allowDraws)
         assertEquals(message.maxScore, leagueSlot.captured.maxScore)
     }
@@ -40,11 +44,11 @@ internal class LeagueSettingsChangedConsumerTest {
         // given
         val aggregateId = UUID.randomUUID()
         val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
-        every { leagueAccessor.findByIdOrNull(aggregateId) } returns null
+        every { repository.byId(aggregateId) } returns null
         // when
         consumer.consume(message)
         // then
-        verify(exactly = 1) { leagueAccessor.findByIdOrNull(aggregateId) }
-        verify(exactly = 0) { leagueAccessor.save(ofType(LeagueEntity::class)) }
+        verify(exactly = 1) { repository.byId(aggregateId) }
+        verify(exactly = 0) { repository.store(ofType(League::class)) }
     }
 }

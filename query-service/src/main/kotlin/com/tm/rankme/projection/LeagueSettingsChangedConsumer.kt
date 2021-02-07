@@ -1,19 +1,18 @@
 package com.tm.rankme.projection
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.tm.rankme.infrastructure.MongoLeagueAccessor
+import com.tm.rankme.model.league.LeagueRepository
 import java.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.QueueBinding
 import org.springframework.amqp.rabbit.annotation.RabbitListener
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class LeagueSettingsChangedConsumer(
-    private val leagueAccessor: MongoLeagueAccessor
+    private val repository: LeagueRepository
 ) : MessageConsumer<LeagueSettingsChangedMessage> {
 
     private val log = LoggerFactory.getLogger(LeagueSettingsChangedConsumer::class.java)
@@ -27,11 +26,11 @@ class LeagueSettingsChangedConsumer(
     ])
     override fun consume(message: LeagueSettingsChangedMessage) {
         log.info("Consuming message league-settings-changed for aggregate ${message.aggregateId}")
-        val entity = leagueAccessor.findByIdOrNull(message.aggregateId)
-        entity?.let {
+        val league = repository.byId(message.aggregateId)
+        league?.let {
             it.allowDraws = message.allowDraws
             it.maxScore = message.maxScore
-            leagueAccessor.save(it)
+            repository.store(it)
         } ?: log.error("League ${message.aggregateId} cannot be found")
     }
 }
