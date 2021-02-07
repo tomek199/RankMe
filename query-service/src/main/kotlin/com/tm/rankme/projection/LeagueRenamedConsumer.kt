@@ -1,6 +1,5 @@
 package com.tm.rankme.projection
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tm.rankme.model.league.LeagueRepository
 import java.util.*
 import org.slf4j.LoggerFactory
@@ -34,7 +33,6 @@ class LeagueRenamedConsumer(
     }
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class LeagueRenamedMessage(
     val aggregateId: UUID,
     val name: String
