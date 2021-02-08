@@ -5,6 +5,8 @@ eventstore:
   endpoint: esdb://localhost:2113?tls=false
 
 spring:
+  profiles:
+    active: eventstore
   datasource:
     url: jdbc:postgresql://localhost:5432/rankme
     username: postgres

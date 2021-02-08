@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.game
 
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
@@ -6,13 +6,18 @@ import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.GameScheduled
+import com.tm.rankme.infrastructure.EventStoreConnector
+import com.tm.rankme.infrastructure.EventStoreRepository
+import com.tm.rankme.infrastructure.InfrastructureException
 import java.util.*
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
+@Profile("eventstore")
 @Repository
 class EventStoreGameRepository(
     connector: EventStoreConnector
-) : com.tm.rankme.infrastructure.EventStoreRepository<Game>(connector), GameRepository {
+) : EventStoreRepository<Game>(connector), GameRepository {
 
     override fun byId(id: UUID): Game = events(id.toString()).let { Game.from(it) }
 

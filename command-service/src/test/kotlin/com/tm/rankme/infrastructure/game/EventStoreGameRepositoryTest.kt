@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.game
 
 import com.eventstore.dbclient.EventData
 import com.eventstore.dbclient.EventStoreDBClient
@@ -12,6 +12,8 @@ import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.domain.game.Result
+import com.tm.rankme.infrastructure.EventStoreConnector
+import com.tm.rankme.infrastructure.InfrastructureException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

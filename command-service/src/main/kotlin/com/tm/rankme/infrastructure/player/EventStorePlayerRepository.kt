@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.player
 
 import com.eventstore.dbclient.RecordedEvent
 import com.tm.rankme.domain.base.Event
@@ -6,9 +6,14 @@ import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerPlayedGame
 import com.tm.rankme.domain.player.PlayerRepository
+import com.tm.rankme.infrastructure.EventStoreConnector
+import com.tm.rankme.infrastructure.EventStoreRepository
+import com.tm.rankme.infrastructure.InfrastructureException
 import java.util.*
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
+@Profile("eventstore")
 @Repository
 class EventStorePlayerRepository(
     connector: EventStoreConnector

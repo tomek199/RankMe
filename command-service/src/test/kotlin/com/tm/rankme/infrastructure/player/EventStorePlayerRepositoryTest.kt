@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.player
 
 import com.eventstore.dbclient.EventData
 import com.eventstore.dbclient.EventStoreDBClient
@@ -11,6 +11,8 @@ import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
+import com.tm.rankme.infrastructure.EventStoreConnector
+import com.tm.rankme.infrastructure.InfrastructureException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.player
 
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.EventBus
