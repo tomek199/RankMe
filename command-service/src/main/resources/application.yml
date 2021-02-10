@@ -13,7 +13,7 @@ spring:
     password: devpass
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   rabbitmq:
     host: localhost
