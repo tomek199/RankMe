@@ -11,11 +11,11 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
-@Primary // todo provide profile
+@Profile("postgresql")
 @Repository
 class PostgresLeagueRepository(
     private val accessor: LeagueAccessor,
