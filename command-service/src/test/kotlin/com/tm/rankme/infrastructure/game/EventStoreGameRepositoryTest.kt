@@ -76,7 +76,7 @@ internal class EventStoreGameRepositoryTest {
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("game-scheduled", "game-played")
         every { recordedEvent.eventData } returnsMany listOf(ByteArray(0), ByteArray(0))
-        every { mapper.deserialize(any(), any()) } returnsMany listOf(
+        every { mapper.deserialize(ofType(String::class), ofType(ByteArray::class)) } returnsMany listOf(
             GameScheduled(
                 leagueId,
                 UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"),

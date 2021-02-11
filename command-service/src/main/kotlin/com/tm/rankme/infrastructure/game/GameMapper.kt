@@ -28,6 +28,8 @@ class GameMapper {
         }
     }
 
+    fun deserialize(type: String, data: String) = deserialize(type, data.toByteArray())
+
     fun deserialize(type: String, data: ByteArray): Event<Game> {
         return when (type) {
             "game-scheduled" -> objectMapper.readValue(data, Scheduled::class.java).let {
