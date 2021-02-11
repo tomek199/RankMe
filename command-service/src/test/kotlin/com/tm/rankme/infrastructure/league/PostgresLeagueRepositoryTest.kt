@@ -152,19 +152,6 @@ internal class PostgresLeagueRepositoryTest {
         assertEquals(10, league.settings.maxScore)
     }
 
-//    @Test
-//    internal fun `Should do something`() {
-//        // given
-//        val aggregateId = UUID.randomUUID()
-//        every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns listOf(
-////            LeagueEntity(aggregateId, "league-created", 0, 11111, "", 1),
-//        )
-//        every { mapper.deserialize(any(), any()) } throws InfrastructureException("")
-//        // when
-//        assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
-//        // then
-//    }
-
     @Test
     internal fun `Should throw exception when events for aggregate are not found`() {
         // given
@@ -193,5 +180,25 @@ internal class PostgresLeagueRepositoryTest {
         every { accessor.getFirstByAggregateIdOrderByTimestampDesc(leagueId) } returns null
         // then
         assertFalse(repository.exist(leagueId))
+    }
+
+    @Test
+    internal fun `Should create entity`() {
+        // given
+        val aggregateId = UUID.randomUUID()
+        val type = "event-type"
+        val version: Long = 5
+        val timestamp: Long = 12345
+        val payload = "{}"
+        val id: Long = 6
+        // when
+        val entity = LeagueEntity(aggregateId, type, version, timestamp, payload, id)
+        // then
+        assertEquals(aggregateId, entity.aggregateId)
+        assertEquals(type, entity.type)
+        assertEquals(version, entity.version)
+        assertEquals(timestamp, entity.timestamp)
+        assertEquals(payload, entity.payload)
+        assertEquals(id, entity.id)
     }
 }
