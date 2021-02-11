@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.league
 
 import com.tm.rankme.domain.league.LeagueRepository
 import io.mockk.every
