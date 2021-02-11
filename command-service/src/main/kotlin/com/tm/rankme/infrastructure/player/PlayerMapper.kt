@@ -27,6 +27,8 @@ class PlayerMapper {
         }
     }
 
+    fun deserialize(type: String, data: String) = deserialize(type, data.toByteArray())
+
     fun deserialize(type: String, data: ByteArray): Event<Player> {
         return when (type) {
             "player-created" -> objectMapper.readValue(data, Created::class.java).let {

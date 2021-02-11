@@ -79,7 +79,7 @@ internal class EventStorePlayerRepositoryTest {
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("player-created", "player-played-game")
         every { recordedEvent.eventData } returnsMany listOf(ByteArray(0), ByteArray(0))
-        every { mapper.deserialize(any(), any()) } returnsMany listOf(
+        every { mapper.deserialize(ofType(String::class), ofType(ByteArray::class)) } returnsMany listOf(
             PlayerCreated(leagueId, "Optimus Prime", 149, 2859, aggregateId),
             PlayerPlayedGame(-36, -132, 2, aggregateId, 1)
         )

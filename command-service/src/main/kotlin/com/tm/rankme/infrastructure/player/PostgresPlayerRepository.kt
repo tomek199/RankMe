@@ -1,10 +1,10 @@
-package com.tm.rankme.infrastructure.league
+package com.tm.rankme.infrastructure.player
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.Event
-import com.tm.rankme.domain.league.League
-import com.tm.rankme.domain.league.LeagueRepository
+import com.tm.rankme.domain.player.Player
+import com.tm.rankme.domain.player.PlayerRepository
 import com.tm.rankme.infrastructure.InfrastructureException
 import java.util.*
 import javax.persistence.Entity
@@ -17,23 +17,23 @@ import org.springframework.stereotype.Repository
 
 @Primary // todo provide profile
 @Repository
-class PostgresLeagueRepository(
-    private val accessor: LeagueAccessor,
-    private val mapper: LeagueMapper
-) : LeagueRepository {
+class PostgresPlayerRepository(
+    private val accessor: PlayerAccessor,
+    private val mapper: PlayerMapper
+) : PlayerRepository {
 
-    private val log = LoggerFactory.getLogger(PostgresLeagueRepository::class.java)
+    private val log = LoggerFactory.getLogger(PostgresPlayerRepository::class.java)
     private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-    override fun byId(id: UUID) = League.from(events(id))
+    override fun byId(id: UUID) = Player.from(events(id))
 
-    override fun store(aggregate: League) = aggregate.pendingEvents.forEach {
+    override fun store(aggregate: Player) = aggregate.pendingEvents.forEach {
         log.info("Saving event ${it.type} for aggregate ${it.aggregateId}")
         checkVersion(it)
         accessor.save(entity(it))
     }
 
-    private fun checkVersion(event: Event<League>) {
+    private fun checkVersion(event: Event<Player>) {
         if (event.version != 0L) {
             val entity = accessor.getFirstByAggregateIdOrderByTimestampDesc(event.aggregateId)
                 ?: throw InfrastructureException("Cannon get actual version of aggregate id=${event.aggregateId}")
@@ -42,30 +42,26 @@ class PostgresLeagueRepository(
         }
     }
 
-    private fun entity(event: Event<League>): LeagueEntity {
+    private fun entity(event: Event<Player>): PlayerEntity {
         val payload = objectMapper.writeValueAsString(mapper.serialize(event))
-        return LeagueEntity(event.aggregateId, event.type, event.version, event.timestamp, payload)
+        return PlayerEntity(event.aggregateId, event.type, event.version, event.timestamp, payload)
     }
 
-    private fun events(aggregateId: UUID): List<Event<League>> {
-        log.info("Getting events for league stream $aggregateId")
+    private fun events(aggregateId: UUID): List<Event<Player>> {
+        log.info("Getting events for player stream $aggregateId")
         val entities = accessor.getByAggregateIdOrderByTimestampAsc(aggregateId)
         if (entities.isEmpty()) throw InfrastructureException("Stream $aggregateId is not found")
         return entities.map { event -> mapper.deserialize(event.type, event.payload) }
     }
-
-    override fun exist(id: UUID): Boolean {
-        return accessor.getFirstByAggregateIdOrderByTimestampDesc(id) != null
-    }
 }
 
-interface LeagueAccessor : CrudRepository<LeagueEntity, Long> {
-    fun getFirstByAggregateIdOrderByTimestampDesc(aggregateId: UUID): LeagueEntity?
-    fun getByAggregateIdOrderByTimestampAsc(aggregateId: UUID): List<LeagueEntity>
+interface PlayerAccessor : CrudRepository<PlayerEntity, Long> {
+    fun getFirstByAggregateIdOrderByTimestampDesc(aggregateId: UUID): PlayerEntity?
+    fun getByAggregateIdOrderByTimestampAsc(aggregateId: UUID): List<PlayerEntity>
 }
 
-@Entity(name = "league")
-data class LeagueEntity(
+@Entity(name = "player")
+data class PlayerEntity(
     val aggregateId: UUID,
     val type: String,
     val version: Long,

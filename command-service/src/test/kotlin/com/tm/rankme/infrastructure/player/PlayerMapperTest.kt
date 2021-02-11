@@ -69,7 +69,8 @@ internal class PlayerMapperTest {
         val aggregateId = UUID.randomUUID()
         val leagueId = UUID.randomUUID()
         val event = """{"type": "player-created", "aggregateId": "$aggregateId", "version": 0, "timestamp": 0, 
-            "leagueId": "$leagueId", "name": "Optimus Prime", "deviation": 149, "rating": 2859}""".toByteArray()        // when
+            "leagueId": "$leagueId", "name": "Optimus Prime", "deviation": 149, "rating": 2859}"""
+        // when
         val deserializedEvent = mapper.deserialize("player-created", event)
         // then
         (deserializedEvent as PlayerCreated).let {
@@ -88,7 +89,7 @@ internal class PlayerMapperTest {
         // given
         val aggregateId = UUID.randomUUID()
         val event = """{"type": "player-played-game", "aggregateId": "$aggregateId", "version": 1, "timestamp": 0, 
-            "deviationDelta": -36, "ratingDelta": -132, "score": 2}""".toByteArray()
+            "deviationDelta": -36, "ratingDelta": -132, "score": 2}"""
         // when
         val deserializedEvent = mapper.deserialize("player-played-game", event)
         // then
@@ -108,7 +109,7 @@ internal class PlayerMapperTest {
         val events = listOf("player-created", "player-played-game")
         // when
         events.forEach {
-            val data = "$it-invalid-json".toByteArray()
+            val data = "$it-invalid-json"
             // then
             assertFailsWith<JsonParseException> { mapper.deserialize(it, data) }
         }
@@ -118,7 +119,7 @@ internal class PlayerMapperTest {
     internal fun `Should throw exception when cannot deserialize unknown event type`() {
         // given
         val type = "unknown-event"
-        val data = ByteArray(0)
+        val data = "unknown-event-data"
         // when
         val exception = assertFailsWith<InfrastructureException> { mapper.deserialize(type, data) }
         // then
