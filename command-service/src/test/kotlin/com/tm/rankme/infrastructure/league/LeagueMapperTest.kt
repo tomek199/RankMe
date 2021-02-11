@@ -84,7 +84,7 @@ internal class LeagueMapperTest {
         // given
         val aggregateId = UUID.randomUUID()
         val event = """{"type": "league-created", "aggregateId": "$aggregateId", 
-                "version": 0, "timestamp": 12345, "name": "Star Wars", "allowDraws": false, "maxScore": 2}""".toByteArray()
+                "version": 0, "timestamp": 12345, "name": "Star Wars", "allowDraws": false, "maxScore": 2}"""
         // when
         val deserializedEvent = mapper.deserialize("league-created", event)
         // then
@@ -103,7 +103,7 @@ internal class LeagueMapperTest {
         // given
         val aggregateId = UUID.randomUUID()
         val event = """{"type": "league-renamed", "aggregateId": "$aggregateId", 
-                "version": 1, "timestamp": 12345, "name": "Transformers"}""".toByteArray()
+                "version": 1, "timestamp": 12345, "name": "Transformers"}"""
         // when
         val deserializedEvent = mapper.deserialize("league-renamed", event)
         // then
@@ -120,7 +120,7 @@ internal class LeagueMapperTest {
         // given
         val aggregateId = UUID.randomUUID()
         val event = """{"type": "league-settings-changed", "aggregateId": "$aggregateId", 
-                "version": 2, "timestamp": 12345, "allowDraws": true, "maxScore": 5}""".toByteArray()
+                "version": 2, "timestamp": 12345, "allowDraws": true, "maxScore": 5}"""
         // when
         val deserializedEvent = mapper.deserialize("league-settings-changed", event)
         // then
@@ -139,7 +139,7 @@ internal class LeagueMapperTest {
         val events = listOf("league-created", "league-renamed", "league-settings-changed")
         // when
         events.forEach {
-            val data = "$it-invalid-json".toByteArray()
+            val data = "$it-invalid-json"
             // then
             assertFailsWith<JsonParseException> { mapper.deserialize(it, data) }
         }
@@ -149,7 +149,7 @@ internal class LeagueMapperTest {
     internal fun `Should throw exception when cannot deserialize unknown event type`() {
         // given
         val type = "unknown-event"
-        val data = ByteArray(0)
+        val data = "unknown-event-data"
         // when
         val exception = assertFailsWith<InfrastructureException> { mapper.deserialize(type, data) }
         // then

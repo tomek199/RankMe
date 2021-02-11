@@ -136,7 +136,7 @@ internal class PostgresLeagueRepositoryTest {
             LeagueEntity(aggregateId, "league-renamed", 1, 22222, "{}", 2),
             LeagueEntity(aggregateId, "league-settings-changed", 2, 33333, "{}", 3)
         )
-        every { mapper.deserialize(any(), any()) } returnsMany listOf(
+        every { mapper.deserialize(ofType(String::class), ofType(String::class)) } returnsMany listOf(
             LeagueCreated("Star Wars", false, 2, aggregateId),
             LeagueRenamed(aggregateId, 1, "Transformers"),
             LeagueSettingsChanged(aggregateId, 2, true, 10)
@@ -151,6 +151,19 @@ internal class PostgresLeagueRepositoryTest {
         assertTrue(league.settings.allowDraws)
         assertEquals(10, league.settings.maxScore)
     }
+
+//    @Test
+//    internal fun `Should do something`() {
+//        // given
+//        val aggregateId = UUID.randomUUID()
+//        every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns listOf(
+////            LeagueEntity(aggregateId, "league-created", 0, 11111, "", 1),
+//        )
+//        every { mapper.deserialize(any(), any()) } throws InfrastructureException("")
+//        // when
+//        assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
+//        // then
+//    }
 
     @Test
     internal fun `Should throw exception when events for aggregate are not found`() {

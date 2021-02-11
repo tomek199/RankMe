@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Primary
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
-@Primary // provide profile
+@Primary // todo provide profile
 @Repository
 class PostgresLeagueRepository(
     private val accessor: LeagueAccessor,
@@ -51,10 +51,8 @@ class PostgresLeagueRepository(
         log.info("Getting events for stream $aggregateId")
         val entities = accessor.getByAggregateIdOrderByTimestampAsc(aggregateId)
         if (entities.isEmpty()) throw InfrastructureException("Stream $aggregateId is not found")
-        return entities.map(this::event)
+        return entities.map { event -> mapper.deserialize(event.type, event.payload) }
     }
-
-    private fun event(entity: LeagueEntity) = mapper.deserialize(entity.type, entity.payload.toByteArray())
 
     override fun exist(id: UUID): Boolean {
         return accessor.getFirstByAggregateIdOrderByTimestampDesc(id) != null

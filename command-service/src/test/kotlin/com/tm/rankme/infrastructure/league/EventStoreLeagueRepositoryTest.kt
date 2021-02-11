@@ -97,7 +97,7 @@ internal class EventStoreLeagueRepositoryTest {
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("league-created", "league-renamed", "league-settings-changed")
         every { recordedEvent.eventData } returnsMany listOf(ByteArray(0), ByteArray(0), ByteArray(0))
-        every { mapper.deserialize(any(), any()) } returnsMany listOf(
+        every { mapper.deserialize(ofType(String::class), ofType(ByteArray::class)) } returnsMany listOf(
             LeagueCreated("Star Wars", false, 2, aggregateId),
             LeagueRenamed(aggregateId, 1, "Transformers"),
             LeagueSettingsChanged(aggregateId, 2, true, 10)
@@ -122,7 +122,7 @@ internal class EventStoreLeagueRepositoryTest {
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("league-created")
         every { recordedEvent.eventData } returnsMany listOf(ByteArray(0))
-        every { mapper.deserialize(any(), any()) } returns LeagueCreated("Star Wars")
+        every { mapper.deserialize(ofType(String::class), ofType(ByteArray::class)) } returns LeagueCreated("Star Wars")
         // then
         assertTrue(repository.exist(leagueId))
     }

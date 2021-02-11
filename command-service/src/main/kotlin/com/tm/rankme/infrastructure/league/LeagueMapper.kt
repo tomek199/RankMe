@@ -32,6 +32,10 @@ class LeagueMapper {
         }
     }
 
+    fun deserialize(type: String, data: String): Event<League> {
+        return deserialize(type, data.toByteArray())
+    }
+
     fun deserialize(type: String, data: ByteArray): Event<League> {
         return when (type) {
             "league-created" -> objectMapper.readValue(data, Created::class.java).let {
