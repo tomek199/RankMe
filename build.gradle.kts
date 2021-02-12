@@ -5,7 +5,6 @@ val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPlu
 
 plugins {
     kotlin("jvm") version "1.4.30"
-    jacoco
     id("org.sonarqube") version("2.7.1")
 }
 
@@ -23,7 +22,6 @@ allprojects {
 
 subprojects {
     apply(plugin = "kotlin")
-    apply(plugin = "jacoco")
 
     sonarqube { }
 
