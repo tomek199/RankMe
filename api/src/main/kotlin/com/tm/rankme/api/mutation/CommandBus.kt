@@ -22,6 +22,7 @@ class CommandBus(
 
     fun execute(command: Command) {
         log.info("Submit command {}", command)
+        val i = 0
         val message = Message(objectMapper.writeValueAsBytes(command), messageProperties)
         val routingKey = command::class.simpleName!!
         template.send(exchange.name, routingKey, message)
