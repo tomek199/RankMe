@@ -5,7 +5,7 @@ val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPlu
 
 plugins {
     kotlin("jvm") version "1.4.30"
-    id("org.sonarqube") version("2.7.1")
+    id("org.sonarqube") version("3.1.1")
 }
 
 allprojects {
