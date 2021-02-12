@@ -41,14 +41,6 @@ subprojects {
 
     tasks.test {
         useJUnitPlatform()
-        finalizedBy(tasks.jacocoTestReport)
-    }
-
-    tasks.jacocoTestReport {
-        reports {
-            xml.isEnabled = true
-            csv.isEnabled = false
-        }
     }
 }
 
