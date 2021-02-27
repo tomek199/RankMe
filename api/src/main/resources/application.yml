@@ -1,3 +1,17 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: api
+  config:
+    import: optional:configserver:http://dev:9900/
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 graphql:
   servlet:
     mapping: /graphql
@@ -10,13 +24,3 @@ graphiql:
   cdn:
     enabled: false
     version: 0.13.0
-
-server:
-  port: 9000
-
-spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
