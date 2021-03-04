@@ -5,5 +5,5 @@ plugins {
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.42-SNAPSHOT"
+    version = "0.43-SNAPSHOT"
 }
