@@ -1,0 +1,17 @@
+server:
+  port: 9700
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: query-service
+          uri: lb://QUERY-SERVICE
+          predicates:
+          - Path=/query-service/**
+          filters:
+          - RewritePath=/query-service/(?<segment>.*), /$\{segment}
+eureka:
+  client:
+    register-with-eureka: false
