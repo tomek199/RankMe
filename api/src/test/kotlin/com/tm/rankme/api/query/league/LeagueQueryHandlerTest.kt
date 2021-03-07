@@ -11,14 +11,14 @@ import kotlin.test.assertNull
 
 internal class LeagueQueryHandlerTest {
     private val restTemplate = mockk<RestTemplate>()
-    private val url = "http://mock-query-service"
+    private val url = "http://gateway"
     private val handler = LeagueQueryHandler(restTemplate, url)
 
     @Test
     internal fun `Should return league`() {
         // given
         val league = League(UUID.randomUUID(), "Start Wars", false, 3)
-        every { restTemplate.getForObject("$url/leagues/${league.id}", League::class.java) } returns league
+        every { restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java) } returns league
         val query = GetLeagueQuery(league.id)
         // when
         val result = handler.handle(query)
@@ -34,7 +34,7 @@ internal class LeagueQueryHandlerTest {
     internal fun `Should return null for league`() {
         // given
         val query = GetLeagueQuery(UUID.randomUUID())
-        every { restTemplate.getForObject("$url/leagues/${query.id}", League::class.java) } returns null
+        every { restTemplate.getForObject("$url/query-service/leagues/${query.id}", League::class.java) } returns null
         // when
         val result = handler.handle(query)
         // then

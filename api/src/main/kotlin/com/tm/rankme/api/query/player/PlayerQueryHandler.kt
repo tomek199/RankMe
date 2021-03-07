@@ -7,10 +7,10 @@ import org.springframework.web.client.RestTemplate
 @Service
 class PlayerQueryHandler(
     private val restTemplate: RestTemplate,
-    @Value("\${query-service.url}") private val url: String
+    @Value("\${gateway.url}") private val url: String
 ) {
 
     fun handle(query: GetPlayerQuery): Player? {
-        return restTemplate.getForObject("$url/players/${query.id}", Player::class.java)
+        return restTemplate.getForObject("$url/query-service/players/${query.id}", Player::class.java)
     }
 }
