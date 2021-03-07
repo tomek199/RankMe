@@ -1,6 +1,5 @@
 server:
   port: 9000
-
 spring:
   application:
     name: api
@@ -11,16 +10,16 @@ spring:
     port: 5672
     username: guest
     password: guest
-
 graphql:
   servlet:
     mapping: /graphql
     enabled: true
     corsEnabled: true
-
 graphiql:
   mapping: /graphiql
   enabled: true
   cdn:
     enabled: false
     version: 0.13.0
+gateway:
+  url: http://localhost:9700

@@ -1,9 +1,10 @@
 package com.tm.rankme.api
 
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.web.client.RestTemplateBuilder
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class RankMeApiTest {
@@ -28,5 +29,13 @@ internal class RankMeApiTest {
         // then
         assertNotNull(scalar)
         assertEquals("LocalDateTime", scalar.name)
+    }
+
+    @Test
+    internal fun `Should return RestTemplate instance`() {
+        // when
+        val restTemplate = RankMeApi().queryServiceRestTemplate(RestTemplateBuilder())
+        // then
+        assertNotNull(restTemplate)
     }
 }

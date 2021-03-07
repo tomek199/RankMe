@@ -2,12 +2,12 @@ package com.tm.rankme
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer
 
 @SpringBootApplication
-@EnableDiscoveryClient
-class QueryService
+@EnableEurekaServer
+class DiscoveryService
 
 fun main(args: Array<String>) {
-    runApplication<QueryService>(*args)
+    runApplication<DiscoveryService>(*args)
 }
