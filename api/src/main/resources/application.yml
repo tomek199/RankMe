@@ -23,6 +23,3 @@ graphiql:
     version: 0.13.0
 gateway:
   url: http://localhost:9700
-eureka:
-  client:
-    register-with-eureka: false
