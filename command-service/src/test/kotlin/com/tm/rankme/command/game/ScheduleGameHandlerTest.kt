@@ -9,26 +9,17 @@ import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.domain.game.PlayerPort
 import com.tm.rankme.domain.league.League
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class ScheduleGameHandlerTest {
     private val repository = mockk<GameRepository>()
     private val playerPort = mockk<PlayerPort>()
     private val eventBus = mockk<EventBus>()
-    private val handler: com.tm.rankme.command.CommandHandler<ScheduleGameCommand> = ScheduleGameHandler(repository, playerPort, eventBus)
+    private val handler: CommandHandler<ScheduleGameCommand> = ScheduleGameHandler(repository, playerPort, eventBus)
 
     @Test
     internal fun `Should create played game`() {
@@ -39,7 +30,7 @@ internal class ScheduleGameHandlerTest {
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch(command)
+        handler.dispatch().accept(command)
         // then
         val gameSlot = slot<Game>()
         verify(exactly = 1) { playerPort.extractLeagueId(command.playerOneId, command.playerTwoId) }
@@ -62,7 +53,7 @@ internal class ScheduleGameHandlerTest {
             playerPort.extractLeagueId(command.playerOneId, command.playerTwoId)
         } throws AggregateException("Cannot extract league id")
         // when
-        val exception = assertFailsWith<AggregateException> { (handler.dispatch(command)) }
+        val exception = assertFailsWith<AggregateException> { handler.dispatch().accept(command) }
         // then
         assertEquals("Cannot extract league id", exception.message)
     }

@@ -8,22 +8,17 @@ import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueRepository
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
+import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 internal class RenameLeagueHandlerTest {
     private val repository = mockk<LeagueRepository>()
     private val eventBus = mockk<EventBus>()
-    private val handler: com.tm.rankme.command.CommandHandler<RenameLeagueCommand> = RenameLeagueHandler(repository, eventBus)
+    private val handler: CommandHandler<RenameLeagueCommand> = RenameLeagueHandler(repository, eventBus)
 
     @Test
     internal fun `Should change league name`() {
@@ -34,7 +29,7 @@ internal class RenameLeagueHandlerTest {
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch(command)
+        handler.dispatch().accept(command)
         // then
         val leagueSlot = slot<League>()
         verify(exactly = 1) { repository.byId(league.id) }
@@ -53,7 +48,7 @@ internal class RenameLeagueHandlerTest {
         val command = RenameLeagueCommand(id, "Transformers")
         every { repository.byId(id) } throws AggregateException(exceptionMessage)
         // when
-        val exception = assertFailsWith<AggregateException> { handler.dispatch(command) }
+        val exception = assertFailsWith<AggregateException> { handler.dispatch().accept(command) }
         // then
         assertEquals(exceptionMessage, exception.message)
     }

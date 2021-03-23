@@ -6,14 +6,15 @@ import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
 import com.tm.rankme.infrastructure.InfrastructureException
-import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
 @Profile("postgresql")
 @Repository
@@ -66,6 +67,6 @@ data class PlayerEntity(
     val type: String,
     val version: Long,
     val timestamp: Long,
-    val payload: String,
+    @Column(columnDefinition = "TEXT") val payload: String,
     @Id @GeneratedValue var id: Long? = null
 )
