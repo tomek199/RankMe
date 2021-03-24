@@ -48,6 +48,8 @@ spring:
         completeGameCommandHandler-in-0:
           destination: api-command
           group: complete-game-command-group
+        commandQuery-out-0:
+          destination: command-query
       rabbit:
         bindings:
           createLeagueCommandHandler-in-0.consumer.bindingRoutingKey: CreateLeagueCommand
@@ -57,3 +59,4 @@ spring:
           playGameCommandHandler-in-0.consumer.bindingRoutingKey: PlayGameCommand
           scheduleGameCommandHandler-in-0.consumer.bindingRoutingKey: ScheduleGameCommand
           completeGameCommandHandler-in-0.consumer.bindingRoutingKey: CompleteGameCommand
+          commandQuery-out-0.producer.routingKeyExpression: headers['type']
