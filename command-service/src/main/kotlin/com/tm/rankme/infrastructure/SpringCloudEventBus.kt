@@ -17,7 +17,7 @@ class SpringCloudEventBus(private val streamBridge: StreamBridge) : EventBus {
         log.info("Emitting event ${event.type} for aggregate ${event.aggregateId}")
         val message = MessageBuilder.createMessage(
             event,
-            MessageHeaders(mapOf(Pair("type", event::class.simpleName)))
+            MessageHeaders(mapOf(Pair("type", event.type)))
         )
         streamBridge.send("commandQuery-out-0", message)
     }

@@ -1,13 +1,11 @@
 package com.tm.rankme.projection
 
 import com.tm.rankme.model.league.LeagueRepository
-import java.util.*
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
+import java.util.*
+import java.util.function.Consumer
 
 @Service
 class LeagueSettingsChangedConsumer(
@@ -16,14 +14,8 @@ class LeagueSettingsChangedConsumer(
 
     private val log = LoggerFactory.getLogger(LeagueSettingsChangedConsumer::class.java)
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "league-settings-changed-queue"),
-            exchange = Exchange(name = "rankme", type = "topic"),
-            key = ["league-settings-changed"]
-        )
-    ])
-    override fun consume(message: LeagueSettingsChangedMessage) {
+    @Bean("leagueSettingsChangedMessageConsumer")
+    override fun consume(): Consumer<LeagueSettingsChangedMessage> = Consumer { message ->
         log.info("Consuming message league-settings-changed for aggregate ${message.aggregateId}")
         val league = repository.byId(message.aggregateId)
         league?.let {

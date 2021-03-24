@@ -2,16 +2,10 @@ package com.tm.rankme.projection
 
 import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
-import io.mockk.verifySequence
+import io.mockk.*
+import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.Test
 
 internal class LeagueSettingsChangedConsumerTest {
     private val repository: LeagueRepository = mockk()
@@ -26,7 +20,7 @@ internal class LeagueSettingsChangedConsumerTest {
         every { repository.store(ofType(League::class)) } just Runs
         val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         // when
-        consumer.consume(message)
+        consumer.consume().accept(message)
         // then
         val leagueSlot = slot<League>()
         verifySequence {
@@ -46,7 +40,7 @@ internal class LeagueSettingsChangedConsumerTest {
         val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         every { repository.byId(aggregateId) } returns null
         // when
-        consumer.consume(message)
+        consumer.consume().accept(message)
         // then
         verify(exactly = 1) { repository.byId(aggregateId) }
         verify(exactly = 0) { repository.store(ofType(League::class)) }

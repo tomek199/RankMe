@@ -2,13 +2,11 @@ package com.tm.rankme.projection
 
 import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
-import java.util.*
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
+import java.util.*
+import java.util.function.Consumer
 
 @Service
 class LeagueCreatedConsumer(
@@ -17,14 +15,8 @@ class LeagueCreatedConsumer(
 
     private val log = LoggerFactory.getLogger(LeagueCreatedConsumer::class.java)
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "league-created-queue"),
-            exchange = Exchange(name = "rankme", type = "topic"),
-            key = ["league-created"]
-        )
-    ])
-    override fun consume(message: LeagueCreatedMessage) {
+    @Bean("leagueCreatedMessageConsumer")
+    override fun consume(): Consumer<LeagueCreatedMessage> = Consumer { message ->
         log.info("Consuming message league-created for aggregate ${message.aggregateId}")
         val league = League(message.aggregateId, message.name, message.allowDraws, message.maxScore)
         repository.store(league)

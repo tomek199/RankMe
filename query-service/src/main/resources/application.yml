@@ -10,6 +10,30 @@ spring:
     port: 5672
     username: guest
     password: guest
+  cloud:
+    stream:
+      function:
+        definition: "leagueCreatedMessageConsumer;leagueRenamedMessageConsumer;leagueSettingsChangedMessageConsumer;\
+        playerCreatedMessageConsumer"
+      bindings:
+        leagueCreatedMessageConsumer-in-0:
+          destination: command-query
+          group: league-created-consumer-group
+        leagueRenamedMessageConsumer-in-0:
+          destination: command-query
+          group: league-renamed-consumer-group
+        leagueSettingsChangedMessageConsumer-in-0:
+          destination: command-query
+          group: league-settings-changed-consumer-group
+        playerCreatedMessageConsumer-in-0:
+          destination: command-query
+          group: player-created-consumer-group
+      rabbit:
+        bindings:
+          leagueCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: league-created
+          leagueRenamedMessageConsumer-in-0.consumer.bindingRoutingKey: league-renamed
+          leagueSettingsChangedMessageConsumer-in-0.consumer.bindingRoutingKey: league-settings-changed
+          playerCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: player-created
   data:
     mongodb:
       uri: mongodb://localhost:27017/rankme
