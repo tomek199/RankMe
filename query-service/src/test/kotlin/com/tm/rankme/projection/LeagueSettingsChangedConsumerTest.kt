@@ -5,11 +5,12 @@ import com.tm.rankme.model.league.LeagueRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 
 internal class LeagueSettingsChangedConsumerTest {
     private val repository: LeagueRepository = mockk()
-    private val consumer: MessageConsumer<LeagueSettingsChangedMessage> = LeagueSettingsChangedConsumer(repository)
+    private val consumer: Consumer<LeagueSettingsChangedMessage> = LeagueSettingsChangedConsumer(repository)
 
     @Test
     internal fun `Should consume 'league-setting-changed' message and update league`() {
@@ -20,7 +21,7 @@ internal class LeagueSettingsChangedConsumerTest {
         every { repository.store(ofType(League::class)) } just Runs
         val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         // when
-        consumer.consume().accept(message)
+        consumer.accept(message)
         // then
         val leagueSlot = slot<League>()
         verifySequence {
@@ -40,7 +41,7 @@ internal class LeagueSettingsChangedConsumerTest {
         val message = LeagueSettingsChangedMessage(aggregateId, true, 5)
         every { repository.byId(aggregateId) } returns null
         // when
-        consumer.consume().accept(message)
+        consumer.accept(message)
         // then
         verify(exactly = 1) { repository.byId(aggregateId) }
         verify(exactly = 0) { repository.store(ofType(League::class)) }

@@ -5,11 +5,12 @@ import com.tm.rankme.model.league.LeagueRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 
 internal class LeagueCreatedConsumerTest {
     private val repository: LeagueRepository = mockk()
-    private val consumer: MessageConsumer<LeagueCreatedMessage> = LeagueCreatedConsumer(repository)
+    private val consumer: Consumer<LeagueCreatedMessage> = LeagueCreatedConsumer(repository)
 
     @Test
     internal fun `Should consume 'league-created' message`() {
@@ -17,7 +18,7 @@ internal class LeagueCreatedConsumerTest {
         val message = LeagueCreatedMessage(UUID.randomUUID(), "Star Wars", true, 3)
         every { repository.store(ofType(League::class)) } just Runs
         // when
-        consumer.consume().accept(message)
+        consumer.accept(message)
         // then
         val leagueSlot = slot<League>()
         verify(exactly = 1) { repository.store(capture(leagueSlot)) }

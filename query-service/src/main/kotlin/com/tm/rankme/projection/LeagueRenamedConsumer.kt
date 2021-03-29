@@ -2,20 +2,18 @@ package com.tm.rankme.projection
 
 import com.tm.rankme.model.league.LeagueRepository
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.function.Consumer
 
-@Service
+@Service("leagueRenamedMessageConsumer")
 class LeagueRenamedConsumer(
     private val repository: LeagueRepository
-) : MessageConsumer<LeagueRenamedMessage> {
+) : Consumer<LeagueRenamedMessage> {
 
     private val log = LoggerFactory.getLogger(LeagueRenamedConsumer::class.java)
 
-    @Bean("leagueRenamedMessageConsumer")
-    override fun consume(): Consumer<LeagueRenamedMessage> = Consumer { message ->
+    override fun accept(message: LeagueRenamedMessage) {
         log.info("Consuming message league-renamed for aggregate ${message.aggregateId}")
         val league = repository.byId(message.aggregateId)
         league?.let {

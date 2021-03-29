@@ -8,15 +8,14 @@ import org.springframework.stereotype.Service
 import java.util.*
 import java.util.function.Consumer
 
-@Service
+@Service("playerCreatedMessageConsumer")
 class PlayerCreatedConsumer(
     private val repository: PlayerRepository
-) : MessageConsumer<PlayerCreatedMessage> {
+) : Consumer<PlayerCreatedMessage> {
 
     private val log = LoggerFactory.getLogger(PlayerCreatedConsumer::class.java)
 
-    @Bean("playerCreatedMessageConsumer")
-    override fun consume(): Consumer<PlayerCreatedMessage> = Consumer { message ->
+    override fun accept(message: PlayerCreatedMessage) {
         log.info("Consuming message player-created for aggregate ${message.aggregateId}")
         val player = Player(message.aggregateId, message.leagueId, message.name, message.deviation, message.rating)
         repository.store(player)
