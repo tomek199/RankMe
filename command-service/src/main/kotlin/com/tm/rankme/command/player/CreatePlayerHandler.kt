@@ -7,19 +7,17 @@ import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.player.LeaguePort
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import java.util.function.Consumer
 
-@Service
+@Service("createPlayerCommandHandler")
 class CreatePlayerHandler(
     private val repository: PlayerRepository,
     private val leaguePort: LeaguePort,
     eventBus: EventBus
-) : CommandHandler<CreatePlayerCommand>(eventBus) {
+) : CommandHandler<CreatePlayerCommand>(eventBus), Consumer<CreatePlayerCommand> {
 
-    @Bean("createPlayerCommandHandler")
-    override fun dispatch(): Consumer<CreatePlayerCommand> = super.dispatch()
+    override fun accept(command: CreatePlayerCommand) = dispatch(command)
 
     override fun execute(command: CreatePlayerCommand): List<Event<Player>> {
         if (!leaguePort.exist(command.leagueId))

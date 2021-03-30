@@ -1,6 +1,5 @@
 package com.tm.rankme.command.player
 
-import com.tm.rankme.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -12,6 +11,7 @@ import com.tm.rankme.domain.player.PlayerRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -20,7 +20,7 @@ internal class CreatePlayerHandlerTest {
     private val repository = mockk<PlayerRepository>()
     private val leaguePort = mockk<LeaguePort>()
     private val eventBus = mockk<EventBus>()
-    private val handler: CommandHandler<CreatePlayerCommand> = CreatePlayerHandler(repository, leaguePort, eventBus)
+    private val handler: Consumer<CreatePlayerCommand> = CreatePlayerHandler(repository, leaguePort, eventBus)
 
     @Test
     internal fun `Should create player`() {
@@ -30,7 +30,7 @@ internal class CreatePlayerHandlerTest {
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch().accept(command)
+        handler.accept(command)
         // then
         val playerSlot = slot<Player>()
         verify(exactly = 1) { repository.store(capture(playerSlot)) }
@@ -52,7 +52,7 @@ internal class CreatePlayerHandlerTest {
         val command = CreatePlayerCommand(UUID.randomUUID(), "Optimus Prime")
         every { leaguePort.exist(command.leagueId) } returns false
         // when
-        val exception = assertFailsWith<AggregateException> { handler.dispatch().accept(command) }
+        val exception = assertFailsWith<AggregateException> { handler.accept(command) }
         // then
         assertEquals("Cannot create player. League ${command.leagueId} does not exist", exception.message)
     }

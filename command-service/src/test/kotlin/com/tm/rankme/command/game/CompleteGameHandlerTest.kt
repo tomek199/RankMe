@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -19,7 +20,7 @@ internal class CompleteGameHandlerTest {
     private val repository = mockk<GameRepository>()
     private val playerPort = mockk<PlayerPort>()
     private val eventBus = mockk<EventBus>()
-    private val handler: com.tm.rankme.command.CommandHandler<CompleteGameCommand> = CompleteGameHandler(repository, playerPort, eventBus)
+    private val handler: Consumer<CompleteGameCommand> = CompleteGameHandler(repository, playerPort, eventBus)
 
     @Test
     internal fun `Should create played game`() {
@@ -38,7 +39,7 @@ internal class CompleteGameHandlerTest {
         } returns Game.played(leagueId, game.playerIds.first, game.playerIds.second, firstResult, secondResult)
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch().accept(command)
+        handler.accept(command)
         // then
         val gameSlot = slot<Game>()
         verifySequence {
@@ -67,7 +68,7 @@ internal class CompleteGameHandlerTest {
         val game = Game.played(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), firstResult, secondResult)
         every { repository.byId(command.gameId) } returns game
         // when
-        val exception = assertFailsWith<AggregateException> { handler.dispatch().accept(command) }
+        val exception = assertFailsWith<AggregateException> { handler.accept(command) }
         // then
         assertEquals("Game ${game.id} is already played", exception.message)
     }
@@ -82,7 +83,7 @@ internal class CompleteGameHandlerTest {
             playerPort.playGame(ofType(UUID::class), ofType(UUID::class), command.playerOneScore, command.playerTwoScore)
         } throws AggregateException("Cannot complete game")
         // when
-        val exception = assertFailsWith<AggregateException> { (handler.dispatch().accept(command)) }
+        val exception = assertFailsWith<AggregateException> { (handler.accept(command)) }
         // then
         assertEquals("Cannot complete game", exception.message)
     }

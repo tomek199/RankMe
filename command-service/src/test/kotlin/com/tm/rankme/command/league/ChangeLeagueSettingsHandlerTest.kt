@@ -1,6 +1,5 @@
 package com.tm.rankme.command.league
 
-import com.tm.rankme.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -11,6 +10,7 @@ import com.tm.rankme.domain.league.LeagueSettingsChanged
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -18,7 +18,7 @@ import kotlin.test.assertTrue
 internal class ChangeLeagueSettingsHandlerTest {
     private val repository = mockk<LeagueRepository>()
     private val eventBus = mockk<EventBus>()
-    private val handler: CommandHandler<ChangeLeagueSettingsCommand> = ChangeLeagueSettingsHandler(repository, eventBus)
+    private val handler: Consumer<ChangeLeagueSettingsCommand> = ChangeLeagueSettingsHandler(repository, eventBus)
 
     @Test
     internal fun `Should change league name`() {
@@ -29,7 +29,7 @@ internal class ChangeLeagueSettingsHandlerTest {
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch().accept(command)
+        handler.accept(command)
         // then
         val leagueSlot = slot<League>()
         verify(exactly = 1) { repository.byId(league.id) }
@@ -49,7 +49,7 @@ internal class ChangeLeagueSettingsHandlerTest {
         val command = ChangeLeagueSettingsCommand(id, true, 5)
         every { repository.byId(id) } throws AggregateException(exceptionMessage)
         // when
-        val exception = assertFailsWith<AggregateException> { handler.dispatch().accept(command) }
+        val exception = assertFailsWith<AggregateException> { handler.accept(command) }
         // then
         assertEquals(exceptionMessage, exception.message)
     }

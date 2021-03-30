@@ -7,19 +7,17 @@ import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.PlayerPort
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import java.util.function.Consumer
 
-@Service
+@Service("completeGameCommandHandler")
 class CompleteGameHandler(
     private val repository: GameRepository,
     private val playerPort: PlayerPort,
     eventBus: EventBus
-) : CommandHandler<CompleteGameCommand>(eventBus) {
+) : CommandHandler<CompleteGameCommand>(eventBus), Consumer<CompleteGameCommand> {
 
-    @Bean("completeGameCommandHandler")
-    override fun dispatch(): Consumer<CompleteGameCommand> = super.dispatch()
+    override fun accept(command: CompleteGameCommand) = dispatch(command)
 
     override fun execute(command: CompleteGameCommand): List<Event<Game>> {
         val game = repository.byId(command.gameId)

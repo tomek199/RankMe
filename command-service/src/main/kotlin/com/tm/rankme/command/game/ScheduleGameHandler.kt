@@ -6,19 +6,17 @@ import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.PlayerPort
-import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 import java.util.function.Consumer
 
-@Service
+@Service("scheduleGameCommandHandler")
 class ScheduleGameHandler(
     private val repository: GameRepository,
     private val playerPort: PlayerPort,
     eventBus: EventBus
-) : CommandHandler<ScheduleGameCommand>(eventBus) {
+) : CommandHandler<ScheduleGameCommand>(eventBus), Consumer<ScheduleGameCommand> {
 
-    @Bean("scheduleGameCommandHandler")
-    override fun dispatch(): Consumer<ScheduleGameCommand> = super.dispatch()
+    override fun accept(command: ScheduleGameCommand) = dispatch(command)
 
     override fun execute(command: ScheduleGameCommand): List<Event<Game>> {
         val leagueId = playerPort.extractLeagueId(command.playerOneId, command.playerTwoId)

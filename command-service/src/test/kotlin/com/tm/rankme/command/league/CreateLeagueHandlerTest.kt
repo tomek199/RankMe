@@ -1,6 +1,5 @@
 package com.tm.rankme.command.league
 
-import com.tm.rankme.command.CommandHandler
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.league.League
@@ -8,13 +7,14 @@ import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class CreateLeagueHandlerTest {
     private val repository = mockk<LeagueRepository>()
     private val eventBus = mockk<EventBus>()
-    private val handler: CommandHandler<CreateLeagueCommand> = CreateLeagueHandler(repository, eventBus)
+    private val handler: Consumer<CreateLeagueCommand> = CreateLeagueHandler(repository, eventBus)
 
     @Test
     internal fun `Should create league`() {
@@ -23,7 +23,7 @@ internal class CreateLeagueHandlerTest {
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch().accept(command)
+        handler.accept(command)
         // then
         val leagueSlot = slot<League>()
         verify(exactly = 1) { repository.store(capture(leagueSlot)) }
