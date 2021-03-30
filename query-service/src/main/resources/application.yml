@@ -17,16 +17,16 @@ spring:
         playerCreatedMessageConsumer"
       bindings:
         leagueCreatedMessageConsumer-in-0:
-          destination: command-query
+          destination: command.query
           group: league-created-consumer-group
         leagueRenamedMessageConsumer-in-0:
-          destination: command-query
+          destination: command.query
           group: league-renamed-consumer-group
         leagueSettingsChangedMessageConsumer-in-0:
-          destination: command-query
+          destination: command.query
           group: league-settings-changed-consumer-group
         playerCreatedMessageConsumer-in-0:
-          destination: command-query
+          destination: command.query
           group: player-created-consumer-group
       rabbit:
         bindings:

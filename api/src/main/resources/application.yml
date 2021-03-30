@@ -14,7 +14,7 @@ spring:
     stream:
       bindings:
         apiCommand-out-0:
-          destination: api-command
+          destination: api.command
       rabbit:
         bindings:
           apiCommand-out-0:
