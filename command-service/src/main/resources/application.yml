@@ -21,6 +21,42 @@ spring:
     port: 5672
     username: guest
     password: guest
-    listener:
-      simple:
-        default-requeue-rejected: false
+  cloud:
+    stream:
+      function:
+        definition: "createLeagueCommandHandler;renameLeagueCommandHandler;changeLeagueSettingsCommandHandler;\
+        createPlayerCommandHandler;playGameCommandHandler;scheduleGameCommandHandler;completeGameCommandHandler"
+      bindings:
+        createLeagueCommandHandler-in-0:
+          destination: api.command
+          group: create-league-command-group
+        renameLeagueCommandHandler-in-0:
+          destination: api.command
+          group: rename-league-command-group
+        changeLeagueSettingsCommandHandler-in-0:
+          destination: api.command
+          group: change-league-settings-command-group
+        createPlayerCommandHandler-in-0:
+          destination: api.command
+          group: create-player-command-group
+        playGameCommandHandler-in-0:
+          destination: api.command
+          group: play-game-command-group
+        scheduleGameCommandHandler-in-0:
+          destination: api.command
+          group: schedule-game-command-group
+        completeGameCommandHandler-in-0:
+          destination: api.command
+          group: complete-game-command-group
+        commandQuery-out-0:
+          destination: command.query
+      rabbit:
+        bindings:
+          createLeagueCommandHandler-in-0.consumer.bindingRoutingKey: CreateLeagueCommand
+          renameLeagueCommandHandler-in-0.consumer.bindingRoutingKey: RenameLeagueCommand
+          changeLeagueSettingsCommandHandler-in-0.consumer.bindingRoutingKey: ChangeLeagueSettingsCommand
+          createPlayerCommandHandler-in-0.consumer.bindingRoutingKey: CreatePlayerCommand
+          playGameCommandHandler-in-0.consumer.bindingRoutingKey: PlayGameCommand
+          scheduleGameCommandHandler-in-0.consumer.bindingRoutingKey: ScheduleGameCommand
+          completeGameCommandHandler-in-0.consumer.bindingRoutingKey: CompleteGameCommand
+          commandQuery-out-0.producer.routingKeyExpression: headers['type']

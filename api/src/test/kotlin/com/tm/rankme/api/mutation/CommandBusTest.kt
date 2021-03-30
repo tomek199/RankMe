@@ -1,29 +1,24 @@
 package com.tm.rankme.api.mutation
 
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import java.time.LocalDateTime
-import java.util.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
-import org.springframework.amqp.core.DirectExchange
-import org.springframework.amqp.core.Message
-import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.cloud.stream.function.StreamBridge
+import org.springframework.messaging.support.GenericMessage
+import java.time.LocalDateTime
+import java.util.*
 
 internal class CommandBusTest {
-    private val template = mockk<RabbitTemplate>()
-    private val exchange = mockk<DirectExchange>()
-    private val eventBus = CommandBus(template, exchange)
-    private val exchangeName = "rankme.test.api"
+    private val streamBridge = mockk<StreamBridge>()
+    private val commandBus = CommandBus(streamBridge)
+    private val bindingName = "apiCommand-out-0"
 
     @BeforeEach
     internal fun setUp() {
-        every { exchange.name } returns exchangeName
-        every { template.send(exchangeName, ofType(String::class), ofType(Message::class)) } just Runs
+        every { streamBridge.send(bindingName, ofType(GenericMessage::class)) } returns true
     }
 
     @TestFactory
@@ -39,9 +34,9 @@ internal class CommandBusTest {
             CompleteGameCommand(UUID.randomUUID(), 1, 4)
         ).map { command -> DynamicTest.dynamicTest("Given $command should be executed") {
             // when
-            eventBus.execute(command)
+            commandBus.execute(command)
             // then
-            verify { template.send(exchangeName, command::class.simpleName!!, ofType(Message::class)) }
+            verify { streamBridge.send(bindingName, ofType(GenericMessage::class)) }
         }
     }
 }

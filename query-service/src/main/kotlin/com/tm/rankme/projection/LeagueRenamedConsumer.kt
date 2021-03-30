@@ -1,29 +1,19 @@
 package com.tm.rankme.projection
 
 import com.tm.rankme.model.league.LeagueRepository
-import java.util.*
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
+import java.util.*
+import java.util.function.Consumer
 
-@Service
+@Service("leagueRenamedMessageConsumer")
 class LeagueRenamedConsumer(
     private val repository: LeagueRepository
-) : MessageConsumer<LeagueRenamedMessage> {
+) : Consumer<LeagueRenamedMessage> {
 
     private val log = LoggerFactory.getLogger(LeagueRenamedConsumer::class.java)
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "league-renamed-queue"),
-            exchange = Exchange(name = "rankme", type = "topic"),
-            key = ["league-renamed"]
-        )
-    ])
-    override fun consume(message: LeagueRenamedMessage) {
+    override fun accept(message: LeagueRenamedMessage) {
         log.info("Consuming message league-renamed for aggregate ${message.aggregateId}")
         val league = repository.byId(message.aggregateId)
         league?.let {

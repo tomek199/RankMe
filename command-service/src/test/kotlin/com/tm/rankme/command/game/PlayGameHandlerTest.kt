@@ -1,33 +1,24 @@
 package com.tm.rankme.command.game
 
-import com.tm.rankme.command.CommandHandler
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
-import com.tm.rankme.domain.game.Game
-import com.tm.rankme.domain.game.GamePlayed
-import com.tm.rankme.domain.game.GameRepository
-import com.tm.rankme.domain.game.PlayerPort
-import com.tm.rankme.domain.game.Result
+import com.tm.rankme.domain.game.*
 import com.tm.rankme.domain.league.League
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
+import org.junit.jupiter.api.Test
 import java.util.*
+import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 internal class PlayGameHandlerTest {
     private val repository = mockk<GameRepository>()
     private val playerPort = mockk<PlayerPort>()
     private val eventBus = mockk<EventBus>()
-    private val handler: com.tm.rankme.command.CommandHandler<PlayGameCommand> = PlayGameHandler(repository, playerPort, eventBus)
+    private val handler: Consumer<PlayGameCommand> = PlayGameHandler(repository, playerPort, eventBus)
 
     @Test
     internal fun `Should create played game`() {
@@ -42,7 +33,7 @@ internal class PlayGameHandlerTest {
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
         // when
-        handler.dispatch(command)
+        handler.accept(command)
         // then
         val gameSlot = slot<Game>()
         verify(exactly = 1) { repository.store(capture(gameSlot)) }
@@ -67,7 +58,7 @@ internal class PlayGameHandlerTest {
             playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
         } throws AggregateException("Cannot play game")
         // when
-        val exception = assertFailsWith<AggregateException> { (handler.dispatch(command)) }
+        val exception = assertFailsWith<AggregateException> { handler.accept(command) }
         // then
         assertEquals("Cannot play game", exception.message)
     }

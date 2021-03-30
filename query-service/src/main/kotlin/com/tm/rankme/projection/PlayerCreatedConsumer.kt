@@ -2,29 +2,20 @@ package com.tm.rankme.projection
 
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
-import java.util.*
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
+import java.util.*
+import java.util.function.Consumer
 
-@Service
+@Service("playerCreatedMessageConsumer")
 class PlayerCreatedConsumer(
     private val repository: PlayerRepository
-) : MessageConsumer<PlayerCreatedMessage> {
+) : Consumer<PlayerCreatedMessage> {
 
     private val log = LoggerFactory.getLogger(PlayerCreatedConsumer::class.java)
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "player-created-queue"),
-            exchange = Exchange(name = "rankme", type = "topic"),
-            key = ["player-created"]
-        )
-    ])
-    override fun consume(message: PlayerCreatedMessage) {
+    override fun accept(message: PlayerCreatedMessage) {
         log.info("Consuming message player-created for aggregate ${message.aggregateId}")
         val player = Player(message.aggregateId, message.leagueId, message.name, message.deviation, message.rating)
         repository.store(player)

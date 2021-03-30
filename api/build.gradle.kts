@@ -18,8 +18,8 @@ extra["springCloudVersion"] = "2020.0.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
+    implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
 
     implementation("com.graphql-java-kickstart:graphql-spring-boot-starter:8.0.0")
     implementation("com.graphql-java-kickstart:graphql-java-tools:6.2.0")

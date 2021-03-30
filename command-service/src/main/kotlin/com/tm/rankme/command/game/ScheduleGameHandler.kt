@@ -6,27 +6,17 @@ import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.PlayerPort
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
+import java.util.function.Consumer
 
-@Service
+@Service("scheduleGameCommandHandler")
 class ScheduleGameHandler(
     private val repository: GameRepository,
     private val playerPort: PlayerPort,
     eventBus: EventBus
-) : com.tm.rankme.command.CommandHandler<ScheduleGameCommand>(eventBus) {
+) : CommandHandler<ScheduleGameCommand>(eventBus), Consumer<ScheduleGameCommand> {
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "schedule-game-command-queue"),
-            exchange = Exchange(name = "rankme.api", type = "direct"),
-            key = ["ScheduleGameCommand"]
-        )
-    ])
-    override fun dispatch(command: ScheduleGameCommand) = super.dispatch(command)
+    override fun accept(command: ScheduleGameCommand) = dispatch(command)
 
     override fun execute(command: ScheduleGameCommand): List<Event<Game>> {
         val leagueId = playerPort.extractLeagueId(command.playerOneId, command.playerTwoId)

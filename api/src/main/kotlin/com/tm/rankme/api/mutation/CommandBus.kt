@@ -1,29 +1,21 @@
 package com.tm.rankme.api.mutation
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
-import org.springframework.amqp.core.DirectExchange
-import org.springframework.amqp.core.Message
-import org.springframework.amqp.core.MessageProperties
-import org.springframework.amqp.core.MessagePropertiesBuilder
-import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.cloud.stream.function.StreamBridge
+import org.springframework.messaging.MessageHeaders
+import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Component
 
 @Component
-class CommandBus(
-    private val template: RabbitTemplate,
-    private val exchange: DirectExchange
-) {
+class CommandBus(private val streamBridge: StreamBridge) {
     private val log = LoggerFactory.getLogger(CommandBus::class.java)
-    private val objectMapper = jacksonObjectMapper().findAndRegisterModules()
-    private val messageProperties = MessagePropertiesBuilder.newInstance()
-        .setContentType(MessageProperties.CONTENT_TYPE_JSON)
-        .build()
 
     fun execute(command: Command) {
         log.info("Submit command {}", command)
-        val message = Message(objectMapper.writeValueAsBytes(command), messageProperties)
-        val routingKey = command::class.simpleName!!
-        template.send(exchange.name, routingKey, message)
+        val message = MessageBuilder.createMessage(
+            command,
+            MessageHeaders(mapOf(Pair("type", command::class.simpleName)))
+        )
+        streamBridge.send("apiCommand-out-0", message)
     }
 }

@@ -7,27 +7,17 @@ import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.player.LeaguePort
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
+import java.util.function.Consumer
 
-@Service
+@Service("createPlayerCommandHandler")
 class CreatePlayerHandler(
     private val repository: PlayerRepository,
     private val leaguePort: LeaguePort,
     eventBus: EventBus
-) : com.tm.rankme.command.CommandHandler<CreatePlayerCommand>(eventBus) {
+) : CommandHandler<CreatePlayerCommand>(eventBus), Consumer<CreatePlayerCommand> {
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "create-player-command-queue"),
-            exchange = Exchange(name = "rankme.api", type = "direct"),
-            key = ["CreatePlayerCommand"]
-        )
-    ])
-    override fun dispatch(command: CreatePlayerCommand) = super.dispatch(command)
+    override fun accept(command: CreatePlayerCommand) = dispatch(command)
 
     override fun execute(command: CreatePlayerCommand): List<Event<Player>> {
         if (!leaguePort.exist(command.leagueId))

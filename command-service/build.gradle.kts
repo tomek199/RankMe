@@ -22,12 +22,11 @@ extra["springCloudVersion"] = "2020.0.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.postgresql:postgresql")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
-
     implementation("com.github.EventStore:EventStoreDB-Client-Java:trunk-SNAPSHOT")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")

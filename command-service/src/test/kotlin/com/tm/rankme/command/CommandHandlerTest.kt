@@ -3,14 +3,14 @@ package com.tm.rankme.command
 import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
 import io.mockk.mockk
-import kotlin.test.assertNotNull
 import org.junit.jupiter.api.Test
+import kotlin.test.assertNotNull
 
 internal class CommandHandlerTest {
     @Test
     internal fun `Should have access to event bus`() {
         // given
-        val commandHandler = object : com.tm.rankme.command.CommandHandler<TestCommand>(mockk()) {
+        val commandHandler = object : CommandHandler<TestCommand>(mockk()) {
             override fun execute(command: TestCommand): List<Event<out AggregateRoot>> = emptyList()
             fun eventBus() = eventBus
         }
@@ -20,5 +20,5 @@ internal class CommandHandlerTest {
         assertNotNull(eventBus)
     }
 
-    data class TestCommand(val test: String) : com.tm.rankme.command.Command()
+    data class TestCommand(val test: String) : Command()
 }

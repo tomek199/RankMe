@@ -7,27 +7,17 @@ import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GameRepository
 import com.tm.rankme.domain.game.PlayerPort
-import org.springframework.amqp.rabbit.annotation.Exchange
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
+import java.util.function.Consumer
 
-@Service
+@Service("completeGameCommandHandler")
 class CompleteGameHandler(
     private val repository: GameRepository,
     private val playerPort: PlayerPort,
     eventBus: EventBus
-) : com.tm.rankme.command.CommandHandler<CompleteGameCommand>(eventBus) {
+) : CommandHandler<CompleteGameCommand>(eventBus), Consumer<CompleteGameCommand> {
 
-    @RabbitListener(bindings = [
-        QueueBinding(
-            value = Queue(name = "complete-game-command-queue"),
-            exchange = Exchange(name = "rankme.api", type = "direct"),
-            key = ["CompleteGameCommand"]
-        )
-    ])
-    override fun dispatch(command: CompleteGameCommand) = super.dispatch(command)
+    override fun accept(command: CompleteGameCommand) = dispatch(command)
 
     override fun execute(command: CompleteGameCommand): List<Event<Game>> {
         val game = repository.byId(command.gameId)
