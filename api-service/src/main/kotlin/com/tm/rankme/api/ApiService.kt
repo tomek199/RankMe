@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
-class RankMeApi {
+class ApiService {
     @Bean
     fun uuidScalar(): GraphQLScalarType {
         return GraphQLScalarType.newScalar()
@@ -34,5 +34,5 @@ class RankMeApi {
 }
 
 fun main(args: Array<String>) {
-    runApplication<RankMeApi>(*args)
+    runApplication<ApiService>(*args)
 }
