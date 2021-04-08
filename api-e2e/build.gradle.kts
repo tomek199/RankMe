@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+
 plugins {
     kotlin("jvm")
 }
@@ -6,11 +8,19 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation("io.cucumber:cucumber-java8:6.10.2")
-    testImplementation("io.cucumber:cucumber-junit:6.10.2")
-    testImplementation("io.cucumber:cucumber-spring:6.10.2")
+val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
+val cucumberVersion = "6.10.2"
+val graphqlKotlinVersion = "4.0.0-rc.1" // FIXME change to stable version when available
 
+dependencies {
+    testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-junit:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
+
+    testImplementation("com.expediagroup:graphql-kotlin-ktor-client:$graphqlKotlinVersion")
+    testImplementation("com.expediagroup:graphql-kotlin-client-jackson:$graphqlKotlinVersion")
+
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.4.4")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:${plugins.getPlugin(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper::class.java).kotlinPluginVersion}")
 }

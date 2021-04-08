@@ -1,9 +1,10 @@
-package com.tm.rankme.e2e
+package com.tm.rankme.e2e.steps
 
+import com.tm.rankme.e2e.Memory
 import io.cucumber.java8.En
 import kotlin.test.assertEquals
 
-class StepDefinitions(memory: Memory) : En {
+class CalculatorSteps(memory: Memory) : En {
     init {
         Given("I have numbers {int} and {int}") { number1: Int, number2: Int ->
             memory.items["number1"] = number1
