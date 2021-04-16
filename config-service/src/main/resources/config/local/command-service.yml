@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rankme
+    username: postgres
+    password: devpass
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

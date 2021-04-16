@@ -2,9 +2,9 @@ server:
   port: 9000
 spring:
   application:
-    name: api
+    name: api-service
   config:
-    import: optional:configserver:http://dev:9900/
+    import: optional:configserver:http://localhost:9900/
   rabbitmq:
     host: localhost
     port: 5672

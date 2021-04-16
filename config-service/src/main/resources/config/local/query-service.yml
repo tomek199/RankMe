@@ -1,0 +1,13 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/rankme
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
