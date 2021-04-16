@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   postgres:
-    image: library/postgres:13.1-alpine
+    image: library/postgres:13.2-alpine
     environment:
       - POSTGRES_PASSWORD=devpass
       - POSTGRES_DB=rankme
@@ -19,3 +19,33 @@ services:
     image: library/mongo:4.4.2
     ports:
       - 27017:27017
+#
+#  config-service:
+#    build: config-service
+#    ports:
+#      - 9900:9900
+#
+#  discovery-service:
+#    build: discovery-service
+#    ports:
+#      - 9800:9800
+#
+#  gateway-service:
+#    build: gateway-service
+#    ports:
+#      - 9700:9700
+#
+#  api-service:
+#    build: api-service
+#    ports:
+#      - 9000:9000
+#
+#  command-service:
+#    build: command-service
+#    ports:
+#      - 9200:9200
+#
+#  query-service:
+#    build: query-service
+#    ports:
+#      - 9300:9300

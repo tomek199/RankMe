@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: gateway-service
+  config:
+    import: optional:configserver:http://localhost:9900/
   cloud:
     gateway:
       routes:
@@ -15,3 +17,5 @@ spring:
 eureka:
   client:
     register-with-eureka: false
+    service-url:
+      defaultZone: http://localhost:9800/eureka

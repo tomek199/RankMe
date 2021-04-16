@@ -1,8 +1,10 @@
 server:
-  port: 8761
+  port: 9800
 spring:
   application:
     name: discovery-service
+  config:
+    import: optional:configserver:http://localhost:9900/
 eureka:
   server:
     maxThreadsForPeerReplication: 0

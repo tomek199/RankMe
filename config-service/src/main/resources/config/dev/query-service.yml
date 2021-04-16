@@ -10,4 +10,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://dev:8761/eureka
+      defaultZone: http://dev:9800/eureka
