@@ -4,7 +4,7 @@ spring:
   application:
     name: gateway-service
   config:
-    import: optional:configserver:http://localhost:9900/
+    import: ${CONFIG_SERVICE_URI:optional:configserver:http://localhost:9900}
   cloud:
     gateway:
       routes:
