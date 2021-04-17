@@ -4,8 +4,8 @@ services:
   postgres:
     image: library/postgres:13.2-alpine
     environment:
-      - POSTGRES_PASSWORD=devpass
-      - POSTGRES_DB=rankme
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: rankme
     ports:
       - 5432:5432
 
@@ -19,33 +19,87 @@ services:
     image: library/mongo:4.4.2
     ports:
       - 27017:27017
-#
-#  config-service:
-#    build: config-service
-#    ports:
-#      - 9900:9900
-#
-#  discovery-service:
-#    build: discovery-service
-#    ports:
-#      - 9800:9800
-#
-#  gateway-service:
-#    build: gateway-service
-#    ports:
-#      - 9700:9700
-#
-#  api-service:
-#    build: api-service
-#    ports:
-#      - 9000:9000
-#
-#  command-service:
-#    build: command-service
-#    ports:
-#      - 9200:9200
-#
-#  query-service:
-#    build: query-service
-#    ports:
-#      - 9300:9300
+
+  config-service:
+    build: config-service
+    ports:
+      - 9900:9900
+    environment:
+      SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH-LOCATIONS: classpath:config/docker
+      WAIT_LOGGER_LEVEL: info
+
+  discovery-service:
+    build: discovery-service
+    depends_on:
+      - config-service
+    ports:
+      - 9800:9800
+    environment:
+      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      WAIT_HOSTS: config-service:9900
+      WAIT_BEFORE_HOSTS: 30
+      WAIT_HOSTS_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_LOGGER_LEVEL: info
+
+  gateway-service:
+    build: gateway-service
+    depends_on:
+      - config-service
+      - discovery-service
+    ports:
+      - 9700:9700
+    environment:
+      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      WAIT_HOSTS: config-service:9900,discovery-service:9800
+      WAIT_BEFORE_HOSTS: 30
+      WAIT_HOSTS_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_LOGGER_LEVEL: info
+
+  api-service:
+    build: api-service
+    depends_on:
+      - config-service
+      - rabbitmq
+    ports:
+      - 9000:9000
+    environment:
+      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      WAIT_HOSTS: config-service:9900,rabbitmq:15672
+      WAIT_BEFORE_HOSTS: 30
+      WAIT_HOSTS_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_LOGGER_LEVEL: info
+
+  command-service:
+    build: command-service
+    depends_on:
+      - config-service
+      - rabbitmq
+      - postgres
+    ports:
+      - 9200:9200
+    environment:
+      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      WAIT_HOSTS: config-service:9900,rabbitmq:15672,postgres:5432
+      WAIT_BEFORE_HOSTS: 30
+      WAIT_HOSTS_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_LOGGER_LEVEL: info
+
+  query-service:
+    build: query-service
+    depends_on:
+      - config-service
+      - rabbitmq
+      - mongodb
+    ports:
+      - 9300:9300
+    environment:
+      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      WAIT_HOSTS: config-service:9900,rabbitmq:15672,mongodb:27017
+      WAIT_BEFORE_HOSTS: 30
+      WAIT_HOSTS_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_LOGGER_LEVEL: info
