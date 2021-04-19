@@ -1,6 +1,6 @@
 FROM openjdk:11-jdk
+RUN apt-get update && apt-get install -y netcat
 ADD build/libs/gateway-service*.jar gateway-service.jar
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.8.0/wait /wait
-RUN printf "#!/bin/bash\n/wait && java -jar /gateway-service.jar" > /entrypoint.sh
-RUN chmod +x /wait /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

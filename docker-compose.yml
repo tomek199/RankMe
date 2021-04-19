@@ -26,7 +26,6 @@ services:
       - 9900:9900
     environment:
       SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH-LOCATIONS: classpath:config/docker
-      WAIT_LOGGER_LEVEL: info
 
   discovery-service:
     build: discovery-service
@@ -36,11 +35,7 @@ services:
       - 9800:9800
     environment:
       CONFIG_SERVICE_URI: configserver:http://config-service:9900/
-      WAIT_HOSTS: config-service:9900
-      WAIT_BEFORE_HOSTS: 30
-      WAIT_HOSTS_TIMEOUT: 120
-      WAIT_SLEEP_INTERVAL: 5
-      WAIT_LOGGER_LEVEL: info
+      WAIT_CONFIG_SERVICE: config-service:9900
 
   gateway-service:
     build: gateway-service
@@ -51,11 +46,8 @@ services:
       - 9700:9700
     environment:
       CONFIG_SERVICE_URI: configserver:http://config-service:9900/
-      WAIT_HOSTS: config-service:9900,discovery-service:9800
-      WAIT_BEFORE_HOSTS: 30
-      WAIT_HOSTS_TIMEOUT: 120
-      WAIT_SLEEP_INTERVAL: 5
-      WAIT_LOGGER_LEVEL: info
+      WAIT_CONFIG_SERVICE: config-service:9900
+      WAIT_DISCOVERY_SERVICE: discovery-service:9800
 
   api-service:
     build: api-service
@@ -66,11 +58,8 @@ services:
       - 9000:9000
     environment:
       CONFIG_SERVICE_URI: configserver:http://config-service:9900/
-      WAIT_HOSTS: config-service:9900,rabbitmq:15672
-      WAIT_BEFORE_HOSTS: 30
-      WAIT_HOSTS_TIMEOUT: 120
-      WAIT_SLEEP_INTERVAL: 5
-      WAIT_LOGGER_LEVEL: info
+      WAIT_CONFIG_SERVICE: config-service:9900
+      WAIT_RABBITMQ: rabbitmq:15672
 
   command-service:
     build: command-service
@@ -82,11 +71,9 @@ services:
       - 9200:9200
     environment:
       CONFIG_SERVICE_URI: configserver:http://config-service:9900/
-      WAIT_HOSTS: config-service:9900,rabbitmq:15672,postgres:5432
-      WAIT_BEFORE_HOSTS: 30
-      WAIT_HOSTS_TIMEOUT: 120
-      WAIT_SLEEP_INTERVAL: 5
-      WAIT_LOGGER_LEVEL: info
+      WAIT_CONFIG_SERVICE: config-service:9900
+      WAIT_RABBITMQ: rabbitmq:15672
+      WAIT_POSTGRES: postgres:5432
 
   query-service:
     build: query-service
@@ -98,8 +85,6 @@ services:
       - 9300:9300
     environment:
       CONFIG_SERVICE_URI: configserver:http://config-service:9900/
-      WAIT_HOSTS: config-service:9900,rabbitmq:15672,mongodb:27017
-      WAIT_BEFORE_HOSTS: 30
-      WAIT_HOSTS_TIMEOUT: 120
-      WAIT_SLEEP_INTERVAL: 5
-      WAIT_LOGGER_LEVEL: info
+      WAIT_CONFIG_SERVICE: config-service:9900
+      WAIT_RABBITMQ: rabbitmq:15672
+      WAIT_MONGODB: mongodb:27017
