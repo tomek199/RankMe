@@ -1,4 +1,4 @@
-package com.tm.rankme.e2e
+package com.tm.rankme.e2e.query
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
 import kotlin.reflect.KClass
