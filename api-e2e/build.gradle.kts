@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 
 plugins {
     kotlin("jvm")
+    id("se.thinkcode.cucumber-runner") version "0.0.9"
 }
 
 repositories {
@@ -24,4 +25,16 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.4.4")
     testImplementation("org.testcontainers:junit-jupiter:1.15.3")
+}
+
+tasks.test {
+    enabled = false
+}
+
+task<Test>("e2e") {
+    description = "Runs end-to-end tests."
+    group = "verification"
+
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
 }
