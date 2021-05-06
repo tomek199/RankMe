@@ -65,7 +65,5 @@ class LeagueSteps(
                 } ?: fail("Cannot get league by id $id")
             }
         }
-
-        After { _ -> dbUtil.cleanup() }
     }
 }
