@@ -5,7 +5,9 @@ import io.cucumber.junit.Cucumber
 import io.cucumber.junit.CucumberOptions
 import org.junit.ClassRule
 import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.PropertySource
 import org.testcontainers.containers.DockerComposeContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.containers.wait.strategy.WaitStrategy
@@ -14,16 +16,18 @@ import java.net.URL
 import java.time.Duration
 
 @RunWith(Cucumber::class)
+@PropertySource("classpath:cucumber.properties")
 @CucumberOptions(
     features = ["src/test/resources/features"],
     plugin = ["pretty", "summary"]
 )
-class Runner {
-    private val graphQlApiUrl = "http://localhost:9000/graphql"
+class Runner(
+    @Value("\${api-service.url}") private val apiServiceUrl: String
+) {
 
     @Bean
     fun graphQlClient(): GraphQLKtorClient {
-        return GraphQLKtorClient(URL(graphQlApiUrl))
+        return GraphQLKtorClient(URL(apiServiceUrl))
     }
 
     companion object {

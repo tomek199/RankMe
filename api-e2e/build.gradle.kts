@@ -12,6 +12,7 @@ repositories {
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
 val cucumberVersion = "6.10.2"
 val graphqlKotlinVersion = "4.0.0-rc.1" // FIXME change to stable version when available
+val springBootVersion = "2.4.4"
 
 dependencies {
     testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
@@ -23,7 +24,8 @@ dependencies {
 
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.4.4")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-mongodb:$springBootVersion")
     testImplementation("org.testcontainers:junit-jupiter:1.15.3")
 }
 

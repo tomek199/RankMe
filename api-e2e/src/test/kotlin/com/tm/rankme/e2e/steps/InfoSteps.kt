@@ -1,7 +1,7 @@
 package com.tm.rankme.e2e.steps
 
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
-import com.tm.rankme.e2e.query.InfoQuery
+import com.tm.rankme.e2e.query.Info
 import io.cucumber.java8.En
 import kotlinx.coroutines.runBlocking
 import kotlin.test.assertEquals
@@ -15,7 +15,7 @@ class InfoSteps(
     init {
         When("I send query to get info message") {
             runBlocking {
-                val result = graphQlClient.execute(InfoQuery())
+                val result = graphQlClient.execute(Info())
                 infoMessage = result.data?.info
             }
         }
