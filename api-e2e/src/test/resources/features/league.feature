@@ -1,7 +1,7 @@
 Feature: League
 
   Background: I init and cleanup database
-    Given I create league "To init database scheme"
+    Given I create league "To init league scheme"
     And I cleanup database
 
   Scenario: Manage new league
