@@ -13,5 +13,8 @@ class DatabaseUtil(
 
     fun playerIdByName(name: String): UUID = playerRepository.getFirstByName(name).id
 
-    fun cleanup() = leagueRepository.deleteAll()
+    fun cleanup() {
+        leagueRepository.deleteAll()
+        playerRepository.deleteAll()
+    }
 }
