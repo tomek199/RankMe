@@ -1,8 +1,10 @@
 server:
   port: 9900
 spring:
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        git:
-          uri: file://${user.home}/Documents/Projects/rankme-config
+        native:
+          search-locations: classpath:config/local

@@ -1,0 +1,35 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: api-service
+  config:
+    import: ${CONFIG_SERVICE_URI:optional:configserver:http://localhost:9900}
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      bindings:
+        apiCommand-out-0:
+          destination: api.command
+      rabbit:
+        bindings:
+          apiCommand-out-0:
+            producer:
+              routingKeyExpression: headers['type']
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: true
+graphiql:
+  mapping: /graphiql
+  enabled: true
+  cdn:
+    enabled: false
+    version: 0.13.0
+gateway:
+  url: http://localhost:9700

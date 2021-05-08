@@ -4,7 +4,7 @@ spring:
   application:
     name: query-service
   config:
-    import: optional:configserver:http://dev:9900/
+    import: ${CONFIG_SERVICE_URI:optional:configserver:http://localhost:9900}
   rabbitmq:
     host: localhost
     port: 5672
@@ -37,3 +37,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/rankme
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9800/eureka
