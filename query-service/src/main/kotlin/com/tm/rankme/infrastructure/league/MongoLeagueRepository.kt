@@ -1,10 +1,10 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.league
 
 import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
-import java.util.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class MongoLeagueRepository(

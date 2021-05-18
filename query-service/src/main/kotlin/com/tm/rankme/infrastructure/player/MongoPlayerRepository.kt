@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.player
 
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository

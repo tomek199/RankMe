@@ -1,8 +1,8 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.player
 
-import java.util.*
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.*
 
 @Document(collection = "player")
 data class PlayerEntity(
