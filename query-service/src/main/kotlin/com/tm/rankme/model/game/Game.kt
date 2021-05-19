@@ -9,13 +9,13 @@ data class Game(
     val dateTime: LocalDateTime,
     val playerOneId: UUID,
     val playerOneName: String,
-    val playerOneRating: Int,
-    val playerOneDeviation: Int,
+    var playerOneRating: Int,
+    var playerOneDeviation: Int,
     val playerTwoId: UUID,
     val playerTwoName: String,
-    val playerTwoRating: Int,
-    val playerTwoDeviation: Int,
-    val result: Result? = null
+    var playerTwoRating: Int,
+    var playerTwoDeviation: Int,
+    var result: Result? = null
 )
 
 data class Result(

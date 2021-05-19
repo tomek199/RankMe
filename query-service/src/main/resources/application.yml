@@ -14,7 +14,8 @@ spring:
     stream:
       function:
         definition: "leagueCreatedMessageConsumer;leagueRenamedMessageConsumer;leagueSettingsChangedMessageConsumer;\
-        playerCreatedMessageConsumer;playerPlayedGameMessageConsumer"
+        playerCreatedMessageConsumer;playerPlayedGameMessageConsumer;\
+        gamePlayedMessageConsumer"
       bindings:
         leagueCreatedMessageConsumer-in-0:
           destination: command.query
@@ -31,6 +32,9 @@ spring:
         playerPlayedGameMessageConsumer-in-0:
           destination: command.query
           group: player-played-game-consumer-group
+        gamePlayedMessageConsumer-in-0:
+          destination: command.query
+          group: game-played-consumer-group
       rabbit:
         bindings:
           leagueCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: league-created
@@ -38,6 +42,7 @@ spring:
           leagueSettingsChangedMessageConsumer-in-0.consumer.bindingRoutingKey: league-settings-changed
           playerCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: player-created
           playerPlayedGameMessageConsumer-in-0.consumer.bindingRoutingKey: player-played-game
+          gamePlayedMessageConsumer-in-0.consumer.bindingRoutingKey: game-played
   data:
     mongodb:
       uri: mongodb://localhost:27017/rankme
