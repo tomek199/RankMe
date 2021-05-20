@@ -15,7 +15,8 @@ class LeagueController(private val repository: LeagueRepository) {
     private val log = LoggerFactory.getLogger(LeagueController::class.java)
 
     @GetMapping("/{id}")
-    fun league(@PathVariable id: String): League? = repository.byId(UUID.fromString(id)).also {
+    fun league(@PathVariable id: String): League? {
         log.info("Get league by id=$id")
+        return repository.byId(UUID.fromString(id))
     }
 }
