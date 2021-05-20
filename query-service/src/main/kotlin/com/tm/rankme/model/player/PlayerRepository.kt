@@ -5,4 +5,5 @@ import java.util.*
 interface PlayerRepository {
     fun byId(id: UUID): Player?
     fun store(player: Player)
+    fun byLeagueId(leagueId: UUID): List<Player>
 }

@@ -62,4 +62,37 @@ internal class MongoPlayerRepositoryTest {
             assertEquals(player.rating, it.rating)
         }
     }
+
+    @Test
+    internal fun `Should return players list by league id`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val playerEntities = listOf(
+            PlayerEntity(UUID.randomUUID(), leagueId, "Optimus Prime", 245, 1783),
+            PlayerEntity(UUID.randomUUID(), leagueId, "Megatron", 184, 1298),
+            PlayerEntity(UUID.randomUUID(), leagueId, "Bumblebee", 326, 2864)
+        )
+        every { accessor.findAllByLeagueId(leagueId) } returns playerEntities
+        // when
+        val players = repository.byLeagueId(leagueId)
+        // then
+        players.forEachIndexed { index, player ->
+            assertEquals(leagueId, player.leagueId)
+            assertEquals(playerEntities[index].id, player.id)
+            assertEquals(playerEntities[index].name, player.name)
+            assertEquals(playerEntities[index].deviation, player.deviation)
+            assertEquals(playerEntities[index].rating, player.rating)
+        }
+    }
+
+    @Test
+    internal fun `Should return empty list for players by league id`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        every { accessor.findAllByLeagueId(leagueId) } returns emptyList()
+        // when
+        val players = repository.byLeagueId(leagueId)
+        // then
+        assertTrue(players.isEmpty())
+    }
 }

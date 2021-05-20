@@ -3,10 +3,7 @@ package com.tm.rankme.query
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
@@ -17,5 +14,10 @@ class PlayerController(private val repository: PlayerRepository) {
     @GetMapping("/{id}")
     fun player(@PathVariable id: String): Player? = repository.byId(UUID.fromString(id)).also {
         log.info("Get player by id=$id")
+    }
+
+    @GetMapping("")
+    fun playersByLeagueId(@RequestParam leagueId: String): List<Player> = repository.byLeagueId(UUID.fromString(leagueId)).also {
+        log.info("Get players by leagueId=$leagueId")
     }
 }

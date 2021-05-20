@@ -51,4 +51,45 @@ internal class PlayerControllerIntegrationTest {
             jsonPath("$") { doesNotExist() }
         }
     }
+
+    @Test
+    internal fun `Should return players list by league id`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val entities = listOf(
+            PlayerEntity(UUID.randomUUID(), leagueId, "Optimus Prime", 245, 1783),
+            PlayerEntity(UUID.randomUUID(), leagueId, "Megatron", 184, 1298),
+        )
+        every { playerAccessor.findAllByLeagueId(leagueId) } returns entities
+        // when
+        val result = mvc.get("/players?leagueId=$leagueId")
+        // then
+        result.andExpect {
+            status { isOk() }
+            jsonPath("$[0].id") { value(entities[0].id.toString()) }
+            jsonPath("$[0].leagueId") { value(entities[0].leagueId.toString()) }
+            jsonPath("$[0].name") { value(entities[0].name) }
+            jsonPath("$[0].deviation") { value(entities[0].deviation) }
+            jsonPath("$[0].rating") { value(entities[0].rating) }
+            jsonPath("$[1].id") { value(entities[1].id.toString()) }
+            jsonPath("$[1].leagueId") { value(entities[1].leagueId.toString()) }
+            jsonPath("$[1].name") { value(entities[1].name) }
+            jsonPath("$[1].deviation") { value(entities[1].deviation) }
+            jsonPath("$[1].rating") { value(entities[1].rating) }
+        }
+    }
+    
+    @Test
+    internal fun `Should return empty list for players by league id`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        every { playerAccessor.findAllByLeagueId(leagueId) } returns emptyList()
+        // when
+        val result = mvc.get("/players?leagueId=$leagueId")
+        // then
+        result.andExpect {
+            status { isOk() }
+            jsonPath("$") { isEmpty() }
+        }
+    }
 }
