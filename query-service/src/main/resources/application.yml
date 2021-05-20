@@ -15,7 +15,7 @@ spring:
       function:
         definition: "leagueCreatedMessageConsumer;leagueRenamedMessageConsumer;leagueSettingsChangedMessageConsumer;\
         playerCreatedMessageConsumer;playerPlayedGameMessageConsumer;\
-        gamePlayedMessageConsumer"
+        gameScheduledMessageConsumer;gamePlayedMessageConsumer"
       bindings:
         leagueCreatedMessageConsumer-in-0:
           destination: command.query
@@ -32,6 +32,9 @@ spring:
         playerPlayedGameMessageConsumer-in-0:
           destination: command.query
           group: player-played-game-consumer-group
+        gameScheduledMessageConsumer-in-0:
+          destination: coommand.query
+          group: game-scheduled-consumer-group
         gamePlayedMessageConsumer-in-0:
           destination: command.query
           group: game-played-consumer-group
@@ -42,6 +45,7 @@ spring:
           leagueSettingsChangedMessageConsumer-in-0.consumer.bindingRoutingKey: league-settings-changed
           playerCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: player-created
           playerPlayedGameMessageConsumer-in-0.consumer.bindingRoutingKey: player-played-game
+          gameScheduledMessageConsumer-in-0.consumer.bindingRoutingKey: game-scheduled
           gamePlayedMessageConsumer-in-0.consumer.bindingRoutingKey: game-played
   data:
     mongodb:
