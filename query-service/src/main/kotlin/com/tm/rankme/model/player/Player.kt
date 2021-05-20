@@ -6,6 +6,6 @@ data class Player(
     val id: UUID,
     val leagueId: UUID,
     val name: String,
-    val deviation: Int,
-    val rating: Int
+    var deviation: Int,
+    var rating: Int
 )

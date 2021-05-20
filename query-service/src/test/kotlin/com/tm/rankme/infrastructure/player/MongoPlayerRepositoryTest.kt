@@ -1,4 +1,4 @@
-package com.tm.rankme.infrastructure
+package com.tm.rankme.infrastructure.player
 
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
@@ -6,12 +6,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Test
+import org.springframework.data.repository.findByIdOrNull
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
-import org.springframework.data.repository.findByIdOrNull
 
 internal class MongoPlayerRepositoryTest {
     private val accessor: MongoPlayerAccessor = mockk()

@@ -1,8 +1,8 @@
 package com.tm.rankme.query
 
 import com.ninjasquad.springmockk.MockkBean
-import com.tm.rankme.infrastructure.MongoPlayerAccessor
-import com.tm.rankme.infrastructure.PlayerEntity
+import com.tm.rankme.infrastructure.player.MongoPlayerAccessor
+import com.tm.rankme.infrastructure.player.PlayerEntity
 import com.tm.rankme.model.player.PlayerRepository
 import io.mockk.every
 import org.junit.jupiter.api.Test
