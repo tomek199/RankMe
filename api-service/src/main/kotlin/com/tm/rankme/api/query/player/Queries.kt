@@ -4,3 +4,5 @@ import com.tm.rankme.api.query.Query
 import java.util.*
 
 data class GetPlayerQuery(val id: UUID) : Query()
+
+data class GetPlayersQuery(val leagueId: UUID) : Query()

@@ -22,11 +22,4 @@ class GetPlayer(
     data class Result(
         val getPlayer: Player,
     )
-
-    data class Player(
-        val id: UUID,
-        val name: String,
-        val deviation: Int,
-        val rating: Int
-    )
 }

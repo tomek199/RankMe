@@ -1,6 +1,8 @@
 package com.tm.rankme.infrastructure.player
 
-import java.util.*
 import org.springframework.data.mongodb.repository.MongoRepository
+import java.util.*
 
-interface MongoPlayerAccessor : MongoRepository<PlayerEntity, UUID>
+interface MongoPlayerAccessor : MongoRepository<PlayerEntity, UUID> {
+    fun findAllByLeagueId(leagueId: UUID): List<PlayerEntity>
+}
