@@ -2,10 +2,14 @@ package com.tm.rankme.api.query.league
 
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
+import com.tm.rankme.api.query.player.Player
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import java.util.*
 import kotlin.test.assertEquals
@@ -22,7 +26,14 @@ internal class LeagueQueryIntegrationTest {
     internal fun `Should return league`() {
         // given
         val league = League(UUID.fromString("83222ad3-219c-48b0-bcc2-817efb61cfda"), "Transformers", true, 3)
+        val players = listOf(
+            Player(UUID.randomUUID(), "Optimus Prime", 145, 2746),
+        )
         every { restTemplate.getForObject(ofType(String::class), League::class.java) } returns league
+        every {
+            restTemplate.exchange(ofType(String::class), HttpMethod.GET, null,
+                ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(players))
         val request = "graphql/get-league.graphql"
         // when
         val response = template.postForResource(request)
@@ -32,5 +43,9 @@ internal class LeagueQueryIntegrationTest {
         assertEquals(league.name, response.get("$.data.getLeague.name"))
         assertEquals(league.allowDraws, response.get("$.data.getLeague.allowDraws", Boolean::class.java))
         assertEquals(league.maxScore, response.get("$.data.getLeague.maxScore", Int::class.java))
+        assertEquals(players[0].id.toString(), response.get("$.data.getLeague.players[0].id"))
+        assertEquals(players[0].name, response.get("$.data.getLeague.players[0].name"))
+        assertEquals(players[0].deviation, response.get("$.data.getLeague.players[0].deviation").toInt())
+        assertEquals(players[0].rating, response.get("$.data.getLeague.players[0].rating").toInt())
     }
 }

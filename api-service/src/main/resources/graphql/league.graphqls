@@ -22,4 +22,5 @@ type League {
     name: String!
     allowDraws: Boolean!
     maxScore: Int!
+    players: [Player!]!
 }
