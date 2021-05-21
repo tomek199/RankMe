@@ -6,6 +6,7 @@ import com.tm.rankme.e2e.mutation.ChangeLeagueSettings
 import com.tm.rankme.e2e.mutation.CreateLeague
 import com.tm.rankme.e2e.mutation.RenameLeague
 import com.tm.rankme.e2e.query.GetLeague
+import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -29,8 +30,7 @@ class LeagueSteps(
             }
         }
 
-        When("I change league {string} settings to allow draws {} and max score {int}") {
-                name: String, allowDraws: Boolean, maxScore: Int ->
+        When("I change league {string} settings to allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
             runBlocking {
                 delay(stepDelay)
                 val id = dbUtil.leagueIdByName(name)
@@ -60,6 +60,22 @@ class LeagueSteps(
                     assertEquals(name, it.getLeague.name)
                     assertEquals(allowDraws, it.getLeague.allowDraws)
                     assertEquals(maxScore, it.getLeague.maxScore)
+                } ?: fail("Cannot get league by id $id")
+            }
+        }
+
+        Then("I have players in league {string}:") { name: String, playersTable: DataTable ->
+            runBlocking {
+                delay(stepDelay)
+                val id = dbUtil.leagueIdByName(name)
+                val query = GetLeague(id)
+                graphQlClient.execute(query).data?.let {
+                    val players = playersTable.asMaps()
+                    players.forEachIndexed { index, player ->
+                        assertEquals(player["name"], it.getLeague.players[index].name)
+                        assertEquals(player["deviation"]?.toInt(), it.getLeague.players[index].deviation)
+                        assertEquals(player["rating"]?.toInt(), it.getLeague.players[index].rating)
+                    }
                 } ?: fail("Cannot get league by id $id")
             }
         }

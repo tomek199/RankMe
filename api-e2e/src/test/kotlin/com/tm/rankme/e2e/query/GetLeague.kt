@@ -14,6 +14,9 @@ class GetLeague(
                 id: "$id" 
             }) {
                 id name allowDraws maxScore
+                players {
+                    id name deviation rating
+                }
             }
         }"""
 
@@ -21,12 +24,5 @@ class GetLeague(
 
     data class Result(
         val getLeague: League,
-    )
-
-    data class League(
-        val id: UUID,
-        val name: String,
-        val allowDraws: Boolean,
-        val maxScore: Int
     )
 }
