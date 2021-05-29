@@ -8,11 +8,17 @@ import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.random.Random
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class MongoGameRepositoryTest {
     private val accessor: MongoGameAccessor = mockk()
@@ -22,23 +28,23 @@ internal class MongoGameRepositoryTest {
     internal fun `Should return game without result`() {
         // given
         val gameEntity = GameEntity(
-            UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now(),
-            UUID.randomUUID(), "Batman", 1673, 286,
-            UUID.randomUUID(), "Superman", 2792, 173
+            UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDateTime.now(),
+            UUID.randomUUID().toString(), "Batman", 1673, 286,
+            UUID.randomUUID().toString(), "Superman", 2792, 173
         )
         every { accessor.findByIdOrNull(gameEntity.id) } returns gameEntity
         // when
-        val game = repository.byId(gameEntity.id)
+        val game = repository.byId(UUID.fromString(gameEntity.id))
         // then
         game?.let {
-            assertEquals(gameEntity.id, it.id)
-            assertEquals(gameEntity.leagueId, it.leagueId)
+            assertEquals(gameEntity.id, it.id.toString())
+            assertEquals(gameEntity.leagueId, it.leagueId.toString())
             assertEquals(gameEntity.dateTime, it.dateTime)
-            assertEquals(gameEntity.playerOneId, it.playerOneId)
+            assertEquals(gameEntity.playerOneId, it.playerOneId.toString())
             assertEquals(gameEntity.playerOneName, it.playerOneName)
             assertEquals(gameEntity.playerOneDeviation, it.playerOneDeviation)
             assertEquals(gameEntity.playerOneRating, it.playerOneRating)
-            assertEquals(gameEntity.playerTwoId, it.playerTwoId)
+            assertEquals(gameEntity.playerTwoId, it.playerTwoId.toString())
             assertEquals(gameEntity.playerTwoName, it.playerTwoName)
             assertEquals(gameEntity.playerTwoDeviation, it.playerTwoDeviation)
             assertEquals(gameEntity.playerTwoRating, it.playerTwoRating)
@@ -51,24 +57,24 @@ internal class MongoGameRepositoryTest {
         // given
         val result = Result(2, -34, 65, 1, -45, -57)
         val gameEntity = GameEntity(
-            UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now(),
-            UUID.randomUUID(), "Batman", 1673, 286,
-            UUID.randomUUID(), "Superman", 2792, 173,
+            UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDateTime.now(),
+            UUID.randomUUID().toString(), "Batman", 1673, 286,
+            UUID.randomUUID().toString(), "Superman", 2792, 173,
             result
         )
         every { accessor.findByIdOrNull(gameEntity.id) } returns gameEntity
         // when
-        val game = repository.byId(gameEntity.id)
+        val game = repository.byId(UUID.fromString(gameEntity.id))
         // then
         game?.let {
-            assertEquals(gameEntity.id, it.id)
-            assertEquals(gameEntity.leagueId, it.leagueId)
+            assertEquals(gameEntity.id, it.id.toString())
+            assertEquals(gameEntity.leagueId, it.leagueId.toString())
             assertEquals(gameEntity.dateTime, it.dateTime)
-            assertEquals(gameEntity.playerOneId, it.playerOneId)
+            assertEquals(gameEntity.playerOneId, it.playerOneId.toString())
             assertEquals(gameEntity.playerOneName, it.playerOneName)
             assertEquals(gameEntity.playerOneDeviation, it.playerOneDeviation)
             assertEquals(gameEntity.playerOneRating, it.playerOneRating)
-            assertEquals(gameEntity.playerTwoId, it.playerTwoId)
+            assertEquals(gameEntity.playerTwoId, it.playerTwoId.toString())
             assertEquals(gameEntity.playerTwoName, it.playerTwoName)
             assertEquals(gameEntity.playerTwoDeviation, it.playerTwoDeviation)
             assertEquals(gameEntity.playerTwoRating, it.playerTwoRating)
@@ -85,7 +91,7 @@ internal class MongoGameRepositoryTest {
     internal fun `Should return null when game does not exist`() {
         // given
         val id = UUID.randomUUID()
-        every { accessor.findByIdOrNull(id) } returns null
+        every { accessor.findByIdOrNull(id.toString()) } returns null
         // when
         val game = repository.byId(id)
         // then
@@ -107,14 +113,14 @@ internal class MongoGameRepositoryTest {
         val entitySlot = slot<GameEntity>()
         verify(exactly = 1) { accessor.save(capture(entitySlot)) }
         entitySlot.captured.let {
-            assertEquals(game.id, it.id)
-            assertEquals(game.leagueId, it.leagueId)
+            assertEquals(game.id.toString(), it.id)
+            assertEquals(game.leagueId.toString(), it.leagueId)
             assertEquals(game.dateTime, it.dateTime)
-            assertEquals(game.playerOneId, it.playerOneId)
+            assertEquals(game.playerOneId.toString(), it.playerOneId)
             assertEquals(game.playerOneName, it.playerOneName)
             assertEquals(game.playerOneDeviation, it.playerOneDeviation)
             assertEquals(game.playerOneRating, it.playerOneRating)
-            assertEquals(game.playerTwoId, it.playerTwoId)
+            assertEquals(game.playerTwoId.toString(), it.playerTwoId)
             assertEquals(game.playerTwoName, it.playerTwoName)
             assertEquals(game.playerTwoDeviation, it.playerTwoDeviation)
             assertEquals(game.playerTwoRating, it.playerTwoRating)
@@ -139,14 +145,14 @@ internal class MongoGameRepositoryTest {
         val entitySlot = slot<GameEntity>()
         verify(exactly = 1) { accessor.save(capture(entitySlot)) }
         entitySlot.captured.let {
-            assertEquals(game.id, it.id)
-            assertEquals(game.leagueId, it.leagueId)
+            assertEquals(game.id.toString(), it.id)
+            assertEquals(game.leagueId.toString(), it.leagueId)
             assertEquals(game.dateTime, it.dateTime)
-            assertEquals(game.playerOneId, it.playerOneId)
+            assertEquals(game.playerOneId.toString(), it.playerOneId)
             assertEquals(game.playerOneName, it.playerOneName)
             assertEquals(game.playerOneDeviation, it.playerOneDeviation)
             assertEquals(game.playerOneRating, it.playerOneRating)
-            assertEquals(game.playerTwoId, it.playerTwoId)
+            assertEquals(game.playerTwoId.toString(), it.playerTwoId)
             assertEquals(game.playerTwoName, it.playerTwoName)
             assertEquals(game.playerTwoDeviation, it.playerTwoDeviation)
             assertEquals(game.playerTwoRating, it.playerTwoRating)
@@ -157,5 +163,93 @@ internal class MongoGameRepositoryTest {
             assertEquals(game.result!!.playerTwoDeviationDelta, it.result!!.playerTwoDeviationDelta)
             assertEquals(game.result!!.playerTwoRatingDelta, it.result!!.playerTwoRatingDelta)
         }
+    }
+
+    @Test
+    internal fun `Should return empty games page`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        every { accessor.getByLeagueIdOrderByTimestamp(leagueId.toString(), ofType(Pageable::class)) } returns
+                PageImpl(emptyList(), PageRequest.of(0, 5), 0)
+        // when
+        val page = repository.byLeagueId(leagueId, 5)
+        // then
+        assertTrue(page.items.isEmpty())
+        assertFalse(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first games page`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val games = List(10) {
+            GameEntity(
+                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
+                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+
+        every { accessor.getByLeagueIdOrderByTimestamp(leagueId.toString(), ofType(Pageable::class)) } returns
+                PageImpl(games.subList(0, 5), PageRequest.of(0, 5), 10)
+        // when
+        val page = repository.byLeagueId(leagueId, 5)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[0].id, page.items.first().node.id.toString())
+        assertEquals(games[4].id, page.items.last().node.id.toString())
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return middle games page`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val games = List(10) {
+            GameEntity(
+                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
+                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        every {
+            accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(leagueId.toString(), games[1].timestamp, ofType(Pageable::class))
+        } returns PageImpl(games.subList(2, 7), PageRequest.of(0, 5), 8)
+        val afterCursor = Base64.getEncoder().encodeToString(games[1].timestamp.toString().toByteArray())
+        // when
+        val page = repository.byLeagueId(leagueId, 5, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[2].id, page.items.first().node.id.toString())
+        assertEquals(games[6].id, page.items.last().node.id.toString())
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return last games page`() {
+        // given
+        val leagueId = UUID.randomUUID()
+        val games = List(10) {
+            GameEntity(
+                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
+                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        every {
+            accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(leagueId.toString(), games[4].timestamp, ofType(Pageable::class))
+        } returns PageImpl(games.takeLast(5), PageRequest.of(0, 5), 5)
+        val afterCursor = Base64.getEncoder().encodeToString(games[4].timestamp.toString().toByteArray())
+        // when
+        val page = repository.byLeagueId(leagueId, 5, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[5].id, page.items.first().node.id.toString())
+        assertEquals(games[9].id, page.items.last().node.id.toString())
+        assertTrue(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
     }
 }

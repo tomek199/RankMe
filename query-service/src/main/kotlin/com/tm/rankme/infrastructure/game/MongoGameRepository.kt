@@ -1,8 +1,11 @@
 package com.tm.rankme.infrastructure.game
 
+import com.tm.rankme.model.Item
+import com.tm.rankme.model.Page
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.Result
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -12,18 +15,7 @@ class MongoGameRepository(
     private val accessor: MongoGameAccessor
 ) : GameRepository {
 
-    override fun byId(id: UUID): Game? = accessor.findByIdOrNull(id)?.let {
-        val result = it.result?.let { entityResult -> Result(
-            entityResult.playerOneScore, entityResult.playerOneDeviationDelta, entityResult.playerOneRatingDelta,
-            entityResult.playerTwoScore, entityResult.playerTwoDeviationDelta, entityResult.playerTwoRatingDelta
-        ) }
-        Game(
-            it.id, it.leagueId, it.dateTime,
-            it.playerOneId, it.playerOneName, it.playerOneRating, it.playerOneDeviation,
-            it.playerTwoId, it.playerTwoName, it.playerTwoRating, it.playerTwoDeviation,
-            result
-        )
-    }
+    override fun byId(id: UUID): Game? = accessor.findByIdOrNull(id.toString())?.let { gameFromEntity(it) }
 
     override fun store(game: Game) {
         val result = game.result?.let { gameResult ->
@@ -33,11 +25,39 @@ class MongoGameRepository(
             )
         }
         val entity = GameEntity(
-            game.id, game.leagueId, game.dateTime,
-            game.playerOneId, game.playerOneName, game.playerOneRating, game.playerOneDeviation,
-            game.playerTwoId, game.playerTwoName, game.playerTwoRating, game.playerTwoDeviation,
+            game.id.toString(), game.leagueId.toString(), game.dateTime,
+            game.playerOneId.toString(), game.playerOneName, game.playerOneRating, game.playerOneDeviation,
+            game.playerTwoId.toString(), game.playerTwoName, game.playerTwoRating, game.playerTwoDeviation,
             result
         )
         accessor.save(entity)
     }
+
+    override fun byLeagueId(leagueId: UUID, first: Int, after: String?): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = after
+            ?.let { accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(leagueId.toString(), decode(after), pageable) }
+            ?: accessor.getByLeagueIdOrderByTimestamp(leagueId.toString(), pageable)
+        val games: List<Item<Game>> = page.content.map(this::itemForEntity)
+        return Page(games, after != null, page.hasNext())
+    }
+
+    private fun itemForEntity(entity: GameEntity) = Item(gameFromEntity(entity), encode(entity.timestamp))
+
+    private fun gameFromEntity(entity: GameEntity): Game {
+        val result = entity.result?.let { entityResult -> Result(
+            entityResult.playerOneScore, entityResult.playerOneDeviationDelta, entityResult.playerOneRatingDelta,
+            entityResult.playerTwoScore, entityResult.playerTwoDeviationDelta, entityResult.playerTwoRatingDelta
+        ) }
+        return Game(
+            UUID.fromString(entity.id), UUID.fromString(entity.leagueId), entity.dateTime,
+            UUID.fromString(entity.playerOneId), entity.playerOneName, entity.playerOneRating, entity.playerOneDeviation,
+            UUID.fromString(entity.playerTwoId), entity.playerTwoName, entity.playerTwoRating, entity.playerTwoDeviation,
+            result
+        )
+    }
+
+    private fun decode(value: String) = String(Base64.getDecoder().decode(value)).toLong()
+
+    private fun encode(timestamp: Long) = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
 }

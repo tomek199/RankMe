@@ -3,22 +3,22 @@ package com.tm.rankme.infrastructure.game
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import java.util.*
 
 @Document(collection = "game")
 data class GameEntity(
-    @Id val id: UUID,
-    val leagueId: UUID,
+    @Id val id: String,
+    val leagueId: String,
     val dateTime: LocalDateTime,
-    val playerOneId: UUID,
+    val playerOneId: String,
     val playerOneName: String,
     val playerOneRating: Int,
     val playerOneDeviation: Int,
-    val playerTwoId: UUID,
+    val playerTwoId: String,
     val playerTwoName: String,
     val playerTwoRating: Int,
     val playerTwoDeviation: Int,
-    val result: Result? = null
+    val result: Result? = null,
+    val timestamp: Long = System.currentTimeMillis()
 )
 
 data class Result(
