@@ -10,6 +10,7 @@ import com.tm.rankme.api.query.player.Player
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
@@ -25,6 +26,8 @@ import kotlin.test.assertTrue
 internal class LeagueQueryIntegrationTest {
     @Autowired
     private lateinit var template: GraphQLTestTemplate
+    @Value("\${gateway.url}")
+    private lateinit var url: String
     @MockkBean
     private lateinit var restTemplate: RestTemplate
 
@@ -48,14 +51,14 @@ internal class LeagueQueryIntegrationTest {
         }
         val page = Page(games.map { Item(it, it.id.toString()) }, false, true)
         every {
-            restTemplate.getForObject("http://localhost:9700/query-service/leagues/${league.id}", League::class.java)
+            restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java)
         } returns league
         every {
-            restTemplate.exchange("http://localhost:9700/query-service/players?leagueId=${league.id}",
+            restTemplate.exchange("$url/query-service/players?leagueId=${league.id}",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(players))
         every {
-            restTemplate.exchange("http://localhost:9700/query-service/games?leagueId=${league.id}&first=3",
+            restTemplate.exchange("$url/query-service/games?leagueId=${league.id}&first=3",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
         val request = "graphql/get-league.graphql"
