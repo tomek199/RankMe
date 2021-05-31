@@ -16,3 +16,26 @@ input CompleteGameCommand {
     playerOneScore: Int!
     playerTwoScore: Int!
 }
+
+type Game {
+    id: UUID!
+    dateTime: LocalDateTime!
+    playerOneId: UUID!
+    playerOneName: String!
+    playerOneRating: Int!
+    playerOneDeviation: Int!
+    playerTwoId: UUID!
+    playerTwoName: String!
+    playerTwoRating: Int!
+    playerTwoDeviation: Int!
+    result: Result
+}
+
+type Result {
+    playerOneScore: Int!
+    playerOneDeviationDelta: Int!
+    playerOneRatingDelta: Int!
+    playerTwoScore: Int!
+    playerTwoDeviationDelta: Int!
+    playerTwoRatingDelta: Int!
+}

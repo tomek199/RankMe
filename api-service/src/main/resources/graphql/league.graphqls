@@ -23,4 +23,5 @@ type League {
     allowDraws: Boolean!
     maxScore: Int!
     players: [Player!]!
+    games(first: Int!, after: String): GameConnection @connection(for: "Game")
 }
