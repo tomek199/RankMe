@@ -11,8 +11,7 @@ import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
-import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.test.*
 
 class LeagueSteps(
     private val graphQlClient: GraphQLKtorClient,
@@ -76,6 +75,27 @@ class LeagueSteps(
                         assertEquals(player["deviation"]?.toInt(), it.getLeague.players[index].deviation)
                         assertEquals(player["rating"]?.toInt(), it.getLeague.players[index].rating)
                     }
+                } ?: fail("Cannot get league by id $id")
+            }
+        }
+
+        Then("I have first {int} games listed in league {string}") { first: Int, name: String ->
+            runBlocking {
+                delay(stepDelay)
+                val id = dbUtil.leagueIdByName(name)
+                val query = GetLeague(id, first)
+                graphQlClient.execute(query).data?.let {
+                    assertNotNull(it.getLeague.games)
+                    assertFalse(it.getLeague.games.pageInfo.hasPreviousPage)
+                    assertTrue(it.getLeague.games.pageInfo.hasNextPage)
+                    assertEquals(first, it.getLeague.games.edges.size)
+                    assertEquals(it.getLeague.games.pageInfo.startCursor, it.getLeague.games.edges.first().cursor)
+                    assertEquals(it.getLeague.games.pageInfo.endCursor, it.getLeague.games.edges.last().cursor)
+                    it.getLeague.games.edges.forEach { edge ->
+                        assertEquals(it.getLeague.players.first().id, edge.node.playerOneId)
+                        assertEquals(it.getLeague.players.last().id, edge.node.playerTwoId)
+                    }
+                    println(it)
                 } ?: fail("Cannot get league by id $id")
             }
         }

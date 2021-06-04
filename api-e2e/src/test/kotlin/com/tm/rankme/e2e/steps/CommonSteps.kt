@@ -16,4 +16,4 @@ class CommonSteps(private val dbUtil: DatabaseUtil) : En {
     }
 }
 
-val status = "SUBMITTED"
+const val status = "SUBMITTED"

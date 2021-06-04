@@ -19,3 +19,10 @@ Feature: League
       | name          | deviation | rating |
       | Optimus Prime | 350       | 1500   |
       | Bumblebee     | 350       | 1500   |
+
+  Scenario: Create league with games
+    Given I create league "Star Wars"
+    And I create player "Han Solo" in league "Star Wars"
+    And I create player "Darth Vader" in league "Star Wars"
+    When I play 6 games between "Han Solo" and "Darth Vader"
+    Then I have first 4 games listed in league "Star Wars"

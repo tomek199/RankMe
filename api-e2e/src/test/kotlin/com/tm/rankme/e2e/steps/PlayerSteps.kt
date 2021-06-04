@@ -9,6 +9,7 @@ import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
+import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
@@ -34,11 +35,7 @@ class PlayerSteps(
                 playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int ->
             runBlocking {
                 delay(stepDelay)
-                val playerOneId = dbUtil.playerIdByName(playerOneName)
-                val playerTwoId = dbUtil.playerIdByName(playerTwoName)
-                val mutation = PlayGame(playerOneId, playerTwoId, playerOneScore, playerTwoScore)
-                val result = graphQlClient.execute(mutation)
-                assertEquals(status, result.data?.playGame)
+                playGame(playerOneName, playerTwoName, playerOneScore, playerTwoScore)
             }
         }
 
@@ -56,5 +53,22 @@ class PlayerSteps(
                 } ?: fail("Cannot get player by id $id")
             }
         }
+        When("I play {int} games between {string} and {string}") {
+                numberOfGames: Int, playerOneName: String, playerTwoName: String ->
+            runBlocking {
+                delay(stepDelay)
+                repeat(numberOfGames) {
+                    playGame(playerOneName, playerTwoName, Random.nextInt(10), Random.nextInt(10))
+                }
+            }
+        }
+    }
+
+    private suspend fun playGame(playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int) {
+        val playerOneId = dbUtil.playerIdByName(playerOneName)
+        val playerTwoId = dbUtil.playerIdByName(playerTwoName)
+        val mutation = PlayGame(playerOneId, playerTwoId, playerOneScore, playerTwoScore)
+        val result = graphQlClient.execute(mutation)
+        assertEquals(status, result.data?.playGame)
     }
 }
