@@ -17,6 +17,7 @@ type Query {
     info: String!
     getLeague(query: GetLeagueQuery): League
     getPlayer(query: GetPlayerQuery): Player
+    getGames(query: GetGamesQuery): GameConnection @connection(for: "Game")
 }
 
 scalar UUID

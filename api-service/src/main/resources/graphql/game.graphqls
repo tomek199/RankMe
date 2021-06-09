@@ -17,6 +17,12 @@ input CompleteGameCommand {
     playerTwoScore: Int!
 }
 
+input GetGamesQuery {
+    leagueId: UUID!
+    first: Int!
+    after: String
+}
+
 type Game {
     id: UUID!
     dateTime: LocalDateTime!
