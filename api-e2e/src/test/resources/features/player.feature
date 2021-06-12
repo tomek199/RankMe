@@ -2,8 +2,8 @@ Feature: Player
 
   Background: I init and cleanup database
     Given I create league "To init league scheme"
-    Given I create player "To init player scheme" in league "To init league scheme"
-    And I cleanup database
+    * I create player "To init player scheme" in league "To init league scheme"
+    * I cleanup database
 
   Scenario: Create new player
     Given I create league "Transformers"
@@ -12,17 +12,17 @@ Feature: Player
 
   Scenario: Play draw game
     Given I create league "Marvel"
-    And I create player "Batman" in league "Marvel"
-    And I create player "Superman" in league "Marvel"
+    * I create player "Batman" in league "Marvel"
+    * I create player "Superman" in league "Marvel"
     When I play game between "Batman" and "Superman" with result 1 : 1
     Then I should have player "Batman" with deviation 290 and rating 1500
-    And I should have player "Superman" with deviation 290 and rating 1500
+    * I should have player "Superman" with deviation 290 and rating 1500
 
   Scenario: Play two games where player one won both
     Given I create league "Marvel"
-    And I create player "Batman" in league "Marvel"
-    And I create player "Superman" in league "Marvel"
+    * I create player "Batman" in league "Marvel"
+    * I create player "Superman" in league "Marvel"
     When I play game between "Batman" and "Superman" with result 2 : 1
-    And I play game between "Batman" and "Superman" with result 3 : 0
+    * I play game between "Batman" and "Superman" with result 3 : 0
     Then I should have player "Batman" with deviation 263 and rating 1721
-    And I should have player "Superman" with deviation 263 and rating 1279
+    * I should have player "Superman" with deviation 263 and rating 1279
