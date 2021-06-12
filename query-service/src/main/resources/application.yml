@@ -33,7 +33,7 @@ spring:
           destination: command.query
           group: player-played-game-consumer-group
         gameScheduledMessageConsumer-in-0:
-          destination: coommand.query
+          destination: command.query
           group: game-scheduled-consumer-group
         gamePlayedMessageConsumer-in-0:
           destination: command.query

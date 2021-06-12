@@ -28,5 +28,18 @@ Feature: Player
       | Bumblebee     | 1          | 1338        | -162             | 290            | -60                 | Optimus Prime | 3           | 1662         | 162               | 290             | -60                  |
       | Optimus Prime | 2          | 1430        | -232             | 263            | -27                 | Bumblebee     | 5           | 1570         | 232               | 263             | -27                  |
 
+  Scenario: Schedule and complete game
+    Given I create league "Star Wars"
+    * I create player "Chewbacca" in league "Star Wars"
+    * I create player "Yoda" in league "Star Wars"
+    When I play game between "Chewbacca" and "Yoda" with result 0 : 1
+    * I schedule game between "Yoda" and "Chewbacca" in 2 hours
+#   TODO
+#    Then I have 2 games in league "Star Wars":
+#      | firstName     | firstScore | firstRating | firstRatingDelta | firstDeviation | firstDeviationDelta | secondName    | secondScore | secondRating | secondRatingDelta | secondDeviation | secondDeviationDelta |
+#      | Yoda          |            | 1338        |                  | 290            |                     | Chewbacca     |             | 1662         |                   | 290             |                      |
+#      | Chewbacca     | 0          | 1338        | -162             | 290            | -60                 | Yoda          | 1           | 1662         | 162               | 290             | -60                  |
+#    When I complete game
+#    Then I have 2 games in league "Star Wars"...
 
 
