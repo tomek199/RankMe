@@ -69,17 +69,18 @@ class LeagueSteps(
                 val id = dbUtil.leagueIdByName(name)
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
-                    val players = playersTable.asMaps()
-                    players.forEachIndexed { index, player ->
-                        assertEquals(player["name"], it.getLeague.players[index].name)
-                        assertEquals(player["deviation"]?.toInt(), it.getLeague.players[index].deviation)
-                        assertEquals(player["rating"]?.toInt(), it.getLeague.players[index].rating)
+                    val expectedPlayers = playersTable.asMaps()
+                    expectedPlayers.forEachIndexed { index, expectedPlayer ->
+                        val player = it.getLeague.players[index]
+                        assertEquals(expectedPlayer["name"], player.name)
+                        assertEquals(expectedPlayer["deviation"]?.toInt(), player.deviation)
+                        assertEquals(expectedPlayer["rating"]?.toInt(), player.rating)
                     }
                 } ?: fail("Cannot get league by id $id")
             }
         }
 
-        Then("I have first {int} games listed in league {string}") { first: Int, name: String ->
+        Then("I have first {int} games connected in league {string}") { first: Int, name: String ->
             runBlocking {
                 delay(stepDelay)
                 val id = dbUtil.leagueIdByName(name)

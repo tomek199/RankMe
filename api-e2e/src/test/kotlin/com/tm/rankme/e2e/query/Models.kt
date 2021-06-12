@@ -15,7 +15,7 @@ data class League(
     val allowDraws: Boolean,
     val maxScore: Int,
     val players: List<Player>,
-    val games: Page<Game>?
+    val games: Connection<Game>?
 )
 
 data class Game(
@@ -41,7 +41,7 @@ data class Result(
     val playerTwoRatingDelta: Int
 )
 
-data class Page<T>(
+data class Connection<T>(
     val pageInfo: PageInfo,
     val edges: List<Edge<T>>
 )

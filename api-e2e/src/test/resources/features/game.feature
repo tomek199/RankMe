@@ -1,0 +1,32 @@
+Feature: Player
+
+  Background: I init and cleanup database
+    Given I create league "To init league scheme"
+    Given I create player "To init player scheme" in league "To init league scheme"
+    And I cleanup database
+
+  Scenario: Play multiple games to check pagination
+    Given I create league "Star Wars"
+    And I create player "Darth Vader" in league "Star Wars"
+    And I create player "Han Solo" in league "Star Wars"
+    When I play 10 games between "Darth Vader" and "Han Solo"
+    Then I have first 3 of 10 games listed for league "Star Wars"
+    And I have first 6 of 10 games listed for league "Star Wars"
+    And I have first 10 of 10 games listed for league "Star Wars"
+    And I have first 3 after 2 of 10 games listed for league "Star Wars"
+    And I have first 4 after 3 of 10 games listed for league "Star Wars"
+    And I have first 2 after 8 of 10 games listed for league "Star Wars"
+
+  Scenario: Play multiple games to check games data
+    Given I create league "Transformers"
+    And I create player "Bumblebee" in league "Transformers"
+    And I create player "Optimus Prime" in league "Transformers"
+    When I play game between "Bumblebee" and "Optimus Prime" with result 1 : 3
+    And I play game between "Optimus Prime" and "Bumblebee" with result 2 : 5
+    Then I have 2 games in league "Transformers":
+      | firstName     | firstScore | firstRating | firstRatingDelta | firstDeviation | firstDeviationDelta | secondName    | secondScore | secondRating | secondRatingDelta | secondDeviation | secondDeviationDelta |
+      | Bumblebee     | 1          | 1338        | -162             | 290            | -60                 | Optimus Prime | 3           | 1662         | 162               | 290             | -60                  |
+      | Optimus Prime | 2          | 1430        | -232             | 263            | -27                 | Bumblebee     | 5           | 1570         | 232               | 263             | -27                  |
+
+
+

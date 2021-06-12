@@ -25,4 +25,4 @@ Feature: League
     And I create player "Han Solo" in league "Star Wars"
     And I create player "Darth Vader" in league "Star Wars"
     When I play 6 games between "Han Solo" and "Darth Vader"
-    Then I have first 4 games listed in league "Star Wars"
+    Then I have first 4 games connected in league "Star Wars"
