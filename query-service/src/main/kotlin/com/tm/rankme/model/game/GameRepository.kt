@@ -7,4 +7,5 @@ interface GameRepository {
     fun byId(id: UUID): Game?
     fun store(game: Game)
     fun byLeagueId(leagueId: UUID, first: Int, after: String? = null): Page<Game>
+    fun byPlayerId(playerId: UUID, first: Int, after: String? = null): Page<Game>
 }

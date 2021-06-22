@@ -12,4 +12,12 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
     fun getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(
         leagueId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
+
+    fun getByPlayerOneIdOrPlayerTwoIdOrderByTimestamp(
+        playerId: String, pageable: Pageable
+    ): Page<GameEntity>
+
+    fun getByPlayerOneIdOrPlayerTwoIdAndTimestampGreaterThanOrderByTimestamp(
+        playerId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
 }
