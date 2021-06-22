@@ -54,11 +54,11 @@ internal class LeagueQueryIntegrationTest {
             restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java)
         } returns league
         every {
-            restTemplate.exchange("$url/query-service/players?leagueId=${league.id}",
+            restTemplate.exchange("$url/query-service/leagues/${league.id}/players",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(players))
         every {
-            restTemplate.exchange("$url/query-service/games?leagueId=${league.id}&first=3",
+            restTemplate.exchange("$url/query-service/leagues/${league.id}/games?first=3",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
         val request = "graphql/get-league.graphql"

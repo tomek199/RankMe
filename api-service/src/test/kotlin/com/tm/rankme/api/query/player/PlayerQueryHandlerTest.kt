@@ -54,7 +54,7 @@ internal class PlayerQueryHandlerTest {
             Player(UUID.randomUUID(), "Bumblebee", 174, 1864)
         )
         every {
-            restTemplate.exchange("$url/query-service/players?leagueId=$leagueId",
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/players",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(players))
         val query = GetPlayersQuery(leagueId)
@@ -74,7 +74,7 @@ internal class PlayerQueryHandlerTest {
         // given
         val leagueId = UUID.randomUUID()
         every {
-            restTemplate.exchange("$url/query-service/players?leagueId=$leagueId",
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/players",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.empty())
         val query = GetPlayersQuery(leagueId)

@@ -16,7 +16,7 @@ class GameQueryHandler(
 ) {
 
     fun handle(query: GetGamesQuery): Connection<Game> {
-        var endpoint = "$url/query-service/games?leagueId=${query.leagueId}&first=${query.first}"
+        var endpoint = "$url/query-service/leagues/${query.leagueId}/games?first=${query.first}"
         query.after?.let { endpoint += "&after=${query.after}" }
         val response = restTemplate.exchange(endpoint, HttpMethod.GET, null,
             object : ParameterizedTypeReference<Page<Game>>() {}

@@ -18,7 +18,7 @@ class PlayerQueryHandler(
 
     fun handle(query: GetPlayersQuery): List<Player> {
         val response = restTemplate.exchange(
-            "$url/query-service/players?leagueId=${query.leagueId}",
+            "$url/query-service/leagues/${query.leagueId}/players",
             HttpMethod.GET, null,
             object : ParameterizedTypeReference<List<Player>>() {}
         )

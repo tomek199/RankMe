@@ -37,7 +37,7 @@ internal class GameQueryHandlerTest {
         }
         val page = Page(games.map { Item(it, it.id.toString()) }, false, true)
         every {
-            restTemplate.exchange("$url/query-service/games?leagueId=$leagueId&first=4",
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=4",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
         val query = GetGamesQuery(leagueId, 4)
@@ -80,7 +80,7 @@ internal class GameQueryHandlerTest {
         }
         val page = Page(games.map { Item(it, it.id.toString()) }, true, false)
         every {
-            restTemplate.exchange("$url/query-service/games?leagueId=$leagueId&first=5&after=${games[0].id}",
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=5&after=${games[0].id}",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
         val query = GetGamesQuery(leagueId, 5, games[0].id.toString())
@@ -112,7 +112,7 @@ internal class GameQueryHandlerTest {
         // given
         val leagueId = UUID.randomUUID()
         every {
-            restTemplate.exchange("$url/query-service/games?leagueId=$leagueId&first=3",
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=3",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.ok().body(null)
         val query = GetGamesQuery(leagueId, 3)
