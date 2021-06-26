@@ -17,7 +17,7 @@ input CompleteGameCommand {
     playerTwoScore: Int!
 }
 
-input GetGamesQuery {
+input GetGamesForLeagueQuery {
     leagueId: UUID!
     first: Int!
     after: String
