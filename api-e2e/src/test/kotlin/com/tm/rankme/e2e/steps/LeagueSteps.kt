@@ -12,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.fail
 
 class LeagueSteps(
@@ -50,7 +52,7 @@ class LeagueSteps(
             }
         }
 
-        Then("I should have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
+        Then("I have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
             runBlocking {
                 delay(stepDelay)
                 val id = dbUtil.leagueIdByName(name)
@@ -70,11 +72,34 @@ class LeagueSteps(
                 val id = dbUtil.leagueIdByName(name)
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
-                    val players = playersTable.asMaps()
-                    players.forEachIndexed { index, player ->
-                        assertEquals(player["name"], it.getLeague.players[index].name)
-                        assertEquals(player["deviation"]?.toInt(), it.getLeague.players[index].deviation)
-                        assertEquals(player["rating"]?.toInt(), it.getLeague.players[index].rating)
+                    val expectedPlayers = playersTable.asMaps()
+                    expectedPlayers.forEachIndexed { index, expectedPlayer ->
+                        val player = it.getLeague.players[index]
+                        assertEquals(expectedPlayer["name"], player.name)
+                        assertEquals(expectedPlayer["deviation"]?.toInt(), player.deviation)
+                        assertEquals(expectedPlayer["rating"]?.toInt(), player.rating)
+                    }
+                } ?: fail("Cannot get league by id $id")
+            }
+        }
+
+        Then("I have first {int} of {int} games connected in league {string}") {
+                first: Int, of: Int, name: String ->
+            runBlocking {
+                delay(stepDelay)
+                val id = dbUtil.leagueIdByName(name)
+                val query = GetLeague(id, first)
+                graphQlClient.execute(query).data?.let {
+                    assertNotNull(it.getLeague.games)
+                    assertFalse(it.getLeague.games.pageInfo.hasPreviousPage)
+                    assertEquals(first < of, it.getLeague.games.pageInfo.hasNextPage)
+                    assertEquals(first, it.getLeague.games.edges.size)
+                    assertEquals(it.getLeague.games.pageInfo.startCursor, it.getLeague.games.edges.first().cursor)
+                    assertEquals(it.getLeague.games.pageInfo.endCursor, it.getLeague.games.edges.last().cursor)
+                    it.getLeague.games.edges.forEach { edge ->
+                        it.getLeague.players.map { player -> player.id }.toList()
+                            .also { players -> players.contains(edge.node.playerOneId) }
+                            .also { players -> players.contains(edge.node.playerTwoId) }
                     }
                 } ?: fail("Cannot get league by id $id")
             }

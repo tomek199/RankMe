@@ -62,7 +62,7 @@ internal class PlayerControllerIntegrationTest {
         )
         every { playerAccessor.findAllByLeagueId(leagueId) } returns entities
         // when
-        val result = mvc.get("/players?leagueId=$leagueId")
+        val result = mvc.get("/leagues/$leagueId/players")
         // then
         result.andExpect {
             status { isOk() }
@@ -85,7 +85,7 @@ internal class PlayerControllerIntegrationTest {
         val leagueId = UUID.randomUUID()
         every { playerAccessor.findAllByLeagueId(leagueId) } returns emptyList()
         // when
-        val result = mvc.get("/players?leagueId=$leagueId")
+        val result = mvc.get("/leagues/$leagueId/players")
         // then
         result.andExpect {
             status { isOk() }

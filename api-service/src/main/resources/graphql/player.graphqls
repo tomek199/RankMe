@@ -12,4 +12,5 @@ type Player {
     name: String!
     deviation: Int!
     rating: Int!
+    games(first: Int!, after: String): GameConnection @connection(for: "Game")
 }

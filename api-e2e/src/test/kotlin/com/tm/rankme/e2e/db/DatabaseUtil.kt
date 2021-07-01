@@ -6,7 +6,8 @@ import java.util.*
 @Component
 class DatabaseUtil(
     private val leagueRepository: LeagueRepository,
-    private val playerRepository: PlayerRepository
+    private val playerRepository: PlayerRepository,
+    private val gameRepository: GameRepository
 ) {
 
     fun leagueIdByName(name: String): UUID = leagueRepository.getFirstByName(name).id
@@ -16,5 +17,6 @@ class DatabaseUtil(
     fun cleanup() {
         leagueRepository.deleteAll()
         playerRepository.deleteAll()
+        gameRepository.deleteAll()
     }
 }
