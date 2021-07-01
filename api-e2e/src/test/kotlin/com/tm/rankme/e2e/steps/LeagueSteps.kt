@@ -11,7 +11,10 @@ import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.fail
 
 class LeagueSteps(
     private val graphQlClient: GraphQLKtorClient,
@@ -80,7 +83,8 @@ class LeagueSteps(
             }
         }
 
-        Then("I have first {int} games connected in league {string}") { first: Int, name: String ->
+        Then("I have first {int} games of {int} connected in league {string}") {
+                first: Int, of: Int, name: String ->
             runBlocking {
                 delay(stepDelay)
                 val id = dbUtil.leagueIdByName(name)
@@ -88,15 +92,15 @@ class LeagueSteps(
                 graphQlClient.execute(query).data?.let {
                     assertNotNull(it.getLeague.games)
                     assertFalse(it.getLeague.games.pageInfo.hasPreviousPage)
-                    assertTrue(it.getLeague.games.pageInfo.hasNextPage)
+                    assertEquals(first < of, it.getLeague.games.pageInfo.hasNextPage)
                     assertEquals(first, it.getLeague.games.edges.size)
                     assertEquals(it.getLeague.games.pageInfo.startCursor, it.getLeague.games.edges.first().cursor)
                     assertEquals(it.getLeague.games.pageInfo.endCursor, it.getLeague.games.edges.last().cursor)
                     it.getLeague.games.edges.forEach { edge ->
-                        assertEquals(it.getLeague.players.first().id, edge.node.playerOneId)
-                        assertEquals(it.getLeague.players.last().id, edge.node.playerTwoId)
+                        it.getLeague.players.map { player -> player.id }.toList()
+                            .also { players -> players.contains(edge.node.playerOneId) }
+                            .also { players -> players.contains(edge.node.playerTwoId) }
                     }
-                    println(it)
                 } ?: fail("Cannot get league by id $id")
             }
         }

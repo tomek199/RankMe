@@ -257,7 +257,7 @@ internal class MongoGameRepositoryTest {
     internal fun `Should return empty games page for player`() {
         // given
         val playerId = UUID.randomUUID()
-        every { accessor.getByPlayerOneIdOrPlayerTwoIdOrderByTimestamp(playerId.toString(), ofType(Pageable::class)) } returns
+        every { accessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), ofType(Pageable::class)) } returns
                 PageImpl(emptyList(), PageRequest.of(0, 3), 0)
         // when
         val page = repository.byPlayerId(playerId, 3)
@@ -280,7 +280,7 @@ internal class MongoGameRepositoryTest {
             )
         }
 
-        every { accessor.getByPlayerOneIdOrPlayerTwoIdOrderByTimestamp(playerId.toString(), ofType(Pageable::class)) } returns
+        every { accessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), ofType(Pageable::class)) } returns
                 PageImpl(games.subList(0, 3), PageRequest.of(0, 3), 8)
         // when
         val page = repository.byPlayerId(playerId, 3)
@@ -305,7 +305,7 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByPlayerOneIdOrPlayerTwoIdAndTimestampGreaterThanOrderByTimestamp(
+            accessor.getByPlayerIdAndCursorOrderByTimestampDesc(
                 playerId.toString(), games[1].timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(games.subList(2, 7), PageRequest.of(0, 5), 8)
@@ -333,7 +333,7 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByPlayerOneIdOrPlayerTwoIdAndTimestampGreaterThanOrderByTimestamp(
+            accessor.getByPlayerIdAndCursorOrderByTimestampDesc(
                 playerId.toString(), games[4].timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(games.takeLast(5), PageRequest.of(0, 5), 5)

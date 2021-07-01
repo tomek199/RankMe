@@ -26,3 +26,17 @@ Feature: Player
     * I play game between "Batman" and "Superman" with result 3 : 0
     Then I should have player "Batman" with deviation 263 and rating 1721
     * I should have player "Superman" with deviation 263 and rating 1279
+    # TODO remove should
+
+  Scenario: Play few games between three players and list games for players
+    Given I create league "Star Wars"
+    * I create player "Yoda" in league "Star Wars"
+    * I create player "Chewbacca" in league "Star Wars"
+    * I create player "R2D2" in league "Star Wars"
+    When I play 3 games between "Yoda" and "Chewbacca"
+    * I play 4 games between "Chewbacca" and "R2D2"
+    * I play 5 games between "R2D2" and "Yoda"
+    Then I have first 12 games of 12 connected in league "Star Wars"
+    * I have player "Chewbacca" with first 7 games of 7 connected
+    * I have player "R2D2" with first 5 games of 9 connected
+    * I have player "Yoda" with first 4 games of 8 connected

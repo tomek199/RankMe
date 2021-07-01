@@ -100,7 +100,7 @@ internal class GameControllerIntegrationTest {
             )
         )
         every {
-            gameAccessor.getByPlayerOneIdOrPlayerTwoIdAndTimestampGreaterThanOrderByTimestamp(
+            gameAccessor.getByPlayerIdAndCursorOrderByTimestampDesc(
                 playerId.toString(), entities.first().timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(entities, PageRequest.of(0, 2), 2)
@@ -128,7 +128,7 @@ internal class GameControllerIntegrationTest {
         // given
         val playerId = UUID.randomUUID()
         every {
-            gameAccessor.getByPlayerOneIdOrPlayerTwoIdOrderByTimestamp(playerId.toString(), ofType(Pageable::class))
+            gameAccessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), ofType(Pageable::class))
         } returns PageImpl(emptyList(), PageRequest.of(0, 2), 2)
         // when
         val result = mvc.get("/players/$playerId/games?first=3")

@@ -12,8 +12,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import java.time.LocalDateTime
 import kotlin.random.Random
-import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.test.*
 
 class PlayerSteps(
     private val graphQlClient: GraphQLKtorClient,
@@ -41,6 +40,30 @@ class PlayerSteps(
             }
         }
 
+        When("I play {int} games between {string} and {string}") {
+                numberOfGames: Int, playerOneName: String, playerTwoName: String ->
+            runBlocking {
+                delay(stepDelay)
+                repeat(numberOfGames) {
+                    playGame(playerOneName, playerTwoName, Random.nextInt(10), Random.nextInt(10))
+                }
+            }
+        }
+
+        When("I schedule game between {string} and {string} in {int} hours") {
+                playerOneName: String, playerTwoName: String, hours: Int ->
+            runBlocking {
+                delay(stepDelay)
+                val playerOneId = dbUtil.playerIdByName(playerOneName)
+                val playerTwoId = dbUtil.playerIdByName(playerTwoName)
+                val dateTime = LocalDateTime.now().plusHours(hours.toLong())
+                val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
+                graphQlClient.execute(mutation).data?.let {
+                    assertEquals(status, it.scheduleGame)
+                } ?: fail("Cannot execute command")
+            }
+        }
+
         Then("I should have player {string} with deviation {int} and rating {int}") {
                 name: String, deviation: Int, rating: Int ->
             runBlocking {
@@ -55,26 +78,24 @@ class PlayerSteps(
                 } ?: fail("Cannot get player by id $id")
             }
         }
-        When("I play {int} games between {string} and {string}") {
-                numberOfGames: Int, playerOneName: String, playerTwoName: String ->
+
+        Then("I have player {string} with first {int} games of {int} connected") {
+                name: String, first: Int, of: Int ->
             runBlocking {
                 delay(stepDelay)
-                repeat(numberOfGames) {
-                    playGame(playerOneName, playerTwoName, Random.nextInt(10), Random.nextInt(10))
-                }
-            }
-        }
-        When("I schedule game between {string} and {string} in {int} hours") {
-                playerOneName: String, playerTwoName: String, hours: Int ->
-            runBlocking {
-                delay(stepDelay)
-                val playerOneId = dbUtil.playerIdByName(playerOneName)
-                val playerTwoId = dbUtil.playerIdByName(playerTwoName)
-                val dateTime = LocalDateTime.now().plusHours(hours.toLong())
-                val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
-                graphQlClient.execute(mutation).data?.let {
-                    assertEquals(status, it.scheduleGame)
-                } ?: fail("Cannot execute command")
+                val id = dbUtil.playerIdByName(name)
+                val query = GetPlayer(id, first)
+                graphQlClient.execute(query).data?.let {
+                    assertNotNull(it.getPlayer.games)
+                    assertFalse(it.getPlayer.games.pageInfo.hasPreviousPage)
+                    assertEquals(first < of, it.getPlayer.games.pageInfo.hasNextPage)
+                    assertEquals(first, it.getPlayer.games.edges.size)
+                    assertEquals(it.getPlayer.games.pageInfo.startCursor, it.getPlayer.games.edges.first().cursor)
+                    assertEquals(it.getPlayer.games.pageInfo.endCursor, it.getPlayer.games.edges.last().cursor)
+                    it.getPlayer.games.edges.forEach { edge ->
+                        assertTrue(it.getPlayer.id == edge.node.playerOneId || it.getPlayer.id == edge.node.playerTwoId)
+                    }
+                } ?: fail("Cannot get player by id $id")
             }
         }
     }
