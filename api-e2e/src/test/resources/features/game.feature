@@ -25,9 +25,8 @@ Feature: Player
     * I play game between "Optimus Prime" and "Bumblebee" with result 2 : 5
     Then I have 2 games in league "Transformers":
       | firstName     | firstScore | firstRating | firstRatingDelta | firstDeviation | firstDeviationDelta | secondName    | secondScore | secondRating | secondRatingDelta | secondDeviation | secondDeviationDelta |
-      | Bumblebee     | 1          | 1338        | -162             | 290            | -60                 | Optimus Prime | 3           | 1662         | 162               | 290             | -60                  |
       | Optimus Prime | 2          | 1430        | -232             | 263            | -27                 | Bumblebee     | 5           | 1570         | 232               | 263             | -27                  |
-    # TODO change sorting
+      | Bumblebee     | 1          | 1338        | -162             | 290            | -60                 | Optimus Prime | 3           | 1662         | 162               | 290             | -60                  |
 
   Scenario: Schedule and complete game
     Given I create league "Star Wars"

@@ -169,7 +169,7 @@ internal class MongoGameRepositoryTest {
     internal fun `Should return empty games page for league`() {
         // given
         val leagueId = UUID.randomUUID()
-        every { accessor.getByLeagueIdOrderByTimestamp(leagueId.toString(), ofType(Pageable::class)) } returns
+        every { accessor.getByLeagueIdOrderByTimestampDesc(leagueId.toString(), ofType(Pageable::class)) } returns
                 PageImpl(emptyList(), PageRequest.of(0, 5), 0)
         // when
         val page = repository.byLeagueId(leagueId, 5)
@@ -191,7 +191,7 @@ internal class MongoGameRepositoryTest {
             )
         }
 
-        every { accessor.getByLeagueIdOrderByTimestamp(leagueId.toString(), ofType(Pageable::class)) } returns
+        every { accessor.getByLeagueIdOrderByTimestampDesc(leagueId.toString(), ofType(Pageable::class)) } returns
                 PageImpl(games.subList(0, 7), PageRequest.of(0, 7), 10)
         // when
         val page = repository.byLeagueId(leagueId, 7)
@@ -215,7 +215,7 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(leagueId.toString(), games[3].timestamp, ofType(Pageable::class))
+            accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId.toString(), games[3].timestamp, ofType(Pageable::class))
         } returns PageImpl(games.subList(4, 11), PageRequest.of(0, 7), 10)
         val afterCursor = Base64.getEncoder().encodeToString(games[3].timestamp.toString().toByteArray())
         // when
@@ -240,7 +240,7 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(leagueId.toString(), games[7].timestamp, ofType(Pageable::class))
+            accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId.toString(), games[7].timestamp, ofType(Pageable::class))
         } returns PageImpl(games.takeLast(6), PageRequest.of(0, 6), 6)
         val afterCursor = Base64.getEncoder().encodeToString(games[7].timestamp.toString().toByteArray())
         // when
@@ -305,7 +305,7 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByPlayerIdAndCursorOrderByTimestampDesc(
+            accessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(
                 playerId.toString(), games[1].timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(games.subList(2, 7), PageRequest.of(0, 5), 8)
@@ -333,7 +333,7 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByPlayerIdAndCursorOrderByTimestampDesc(
+            accessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(
                 playerId.toString(), games[4].timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(games.takeLast(5), PageRequest.of(0, 5), 5)

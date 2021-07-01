@@ -36,8 +36,8 @@ class MongoGameRepository(
     override fun byLeagueId(leagueId: UUID, first: Int, after: String?): Page<Game> {
         val pageable = PageRequest.of(0, first)
         val page =
-            if (after == null) accessor.getByLeagueIdOrderByTimestamp(leagueId.toString(), pageable)
-            else accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(leagueId.toString(), decode(after), pageable)
+            if (after == null) accessor.getByLeagueIdOrderByTimestampDesc(leagueId.toString(), pageable)
+            else accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId.toString(), decode(after), pageable)
         val games: List<Item<Game>> = page.content.map(this::itemForEntity)
         return Page(games, after != null, page.hasNext())
     }
@@ -46,7 +46,7 @@ class MongoGameRepository(
         val pageable = PageRequest.of(0, first)
         val page =
             if (after == null) accessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), pageable)
-            else accessor.getByPlayerIdAndCursorOrderByTimestampDesc(playerId.toString(), decode(after), pageable)
+            else accessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(playerId.toString(), decode(after), pageable)
         val games: List<Item<Game>> = page.content.map(this::itemForEntity)
         return Page(games, after != null, page.hasNext())
     }

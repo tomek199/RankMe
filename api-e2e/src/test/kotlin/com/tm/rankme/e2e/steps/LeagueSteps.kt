@@ -83,7 +83,7 @@ class LeagueSteps(
             }
         }
 
-        Then("I have first {int} games of {int} connected in league {string}") {
+        Then("I have first {int} of {int} games connected in league {string}") {
                 first: Int, of: Int, name: String ->
             runBlocking {
                 delay(stepDelay)

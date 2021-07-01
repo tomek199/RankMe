@@ -79,7 +79,7 @@ class PlayerSteps(
             }
         }
 
-        Then("I have player {string} with first {int} games of {int} connected") {
+        Then("I have player {string} with first {int} of {int} games connected") {
                 name: String, first: Int, of: Int ->
             runBlocking {
                 delay(stepDelay)

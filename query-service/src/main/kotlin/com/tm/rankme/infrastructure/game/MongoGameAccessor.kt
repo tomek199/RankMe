@@ -6,11 +6,11 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 
 interface MongoGameAccessor : MongoRepository<GameEntity, String> {
-    fun getByLeagueIdOrderByTimestamp(
+    fun getByLeagueIdOrderByTimestampDesc(
         leagueId: String, pageable: Pageable
     ): Page<GameEntity>
 
-    fun getByLeagueIdAndTimestampGreaterThanOrderByTimestamp(
+    fun getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(
         leagueId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 
@@ -26,7 +26,7 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
                 "{'timestamp': {\$lt: ?1}}" +
             "]}",
         sort = "{timestamp : -1}")
-    fun getByPlayerIdAndCursorOrderByTimestampDesc(
+    fun getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(
         playerId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 }

@@ -35,7 +35,7 @@ Feature: Player
     When I play 3 games between "Yoda" and "Chewbacca"
     * I play 4 games between "Chewbacca" and "R2D2"
     * I play 5 games between "R2D2" and "Yoda"
-    Then I have first 12 games of 12 connected in league "Star Wars"
-    * I have player "Chewbacca" with first 7 games of 7 connected
-    * I have player "R2D2" with first 5 games of 9 connected
-    * I have player "Yoda" with first 4 games of 8 connected
+    Then I have first 12 of 12 games connected in league "Star Wars"
+    * I have player "Chewbacca" with first 7 of 7 games connected
+    * I have player "R2D2" with first 5 of 9 games connected
+    * I have player "Yoda" with first 4 of 8 games connected
