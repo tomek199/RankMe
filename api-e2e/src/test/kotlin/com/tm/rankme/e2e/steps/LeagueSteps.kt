@@ -52,7 +52,7 @@ class LeagueSteps(
             }
         }
 
-        Then("I should have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
+        Then("I have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
             runBlocking {
                 delay(stepDelay)
                 val id = dbUtil.leagueIdByName(name)

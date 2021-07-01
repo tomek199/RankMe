@@ -64,7 +64,7 @@ class PlayerSteps(
             }
         }
 
-        Then("I should have player {string} with deviation {int} and rating {int}") {
+        Then("I have player {string} with deviation {int} and rating {int}") {
                 name: String, deviation: Int, rating: Int ->
             runBlocking {
                 delay(stepDelay)
