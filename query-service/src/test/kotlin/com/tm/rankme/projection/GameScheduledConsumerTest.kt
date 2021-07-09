@@ -6,7 +6,7 @@ import com.tm.rankme.model.game.PlayerInfo
 import com.tm.rankme.model.game.PlayerPort
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
 import java.util.function.Consumer
@@ -22,8 +22,9 @@ internal class GameScheduledConsumerTest {
     internal fun `Should consume 'game-scheduled' message`() {
         // given
         val aggregateId = UUID.randomUUID()
+        val dateTime = LocalDateTime.now().withNano(0)
         val message = GameScheduledMessage(
-            aggregateId, UUID.randomUUID(), Instant.now().toEpochMilli(),
+            aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
             UUID.randomUUID(), UUID.randomUUID()
         )
         val firstPlayerInfo = PlayerInfo("Batman", 275, 1836)
@@ -43,7 +44,7 @@ internal class GameScheduledConsumerTest {
         gameSlot.captured.let {
             assertEquals(message.aggregateId, it.id)
             assertEquals(message.leagueId, it.leagueId)
-            assertEquals(message.dateTime, it.dateTime.toEpochSecond(ZoneOffset.UTC))
+            assertEquals(dateTime, it.dateTime)
             assertEquals(message.firstId, it.playerOneId)
             assertEquals(firstPlayerInfo.name, it.playerOneName)
             assertEquals(firstPlayerInfo.deviation, it.playerOneDeviation)

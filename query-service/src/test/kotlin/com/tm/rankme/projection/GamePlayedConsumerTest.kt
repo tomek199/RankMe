@@ -22,8 +22,9 @@ internal class GamePlayedConsumerTest {
     internal fun `Should consume 'player-played-game' message for new game`() {
         // given
         val aggregateId = UUID.randomUUID()
+        val dateTime = LocalDateTime.now().withNano(0)
         val message = GamePlayedMessage(
-            aggregateId, UUID.randomUUID(), Instant.now().toEpochMilli(),
+            aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
             UUID.randomUUID(), 1, -45, -76,
             UUID.randomUUID(), 3, -52, 83
         )
@@ -46,7 +47,7 @@ internal class GamePlayedConsumerTest {
         gameSlot.captured.let {
             assertEquals(message.aggregateId, it.id)
             assertEquals(message.leagueId, it.leagueId)
-            assertEquals(message.dateTime, it.dateTime.toEpochSecond(ZoneOffset.UTC))
+            assertEquals(dateTime, it.dateTime)
             assertEquals(message.firstId, it.playerOneId)
             assertEquals(firstPlayerInfo.name, it.playerOneName)
             assertEquals(firstPlayerInfo.deviation, it.playerOneDeviation)
@@ -68,13 +69,14 @@ internal class GamePlayedConsumerTest {
     internal fun `Should consume 'player-played-game' message for scheduled game`() {
         // given
         val aggregateId = UUID.randomUUID()
+        val dateTime = LocalDateTime.now().withNano(0)
         val message = GamePlayedMessage(
-            aggregateId, UUID.randomUUID(), Instant.now().toEpochMilli(),
+            aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
             UUID.randomUUID(), 1, -45, -76,
             UUID.randomUUID(), 3, -52, 83
         )
         val game = Game(
-            message.aggregateId, message.leagueId, LocalDateTime.ofEpochSecond(message.dateTime, 0, ZoneOffset.UTC),
+            message.aggregateId, message.leagueId, LocalDateTime.ofInstant(Instant.ofEpochSecond(message.dateTime), ZoneOffset.UTC),
             message.firstId, "Batman", 1783, 248,
             message.secondId, "Superman", 2349, 153
         )
