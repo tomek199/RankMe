@@ -1,7 +1,8 @@
 package com.tm.rankme.domain.game
 
 import com.tm.rankme.domain.base.Event
-import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 class GamePlayed(
@@ -14,7 +15,7 @@ class GamePlayed(
     val secondScore: Int,
     val secondDeviationDelta: Int,
     val secondRatingDelta: Int,
-    val dateTime: Long = Instant.now().toEpochMilli(),
+    val dateTime: Long = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
     aggregateId: UUID = UUID.randomUUID(),
     version: Long = 0
 ) : Event<Game>(aggregateId, version) {
