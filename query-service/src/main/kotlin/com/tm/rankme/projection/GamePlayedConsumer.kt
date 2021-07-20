@@ -27,20 +27,20 @@ class GamePlayedConsumer(
     }
 
     private fun complete(game: Game, message: GamePlayedMessage) {
-        game.playerOneDeviation += message.firstDeviationDelta
-        game.playerOneRating += message.firstRatingDelta
-        game.playerTwoDeviation += message.secondDeviationDelta
-        game.playerTwoRating += message.secondRatingDelta
+        game.playerOneDeviation = message.firstDeviation
+        game.playerOneRating = message.firstRating
+        game.playerTwoDeviation = message.secondDeviation
+        game.playerTwoRating = message.secondRating
         game.result = result(message)
         repository.store(game)
     }
 
     private fun create(message: GamePlayedMessage) {
-        val firstPlayerInfo = playerPort.playerInfo(message.firstId)
-        val secondPlayerInfo = playerPort.playerInfo(message.secondId)
+        val firstPlayerName = playerPort.playerName(message.firstId)
+        val secondPlayerName = playerPort.playerName(message.secondId)
         val game = Game(message.aggregateId, message.leagueId, LocalDateTime.ofEpochSecond(message.dateTime, 0, ZoneOffset.UTC),
-            message.firstId, firstPlayerInfo.name, firstPlayerInfo.rating, firstPlayerInfo.deviation,
-            message.secondId, secondPlayerInfo.name, secondPlayerInfo.rating, secondPlayerInfo.deviation,
+            message.firstId, firstPlayerName, message.firstRating, message.firstDeviation,
+            message.secondId, secondPlayerName, message.secondRating, message.secondDeviation,
             result(message)
         )
         repository.store(game)
@@ -58,10 +58,14 @@ data class GamePlayedMessage(
     val dateTime: Long,
     val firstId: UUID,
     val firstScore: Int,
+    val firstDeviation: Int,
     val firstDeviationDelta: Int,
+    val firstRating: Int,
     val firstRatingDelta: Int,
     val secondId: UUID,
     val secondScore: Int,
+    val secondDeviation: Int,
     val secondDeviationDelta: Int,
+    val secondRating: Int,
     val secondRatingDelta: Int
 )

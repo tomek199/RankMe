@@ -2,7 +2,6 @@ package com.tm.rankme.projection
 
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
-import com.tm.rankme.model.game.PlayerInfo
 import com.tm.rankme.model.game.PlayerPort
 import io.mockk.*
 import org.junit.jupiter.api.Test
@@ -25,14 +24,14 @@ internal class GamePlayedConsumerTest {
         val dateTime = LocalDateTime.now().withNano(0)
         val message = GamePlayedMessage(
             aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
-            UUID.randomUUID(), 1, -45, -76,
-            UUID.randomUUID(), 3, -52, 83
+            UUID.randomUUID(), 1, 264, -45, 1902, -76,
+            UUID.randomUUID(), 3, 156, -52, 2351, 83
         )
-        val firstPlayerInfo = PlayerInfo("Batman", 248, 1783)
-        val secondPlayerInfo = PlayerInfo("Superman", 153, 2349)
+        val firstPlayerName = "Batman"
+        val secondPlayerName = "Superman"
         every { repository.byId(message.aggregateId) } returns null
-        every { playerPort.playerInfo(message.firstId) } returns firstPlayerInfo
-        every { playerPort.playerInfo(message.secondId) } returns secondPlayerInfo
+        every { playerPort.playerName(message.firstId) } returns firstPlayerName
+        every { playerPort.playerName(message.secondId) } returns secondPlayerName
         every { repository.store(ofType(Game::class)) } just Runs
         // when
         consumer.accept(message)
@@ -40,8 +39,8 @@ internal class GamePlayedConsumerTest {
         val gameSlot = slot<Game>()
         verifySequence {
             repository.byId(message.aggregateId)
-            playerPort.playerInfo(message.firstId)
-            playerPort.playerInfo(message.secondId)
+            playerPort.playerName(message.firstId)
+            playerPort.playerName(message.secondId)
             repository.store(capture(gameSlot))
         }
         gameSlot.captured.let {
@@ -49,16 +48,16 @@ internal class GamePlayedConsumerTest {
             assertEquals(message.leagueId, it.leagueId)
             assertEquals(dateTime, it.dateTime)
             assertEquals(message.firstId, it.playerOneId)
-            assertEquals(firstPlayerInfo.name, it.playerOneName)
-            assertEquals(firstPlayerInfo.deviation, it.playerOneDeviation)
-            assertEquals(firstPlayerInfo.rating, it.playerOneRating)
+            assertEquals(firstPlayerName, it.playerOneName)
+            assertEquals(message.firstDeviation, it.playerOneDeviation)
+            assertEquals(message.firstRating, it.playerOneRating)
             assertEquals(message.firstScore, it.result!!.playerOneScore)
             assertEquals(message.firstDeviationDelta, it.result!!.playerOneDeviationDelta)
             assertEquals(message.firstRatingDelta, it.result!!.playerOneRatingDelta)
             assertEquals(message.secondId, it.playerTwoId)
-            assertEquals(secondPlayerInfo.name, it.playerTwoName)
-            assertEquals(secondPlayerInfo.deviation, it.playerTwoDeviation)
-            assertEquals(secondPlayerInfo.rating, it.playerTwoRating)
+            assertEquals(secondPlayerName, it.playerTwoName)
+            assertEquals(message.secondDeviation, it.playerTwoDeviation)
+            assertEquals(message.secondRating, it.playerTwoRating)
             assertEquals(message.secondScore, it.result!!.playerTwoScore)
             assertEquals(message.secondDeviationDelta, it.result!!.playerTwoDeviationDelta)
             assertEquals(message.secondRatingDelta, it.result!!.playerTwoRatingDelta)
@@ -72,13 +71,13 @@ internal class GamePlayedConsumerTest {
         val dateTime = LocalDateTime.now().withNano(0)
         val message = GamePlayedMessage(
             aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
-            UUID.randomUUID(), 1, -45, -76,
-            UUID.randomUUID(), 3, -52, 83
+            UUID.randomUUID(), 1, 264, -45, 1902, -76,
+            UUID.randomUUID(), 3, 156, -52, 2351, 83
         )
         val game = Game(
             message.aggregateId, message.leagueId, LocalDateTime.ofInstant(Instant.ofEpochSecond(message.dateTime), ZoneOffset.UTC),
-            message.firstId, "Batman", 1783, 248,
-            message.secondId, "Superman", 2349, 153
+            message.firstId, "Batman", 1978, 309,
+            message.secondId, "Superman", 2268, 208
         )
         every { repository.byId(message.aggregateId) } returns game
         every { repository.store(ofType(Game::class)) } just Runs
@@ -96,15 +95,15 @@ internal class GamePlayedConsumerTest {
             assertEquals(message.dateTime, it.dateTime.toEpochSecond(ZoneOffset.UTC))
             assertEquals(message.firstId, it.playerOneId)
             assertEquals(game.playerOneName, it.playerOneName)
-            assertEquals(203, it.playerOneDeviation)
-            assertEquals(1707, it.playerOneRating)
+            assertEquals(264, it.playerOneDeviation)
+            assertEquals(1902, it.playerOneRating)
             assertEquals(message.firstScore, it.result!!.playerOneScore)
             assertEquals(message.firstDeviationDelta, it.result!!.playerOneDeviationDelta)
             assertEquals(message.firstRatingDelta, it.result!!.playerOneRatingDelta)
             assertEquals(message.secondId, it.playerTwoId)
             assertEquals(game.playerTwoName, it.playerTwoName)
-            assertEquals(101, it.playerTwoDeviation)
-            assertEquals(2432, it.playerTwoRating)
+            assertEquals(156, it.playerTwoDeviation)
+            assertEquals(2351, it.playerTwoRating)
             assertEquals(message.secondScore, it.result!!.playerTwoScore)
             assertEquals(message.secondDeviationDelta, it.result!!.playerTwoDeviationDelta)
             assertEquals(message.secondRatingDelta, it.result!!.playerTwoRatingDelta)

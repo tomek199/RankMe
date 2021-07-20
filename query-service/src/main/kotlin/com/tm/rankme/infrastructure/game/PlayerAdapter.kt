@@ -8,6 +8,10 @@ import java.util.*
 
 @Service
 class PlayerAdapter(private val repository: PlayerRepository) : PlayerPort {
+    override fun playerName(id: UUID): String {
+        return repository.byId(id)?.name ?: throw IllegalStateException("Player $id is not found")
+    }
+
     override fun playerInfo(id: UUID): PlayerInfo {
         return repository.byId(id)?.let {
             PlayerInfo(it.name, it.deviation, it.rating)
