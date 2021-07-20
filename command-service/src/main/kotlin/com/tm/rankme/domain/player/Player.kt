@@ -54,7 +54,7 @@ class Player private constructor() : AggregateRoot() {
             opponentScore, opponent.id, ++opponent.version
         )
         opponent.add(opponentEvent)
-        return GameResult(playerEvent, opponentEvent)
+        return GameResult(this, playerEvent, opponent, opponentEvent)
     }
 
     private fun newDeviation(): Int {

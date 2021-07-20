@@ -27,8 +27,8 @@ internal class CompleteGameHandlerTest {
         // given
         val command = CompleteGameCommand(UUID.randomUUID(), 3, 2)
         val leagueId = UUID.randomUUID()
-        val firstResult = Result(command.playerOneScore, -34, -85)
-        val secondResult = Result(command.playerTwoScore, -45, 79)
+        val firstResult = Result(command.playerOneScore, 229, -34, 1983, -85)
+        val secondResult = Result(command.playerTwoScore, 193, -45, 2314, 79)
         val game = Game.from(listOf(
             GameScheduled(leagueId, UUID.randomUUID(), UUID.randomUUID(), Instant.now().toEpochMilli(), UUID.randomUUID())
         ))
@@ -63,8 +63,8 @@ internal class CompleteGameHandlerTest {
     internal fun `Should throw exception when try to complete already played game`() {
         // given
         val command = CompleteGameCommand(UUID.randomUUID(), 3, 4)
-        val firstResult = Result(command.playerOneScore, -34, -85)
-        val secondResult = Result(command.playerTwoScore, -45, 79)
+        val firstResult = Result(command.playerOneScore, 229, -34, 1983, -85)
+        val secondResult = Result(command.playerTwoScore, 193, -45, 2314, 79)
         val game = Game.played(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), firstResult, secondResult)
         every { repository.byId(command.gameId) } returns game
         // when

@@ -7,8 +7,8 @@ import com.tm.rankme.domain.game.PlayerPort
 import com.tm.rankme.domain.game.Result
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
-import java.util.*
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class PlayerAdapter(
@@ -23,8 +23,8 @@ class PlayerAdapter(
         storePlayers(firstPlayer, secondPlayer)
         return Game.played(
             leagueId, firstPlayerId, secondPlayerId,
-            Result(result.firstScore, result.firstDeviationDelta, result.firstRatingDelta),
-            Result(result.secondScore, result.secondDeviationDelta, result.secondRatingDelta)
+            Result(result.firstScore, result.firstDeviation, result.firstDeviationDelta, result.firstRating, result.firstRatingDelta),
+            Result(result.secondScore, result.secondDeviation, result.secondDeviationDelta, result.secondRating, result.secondRatingDelta)
         )
     }
 

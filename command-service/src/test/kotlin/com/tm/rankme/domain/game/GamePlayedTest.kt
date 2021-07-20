@@ -1,9 +1,9 @@
 package com.tm.rankme.domain.game
 
+import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Test
 
 internal class GamePlayedTest {
     @Test
@@ -15,8 +15,8 @@ internal class GamePlayedTest {
         // when
         val event = GamePlayed(
             leagueId,
-            playerOneId, 2, -23, -76,
-            playerTwoId, 4, -38, 89
+            playerOneId, 2, 294, -23, 1485, -76,
+            playerTwoId, 4, 168,  -38, 2173, 89
         )
         // then
         assertEquals("game-played", event.type)
@@ -26,11 +26,15 @@ internal class GamePlayedTest {
         assertEquals(leagueId, event.leagueId)
         assertEquals(playerOneId, event.firstId)
         assertEquals(2, event.firstScore)
+        assertEquals(294, event.firstDeviation)
         assertEquals(-23, event.firstDeviationDelta)
+        assertEquals(1485, event.firstRating)
         assertEquals(-76, event.firstRatingDelta)
         assertEquals(playerTwoId, event.secondId)
         assertEquals(4, event.secondScore)
+        assertEquals(168, event.secondDeviation)
         assertEquals(-38, event.secondDeviationDelta)
+        assertEquals(2173, event.secondRating)
         assertEquals(89, event.secondRatingDelta)
         assertNotNull(event.dateTime)
     }
