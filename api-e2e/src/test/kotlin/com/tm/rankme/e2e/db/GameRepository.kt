@@ -9,5 +9,5 @@ interface GameRepository : MongoRepository<Game, UUID>
 
 @Document(collection = "game")
 class Game(
-    @Id val id: UUID,
+    @Id val id: UUID
 )
