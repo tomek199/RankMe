@@ -25,8 +25,8 @@ internal class PlayGameHandlerTest {
         // given
         val command = PlayGameCommand(UUID.randomUUID(), UUID.randomUUID(), 2, 5)
         val leagueId = UUID.randomUUID()
-        val firstResult = Result(command.playerOneScore, -34, -85)
-        val secondResult = Result(command.playerTwoScore, -45, 79)
+        val firstResult = Result(command.playerOneScore, 229, -34, 1983, -85)
+        val secondResult = Result(command.playerTwoScore, 193, -45, 2314, 79)
         every {
             playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
         } returns Game.played(leagueId, command.playerOneId, command.playerTwoId, firstResult, secondResult)

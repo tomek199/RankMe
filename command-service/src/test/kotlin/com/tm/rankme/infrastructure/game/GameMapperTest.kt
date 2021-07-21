@@ -6,11 +6,11 @@ import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.infrastructure.InfrastructureException
+import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.Test
 
 internal class GameMapperTest {
     private val mapper = GameMapper()
@@ -40,8 +40,8 @@ internal class GameMapperTest {
         // given
         val event = GamePlayed(
             UUID.randomUUID(),
-            UUID.randomUUID(), 5, -57, 125,
-            UUID.randomUUID(), 2, -48, -132)
+            UUID.randomUUID(), 5, 286, -57, 1841, 125,
+            UUID.randomUUID(), 2, 312, -48, 1407, -132)
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -54,11 +54,15 @@ internal class GameMapperTest {
             assertEquals(event.dateTime, it.dateTime)
             assertEquals(event.firstId, it.firstId)
             assertEquals(event.firstScore, it.firstScore)
+            assertEquals(event.firstDeviation, it.firstDeviation)
             assertEquals(event.firstDeviationDelta, it.firstDeviationDelta)
+            assertEquals(event.firstRating, it.firstRating)
             assertEquals(event.firstRatingDelta, it.firstRatingDelta)
             assertEquals(event.secondId, it.secondId)
             assertEquals(event.secondScore, it.secondScore)
+            assertEquals(event.secondDeviation, it.secondDeviation)
             assertEquals(event.secondDeviationDelta, it.secondDeviationDelta)
+            assertEquals(event.secondRating, it.secondRating)
             assertEquals(event.secondRatingDelta, it.secondRatingDelta)
         }
     }
@@ -108,9 +112,10 @@ internal class GameMapperTest {
         val leagueId = UUID.randomUUID()
         val event = """{"type": "game-played", "aggregateId": "$aggregateId", "version": 1, "timestamp": 0, "leagueId": "$leagueId", 
             "firstId": "1e56a755-1134-4f17-94fe-e6f2abe8ec07", "firstScore": 4,
-            "firstDeviationDelta": -23, "firstRatingDelta": 78,
+            "firstDeviation": 184, "firstDeviationDelta": -23, "firstRating": 2864, "firstRatingDelta": 78,
             "secondId": "bb47a873-78ed-4320-a3b9-c214e63c9f6e", "secondScore": 3, 
-            "secondDeviationDelta": -35, "secondRatingDelta": -63, "dateTime": 1611176383}"""
+            "secondDeviation": 285, "secondDeviationDelta": -35, "secondRating": 1981, "secondRatingDelta": -63, 
+            "dateTime": 1611176383}"""
         // when
         val deserializedEvent = mapper.deserialize("game-played", event)
         // then
@@ -122,11 +127,15 @@ internal class GameMapperTest {
             assertEquals(1611176383, it.dateTime)
             assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), it.firstId)
             assertEquals(4, it.firstScore)
+            assertEquals(184, it.firstDeviation)
             assertEquals(-23, it.firstDeviationDelta)
+            assertEquals(2864, it.firstRating)
             assertEquals(78, it.firstRatingDelta)
             assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), it.secondId)
             assertEquals(3, it.secondScore)
+            assertEquals(285, it.secondDeviation)
             assertEquals(-35, it.secondDeviationDelta)
+            assertEquals(1981, it.secondRating)
             assertEquals(-63, it.secondRatingDelta)
         }
     }

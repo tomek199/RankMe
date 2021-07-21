@@ -1,15 +1,11 @@
 package com.tm.rankme.domain.game
 
 import com.tm.rankme.domain.base.AggregateException
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class GameTest {
     @Test
@@ -18,8 +14,8 @@ internal class GameTest {
         val leagueId = UUID.randomUUID()
         val playerOneId = UUID.randomUUID()
         val playerTwoId = UUID.randomUUID()
-        val playerOneResult = Result(2, -34, 57)
-        val playerTwoResult = Result(0, -45, -62)
+        val playerOneResult = Result(2, 187, -34, 2294, 57)
+        val playerTwoResult = Result(0, 234, -45, 1491, -62)
         // when
         val game = Game.played(leagueId, playerOneId, playerTwoId, playerOneResult, playerTwoResult)
         // then
@@ -65,8 +61,8 @@ internal class GameTest {
         val scheduledEvent = GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
             dateTime.toEpochSecond(ZoneOffset.UTC))
         val game = Game.from(listOf(scheduledEvent))
-        val firstResult = Result(3, -56, 127)
-        val secondResult = Result(1, -37, -108)
+        val firstResult = Result(3, 204, -56, 1843, 127)
+        val secondResult = Result(1, 279, -37, 1204, -108)
         // when
         game.complete(firstResult, secondResult)
         // then
@@ -84,8 +80,8 @@ internal class GameTest {
     @Test
     internal fun `Should throw exception when try to complete already played game`() {
         // given
-        val firstResult = Result(3, -34, 65)
-        val secondResult = Result(0, -43, -52)
+        val firstResult = Result(3, 301, -34, 1569, 65)
+        val secondResult = Result(0, 204, -43, 1231, -52)
         val game = Game.played(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), firstResult, secondResult)
         // when
         val exception = assertFailsWith<AggregateException> { game.complete(firstResult, secondResult) }
@@ -97,8 +93,8 @@ internal class GameTest {
     internal fun `Should init game aggregate from 'game-played' event`() {
         // given
         val dateTime = LocalDateTime.now()
-        val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 2, -32, -56,
-            UUID.randomUUID(), 5, -42, 98,
+        val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 2, 187,-32, 1854,-56,
+            UUID.randomUUID(), 5, 249, -42, 1567, 98,
             dateTime.toEpochSecond(ZoneOffset.UTC), UUID.randomUUID())
         // when
         val game = Game.from(listOf(event))
@@ -108,10 +104,14 @@ internal class GameTest {
         assertEquals(event.leagueId, game.leagueId)
         assertEquals(dateTime.withNano(0), game.dateTime)
         assertEquals(Pair(event.firstId, event.secondId), game.playerIds)
+        assertEquals(event.firstDeviation, game.result!!.first.deviation)
         assertEquals(event.firstDeviationDelta, game.result!!.first.deviationDelta)
+        assertEquals(event.firstRating, game.result!!.first.rating)
         assertEquals(event.firstRatingDelta, game.result!!.first.ratingDelta)
         assertEquals(event.firstScore, game.result!!.first.score)
+        assertEquals(event.secondDeviation, game.result!!.second.deviation)
         assertEquals(event.secondDeviationDelta, game.result!!.second.deviationDelta)
+        assertEquals(event.secondRating, game.result!!.second.rating)
         assertEquals(event.secondRatingDelta, game.result!!.second.ratingDelta)
         assertEquals(event.secondScore, game.result!!.second.score)
     }
@@ -141,8 +141,8 @@ internal class GameTest {
         val dateTime = LocalDateTime.now()
         val scheduledEvent = GameScheduled(leagueId, playerOneId, playerTwoId, dateTime.toEpochSecond(ZoneOffset.UTC))
         val playedEvent = GamePlayed(leagueId,
-            playerOneId, 2, -45, 127,
-            playerTwoId, 0, -59, -142,
+            playerOneId, 2, 212, -45, 1304, 127,
+            playerTwoId, 0, 284, -59, 2195, -142,
             dateTime.toEpochSecond(ZoneOffset.UTC), scheduledEvent.aggregateId, 1
         )
         // when
@@ -153,10 +153,14 @@ internal class GameTest {
         assertEquals(leagueId, game.leagueId)
         assertEquals(dateTime.withNano(0), game.dateTime)
         assertEquals(Pair(playerOneId, playerTwoId), game.playerIds)
+        assertEquals(212, game.result!!.first.deviation)
         assertEquals(-45, game.result!!.first.deviationDelta)
+        assertEquals(1304, game.result!!.first.rating)
         assertEquals(127, game.result!!.first.ratingDelta)
         assertEquals(2, game.result!!.first.score)
+        assertEquals(284, game.result!!.second.deviation)
         assertEquals(-59, game.result!!.second.deviationDelta)
+        assertEquals(2195, game.result!!.second.rating)
         assertEquals(-142, game.result!!.second.ratingDelta)
         assertEquals(0, game.result!!.second.score)
         assertTrue(game.pendingEvents.isEmpty())

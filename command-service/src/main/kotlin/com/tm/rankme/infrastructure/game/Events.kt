@@ -11,11 +11,15 @@ internal data class Played(
     val dateTime: Long,
     val firstId: UUID,
     val firstScore: Int,
+    val firstDeviation: Int,
     val firstDeviationDelta: Int,
+    val firstRating: Int,
     val firstRatingDelta: Int,
     val secondId: UUID,
     val secondScore: Int,
+    val secondDeviation: Int,
     val secondDeviationDelta: Int,
+    val secondRating: Int,
     val secondRatingDelta: Int
 )
 

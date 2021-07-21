@@ -6,15 +6,11 @@ import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerPlayedGame
 import com.tm.rankme.domain.player.PlayerRepository
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.verifySequence
-import java.util.*
-import kotlin.test.assertEquals
+import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.*
+import kotlin.test.assertEquals
 
 internal class PlayerAdapterTest {
     private val repository = mockk<PlayerRepository>()
@@ -37,10 +33,14 @@ internal class PlayerAdapterTest {
         assertEquals(leagueId, game.leagueId)
         assertEquals(Pair(playerOne.id, playerTwo.id), game.playerIds)
         assertEquals(3, game.result!!.first.score)
+        assertEquals(290, game.result!!.first.deviation)
         assertEquals(-60, game.result!!.first.deviationDelta)
+        assertEquals(1662, game.result!!.first.rating)
         assertEquals(162, game.result!!.first.ratingDelta)
         assertEquals(1, game.result!!.second.score)
+        assertEquals(290, game.result!!.second.deviation)
         assertEquals(-60, game.result!!.second.deviationDelta)
+        assertEquals(1338, game.result!!.second.rating)
         assertEquals(-162, game.result!!.second.ratingDelta)
         verifySequence {
             repository.byId(playerOne.id)

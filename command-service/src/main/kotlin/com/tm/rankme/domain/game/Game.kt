@@ -24,9 +24,11 @@ class Game private constructor() : AggregateRoot() {
             val game = Game()
             val event = GamePlayed(leagueId = leagueId,
                 firstId = firstId, firstScore = firstResult.score,
-                firstDeviationDelta = firstResult.deviationDelta, firstRatingDelta = firstResult.ratingDelta,
+                firstDeviation = firstResult.deviation, firstDeviationDelta = firstResult.deviationDelta,
+                firstRating = firstResult.rating, firstRatingDelta = firstResult.ratingDelta,
                 secondId = secondId, secondScore = secondResult.score,
-                secondDeviationDelta = secondResult.deviationDelta, secondRatingDelta = secondResult.ratingDelta
+                secondDeviation = secondResult.deviation, secondDeviationDelta = secondResult.deviationDelta,
+                secondRating = secondResult.rating, secondRatingDelta = secondResult.ratingDelta
             )
             game.add(event)
             return game
@@ -51,9 +53,11 @@ class Game private constructor() : AggregateRoot() {
         if (!canComplete()) throw AggregateException("Game $id is already played")
         val event = GamePlayed(leagueId = leagueId,
             firstId = playerIds.first, firstScore = firstResult.score,
-            firstDeviationDelta = firstResult.deviationDelta, firstRatingDelta = firstResult.ratingDelta,
+            firstDeviation = firstResult.deviation, firstDeviationDelta = firstResult.deviationDelta,
+            firstRating = firstResult.rating, firstRatingDelta = firstResult.ratingDelta,
             secondId = playerIds.second, secondScore = secondResult.score,
-            secondDeviationDelta = secondResult.deviationDelta, secondRatingDelta = secondResult.ratingDelta,
+            secondDeviation = secondResult.deviation, secondDeviationDelta = secondResult.deviationDelta,
+            secondRating = secondResult.rating, secondRatingDelta = secondResult.ratingDelta,
             dateTime = dateTime.toEpochSecond(ZoneOffset.UTC), aggregateId = id, version = ++version
         )
         add(event)
@@ -73,8 +77,8 @@ class Game private constructor() : AggregateRoot() {
         dateTime = LocalDateTime.ofEpochSecond(event.dateTime, 0, ZoneOffset.UTC)
         playerIds = Pair(event.firstId, event.secondId)
         result = Pair(
-            Result(event.firstScore, event.firstDeviationDelta, event.firstRatingDelta),
-            Result(event.secondScore, event.secondDeviationDelta, event.secondRatingDelta)
+            Result(event.firstScore, event.firstDeviation, event.firstDeviationDelta, event.firstRating, event.firstRatingDelta),
+            Result(event.secondScore, event.secondDeviation, event.secondDeviationDelta, event.secondRating, event.secondRatingDelta)
         )
     }
 

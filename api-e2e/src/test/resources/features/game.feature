@@ -34,12 +34,12 @@ Feature: Player
     * I create player "Yoda" in league "Star Wars"
     When I play game between "Chewbacca" and "Yoda" with result 0 : 1
     * I schedule game between "Yoda" and "Chewbacca" in 2 hours
-#   TODO
-#    Then I have 2 games in league "Star Wars":
-#      | firstName     | firstScore | firstRating | firstRatingDelta | firstDeviation | firstDeviationDelta | secondName    | secondScore | secondRating | secondRatingDelta | secondDeviation | secondDeviationDelta |
-#      | Yoda          |            | 1338        |                  | 290            |                     | Chewbacca     |             | 1662         |                   | 290             |                      |
-#      | Chewbacca     | 0          | 1338        | -162             | 290            | -60                 | Yoda          | 1           | 1662         | 162               | 290             | -60                  |
-#    When I complete game
-#    Then I have 2 games in league "Star Wars"...
-
-
+    Then I have 2 games in league "Star Wars":
+      | firstName     | firstScore | firstRating | firstRatingDelta | firstDeviation | firstDeviationDelta | secondName    | secondScore | secondRating | secondRatingDelta | secondDeviation | secondDeviationDelta |
+      | Yoda          |            | 1662        |                  | 290            |                     | Chewbacca     |             | 1338         |                   | 290             |                      |
+      | Chewbacca     | 0          | 1338        | -162             | 290            | -60                 | Yoda          | 1           | 1662         | 162               | 290             | -60                  |
+    When I complete game between "Yoda" and "Chewbacca" with result 2 : 3
+    Then I have 2 games in league "Star Wars":
+      | firstName     | firstScore | firstRating | firstRatingDelta | firstDeviation | firstDeviationDelta | secondName    | secondScore | secondRating | secondRatingDelta | secondDeviation | secondDeviationDelta |
+      | Yoda          | 2          | 1430        | -232             | 263            | -27                 | Chewbacca     | 3           | 1570         | 232               | 263             | -27                  |
+      | Chewbacca     | 0          | 1338        | -162             | 290            | -60                 | Yoda          | 1           | 1662         | 162               | 290             | -60                  |

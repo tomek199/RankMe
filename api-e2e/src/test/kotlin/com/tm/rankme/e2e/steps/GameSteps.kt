@@ -9,7 +9,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import java.util.*
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class GameSteps(
     private val graphQlClient: GraphQLKtorClient,
@@ -64,19 +67,18 @@ class GameSteps(
                     val expectedGames = gamesTable.asMaps()
                     expectedGames.forEachIndexed { index, expectedGame ->
                         val game = it.getGames.edges[index].node
-                        assertNotNull(game.result)
                         assertEquals(expectedGame["firstName"], game.playerOneName)
-                        assertEquals(expectedGame["firstScore"]?.toInt(), game.result.playerOneScore)
+                        assertEquals(expectedGame["firstScore"]?.toInt(), game.result?.playerOneScore)
                         assertEquals(expectedGame["firstRating"]?.toInt(), game.playerOneRating)
-                        assertEquals(expectedGame["firstRatingDelta"]?.toInt(), game.result.playerOneRatingDelta)
+                        assertEquals(expectedGame["firstRatingDelta"]?.toInt(), game.result?.playerOneRatingDelta)
                         assertEquals(expectedGame["firstDeviation"]?.toInt(), game.playerOneDeviation)
-                        assertEquals(expectedGame["firstDeviationDelta"]?.toInt(), game.result.playerOneDeviationDelta)
+                        assertEquals(expectedGame["firstDeviationDelta"]?.toInt(), game.result?.playerOneDeviationDelta)
                         assertEquals(expectedGame["secondName"], game.playerTwoName)
-                        assertEquals(expectedGame["secondScore"]?.toInt(), game.result.playerTwoScore)
+                        assertEquals(expectedGame["secondScore"]?.toInt(), game.result?.playerTwoScore)
                         assertEquals(expectedGame["secondRating"]?.toInt(), game.playerTwoRating)
-                        assertEquals(expectedGame["secondRatingDelta"]?.toInt(), game.result.playerTwoRatingDelta)
+                        assertEquals(expectedGame["secondRatingDelta"]?.toInt(), game.result?.playerTwoRatingDelta)
                         assertEquals(expectedGame["secondDeviation"]?.toInt(), game.playerTwoDeviation)
-                        assertEquals(expectedGame["secondDeviationDelta"]?.toInt(), game.result.playerTwoDeviationDelta)
+                        assertEquals(expectedGame["secondDeviationDelta"]?.toInt(), game.result?.playerTwoDeviationDelta)
                     }
                 } ?: fail("Games not found first=$first")
             }

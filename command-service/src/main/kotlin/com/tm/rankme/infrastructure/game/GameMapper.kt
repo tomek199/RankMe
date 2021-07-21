@@ -17,8 +17,10 @@ class GameMapper {
         return when (event) {
             is GamePlayed -> Played(
                 event.type, event.aggregateId, event.version, event.timestamp, event.leagueId, event.dateTime,
-                event.firstId, event.firstScore, event.firstDeviationDelta, event.firstRatingDelta,
-                event.secondId, event.secondScore, event.secondDeviationDelta, event.secondRatingDelta
+                event.firstId, event.firstScore,
+                event.firstDeviation, event.firstDeviationDelta, event.firstRating, event.firstRatingDelta,
+                event.secondId, event.secondScore,
+                event.secondDeviation, event.secondDeviationDelta, event.secondRating, event.secondRatingDelta
             )
             is GameScheduled -> Scheduled(
                 event.type, event.aggregateId, event.version, event.timestamp, event.leagueId,
@@ -37,8 +39,9 @@ class GameMapper {
             }
             "game-played" -> objectMapper.readValue(data, Played::class.java).let {
                 GamePlayed(
-                    it.leagueId, it.firstId, it.firstScore, it.firstDeviationDelta, it.firstRatingDelta,
-                    it.secondId, it.secondScore, it.secondDeviationDelta, it.secondRatingDelta,
+                    it.leagueId,
+                    it.firstId, it.firstScore, it.firstDeviation, it.firstDeviationDelta, it.firstRating, it.firstRatingDelta,
+                    it.secondId, it.secondScore, it.secondDeviation, it.secondDeviationDelta, it.secondRating, it.secondRatingDelta,
                     it.dateTime, it.aggregateId, it.version
                 )
             }

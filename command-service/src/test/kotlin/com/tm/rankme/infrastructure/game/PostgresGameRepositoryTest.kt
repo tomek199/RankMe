@@ -5,18 +5,14 @@ import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.domain.game.Result
 import com.tm.rankme.infrastructure.InfrastructureException
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
-import io.mockk.verifySequence
+import io.mockk.*
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 internal class PostgresGameRepositoryTest {
     private val accessor = mockk<GameAccessor>()
@@ -50,7 +46,10 @@ internal class PostgresGameRepositoryTest {
     internal fun `Should save 'game-played' event with version 1`() {
         // given
         val game = Game.from(listOf(GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 12345)))
-        game.complete(Result(3, -45, 150), Result(1, -35, -150))
+        game.complete(
+            Result(0, 184, -34, 2443, -176),
+            Result(1, 194, -42, 2159, 148)
+        )
         every { mapper.serialize(ofType(GamePlayed::class)) } returns String()
         every { accessor.getFirstByAggregateIdOrderByTimestampDesc(game.id) } returns
             GameEntity(game.id, "game-played", 0, 12345, "{}", 1)
@@ -76,7 +75,10 @@ internal class PostgresGameRepositoryTest {
     internal fun `Should throw exception when cannot get actual aggregate version`() {
         // given
         val game = Game.from(listOf(GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 12345)))
-        game.complete(Result(3, -45, 150), Result(1, -35, -150))
+        game.complete(
+            Result(0, 184, -34, 2443, -176),
+            Result(1, 194, -42, 2159, 148)
+        )
         every { accessor.getFirstByAggregateIdOrderByTimestampDesc(game.id) } returns null
         // when
         val exception = assertFailsWith<InfrastructureException> { repository.store(game) }
@@ -88,7 +90,10 @@ internal class PostgresGameRepositoryTest {
     internal fun `Should throw exception when event version is out of date`() {
         // given
         val game = Game.from(listOf(GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 12345)))
-        game.complete(Result(3, -45, 150), Result(1, -35, -150))
+        game.complete(
+            Result(0, 184, -34, 2443, -176),
+            Result(1, 194, -42, 2159, 148)
+        )
         every { accessor.getFirstByAggregateIdOrderByTimestampDesc(game.id) } returns
             GameEntity(game.id, "game-played", 1, 12345, "{}", 2)
         // when
@@ -111,8 +116,8 @@ internal class PostgresGameRepositoryTest {
         every { mapper.deserialize(ofType(String::class), ofType(String::class)) } returnsMany listOf(
             GameScheduled(leagueId, playerOneId, playerTwoId, 11111, aggregateId),
             GamePlayed(leagueId,
-                playerOneId, 4, -45, 75,
-                playerTwoId, 3, -35, -75,
+                playerOneId, 4, 189, -45, 2724, 75,
+                playerTwoId, 3, 217, -35, 1498, -75,
                 22222, aggregateId, 1)
         )
         // when
@@ -122,8 +127,8 @@ internal class PostgresGameRepositoryTest {
         assertEquals(1, game.version)
         assertTrue(game.pendingEvents.isEmpty())
         assertEquals(Pair(playerOneId, playerTwoId), game.playerIds)
-        assertEquals(Result(4, -45, 75), game.result!!.first)
-        assertEquals(Result(3, -35, -75), game.result!!.second)
+        assertEquals(Result(4, 189, -45, 2724, 75), game.result!!.first)
+        assertEquals(Result(3, 217, -35, 1498, -75), game.result!!.second)
     }
 
     @Test
