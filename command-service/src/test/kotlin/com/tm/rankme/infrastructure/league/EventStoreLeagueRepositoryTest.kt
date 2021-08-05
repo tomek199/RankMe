@@ -1,12 +1,7 @@
 package com.tm.rankme.infrastructure.league
 
-import com.eventstore.dbclient.EventData
-import com.eventstore.dbclient.EventStoreDBClient
-import com.eventstore.dbclient.ReadResult
-import com.eventstore.dbclient.ReadStreamOptions
-import com.eventstore.dbclient.RecordedEvent
-import com.eventstore.dbclient.ResolvedEvent
-import com.eventstore.dbclient.StreamRevision
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import com.eventstore.dbclient.*
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
@@ -16,12 +11,11 @@ import com.tm.rankme.infrastructure.InfrastructureException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.util.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 internal class EventStoreLeagueRepositoryTest {
     private val connector = mockk<EventStoreConnector>()
@@ -91,7 +85,7 @@ internal class EventStoreLeagueRepositoryTest {
     @Test
     internal fun `Should return aggregate from events`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
@@ -116,7 +110,7 @@ internal class EventStoreLeagueRepositoryTest {
     @Test
     internal fun `Should return true when league exist`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { client.readStream(leagueId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
@@ -130,7 +124,7 @@ internal class EventStoreLeagueRepositoryTest {
     @Test
     internal fun `Should return false when league does not exist`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { client.readStream(leagueId.toString(), ofType(ReadStreamOptions::class)).get().events } throws
             InfrastructureException("Stream is not found")
         // then
@@ -140,7 +134,7 @@ internal class EventStoreLeagueRepositoryTest {
     @Test
     internal fun `Should return false when league does not contain any event`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { client.readStream(leagueId.toString(), ofType(ReadStreamOptions::class)).get().events } returns emptyList()
         // then
         assertFalse(repository.exist(leagueId))

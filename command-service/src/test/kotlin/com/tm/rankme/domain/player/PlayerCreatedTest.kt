@@ -1,15 +1,15 @@
 package com.tm.rankme.domain.player
 
-import java.util.*
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Test
 
 internal class PlayerCreatedTest {
     @Test
     internal fun `Should create event`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val name = "Han Solo"
         val deviation = 237
         val rating = 1680

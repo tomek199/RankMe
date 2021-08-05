@@ -1,10 +1,7 @@
 package com.tm.rankme.command.league
 
-import com.tm.rankme.command.Command
-import java.util.*
-
 data class ChangeLeagueSettingsCommand(
-    val id: UUID,
+    val id: String,
     val allowDraws: Boolean,
     val maxScore: Int
 ) : com.tm.rankme.command.Command()
@@ -14,6 +11,6 @@ data class CreateLeagueCommand(
 ) : com.tm.rankme.command.Command()
 
 data class RenameLeagueCommand(
-    val id: UUID,
+    val id: String,
     val name: String
 ) : com.tm.rankme.command.Command()

@@ -7,7 +7,6 @@ import com.tm.rankme.domain.league.LeagueRepository
 import com.tm.rankme.infrastructure.EventStoreConnector
 import com.tm.rankme.infrastructure.EventStoreRepository
 import com.tm.rankme.infrastructure.InfrastructureException
-import java.util.*
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
@@ -18,11 +17,11 @@ class EventStoreLeagueRepository(
     private val mapper: LeagueMapper
 ) : EventStoreRepository<League>(connector), LeagueRepository {
 
-    override fun byId(id: UUID): League = events(id.toString()).let { League.from(it) }
+    override fun byId(id: String): League = events(id.toString()).let { League.from(it) }
 
     override fun store(aggregate: League) = aggregate.pendingEvents.forEach(this::save)
 
-    override fun exist(id: UUID): Boolean {
+    override fun exist(id: String): Boolean {
         return try {
             events(id.toString()).isNotEmpty()
         } catch (e: InfrastructureException) {

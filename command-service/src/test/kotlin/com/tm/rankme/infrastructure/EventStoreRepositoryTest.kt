@@ -1,21 +1,15 @@
 package com.tm.rankme.infrastructure
 
-import com.eventstore.dbclient.EventStoreDBClient
-import com.eventstore.dbclient.ReadResult
-import com.eventstore.dbclient.ReadStreamOptions
-import com.eventstore.dbclient.RecordedEvent
-import com.eventstore.dbclient.ResolvedEvent
-import com.eventstore.dbclient.StreamNotFoundException
-import com.eventstore.dbclient.StreamRevision
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import com.eventstore.dbclient.*
 import com.tm.rankme.domain.base.Event
 import io.mockk.every
 import io.mockk.mockk
-import java.util.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.util.concurrent.ExecutionException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 internal class EventStoreRepositoryTest {
     private val connector = mockk<EventStoreConnector>()
@@ -68,7 +62,7 @@ internal class EventStoreRepositoryTest {
     @Test
     internal fun `Should throw exception when stream is not found`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } throws
             ExecutionException("Stream not found exception", StreamNotFoundException())
         // when
@@ -77,7 +71,7 @@ internal class EventStoreRepositoryTest {
         assertEquals("Stream $aggregateId is not found", exception.message)
     }
 
-    private class TestEvent(version: Long = 1) : Event<Any>(UUID.randomUUID(), version) {
+    private class TestEvent(version: Long = 1) : Event<Any>(randomNanoId(), version) {
         override val type: String = "test-event"
         override fun apply(aggregate: Any) { }
     }

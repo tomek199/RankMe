@@ -1,5 +1,6 @@
 package com.tm.rankme.command.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -10,7 +11,6 @@ import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -25,7 +25,7 @@ internal class CreatePlayerHandlerTest {
     @Test
     internal fun `Should create player`() {
         // given
-        val command = CreatePlayerCommand(UUID.randomUUID(), "Optimus Prime")
+        val command = CreatePlayerCommand(randomNanoId(), "Optimus Prime")
         every { leaguePort.exist(command.leagueId) } returns true
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
@@ -49,7 +49,7 @@ internal class CreatePlayerHandlerTest {
     @Test
     internal fun `Should throw exception when league does not exist`() {
         // given
-        val command = CreatePlayerCommand(UUID.randomUUID(), "Optimus Prime")
+        val command = CreatePlayerCommand(randomNanoId(), "Optimus Prime")
         every { leaguePort.exist(command.leagueId) } returns false
         // when
         val exception = assertFailsWith<AggregateException> { handler.accept(command) }

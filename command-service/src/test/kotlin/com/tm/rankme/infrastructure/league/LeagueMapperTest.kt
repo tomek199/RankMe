@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.league
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.league.League
@@ -7,10 +8,9 @@ import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.infrastructure.InfrastructureException
-import java.util.*
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.Test
 
 internal class LeagueMapperTest {
     private val mapper = LeagueMapper()
@@ -18,7 +18,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should serialize 'league-created' event`() {
         // given
-        val event = LeagueCreated("Star Wars", true, 3, UUID.randomUUID())
+        val event = LeagueCreated("Star Wars", true, 3, randomNanoId())
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -36,7 +36,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should serialize 'league-renamed' event`() {
         // given
-        val event = LeagueRenamed(UUID.randomUUID(), 1, "Star Wars")
+        val event = LeagueRenamed(randomNanoId(), 1, "Star Wars")
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -52,7 +52,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should serialize 'league-settings-changed' event`() {
         // given
-        val event = LeagueSettingsChanged(UUID.randomUUID(), 2, true, 5)
+        val event = LeagueSettingsChanged(randomNanoId(), 2, true, 5)
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -69,7 +69,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should throw exception when cannot serialize event`() {
         // given
-        val event = object : Event<League>(UUID.randomUUID(), 1) {
+        val event = object : Event<League>(randomNanoId(), 1) {
             override val type: String = "unknown-event"
             override fun apply(aggregate: League) { }
         }
@@ -82,7 +82,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should deserialize 'created' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val event = """{"type": "league-created", "aggregateId": "$aggregateId", 
                 "version": 0, "timestamp": 12345, "name": "Star Wars", "allowDraws": false, "maxScore": 2}"""
         // when
@@ -101,7 +101,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should deserialize 'renamed' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val event = """{"type": "league-renamed", "aggregateId": "$aggregateId", 
                 "version": 1, "timestamp": 12345, "name": "Transformers"}"""
         // when
@@ -118,7 +118,7 @@ internal class LeagueMapperTest {
     @Test
     internal fun `Should deserialize 'settings-changed' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val event = """{"type": "league-settings-changed", "aggregateId": "$aggregateId", 
                 "version": 2, "timestamp": 12345, "allowDraws": true, "maxScore": 5}"""
         // when

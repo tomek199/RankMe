@@ -8,14 +8,13 @@ import com.tm.rankme.domain.game.Result
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class PlayerAdapter(
     private val repository: PlayerRepository,
     private val eventBus: EventBus
 ) : PlayerPort {
-    override fun playGame(firstPlayerId: UUID, secondPlayerId: UUID, firstScore: Int, secondScore: Int): Game {
+    override fun playGame(firstPlayerId: String, secondPlayerId: String, firstScore: Int, secondScore: Int): Game {
         val firstPlayer = repository.byId(firstPlayerId)
         val secondPlayer = repository.byId(secondPlayerId)
         val leagueId = extractLeagueId(firstPlayer, secondPlayer)
@@ -28,13 +27,13 @@ class PlayerAdapter(
         )
     }
 
-    override fun extractLeagueId(firstPlayerId: UUID, secondPlayerId: UUID): UUID {
+    override fun extractLeagueId(firstPlayerId: String, secondPlayerId: String): String {
         val firstPlayer = repository.byId(firstPlayerId)
         val secondPlayer = repository.byId(secondPlayerId)
         return extractLeagueId(firstPlayer, secondPlayer)
     }
 
-    private fun extractLeagueId(firstPlayer: Player, secondPlayer: Player): UUID  {
+    private fun extractLeagueId(firstPlayer: Player, secondPlayer: Player): String  {
         if (firstPlayer.leagueId != secondPlayer.leagueId)
             throw AggregateException("Players ${firstPlayer.id} and ${secondPlayer.id} does not belong to the same league")
         return firstPlayer.leagueId

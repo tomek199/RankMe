@@ -1,10 +1,9 @@
 package com.tm.rankme.domain.league
 
 import com.tm.rankme.domain.base.Event
-import java.util.*
 
 class LeagueSettingsChanged(
-    aggregateId: UUID,
+    aggregateId: String,
     version: Long,
     val allowDraws: Boolean,
     val maxScore: Int

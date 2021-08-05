@@ -6,8 +6,8 @@ import com.eventstore.dbclient.RecordedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.tm.rankme.domain.base.Event
-import java.util.concurrent.ExecutionException
 import org.slf4j.LoggerFactory
+import java.util.concurrent.ExecutionException
 
 abstract class EventStoreRepository<T>(
     private val connector: EventStoreConnector

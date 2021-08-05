@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.EventBus
 import com.tm.rankme.domain.player.Player
@@ -9,7 +10,6 @@ import com.tm.rankme.domain.player.PlayerRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 import kotlin.test.assertEquals
 
 internal class PlayerAdapterTest {
@@ -20,7 +20,7 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should return Game`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val playerOne = Player.from(listOf(PlayerCreated(leagueId, "Batman")))
         val playerTwo = Player.from(listOf(PlayerCreated(leagueId, "Superman")))
         every { repository.byId(playerOne.id) } returns playerOne
@@ -55,8 +55,8 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should throw exception when players does not belong to the same league`() {
         // given
-        val playerOne = Player.create(UUID.randomUUID(), "Batman")
-        val playerTwo = Player.create(UUID.randomUUID(), "Superman")
+        val playerOne = Player.create(randomNanoId(), "Batman")
+        val playerTwo = Player.create(randomNanoId(), "Superman")
         every { repository.byId(playerOne.id) } returns playerOne
         every { repository.byId(playerTwo.id) } returns playerTwo
         // when
@@ -68,7 +68,7 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should extract league id by player ids`() {
         // given
-        val expectedLeagueId = UUID.randomUUID()
+        val expectedLeagueId = randomNanoId()
         val playerOne = Player.create(expectedLeagueId, "Batman")
         val playerTwo = Player.create(expectedLeagueId, "Superman")
         every { repository.byId(playerOne.id) } returns playerOne

@@ -1,14 +1,14 @@
 package com.tm.rankme.domain.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.Event
-import java.util.*
 
 class GameScheduled(
-    val leagueId: UUID,
-    val firstId: UUID,
-    val secondId: UUID,
+    val leagueId: String,
+    val firstId: String,
+    val secondId: String,
     val dateTime: Long,
-    aggregateId: UUID = UUID.randomUUID()
+    aggregateId: String = randomNanoId()
 ) : Event<Game>(aggregateId, 0) {
 
     override val type: String = "game-scheduled"

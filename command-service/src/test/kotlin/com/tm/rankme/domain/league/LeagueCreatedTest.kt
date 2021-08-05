@@ -1,8 +1,8 @@
 package com.tm.rankme.domain.league
 
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Test
 
 internal class LeagueCreatedTest {
     @Test

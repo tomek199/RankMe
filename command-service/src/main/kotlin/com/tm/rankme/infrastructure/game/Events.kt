@@ -1,21 +1,19 @@
 package com.tm.rankme.infrastructure.game
 
-import java.util.*
-
 internal data class Played(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
-    val leagueId: UUID,
+    val leagueId: String,
     val dateTime: Long,
-    val firstId: UUID,
+    val firstId: String,
     val firstScore: Int,
     val firstDeviation: Int,
     val firstDeviationDelta: Int,
     val firstRating: Int,
     val firstRatingDelta: Int,
-    val secondId: UUID,
+    val secondId: String,
     val secondScore: Int,
     val secondDeviation: Int,
     val secondDeviationDelta: Int,
@@ -25,11 +23,11 @@ internal data class Played(
 
 internal data class Scheduled(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
-    val leagueId: UUID,
+    val leagueId: String,
     val dateTime: Long,
-    val firstId: UUID,
-    val secondId: UUID
+    val firstId: String,
+    val secondId: String
 )

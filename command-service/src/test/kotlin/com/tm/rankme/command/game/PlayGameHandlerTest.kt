@@ -1,5 +1,6 @@
 package com.tm.rankme.command.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -7,7 +8,6 @@ import com.tm.rankme.domain.game.*
 import com.tm.rankme.domain.league.League
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -23,8 +23,8 @@ internal class PlayGameHandlerTest {
     @Test
     internal fun `Should create played game`() {
         // given
-        val command = PlayGameCommand(UUID.randomUUID(), UUID.randomUUID(), 2, 5)
-        val leagueId = UUID.randomUUID()
+        val command = PlayGameCommand(randomNanoId(), randomNanoId(), 2, 5)
+        val leagueId = randomNanoId()
         val firstResult = Result(command.playerOneScore, 229, -34, 1983, -85)
         val secondResult = Result(command.playerTwoScore, 193, -45, 2314, 79)
         every {
@@ -53,7 +53,7 @@ internal class PlayGameHandlerTest {
     @Test
     internal fun `Should throw exception when port throws exception`() {
         // given
-        val command = PlayGameCommand(UUID.randomUUID(), UUID.randomUUID(), 3, 2)
+        val command = PlayGameCommand(randomNanoId(), randomNanoId(), 3, 2)
         every {
             playerPort.playGame(command.playerOneId, command.playerTwoId, command.playerOneScore, command.playerTwoScore)
         } throws AggregateException("Cannot play game")

@@ -1,7 +1,7 @@
 package com.tm.rankme.infrastructure
 
-import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 internal class InfrastructureExceptionTest {
     @Test

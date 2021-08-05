@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -26,7 +25,7 @@ class PostgresGameRepository(
     private val log = LoggerFactory.getLogger(PostgresGameRepository::class.java)
     private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-    override fun byId(id: UUID) = Game.from(events(id))
+    override fun byId(id: String) = Game.from(events(id))
 
     override fun store(aggregate: Game) = aggregate.pendingEvents.forEach {
         log.info("Saving event ${it.type} for aggregate ${it.aggregateId}")
@@ -48,7 +47,7 @@ class PostgresGameRepository(
         return GameEntity(event.aggregateId, event.type, event.version, event.timestamp, payload)
     }
 
-    private fun events(aggregateId: UUID): List<Event<Game>> {
+    private fun events(aggregateId: String): List<Event<Game>> {
         log.info("Getting events for game stream $aggregateId")
         val entities = accessor.getByAggregateIdOrderByTimestampAsc(aggregateId)
         if (entities.isEmpty()) throw InfrastructureException("Stream $aggregateId is not found")
@@ -57,13 +56,13 @@ class PostgresGameRepository(
 }
 
 interface GameAccessor : CrudRepository<GameEntity, Long> {
-    fun getFirstByAggregateIdOrderByTimestampDesc(aggregateId: UUID): GameEntity?
-    fun getByAggregateIdOrderByTimestampAsc(aggregateId: UUID): List<GameEntity>
+    fun getFirstByAggregateIdOrderByTimestampDesc(aggregateId: String): GameEntity?
+    fun getByAggregateIdOrderByTimestampAsc(aggregateId: String): List<GameEntity>
 }
 
 @Entity(name = "game")
 data class GameEntity(
-    val aggregateId: UUID,
+    val aggregateId: String,
     val type: String,
     val version: Long,
     val timestamp: Long,

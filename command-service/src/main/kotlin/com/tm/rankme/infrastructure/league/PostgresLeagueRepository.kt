@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -26,7 +25,7 @@ class PostgresLeagueRepository(
     private val log = LoggerFactory.getLogger(PostgresLeagueRepository::class.java)
     private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-    override fun byId(id: UUID) = League.from(events(id))
+    override fun byId(id: String) = League.from(events(id))
 
     override fun store(aggregate: League) = aggregate.pendingEvents.forEach {
         log.info("Saving event ${it.type} for aggregate ${it.aggregateId}")
@@ -48,26 +47,26 @@ class PostgresLeagueRepository(
         return LeagueEntity(event.aggregateId, event.type, event.version, event.timestamp, payload)
     }
 
-    private fun events(aggregateId: UUID): List<Event<League>> {
+    private fun events(aggregateId: String): List<Event<League>> {
         log.info("Getting events for league stream $aggregateId")
         val entities = accessor.getByAggregateIdOrderByTimestampAsc(aggregateId)
         if (entities.isEmpty()) throw InfrastructureException("Stream $aggregateId is not found")
         return entities.map { event -> mapper.deserialize(event.type, event.payload) }
     }
 
-    override fun exist(id: UUID): Boolean {
+    override fun exist(id: String): Boolean {
         return accessor.getFirstByAggregateIdOrderByTimestampDesc(id) != null
     }
 }
 
 interface LeagueAccessor : CrudRepository<LeagueEntity, Long> {
-    fun getFirstByAggregateIdOrderByTimestampDesc(aggregateId: UUID): LeagueEntity?
-    fun getByAggregateIdOrderByTimestampAsc(aggregateId: UUID): List<LeagueEntity>
+    fun getFirstByAggregateIdOrderByTimestampDesc(aggregateId: String): LeagueEntity?
+    fun getByAggregateIdOrderByTimestampAsc(aggregateId: String): List<LeagueEntity>
 }
 
 @Entity(name = "league")
 data class LeagueEntity(
-    val aggregateId: UUID,
+    val aggregateId: String,
     val type: String,
     val version: Long,
     val timestamp: Long,

@@ -1,15 +1,15 @@
 package com.tm.rankme.domain.league
 
-import java.util.*
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Test
 
 internal class LeagueRenamedTest {
     @Test
     internal fun `Should create event`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val version = 2L
         val name = "Transformers"
         // when

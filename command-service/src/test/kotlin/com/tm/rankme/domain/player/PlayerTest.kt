@@ -1,18 +1,18 @@
 package com.tm.rankme.domain.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 internal class PlayerTest {
 
     @Test
     internal fun `Should create league`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val name = "Han Solo"
         // when
         val player = Player.create(leagueId, name)
@@ -31,7 +31,7 @@ internal class PlayerTest {
     @Test
     internal fun `Should init player aggregate from 'player-created' event`() {
         // given
-        val event = PlayerCreated(UUID.randomUUID(), "Han Solo")
+        val event = PlayerCreated(randomNanoId(), "Han Solo")
         // when
         val player = Player.from(listOf(event))
         // then
@@ -47,8 +47,8 @@ internal class PlayerTest {
     @Test
     internal fun `Should play first game`() {
         // given
-        val playerOne = Player.from(listOf(PlayerCreated(UUID.randomUUID(), "Batman")))
-        val playerTwo = Player.from(listOf(PlayerCreated(UUID.randomUUID(), "Superman")))
+        val playerOne = Player.from(listOf(PlayerCreated(randomNanoId(), "Batman")))
+        val playerTwo = Player.from(listOf(PlayerCreated(randomNanoId(), "Superman")))
         // when
         val gameResult = playerOne.playedWith(playerTwo, 5, 3)
         // then
@@ -87,10 +87,10 @@ internal class PlayerTest {
     @Test
     internal fun `Should play second game`() {
         // given
-        val playerOneCreated = PlayerCreated(UUID.randomUUID(), "Batman")
+        val playerOneCreated = PlayerCreated(randomNanoId(), "Batman")
         val playerOnePlayed = PlayerPlayedGame(-35, 48, 4, playerOneCreated.aggregateId, 3)
         val playerOne = Player.from(listOf(playerOneCreated, playerOnePlayed))
-        val playerTwoCreated = PlayerCreated(UUID.randomUUID(), "Superman")
+        val playerTwoCreated = PlayerCreated(randomNanoId(), "Superman")
         val playerTwoPlayed = PlayerPlayedGame(-56, -87, 2, playerTwoCreated.aggregateId, 4)
         val playerTwo = Player.from(listOf(playerTwoCreated, playerTwoPlayed))
         // when

@@ -1,13 +1,12 @@
 package com.tm.rankme.domain.player
 
 import com.tm.rankme.domain.base.Event
-import java.util.*
 
 class PlayerPlayedGame(
     val deviationDelta: Int,
     val ratingDelta: Int,
     val score: Int,
-    aggregateId: UUID,
+    aggregateId: String,
     version: Long
 ) : Event<Player>(aggregateId, version) {
 

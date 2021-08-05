@@ -1,15 +1,15 @@
 package com.tm.rankme.infrastructure.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerPlayedGame
 import com.tm.rankme.infrastructure.InfrastructureException
-import java.util.*
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.Test
 
 internal class PlayerMapperTest {
     private val mapper = PlayerMapper()
@@ -17,7 +17,7 @@ internal class PlayerMapperTest {
     @Test
     internal fun `Should serialize 'player-created' event`() {
         // given
-        val event = PlayerCreated(UUID.randomUUID(), "Optimus Prime")
+        val event = PlayerCreated(randomNanoId(), "Optimus Prime")
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -35,7 +35,7 @@ internal class PlayerMapperTest {
     @Test
     internal fun `Should serialize 'player-played-game' event`() {
         // given
-        val event = PlayerPlayedGame(-34, 52, 3, UUID.randomUUID(), 1)
+        val event = PlayerPlayedGame(-34, 52, 3, randomNanoId(), 1)
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -53,7 +53,7 @@ internal class PlayerMapperTest {
     @Test
     internal fun `Should throw exception when cannot serialize event`() {
         // given
-        val event = object : Event<Player>(UUID.randomUUID(), 1) {
+        val event = object : Event<Player>(randomNanoId(), 1) {
             override val type: String = "unknown-event"
             override fun apply(aggregate: Player) { }
         }
@@ -66,8 +66,8 @@ internal class PlayerMapperTest {
     @Test
     internal fun `Should deserialize 'created' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
         val event = """{"type": "player-created", "aggregateId": "$aggregateId", "version": 0, "timestamp": 0, 
             "leagueId": "$leagueId", "name": "Optimus Prime", "deviation": 149, "rating": 2859}"""
         // when
@@ -87,7 +87,7 @@ internal class PlayerMapperTest {
     @Test
     internal fun `Should deserialize 'played-game' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val event = """{"type": "player-played-game", "aggregateId": "$aggregateId", "version": 1, "timestamp": 0, 
             "deviationDelta": -36, "ratingDelta": -132, "score": 2}"""
         // when
