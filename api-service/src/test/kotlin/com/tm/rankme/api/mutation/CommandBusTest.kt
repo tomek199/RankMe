@@ -1,5 +1,6 @@
 package com.tm.rankme.api.mutation
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.TestFactory
 import org.springframework.cloud.stream.function.StreamBridge
 import org.springframework.messaging.support.GenericMessage
 import java.time.LocalDateTime
-import java.util.*
 
 internal class CommandBusTest {
     private val streamBridge = mockk<StreamBridge>()
@@ -26,12 +26,12 @@ internal class CommandBusTest {
         // given
         listOf(
             CreateLeagueCommand("Star Wars"),
-            RenameLeagueCommand(UUID.randomUUID(), "Transformers"),
-            ChangeLeagueSettingsCommand(UUID.randomUUID(), true, 5),
-            CreatePlayerCommand(UUID.randomUUID(), "Optimus Prime"),
-            PlayGameCommand(UUID.randomUUID(), UUID.randomUUID(), 3, 2),
-            ScheduleGameCommand(UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now()),
-            CompleteGameCommand(UUID.randomUUID(), 1, 4)
+            RenameLeagueCommand(randomNanoId(), "Transformers"),
+            ChangeLeagueSettingsCommand(randomNanoId(), true, 5),
+            CreatePlayerCommand(randomNanoId(), "Optimus Prime"),
+            PlayGameCommand(randomNanoId(), randomNanoId(), 3, 2),
+            ScheduleGameCommand(randomNanoId(), randomNanoId(), LocalDateTime.now()),
+            CompleteGameCommand(randomNanoId(), 1, 4)
         ).map { command -> DynamicTest.dynamicTest("Given $command should be executed") {
             // when
             commandBus.execute(command)

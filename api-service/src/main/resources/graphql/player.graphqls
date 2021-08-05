@@ -1,14 +1,14 @@
 input CreatePlayerCommand {
-    leagueId: UUID!
+    leagueId: String!
     name: String!
 }
 
 input GetPlayerQuery {
-    id: UUID!
+    id: String!
 }
 
 type Player {
-    id: UUID!
+    id: String!
     name: String!
     deviation: Int!
     rating: Int!

@@ -1,15 +1,15 @@
 package com.tm.rankme.api.mutation
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.test.assertEquals
 
 class CommandsTest {
-    private val leagueId = UUID.randomUUID()
-    private val playerOneId = UUID.randomUUID()
-    private val playerTwoId = UUID.randomUUID()
-    private val gameId = UUID.randomUUID()
+    private val leagueId = randomNanoId()
+    private val playerOneId = randomNanoId()
+    private val playerTwoId = randomNanoId()
+    private val gameId = randomNanoId()
 
     @Test
     fun `Should init CreateLeagueCommand`() {

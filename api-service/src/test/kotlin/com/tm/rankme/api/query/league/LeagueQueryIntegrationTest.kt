@@ -1,5 +1,6 @@
 package com.tm.rankme.api.query.league
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.api.query.Item
@@ -34,22 +35,22 @@ internal class LeagueQueryIntegrationTest {
     @Test
     internal fun `Should return league`() {
         // given
-        val league = League(UUID.fromString("83222ad3-219c-48b0-bcc2-817efb61cfda"), "Transformers", true, 3)
+        val league = League("xAeksxNOS-lq5mnKmm1tk", "Transformers", true, 3)
         val players = listOf(
-            Player(UUID.randomUUID(), "Optimus Prime", 145, 2746),
+            Player(randomNanoId(), "Optimus Prime", 145, 2746),
         )
         val games = List(3) {
             Game(
-                UUID.randomUUID(), LocalDateTime.now(),
-                UUID.randomUUID(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 Result(
                     Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
                     Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
                 )
             )
         }
-        val page = Page(games.map { Item(it, it.id.toString()) }, false, true)
+        val page = Page(games.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java)
         } returns league
@@ -66,11 +67,11 @@ internal class LeagueQueryIntegrationTest {
         val response = template.postForResource(request)
         // then
         assertTrue(response.isOk)
-        assertEquals(league.id.toString(), response.get("$.data.getLeague.id"))
+        assertEquals(league.id, response.get("$.data.getLeague.id"))
         assertEquals(league.name, response.get("$.data.getLeague.name"))
         assertEquals(league.allowDraws, response.get("$.data.getLeague.allowDraws", Boolean::class.java))
         assertEquals(league.maxScore, response.get("$.data.getLeague.maxScore", Int::class.java))
-        assertEquals(players[0].id.toString(), response.get("$.data.getLeague.players[0].id"))
+        assertEquals(players[0].id, response.get("$.data.getLeague.players[0].id"))
         assertEquals(players[0].name, response.get("$.data.getLeague.players[0].name"))
         assertEquals(players[0].deviation, response.get("$.data.getLeague.players[0].deviation").toInt())
         assertEquals(players[0].rating, response.get("$.data.getLeague.players[0].rating").toInt())
@@ -80,14 +81,14 @@ internal class LeagueQueryIntegrationTest {
         assertEquals(page.items[2].cursor, response.get("$.data.getLeague.games.pageInfo.endCursor"))
 
         games.forEachIndexed {index, game ->
-            assertEquals(game.id.toString(), response.get("$.data.getLeague.games.edges[$index].cursor"))
-            assertEquals(game.id.toString(), response.get("$.data.getLeague.games.edges[$index].node.id"))
+            assertEquals(game.id, response.get("$.data.getLeague.games.edges[$index].cursor"))
+            assertEquals(game.id, response.get("$.data.getLeague.games.edges[$index].node.id"))
             assertEquals(game.dateTime.toString(), response.get("$.data.getLeague.games.edges[$index].node.dateTime"))
-            assertEquals(game.playerOneId.toString(), response.get("$.data.getLeague.games.edges[$index].node.playerOneId"))
+            assertEquals(game.playerOneId, response.get("$.data.getLeague.games.edges[$index].node.playerOneId"))
             assertEquals(game.playerOneName, response.get("$.data.getLeague.games.edges[$index].node.playerOneName"))
             assertEquals(game.playerOneDeviation, response.get("$.data.getLeague.games.edges[$index].node.playerOneDeviation", Int::class.java))
             assertEquals(game.playerOneRating, response.get("$.data.getLeague.games.edges[$index].node.playerOneRating", Int::class.java))
-            assertEquals(game.playerTwoId.toString(), response.get("$.data.getLeague.games.edges[$index].node.playerTwoId"))
+            assertEquals(game.playerTwoId, response.get("$.data.getLeague.games.edges[$index].node.playerTwoId"))
             assertEquals(game.playerTwoName, response.get("$.data.getLeague.games.edges[$index].node.playerTwoName"))
             assertEquals(game.playerTwoDeviation, response.get("$.data.getLeague.games.edges[$index].node.playerTwoDeviation", Int::class.java))
             assertEquals(game.playerTwoRating, response.get("$.data.getLeague.games.edges[$index].node.playerTwoRating", Int::class.java))

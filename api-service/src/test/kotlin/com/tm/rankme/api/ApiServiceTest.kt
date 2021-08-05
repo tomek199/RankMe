@@ -14,15 +14,6 @@ internal class ApiServiceTest {
     }
 
     @Test
-    internal fun `Should return UUID scalar`() {
-        // when
-        val scalar = ApiService().uuidScalar()
-        // then
-        assertNotNull(scalar)
-        assertEquals("UUID", scalar.name)
-    }
-
-    @Test
     internal fun `Should return LocalDateTime scalar`() {
         // when
         val scalar = ApiService().localDateTimeScalar()

@@ -1,10 +1,10 @@
 package com.tm.rankme.api.query.league
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.web.client.RestTemplate
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -17,7 +17,7 @@ internal class LeagueQueryHandlerTest {
     @Test
     internal fun `Should return league`() {
         // given
-        val league = League(UUID.randomUUID(), "Start Wars", false, 3)
+        val league = League(randomNanoId(), "Start Wars", false, 3)
         every { restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java) } returns league
         val query = GetLeagueQuery(league.id)
         // when
@@ -33,7 +33,7 @@ internal class LeagueQueryHandlerTest {
     @Test
     internal fun `Should return null for league`() {
         // given
-        val query = GetLeagueQuery(UUID.randomUUID())
+        val query = GetLeagueQuery(randomNanoId())
         every { restTemplate.getForObject("$url/query-service/leagues/${query.id}", League::class.java) } returns null
         // when
         val result = handler.handle(query)

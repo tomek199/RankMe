@@ -1,16 +1,15 @@
 package com.tm.rankme.api.query.game
 
 import java.time.LocalDateTime
-import java.util.*
 
 data class Game(
-    val id: UUID,
+    val id: String,
     val dateTime: LocalDateTime,
-    val playerOneId: UUID,
+    val playerOneId: String,
     val playerOneName: String,
     val playerOneRating: Int,
     val playerOneDeviation: Int,
-    val playerTwoId: UUID,
+    val playerTwoId: String,
     val playerTwoName: String,
     val playerTwoRating: Int,
     val playerTwoDeviation: Int,
