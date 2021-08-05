@@ -1,5 +1,6 @@
 package com.tm.rankme.projection
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.PlayerPort
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 
@@ -20,12 +20,12 @@ internal class GamePlayedConsumerTest {
     @Test
     internal fun `Should consume 'player-played-game' message for new game`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val dateTime = LocalDateTime.now().withNano(0)
         val message = GamePlayedMessage(
-            aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
-            UUID.randomUUID(), 1, 264, -45, 1902, -76,
-            UUID.randomUUID(), 3, 156, -52, 2351, 83
+            aggregateId, randomNanoId(), dateTime.toEpochSecond(ZoneOffset.UTC),
+            randomNanoId(), 1, 264, -45, 1902, -76,
+            randomNanoId(), 3, 156, -52, 2351, 83
         )
         val firstPlayerName = "Batman"
         val secondPlayerName = "Superman"
@@ -67,12 +67,12 @@ internal class GamePlayedConsumerTest {
     @Test
     internal fun `Should consume 'player-played-game' message for scheduled game`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val dateTime = LocalDateTime.now().withNano(0)
         val message = GamePlayedMessage(
-            aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
-            UUID.randomUUID(), 1, 264, -45, 1902, -76,
-            UUID.randomUUID(), 3, 156, -52, 2351, 83
+            aggregateId, randomNanoId(), dateTime.toEpochSecond(ZoneOffset.UTC),
+            randomNanoId(), 1, 264, -45, 1902, -76,
+            randomNanoId(), 3, 156, -52, 2351, 83
         )
         val game = Game(
             message.aggregateId, message.leagueId, LocalDateTime.ofInstant(Instant.ofEpochSecond(message.dateTime), ZoneOffset.UTC),

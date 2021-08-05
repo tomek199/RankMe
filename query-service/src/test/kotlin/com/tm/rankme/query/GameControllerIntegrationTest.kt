@@ -1,5 +1,6 @@
 package com.tm.rankme.query
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.infrastructure.game.GameEntity
 import com.tm.rankme.infrastructure.game.MongoGameAccessor
@@ -27,17 +28,17 @@ internal class GameControllerIntegrationTest {
     @Test
     internal fun `Should return page for games by league id`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val entities = listOf(
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Batman", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Superman", Random.nextInt(), Random.nextInt()
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Batman", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Superman", Random.nextInt(), Random.nextInt()
             ),
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Darth Vader", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Han Solo", Random.nextInt(), Random.nextInt()
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Darth Vader", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Han Solo", Random.nextInt(), Random.nextInt()
             )
         )
         every {
@@ -67,7 +68,7 @@ internal class GameControllerIntegrationTest {
     @Test
     internal fun `Should return empty page for games by league id`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every {
             gameAccessor.getByLeagueIdOrderByTimestampDesc(leagueId.toString(), ofType(Pageable::class))
         } returns PageImpl(emptyList(), PageRequest.of(0, 2), 2)
@@ -85,17 +86,17 @@ internal class GameControllerIntegrationTest {
     @Test
     internal fun `Should return page for games by player id`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
         val entities = listOf(
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
                 playerId.toString(), "Batman", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Superman", Random.nextInt(), Random.nextInt()
+                randomNanoId(), "Superman", Random.nextInt(), Random.nextInt()
             ),
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Darth Vader", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Darth Vader", Random.nextInt(), Random.nextInt(),
                 playerId.toString(), "Han Solo", Random.nextInt(), Random.nextInt()
             )
         )
@@ -126,7 +127,7 @@ internal class GameControllerIntegrationTest {
     @Test
     internal fun `Should return empty page for games by player id`() {
         // given
-        val playerId = UUID.randomUUID()
+        val playerId = randomNanoId()
         every {
             gameAccessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), ofType(Pageable::class))
         } returns PageImpl(emptyList(), PageRequest.of(0, 2), 2)

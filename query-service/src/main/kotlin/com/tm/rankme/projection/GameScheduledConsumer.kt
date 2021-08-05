@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 import java.util.function.Consumer
 
 @Service("gameScheduledMessageConsumer")
@@ -31,9 +30,9 @@ class GameScheduledConsumer(
 }
 
 data class GameScheduledMessage(
-    val aggregateId: UUID,
-    val leagueId: UUID,
+    val aggregateId: String,
+    val leagueId: String,
     val dateTime: Long,
-    val firstId: UUID,
-    val secondId: UUID
+    val firstId: String,
+    val secondId: String
 )

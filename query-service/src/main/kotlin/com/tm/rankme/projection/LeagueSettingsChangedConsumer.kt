@@ -3,7 +3,6 @@ package com.tm.rankme.projection
 import com.tm.rankme.model.league.LeagueRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.*
 import java.util.function.Consumer
 
 @Service("leagueSettingsChangedMessageConsumer")
@@ -25,7 +24,7 @@ class LeagueSettingsChangedConsumer(
 }
 
 data class LeagueSettingsChangedMessage(
-    val aggregateId: UUID,
+    val aggregateId: String,
     val allowDraws: Boolean,
     val maxScore: Int
 )

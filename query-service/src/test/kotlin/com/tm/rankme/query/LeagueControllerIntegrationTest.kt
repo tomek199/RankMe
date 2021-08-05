@@ -1,5 +1,6 @@
 package com.tm.rankme.query
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.infrastructure.league.LeagueEntity
 import com.tm.rankme.infrastructure.league.MongoLeagueAccessor
@@ -11,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
-import java.util.*
 
 @WebMvcTest(controllers = [LeagueController::class, LeagueRepository::class])
 internal class LeagueControllerIntegrationTest {
@@ -23,7 +23,7 @@ internal class LeagueControllerIntegrationTest {
     @Test
     internal fun `Should return league`() {
         // given
-        val entity = LeagueEntity(UUID.randomUUID(), "Star Wars", false, 3)
+        val entity = LeagueEntity(randomNanoId(), "Star Wars", false, 3)
         every { leagueAccessor.findByIdOrNull(entity.id) } returns entity
         // when
         val result = mvc.get("/leagues/${entity.id}")
@@ -40,7 +40,7 @@ internal class LeagueControllerIntegrationTest {
     @Test
     internal fun `Should return empty response when league does not exist`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { leagueAccessor.findByIdOrNull(leagueId) } returns null
         // when
         val result = mvc.get("/leagues/$leagueId")

@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import io.mockk.every
@@ -28,13 +29,13 @@ internal class MongoGameRepositoryTest {
     internal fun `Should return game without result`() {
         // given
         val gameEntity = GameEntity(
-            UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDateTime.now(),
-            UUID.randomUUID().toString(), "Batman", 1673, 286,
-            UUID.randomUUID().toString(), "Superman", 2792, 173
+            randomNanoId(), randomNanoId(), LocalDateTime.now(),
+            randomNanoId(), "Batman", 1673, 286,
+            randomNanoId(), "Superman", 2792, 173
         )
         every { accessor.findByIdOrNull(gameEntity.id) } returns gameEntity
         // when
-        val game = repository.byId(UUID.fromString(gameEntity.id))
+        val game = repository.byId(gameEntity.id)
         // then
         game?.let {
             assertEquals(gameEntity.id, it.id.toString())
@@ -57,14 +58,14 @@ internal class MongoGameRepositoryTest {
         // given
         val result = Result(2, -34, 65, 1, -45, -57)
         val gameEntity = GameEntity(
-            UUID.randomUUID().toString(), UUID.randomUUID().toString(), LocalDateTime.now(),
-            UUID.randomUUID().toString(), "Batman", 1673, 286,
-            UUID.randomUUID().toString(), "Superman", 2792, 173,
+            randomNanoId(), randomNanoId(), LocalDateTime.now(),
+            randomNanoId(), "Batman", 1673, 286,
+            randomNanoId(), "Superman", 2792, 173,
             result
         )
         every { accessor.findByIdOrNull(gameEntity.id) } returns gameEntity
         // when
-        val game = repository.byId(UUID.fromString(gameEntity.id))
+        val game = repository.byId(gameEntity.id)
         // then
         game?.let {
             assertEquals(gameEntity.id, it.id.toString())
@@ -90,7 +91,7 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return null when game does not exist`() {
         // given
-        val id = UUID.randomUUID()
+        val id = randomNanoId()
         every { accessor.findByIdOrNull(id.toString()) } returns null
         // when
         val game = repository.byId(id)
@@ -103,9 +104,9 @@ internal class MongoGameRepositoryTest {
         // given
         every { accessor.save(ofType(GameEntity::class)) } returns mockk()
         val game = Game(
-            UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now(),
-            UUID.randomUUID(), "Batman", 1673, 286,
-            UUID.randomUUID(), "Superman", 2792, 173
+            randomNanoId(), randomNanoId(), LocalDateTime.now(),
+            randomNanoId(), "Batman", 1673, 286,
+            randomNanoId(), "Superman", 2792, 173
         )
         // when
         repository.store(game)
@@ -134,9 +135,9 @@ internal class MongoGameRepositoryTest {
         every { accessor.save(ofType(GameEntity::class)) } returns mockk()
         val result = com.tm.rankme.model.game.Result(2, -34, 65, 1, -45, -57)
         val game = Game(
-            UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now(),
-            UUID.randomUUID(), "Batman", 1673, 286,
-            UUID.randomUUID(), "Superman", 2792, 173,
+            randomNanoId(), randomNanoId(), LocalDateTime.now(),
+            randomNanoId(), "Batman", 1673, 286,
+            randomNanoId(), "Superman", 2792, 173,
             result
         )
         // when
@@ -168,7 +169,7 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return empty games page for league`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { accessor.getByLeagueIdOrderByTimestampDesc(leagueId.toString(), ofType(Pageable::class)) } returns
                 PageImpl(emptyList(), PageRequest.of(0, 5), 0)
         // when
@@ -182,12 +183,12 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return first games page for league`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val games = List(14) {
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
             )
         }
 
@@ -206,12 +207,12 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return middle games page for league`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val games = List(14) {
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
             )
         }
         every {
@@ -231,12 +232,12 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return last games page for league`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val games = List(14) {
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
             )
         }
         every {
@@ -256,7 +257,7 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return empty games page for player`() {
         // given
-        val playerId = UUID.randomUUID()
+        val playerId = randomNanoId()
         every { accessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), ofType(Pageable::class)) } returns
                 PageImpl(emptyList(), PageRequest.of(0, 3), 0)
         // when
@@ -270,13 +271,13 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return first games page for player`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
         val games = List(10) {
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
                 playerId.toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
             )
         }
 
@@ -295,12 +296,12 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return middle games page for player`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
         val games = List(10) {
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 playerId.toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
             )
         }
@@ -323,13 +324,13 @@ internal class MongoGameRepositoryTest {
     @Test
     internal fun `Should return last games page for player`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
         val games = List(10) {
             GameEntity(
-                UUID.randomUUID().toString(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
                 playerId.toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                UUID.randomUUID().toString(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
             )
         }
         every {

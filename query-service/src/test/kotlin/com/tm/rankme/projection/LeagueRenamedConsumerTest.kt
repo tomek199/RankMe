@@ -1,10 +1,10 @@
 package com.tm.rankme.projection
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 
@@ -15,7 +15,7 @@ internal class LeagueRenamedConsumerTest {
     @Test
     internal fun `Should consume 'league-renamed' message and update league`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val league = League(aggregateId, "Start Wars", false, 7)
         every { repository.byId(aggregateId) } returns league
         every { repository.store(ofType(League::class)) } just Runs
@@ -37,7 +37,7 @@ internal class LeagueRenamedConsumerTest {
     @Test
     internal fun `Should consume 'league-renamed' message and do nothing when league is not found`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val message = LeagueRenamedMessage(aggregateId, "Transformers")
         every { repository.byId(aggregateId) } returns null
         // when

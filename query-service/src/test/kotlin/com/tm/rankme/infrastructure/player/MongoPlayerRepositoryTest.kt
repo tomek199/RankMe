@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
 import io.mockk.every
@@ -8,7 +9,6 @@ import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.data.repository.findByIdOrNull
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -20,7 +20,7 @@ internal class MongoPlayerRepositoryTest {
     @Test
     internal fun `Should return player`() {
         // given
-        val playerEntity = PlayerEntity(UUID.randomUUID(), UUID.randomUUID(), "Optimus Prime", 197, 2103)
+        val playerEntity = PlayerEntity(randomNanoId(), randomNanoId(), "Optimus Prime", 197, 2103)
         every { accessor.findByIdOrNull(playerEntity.id) } returns playerEntity
         // when
         val player = repository.byId(playerEntity.id)
@@ -36,7 +36,7 @@ internal class MongoPlayerRepositoryTest {
     @Test
     internal fun `Should return null when player does not exist`() {
         // given
-        val id = UUID.randomUUID()
+        val id = randomNanoId()
         every { accessor.findByIdOrNull(id) } returns null
         // when
         val player = repository.byId(id)
@@ -48,7 +48,7 @@ internal class MongoPlayerRepositoryTest {
     internal fun `Should store player`() {
         // given
         every { accessor.save(ofType(PlayerEntity::class)) } returns mockk()
-        val player = Player(UUID.randomUUID(), UUID.randomUUID(), "Optimus Prime", 185, 2407)
+        val player = Player(randomNanoId(), randomNanoId(), "Optimus Prime", 185, 2407)
         // when
         repository.store(player)
         // then
@@ -66,11 +66,11 @@ internal class MongoPlayerRepositoryTest {
     @Test
     internal fun `Should return players list by league id`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val playerEntities = listOf(
-            PlayerEntity(UUID.randomUUID(), leagueId, "Optimus Prime", 245, 1783),
-            PlayerEntity(UUID.randomUUID(), leagueId, "Megatron", 184, 1298),
-            PlayerEntity(UUID.randomUUID(), leagueId, "Bumblebee", 326, 2864)
+            PlayerEntity(randomNanoId(), leagueId, "Optimus Prime", 245, 1783),
+            PlayerEntity(randomNanoId(), leagueId, "Megatron", 184, 1298),
+            PlayerEntity(randomNanoId(), leagueId, "Bumblebee", 326, 2864)
         )
         every { accessor.findAllByLeagueId(leagueId) } returns playerEntities
         // when
@@ -88,7 +88,7 @@ internal class MongoPlayerRepositoryTest {
     @Test
     internal fun `Should return empty list for players by league id`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { accessor.findAllByLeagueId(leagueId) } returns emptyList()
         // when
         val players = repository.byLeagueId(leagueId)

@@ -3,7 +3,6 @@ package com.tm.rankme.projection
 import com.tm.rankme.model.player.PlayerRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.*
 import java.util.function.Consumer
 
 @Service("playerPlayedGameMessageConsumer")
@@ -25,7 +24,7 @@ class PlayerPlayedGameConsumer(
 }
 
 data class PlayerPlayedGameMessage(
-    val aggregateId: UUID,
+    val aggregateId: String,
     val deviationDelta: Int,
     val ratingDelta: Int
 )

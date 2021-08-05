@@ -1,10 +1,10 @@
 package com.tm.rankme.projection
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 
@@ -15,7 +15,7 @@ internal class PlayerCreatedConsumerTest {
     @Test
     internal fun `Should consume 'player-created' message`() {
         // given
-        val message = PlayerCreatedMessage(UUID.randomUUID(), UUID.randomUUID(),"Optimus Prime", 187, 2428)
+        val message = PlayerCreatedMessage(randomNanoId(), randomNanoId(),"Optimus Prime", 187, 2428)
         every { repository.store(ofType(Player::class)) } just Runs
         // when
         consumer.accept(message)

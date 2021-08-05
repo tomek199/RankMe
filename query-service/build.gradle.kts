@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:${plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion}")
