@@ -1,11 +1,10 @@
 package com.tm.rankme.e2e.mutation
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import java.util.*
 import kotlin.reflect.KClass
 
 class RenameLeague(
-    id: UUID,
+    id: String,
     name: String
 ) : GraphQLClientRequest<RenameLeague.Result> {
 

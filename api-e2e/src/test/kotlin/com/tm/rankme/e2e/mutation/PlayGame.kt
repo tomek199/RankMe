@@ -1,12 +1,11 @@
 package com.tm.rankme.e2e.mutation
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import java.util.*
 import kotlin.reflect.KClass
 
 class PlayGame(
-    playerOneId: UUID,
-    playerTwoId: UUID,
+    playerOneId: String,
+    playerTwoId: String,
     playerOneScore: Int,
     playerTwoScore: Int
 ) : GraphQLClientRequest<PlayGame.Result> {

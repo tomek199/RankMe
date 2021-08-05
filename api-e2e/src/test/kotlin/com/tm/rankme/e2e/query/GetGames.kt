@@ -1,11 +1,10 @@
 package com.tm.rankme.e2e.query
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import java.util.*
 import kotlin.reflect.KClass
 
 class GetGames(
-    leagueId: UUID,
+    leagueId: String,
     first: Int,
     after: String? = null
 ) : GraphQLClientRequest<GetGames.Result> {

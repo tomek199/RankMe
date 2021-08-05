@@ -1,11 +1,10 @@
 package com.tm.rankme.e2e.mutation
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import java.util.*
 import kotlin.reflect.KClass
 
 class ChangeLeagueSettings(
-    id: UUID,
+    id: String,
     allowDraws: Boolean,
     maxScore: Int
 ) : GraphQLClientRequest<ChangeLeagueSettings.Result> {

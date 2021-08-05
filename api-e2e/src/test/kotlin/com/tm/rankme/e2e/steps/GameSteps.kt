@@ -8,7 +8,6 @@ import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -85,7 +84,7 @@ class GameSteps(
         }
     }
 
-    private suspend fun allGamesCursors(leagueId: UUID, of: Int): List<String> {
+    private suspend fun allGamesCursors(leagueId: String, of: Int): List<String> {
         val query = GetGames(leagueId, of)
         val allResults = graphQlClient.execute(query)
         return allResults.data?.getGames?.edges?.map { it.cursor }?.toList() ?: fail("Games cursors not found")
