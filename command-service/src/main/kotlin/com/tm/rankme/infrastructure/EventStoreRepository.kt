@@ -25,7 +25,7 @@ abstract class EventStoreRepository<T>(
     private fun checkVersion(event: Event<T>) {
         if (event.version != 0L) {
             val readOptions = ReadStreamOptions.get().fromEnd().backwards()
-            val readResult = connector.client.readStream(event.aggregateId.toString(), 1, readOptions).get()
+            val readResult = connector.client.readStream(event.aggregateId, 1, readOptions).get()
             val currentVersion = readResult.events.getOrElse(0) {
                 throw InfrastructureException("Cannon get actual version of aggregate id=${event.aggregateId}")
             }.event.streamRevision
@@ -36,7 +36,7 @@ abstract class EventStoreRepository<T>(
 
     private fun addToStream(event: Event<T>) {
         val eventData = EventData.builderAsJson(event.type, serialize(event)).build()
-        connector.client.appendToStream(event.aggregateId.toString(), eventData).get()
+        connector.client.appendToStream(event.aggregateId, eventData).get()
     }
 
     protected fun events(stream: String): List<Event<T>> {

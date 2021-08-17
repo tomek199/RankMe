@@ -17,13 +17,13 @@ class EventStoreLeagueRepository(
     private val mapper: LeagueMapper
 ) : EventStoreRepository<League>(connector), LeagueRepository {
 
-    override fun byId(id: String): League = events(id.toString()).let { League.from(it) }
+    override fun byId(id: String): League = events(id).let { League.from(it) }
 
     override fun store(aggregate: League) = aggregate.pendingEvents.forEach(this::save)
 
     override fun exist(id: String): Boolean {
         return try {
-            events(id.toString()).isNotEmpty()
+            events(id).isNotEmpty()
         } catch (e: InfrastructureException) {
             false
         }

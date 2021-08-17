@@ -16,7 +16,7 @@ class EventStoreGameRepository(
     private val mapper: GameMapper
 ) : EventStoreRepository<Game>(connector), GameRepository {
 
-    override fun byId(id: String): Game = events(id.toString()).let { Game.from(it) }
+    override fun byId(id: String): Game = events(id).let { Game.from(it) }
 
     override fun store(aggregate: Game) = aggregate.pendingEvents.forEach(this::save)
 

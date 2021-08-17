@@ -37,13 +37,13 @@ internal class EventStoreLeagueRepositoryTest {
         // given
         val league = League.create("Star Wars")
         every { mapper.serialize(league.pendingEvents[0]) } returns String()
-        every { client.appendToStream(league.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(league.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(league)
         // then
         verify(exactly = 0) { client.readStream(any()) }
         verify(exactly = 1) { mapper.serialize(league.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(league.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(league.id, ofType(EventData::class)).get() }
     }
 
     @Test
@@ -51,17 +51,17 @@ internal class EventStoreLeagueRepositoryTest {
         // given
         val league = League.from(listOf(LeagueCreated("Star Wars")))
         league.rename("Transformers")
-        every { client.readStream(league.id.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { client.readStream(league.id, 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         every { mapper.serialize(league.pendingEvents[0]) } returns String()
-        every { client.appendToStream(league.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(league.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(league)
         // then
-        verify(exactly = 1) { client.readStream(league.id.toString(), 1, ofType(ReadStreamOptions::class)).get() }
+        verify(exactly = 1) { client.readStream(league.id, 1, ofType(ReadStreamOptions::class)).get() }
         verify(exactly = 1) { mapper.serialize(league.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(league.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(league.id, ofType(EventData::class)).get() }
     }
 
     @Test
@@ -69,24 +69,24 @@ internal class EventStoreLeagueRepositoryTest {
         // given
         val league = League.from(listOf(LeagueCreated("Star Wars")))
         league.settings(true, 4)
-        every { client.readStream(league.id.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { client.readStream(league.id, 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         every { mapper.serialize(league.pendingEvents[0]) } returns String()
-        every { client.appendToStream(league.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(league.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(league)
         // then
-        verify(exactly = 1) { client.readStream(league.id.toString(), 1, ofType(ReadStreamOptions::class)).get() }
+        verify(exactly = 1) { client.readStream(league.id, 1, ofType(ReadStreamOptions::class)).get() }
         verify(exactly = 1) { mapper.serialize(league.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(league.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(league.id, ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should return aggregate from events`() {
         // given
         val aggregateId = randomNanoId()
-        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
+        every { client.readStream(aggregateId, ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("league-created", "league-renamed", "league-settings-changed")
@@ -111,7 +111,7 @@ internal class EventStoreLeagueRepositoryTest {
     internal fun `Should return true when league exist`() {
         // given
         val leagueId = randomNanoId()
-        every { client.readStream(leagueId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
+        every { client.readStream(leagueId, ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("league-created")
@@ -125,7 +125,7 @@ internal class EventStoreLeagueRepositoryTest {
     internal fun `Should return false when league does not exist`() {
         // given
         val leagueId = randomNanoId()
-        every { client.readStream(leagueId.toString(), ofType(ReadStreamOptions::class)).get().events } throws
+        every { client.readStream(leagueId, ofType(ReadStreamOptions::class)).get().events } throws
             InfrastructureException("Stream is not found")
         // then
         assertFalse(repository.exist(leagueId))
@@ -135,7 +135,7 @@ internal class EventStoreLeagueRepositoryTest {
     internal fun `Should return false when league does not contain any event`() {
         // given
         val leagueId = randomNanoId()
-        every { client.readStream(leagueId.toString(), ofType(ReadStreamOptions::class)).get().events } returns emptyList()
+        every { client.readStream(leagueId, ofType(ReadStreamOptions::class)).get().events } returns emptyList()
         // then
         assertFalse(repository.exist(leagueId))
     }

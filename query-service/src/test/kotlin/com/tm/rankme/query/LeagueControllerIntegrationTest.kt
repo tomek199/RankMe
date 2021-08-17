@@ -30,7 +30,7 @@ internal class LeagueControllerIntegrationTest {
         // then
         result.andExpect {
             status { isOk() }
-            jsonPath("$.id") { value(entity.id.toString()) }
+            jsonPath("$.id") { value(entity.id) }
             jsonPath("$.name") { value(entity.name) }
             jsonPath("$.allowDraws") { value(entity.allowDraws) }
             jsonPath("$.maxScore") { value(entity.maxScore) }

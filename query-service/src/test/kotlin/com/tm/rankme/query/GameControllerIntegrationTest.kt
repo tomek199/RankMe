@@ -31,19 +31,19 @@ internal class GameControllerIntegrationTest {
         val leagueId = randomNanoId()
         val entities = listOf(
             GameEntity(
-                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), leagueId, LocalDateTime.now(),
                 randomNanoId(), "Batman", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Superman", Random.nextInt(), Random.nextInt()
             ),
             GameEntity(
-                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), leagueId, LocalDateTime.now(),
                 randomNanoId(), "Darth Vader", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Han Solo", Random.nextInt(), Random.nextInt()
             )
         )
         every {
             gameAccessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(
-                leagueId.toString(), entities.first().timestamp, ofType(Pageable::class)
+                leagueId, entities.first().timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(entities, PageRequest.of(0, 2), 2)
         val afterCursor = Base64.getEncoder().encodeToString(entities[0].timestamp.toString().toByteArray())
@@ -70,7 +70,7 @@ internal class GameControllerIntegrationTest {
         // given
         val leagueId = randomNanoId()
         every {
-            gameAccessor.getByLeagueIdOrderByTimestampDesc(leagueId.toString(), ofType(Pageable::class))
+            gameAccessor.getByLeagueIdOrderByTimestampDesc(leagueId, ofType(Pageable::class))
         } returns PageImpl(emptyList(), PageRequest.of(0, 2), 2)
         // when
         val result = mvc.get("/leagues/$leagueId/games?first=3")
@@ -90,19 +90,19 @@ internal class GameControllerIntegrationTest {
         val playerId = randomNanoId()
         val entities = listOf(
             GameEntity(
-                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
-                playerId.toString(), "Batman", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Batman", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Superman", Random.nextInt(), Random.nextInt()
             ),
             GameEntity(
-                randomNanoId(), leagueId.toString(), LocalDateTime.now(),
+                randomNanoId(), leagueId, LocalDateTime.now(),
                 randomNanoId(), "Darth Vader", Random.nextInt(), Random.nextInt(),
-                playerId.toString(), "Han Solo", Random.nextInt(), Random.nextInt()
+                playerId, "Han Solo", Random.nextInt(), Random.nextInt()
             )
         )
         every {
             gameAccessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(
-                playerId.toString(), entities.first().timestamp, ofType(Pageable::class)
+                playerId, entities.first().timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(entities, PageRequest.of(0, 2), 2)
         val afterCursor = Base64.getEncoder().encodeToString(entities[0].timestamp.toString().toByteArray())
@@ -129,7 +129,7 @@ internal class GameControllerIntegrationTest {
         // given
         val playerId = randomNanoId()
         every {
-            gameAccessor.getByPlayerIdOrderByTimestampDesc(playerId.toString(), ofType(Pageable::class))
+            gameAccessor.getByPlayerIdOrderByTimestampDesc(playerId, ofType(Pageable::class))
         } returns PageImpl(emptyList(), PageRequest.of(0, 2), 2)
         // when
         val result = mvc.get("/players/$playerId/games?first=3")

@@ -37,7 +37,7 @@ internal class EventStoreRepositoryTest {
     internal fun `Should throw exception when cannot get actual aggregate version`() {
         // given
         val event = TestEvent(1)
-        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { client.readStream(event.aggregateId, 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         every { readResult.events } returns emptyList()
         // when
@@ -50,7 +50,7 @@ internal class EventStoreRepositoryTest {
     internal fun `Should throw exception when event version is out of date`() {
         // given
         val event = TestEvent(1)
-        every { client.readStream(event.aggregateId.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { client.readStream(event.aggregateId, 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(15)
         // when
@@ -63,10 +63,10 @@ internal class EventStoreRepositoryTest {
     internal fun `Should throw exception when stream is not found`() {
         // given
         val aggregateId = randomNanoId()
-        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get() } throws
+        every { client.readStream(aggregateId, ofType(ReadStreamOptions::class)).get() } throws
             ExecutionException("Stream not found exception", StreamNotFoundException())
         // when
-        val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId.toString()) }
+        val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
         // then
         assertEquals("Stream $aggregateId is not found", exception.message)
     }

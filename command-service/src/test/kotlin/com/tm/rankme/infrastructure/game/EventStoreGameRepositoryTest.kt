@@ -39,13 +39,13 @@ internal class EventStoreGameRepositoryTest {
             Result(1, 194, -42, 2159, 148)
         )
         every { mapper.serialize(game.pendingEvents[0]) } returns String()
-        every { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(game.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(game)
         // then
         verify(exactly = 0) { client.readStream(any()) }
         verify(exactly = 1) { mapper.serialize(game.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(game.id, ofType(EventData::class)).get() }
     }
 
     @Test
@@ -53,13 +53,13 @@ internal class EventStoreGameRepositoryTest {
         // given
         val game = Game.scheduled(randomNanoId(), LocalDateTime.now(), randomNanoId(), randomNanoId())
         every { mapper.serialize(game.pendingEvents[0]) } returns String()
-        every { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(game.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(game)
         // then
         verify(exactly = 0) { client.readStream(any()) }
         verify(exactly = 1) { mapper.serialize(game.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(game.id, ofType(EventData::class)).get() }
     }
 
     @Test
@@ -67,7 +67,7 @@ internal class EventStoreGameRepositoryTest {
         // given
         val aggregateId = randomNanoId()
         val leagueId = randomNanoId()
-        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
+        every { client.readStream(aggregateId, ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("game-scheduled", "game-played")
