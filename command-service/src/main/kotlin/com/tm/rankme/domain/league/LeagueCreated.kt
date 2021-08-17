@@ -1,13 +1,13 @@
 package com.tm.rankme.domain.league
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.Event
-import java.util.*
 
 class LeagueCreated(
     val name: String,
     val allowDraws: Boolean = false,
     val maxScore: Int = 2,
-    aggregateId: UUID = UUID.randomUUID()
+    aggregateId: String = randomNanoId()
 ) : Event<League>(aggregateId, 0) {
 
     override val type: String = "league-created"

@@ -1,10 +1,10 @@
 package com.tm.rankme.projection
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 
@@ -15,8 +15,8 @@ internal class PlayerPlayedGameConsumerTest {
     @Test
     internal fun `Should consume 'player-played-game' message`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val player = Player(aggregateId, UUID.randomUUID(), "Optimus Prime", 241, 1665)
+        val aggregateId = randomNanoId()
+        val player = Player(aggregateId, randomNanoId(), "Optimus Prime", 241, 1665)
         every { repository.byId(aggregateId) } returns player
         every { repository.store(ofType(Player::class)) } just Runs
         val message = PlayerPlayedGameMessage(aggregateId, -53, 72)
@@ -40,7 +40,7 @@ internal class PlayerPlayedGameConsumerTest {
     @Test
     internal fun `Should consume 'player-played-game' and do nothing when player is not found`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val message = PlayerPlayedGameMessage(aggregateId, -45, -72)
         every { repository.byId(aggregateId) } returns null
         // when

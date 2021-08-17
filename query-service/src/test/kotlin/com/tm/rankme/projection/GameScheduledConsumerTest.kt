@@ -1,5 +1,6 @@
 package com.tm.rankme.projection
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.PlayerInfo
@@ -8,7 +9,6 @@ import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -21,11 +21,11 @@ internal class GameScheduledConsumerTest {
     @Test
     internal fun `Should consume 'game-scheduled' message`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val dateTime = LocalDateTime.now().withNano(0)
         val message = GameScheduledMessage(
-            aggregateId, UUID.randomUUID(), dateTime.toEpochSecond(ZoneOffset.UTC),
-            UUID.randomUUID(), UUID.randomUUID()
+            aggregateId, randomNanoId(), dateTime.toEpochSecond(ZoneOffset.UTC),
+            randomNanoId(), randomNanoId()
         )
         val firstPlayerInfo = PlayerInfo("Batman", 275, 1836)
         val secondPlayerInfo = PlayerInfo("Superman", 192, 2173)

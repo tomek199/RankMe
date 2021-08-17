@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.eventstore.dbclient.*
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
@@ -12,7 +13,6 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -34,40 +34,40 @@ internal class EventStoreGameRepositoryTest {
     internal fun `Should save 'game-played' event with initial version 0`() {
         // given
         val game = Game.played(
-            UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            randomNanoId(), randomNanoId(), randomNanoId(),
             Result(0, 184, -34, 2443, -176),
             Result(1, 194, -42, 2159, 148)
         )
         every { mapper.serialize(game.pendingEvents[0]) } returns String()
-        every { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(game.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(game)
         // then
         verify(exactly = 0) { client.readStream(any()) }
         verify(exactly = 1) { mapper.serialize(game.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(game.id, ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should save 'game-scheduled' event with initial version 0`() {
         // given
-        val game = Game.scheduled(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(), UUID.randomUUID())
+        val game = Game.scheduled(randomNanoId(), LocalDateTime.now(), randomNanoId(), randomNanoId())
         every { mapper.serialize(game.pendingEvents[0]) } returns String()
-        every { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(game.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(game)
         // then
         verify(exactly = 0) { client.readStream(any()) }
         verify(exactly = 1) { mapper.serialize(game.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(game.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(game.id, ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should return aggregate from events`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
-        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
+        every { client.readStream(aggregateId, ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("game-scheduled", "game-played")
@@ -75,14 +75,14 @@ internal class EventStoreGameRepositoryTest {
         every { mapper.deserialize(ofType(String::class), ofType(ByteArray::class)) } returnsMany listOf(
             GameScheduled(
                 leagueId,
-                UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"),
-                UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"),
+                "kv9s86MpG7zKfpnIC-O0H",
+                "yHZuZbwbnsOwdqGfp5wBk",
                 1622276383, aggregateId
             ),
             GamePlayed(
                 leagueId,
-                UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), 4, 312, -23, 1674, 78,
-                UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), 3, 250, -35, 2450, -63,
+                "kv9s86MpG7zKfpnIC-O0H", 4, 312, -23, 1674, 78,
+                "yHZuZbwbnsOwdqGfp5wBk", 3, 250, -35, 2450, -63,
                 1611176383, aggregateId, 1
             )
         )
@@ -93,8 +93,8 @@ internal class EventStoreGameRepositoryTest {
         assertEquals(1, game.version)
         assertTrue(game.pendingEvents.isEmpty())
         assertEquals(leagueId, game.leagueId)
-        assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), game.playerIds.first)
-        assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), game.playerIds.second)
+        assertEquals("kv9s86MpG7zKfpnIC-O0H", game.playerIds.first)
+        assertEquals("yHZuZbwbnsOwdqGfp5wBk", game.playerIds.second)
         assertEquals(Result(4, 312, -23, 1674, 78), game.result!!.first)
         assertEquals(Result(3, 250, -35, 2450, -63), game.result!!.second)
     }

@@ -6,7 +6,6 @@ import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerRepository
 import com.tm.rankme.infrastructure.EventStoreConnector
 import com.tm.rankme.infrastructure.EventStoreRepository
-import java.util.*
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
 
@@ -17,7 +16,7 @@ class EventStorePlayerRepository(
     private val mapper: PlayerMapper
 ) : EventStoreRepository<Player>(connector), PlayerRepository {
 
-    override fun byId(id: UUID): Player = events(id.toString()).let { Player.from(it) }
+    override fun byId(id: String): Player = events(id).let { Player.from(it) }
 
     override fun store(aggregate: Player) = aggregate.pendingEvents.forEach(this::save)
 

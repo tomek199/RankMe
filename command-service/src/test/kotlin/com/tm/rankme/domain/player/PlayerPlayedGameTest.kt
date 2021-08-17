@@ -1,9 +1,9 @@
 package com.tm.rankme.domain.player
 
-import java.util.*
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Test
 
 internal class PlayerPlayedGameTest {
     @Test
@@ -12,7 +12,7 @@ internal class PlayerPlayedGameTest {
         val deviationDelta = -76
         val ratingDelta = 142
         val score = 3
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val version = 3L
         // when
         val event = PlayerPlayedGame(deviationDelta, ratingDelta, score, aggregateId, version)

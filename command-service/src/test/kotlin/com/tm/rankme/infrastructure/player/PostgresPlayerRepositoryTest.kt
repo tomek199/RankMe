@@ -1,20 +1,16 @@
 package com.tm.rankme.infrastructure.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerPlayedGame
 import com.tm.rankme.infrastructure.InfrastructureException
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
-import io.mockk.verifySequence
-import java.util.*
+import io.mockk.*
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 internal class PostgresPlayerRepositoryTest {
     private val accessor = mockk<PlayerAccessor>()
@@ -24,7 +20,7 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should save 'player-created' event with initial version 0`() {
         // given
-        val player = Player.create(UUID.randomUUID(), "Optimus Prime")
+        val player = Player.create(randomNanoId(), "Optimus Prime")
         every { mapper.serialize(ofType(PlayerCreated::class)) } returns String()
         every { accessor.save(ofType(PlayerEntity::class)) } returns mockk()
         // when
@@ -47,7 +43,7 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should save 'player-played-game' event with version 1`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val player = Player.from(listOf(PlayerCreated(leagueId, "Batman")))
         val opponent = Player.from(listOf(PlayerCreated(leagueId, "Superman")))
         player.playedWith(opponent, 3, 4)
@@ -75,7 +71,7 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should throw exception when cannot get actual aggregate version`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val player = Player.from(listOf(PlayerCreated(leagueId, "Batman")))
         val opponent = Player.from(listOf(PlayerCreated(leagueId, "Superman")))
         player.playedWith(opponent, 3, 4)
@@ -89,7 +85,7 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should throw exception when event version is out of date`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val player = Player.from(listOf(PlayerCreated(leagueId, "Batman")))
         val opponent = Player.from(listOf(PlayerCreated(leagueId, "Superman")))
         player.playedWith(opponent, 3, 4)
@@ -104,8 +100,8 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should return aggregate from events`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
         every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns listOf(
             PlayerEntity(aggregateId, "player-created", 0, 11111, "{}", 1),
             PlayerEntity(aggregateId, "player-played-game", 1, 22222, "{}", 2),
@@ -129,7 +125,7 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should throw exception when events for aggregate are not found`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns emptyList()
         // when
         val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
@@ -140,7 +136,7 @@ internal class PostgresPlayerRepositoryTest {
     @Test
     internal fun `Should create entity`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val type = "event-type"
         val version: Long = 5
         val timestamp: Long = 12345

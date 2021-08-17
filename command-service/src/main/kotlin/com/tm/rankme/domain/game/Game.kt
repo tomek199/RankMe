@@ -5,13 +5,12 @@ import com.tm.rankme.domain.base.AggregateRoot
 import com.tm.rankme.domain.base.Event
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 
 class Game private constructor() : AggregateRoot() {
     val pendingEvents = mutableListOf<Event<Game>>()
-    lateinit var leagueId: UUID
+    lateinit var leagueId: String
         private set
-    lateinit var playerIds: Pair<UUID, UUID>
+    lateinit var playerIds: Pair<String, String>
         private set
     lateinit var dateTime: LocalDateTime
         private set
@@ -19,7 +18,7 @@ class Game private constructor() : AggregateRoot() {
         private set
 
     companion object {
-        fun played(leagueId: UUID, firstId: UUID, secondId: UUID,
+        fun played(leagueId: String, firstId: String, secondId: String,
                    firstResult: Result, secondResult: Result): Game {
             val game = Game()
             val event = GamePlayed(leagueId = leagueId,
@@ -34,7 +33,7 @@ class Game private constructor() : AggregateRoot() {
             return game
         }
 
-        fun scheduled(leagueId: UUID, dateTime: LocalDateTime, firstId: UUID, secondId: UUID): Game {
+        fun scheduled(leagueId: String, dateTime: LocalDateTime, firstId: String, secondId: String): Game {
             val game = Game()
             val event = GameScheduled(leagueId, firstId, secondId, dateTime.toEpochSecond(ZoneOffset.UTC))
             game.add(event)

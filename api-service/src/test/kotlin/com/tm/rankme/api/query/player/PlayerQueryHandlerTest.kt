@@ -1,5 +1,6 @@
 package com.tm.rankme.api.query.player
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -21,7 +22,7 @@ internal class PlayerQueryHandlerTest {
     @Test
     internal fun `Should return player`() {
         // given
-        val player = Player(UUID.randomUUID(), "Optimus Prime", 263, 2467)
+        val player = Player(randomNanoId(), "Optimus Prime", 263, 2467)
         every { restTemplate.getForObject("$url/query-service/players/${player.id}", Player::class.java) } returns player
         val query = GetPlayerQuery(player.id)
         // when
@@ -37,7 +38,7 @@ internal class PlayerQueryHandlerTest {
     @Test
     internal fun `Should return null for player`() {
         // given
-        val query = GetPlayerQuery(UUID.randomUUID())
+        val query = GetPlayerQuery(randomNanoId())
         every { restTemplate.getForObject("$url/query-service/players/${query.id}", Player::class.java) } returns null
         // when
         val result = handler.handle(query)
@@ -48,10 +49,10 @@ internal class PlayerQueryHandlerTest {
     @Test
     internal fun `Should return players list by league id`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val players = listOf(
-            Player(UUID.randomUUID(), "Optimus Prime", 246, 2519),
-            Player(UUID.randomUUID(), "Bumblebee", 174, 1864)
+            Player(randomNanoId(), "Optimus Prime", 246, 2519),
+            Player(randomNanoId(), "Bumblebee", 174, 1864)
         )
         every {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/players",
@@ -72,7 +73,7 @@ internal class PlayerQueryHandlerTest {
     @Test
     internal fun `Should return empty list for players by league id when response is empty`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/players",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))

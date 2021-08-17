@@ -1,19 +1,19 @@
 package com.tm.rankme.domain.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 import kotlin.test.*
 
 internal class GameTest {
     @Test
     internal fun `Should create played game`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerOneId = UUID.randomUUID()
-        val playerTwoId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerOneId = randomNanoId()
+        val playerTwoId = randomNanoId()
         val playerOneResult = Result(2, 187, -34, 2294, 57)
         val playerTwoResult = Result(0, 234, -45, 1491, -62)
         // when
@@ -35,9 +35,9 @@ internal class GameTest {
     @Test
     internal fun `Should create scheduled game`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerOneId = UUID.randomUUID()
-        val playerTwoId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerOneId = randomNanoId()
+        val playerTwoId = randomNanoId()
         val dateTime = LocalDateTime.now()
         // when
         val game = Game.scheduled(leagueId, dateTime, playerOneId, playerTwoId)
@@ -58,7 +58,7 @@ internal class GameTest {
     internal fun `Should complete scheduled game`() {
         // given
         val dateTime = LocalDateTime.now()
-        val scheduledEvent = GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+        val scheduledEvent = GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(),
             dateTime.toEpochSecond(ZoneOffset.UTC))
         val game = Game.from(listOf(scheduledEvent))
         val firstResult = Result(3, 204, -56, 1843, 127)
@@ -82,7 +82,7 @@ internal class GameTest {
         // given
         val firstResult = Result(3, 301, -34, 1569, 65)
         val secondResult = Result(0, 204, -43, 1231, -52)
-        val game = Game.played(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), firstResult, secondResult)
+        val game = Game.played(randomNanoId(), randomNanoId(), randomNanoId(), firstResult, secondResult)
         // when
         val exception = assertFailsWith<AggregateException> { game.complete(firstResult, secondResult) }
         // then
@@ -93,9 +93,9 @@ internal class GameTest {
     internal fun `Should init game aggregate from 'game-played' event`() {
         // given
         val dateTime = LocalDateTime.now()
-        val event = GamePlayed(UUID.randomUUID(), UUID.randomUUID(), 2, 187,-32, 1854,-56,
-            UUID.randomUUID(), 5, 249, -42, 1567, 98,
-            dateTime.toEpochSecond(ZoneOffset.UTC), UUID.randomUUID())
+        val event = GamePlayed(randomNanoId(), randomNanoId(), 2, 187,-32, 1854,-56,
+            randomNanoId(), 5, 249, -42, 1567, 98,
+            dateTime.toEpochSecond(ZoneOffset.UTC), randomNanoId())
         // when
         val game = Game.from(listOf(event))
         // then
@@ -120,8 +120,8 @@ internal class GameTest {
     internal fun `Should init game aggregate from 'game-scheduled' event`() {
         // given
         val dateTime = LocalDateTime.now()
-        val event = GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            dateTime.toEpochSecond(ZoneOffset.UTC), UUID.randomUUID())
+        val event = GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(),
+            dateTime.toEpochSecond(ZoneOffset.UTC), randomNanoId())
         // when
         val game = Game.from(listOf(event))
         // then
@@ -135,9 +135,9 @@ internal class GameTest {
     @Test
     internal fun `Should init game aggregate from all events`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerOneId = UUID.randomUUID()
-        val playerTwoId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerOneId = randomNanoId()
+        val playerTwoId = randomNanoId()
         val dateTime = LocalDateTime.now()
         val scheduledEvent = GameScheduled(leagueId, playerOneId, playerTwoId, dateTime.toEpochSecond(ZoneOffset.UTC))
         val playedEvent = GamePlayed(leagueId,

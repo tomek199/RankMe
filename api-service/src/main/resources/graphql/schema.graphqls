@@ -20,6 +20,6 @@ type Query {
     getGames(query: GetGamesForLeagueQuery): GameConnection @connection(for: "Game")
 }
 
-scalar UUID
+scalar String
 
 scalar LocalDateTime

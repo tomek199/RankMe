@@ -1,8 +1,6 @@
 package com.tm.rankme.domain.base
 
-import java.util.*
-
 interface Repository<T> {
-    fun byId(id: UUID): T
+    fun byId(id: String): T
     fun store(aggregate: T)
 }

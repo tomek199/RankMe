@@ -1,7 +1,7 @@
 package com.tm.rankme.domain.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import org.junit.jupiter.api.Test
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -9,9 +9,9 @@ internal class GamePlayedTest {
     @Test
     internal fun `Should create event`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerOneId = UUID.randomUUID()
-        val playerTwoId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerOneId = randomNanoId()
+        val playerTwoId = randomNanoId()
         // when
         val event = GamePlayed(
             leagueId,

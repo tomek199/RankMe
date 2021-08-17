@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.game.Game
 import com.tm.rankme.domain.game.GamePlayed
 import com.tm.rankme.domain.game.GameScheduled
@@ -8,7 +9,6 @@ import com.tm.rankme.infrastructure.InfrastructureException
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -22,7 +22,7 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should save 'game-scheduled' event with initial version 0`() {
         // given
-        val game = Game.scheduled(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(), UUID.randomUUID())
+        val game = Game.scheduled(randomNanoId(), LocalDateTime.now(), randomNanoId(), randomNanoId())
         every { mapper.serialize(ofType(GameScheduled::class)) } returns String()
         every { accessor.save(ofType(GameEntity::class)) } returns mockk()
         // when
@@ -45,7 +45,7 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should save 'game-played' event with version 1`() {
         // given
-        val game = Game.from(listOf(GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 12345)))
+        val game = Game.from(listOf(GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(), 12345)))
         game.complete(
             Result(0, 184, -34, 2443, -176),
             Result(1, 194, -42, 2159, 148)
@@ -74,7 +74,7 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should throw exception when cannot get actual aggregate version`() {
         // given
-        val game = Game.from(listOf(GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 12345)))
+        val game = Game.from(listOf(GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(), 12345)))
         game.complete(
             Result(0, 184, -34, 2443, -176),
             Result(1, 194, -42, 2159, 148)
@@ -89,7 +89,7 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should throw exception when event version is out of date`() {
         // given
-        val game = Game.from(listOf(GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 12345)))
+        val game = Game.from(listOf(GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(), 12345)))
         game.complete(
             Result(0, 184, -34, 2443, -176),
             Result(1, 194, -42, 2159, 148)
@@ -105,10 +105,10 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should return aggregate from events`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
-        val playerOneId = UUID.randomUUID()
-        val playerTwoId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
+        val playerOneId = randomNanoId()
+        val playerTwoId = randomNanoId()
         every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns listOf(
             GameEntity(aggregateId, "game-scheduled", 0, 11111, "{}", 1),
             GameEntity(aggregateId, "game-played", 1, 22222, "{}", 2),
@@ -134,7 +134,7 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should throw exception when events for aggregate are not found`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns emptyList()
         // when
         val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
@@ -145,7 +145,7 @@ internal class PostgresGameRepositoryTest {
     @Test
     internal fun `Should create entity`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val type = "event-type"
         val version: Long = 5
         val timestamp: Long = 12345

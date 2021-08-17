@@ -1,12 +1,12 @@
 package com.tm.rankme.infrastructure.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.model.game.PlayerPort
 import com.tm.rankme.model.player.Player
 import com.tm.rankme.model.player.PlayerRepository
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -17,8 +17,8 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should return player name`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val player = Player(UUID.randomUUID(), leagueId, "Batman", 186, 2729)
+        val leagueId = randomNanoId()
+        val player = Player(randomNanoId(), leagueId, "Batman", 186, 2729)
         every { repository.byId(player.id) } returns player
         // when
         val playerName = port.playerName(player.id)
@@ -29,7 +29,7 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should throw exception when player name is not found`() {
         // given
-        val playerId = UUID.randomUUID()
+        val playerId = randomNanoId()
         every { repository.byId(playerId) } returns null
         // when
         val exception = assertFailsWith<IllegalStateException> { port.playerName(playerId) }
@@ -40,8 +40,8 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should return player info`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val player = Player(UUID.randomUUID(), leagueId, "Batman", 186, 2729)
+        val leagueId = randomNanoId()
+        val player = Player(randomNanoId(), leagueId, "Batman", 186, 2729)
         every { repository.byId(player.id) } returns player
         // when
         val playerInfo = port.playerInfo(player.id)
@@ -54,7 +54,7 @@ internal class PlayerAdapterTest {
     @Test
     internal fun `Should throw exception when player info is not found`() {
         // given
-        val playerId = UUID.randomUUID()
+        val playerId = randomNanoId()
         every { repository.byId(playerId) } returns null
         // when
         val exception = assertFailsWith<IllegalStateException> { port.playerInfo(playerId) }

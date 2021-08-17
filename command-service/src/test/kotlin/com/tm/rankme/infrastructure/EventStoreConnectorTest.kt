@@ -4,10 +4,10 @@ import com.eventstore.dbclient.EventStoreDBClient
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlin.test.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.core.env.Environment
+import kotlin.test.assertNotNull
 
 internal class EventStoreConnectorTest {
     private val environment = mockk<Environment>()

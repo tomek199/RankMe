@@ -1,6 +1,6 @@
 query {
     getPlayer(query: {
-        id: "f9f9d3e6-098d-4771-b713-27a2507faa32"
+        id: "9KOnSx8yFXd382KJbeaqO"
     }) {
         id
         name

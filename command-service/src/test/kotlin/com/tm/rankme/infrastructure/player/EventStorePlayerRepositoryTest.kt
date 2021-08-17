@@ -1,12 +1,7 @@
 package com.tm.rankme.infrastructure.player
 
-import com.eventstore.dbclient.EventData
-import com.eventstore.dbclient.EventStoreDBClient
-import com.eventstore.dbclient.ReadResult
-import com.eventstore.dbclient.ReadStreamOptions
-import com.eventstore.dbclient.RecordedEvent
-import com.eventstore.dbclient.ResolvedEvent
-import com.eventstore.dbclient.StreamRevision
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import com.eventstore.dbclient.*
 import com.tm.rankme.domain.player.Player
 import com.tm.rankme.domain.player.PlayerCreated
 import com.tm.rankme.domain.player.PlayerPlayedGame
@@ -14,11 +9,10 @@ import com.tm.rankme.infrastructure.EventStoreConnector
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class EventStorePlayerRepositoryTest {
     private val connector = mockk<EventStoreConnector>()
@@ -38,43 +32,43 @@ internal class EventStorePlayerRepositoryTest {
     @Test
     internal fun `Should save 'create' event with initial version 0`() {
         // given
-        val player = Player.create(UUID.randomUUID(), "Optimus Prime")
+        val player = Player.create(randomNanoId(), "Optimus Prime")
         every { mapper.serialize(player.pendingEvents[0]) } returns String()
-        every { client.appendToStream(player.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(player.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(player)
         // then
         verify(exactly = 0) { client.readStream(any()) }
         verify(exactly = 1) { mapper.serialize(player.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(player.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(player.id, ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should save 'played-game' event with version 1`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val playerOne = Player.from(listOf(PlayerCreated(leagueId, "Batman")))
         val playerTwo = Player.from(listOf(PlayerCreated(leagueId, "Superman")))
         playerOne.playedWith(playerTwo, 2, 0)
-        every { client.readStream(playerOne.id.toString(), 1, ofType(ReadStreamOptions::class)).get() } returns readResult
+        every { client.readStream(playerOne.id, 1, ofType(ReadStreamOptions::class)).get() } returns readResult
         every { readResult.events } returns listOf(resolvedEvent)
         every { resolvedEvent.event.streamRevision } returns StreamRevision(0)
         every { mapper.serialize(playerOne.pendingEvents[0]) } returns String()
-        every { client.appendToStream(playerOne.id.toString(), ofType(EventData::class)).get() } returns mockk()
+        every { client.appendToStream(playerOne.id, ofType(EventData::class)).get() } returns mockk()
         // when
         repository.store(playerOne)
         // then
-        verify(exactly = 1) { client.readStream(playerOne.id.toString(), 1, ofType(ReadStreamOptions::class)).get() }
+        verify(exactly = 1) { client.readStream(playerOne.id, 1, ofType(ReadStreamOptions::class)).get() }
         verify(exactly = 1) { mapper.serialize(playerOne.pendingEvents[0]) }
-        verify(exactly = 1) { client.appendToStream(playerOne.id.toString(), ofType(EventData::class)).get() }
+        verify(exactly = 1) { client.appendToStream(playerOne.id, ofType(EventData::class)).get() }
     }
 
     @Test
     internal fun `Should return aggregate from events`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
-        every { client.readStream(aggregateId.toString(), ofType(ReadStreamOptions::class)).get().events } returns
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
+        every { client.readStream(aggregateId, ofType(ReadStreamOptions::class)).get().events } returns
             listOf(resolvedEvent, resolvedEvent)
         every { resolvedEvent.originalEvent } returns recordedEvent
         every { recordedEvent.eventType } returnsMany listOf("player-created", "player-played-game")

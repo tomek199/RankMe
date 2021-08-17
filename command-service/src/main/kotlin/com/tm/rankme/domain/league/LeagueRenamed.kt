@@ -1,11 +1,9 @@
 package com.tm.rankme.domain.league
 
 import com.tm.rankme.domain.base.Event
-import java.util.*
-
 
 class LeagueRenamed(
-    aggregateId: UUID,
+    aggregateId: String,
     version: Long,
     val name: String
 ) : Event<League>(aggregateId, version) {

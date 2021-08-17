@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("/leagues")
@@ -17,6 +16,6 @@ class LeagueController(private val repository: LeagueRepository) {
     @GetMapping("/{id}")
     fun league(@PathVariable id: String): League? {
         log.info("Get league by id=$id")
-        return repository.byId(UUID.fromString(id))
+        return repository.byId(id)
     }
 }

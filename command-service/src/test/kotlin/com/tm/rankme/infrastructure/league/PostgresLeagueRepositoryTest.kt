@@ -1,22 +1,14 @@
 package com.tm.rankme.infrastructure.league
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.league.League
 import com.tm.rankme.domain.league.LeagueCreated
 import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueSettingsChanged
 import com.tm.rankme.infrastructure.InfrastructureException
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
-import io.mockk.verifySequence
-import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import io.mockk.*
 import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class PostgresLeagueRepositoryTest {
     private val accessor = mockk<LeagueAccessor>()
@@ -75,7 +67,7 @@ internal class PostgresLeagueRepositoryTest {
     @Test
     internal fun `Should save 'league-settings-changed' event with version 2`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         val league = League.from(listOf(
             LeagueCreated("Star Wars", aggregateId = leagueId),
             LeagueRenamed(leagueId, 1, "Transformers")
@@ -130,7 +122,7 @@ internal class PostgresLeagueRepositoryTest {
     @Test
     internal fun `Should return aggregate from events`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns listOf(
             LeagueEntity(aggregateId, "league-created", 0, 11111, "{}", 1),
             LeagueEntity(aggregateId, "league-renamed", 1, 22222, "{}", 2),
@@ -155,7 +147,7 @@ internal class PostgresLeagueRepositoryTest {
     @Test
     internal fun `Should throw exception when events for aggregate are not found`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         every { accessor.getByAggregateIdOrderByTimestampAsc(aggregateId) } returns emptyList()
         // when
         val exception = assertFailsWith<InfrastructureException> { repository.byId(aggregateId) }
@@ -166,7 +158,7 @@ internal class PostgresLeagueRepositoryTest {
     @Test
     internal fun `Should return true when league exist`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { accessor.getFirstByAggregateIdOrderByTimestampDesc(leagueId) } returns
             LeagueEntity(leagueId, "league-created", 0, 12345, "{}", 1)
         // then
@@ -176,7 +168,7 @@ internal class PostgresLeagueRepositoryTest {
     @Test
     internal fun `Should return false when league does not exist`() {
         // given
-        val leagueId = UUID.randomUUID()
+        val leagueId = randomNanoId()
         every { accessor.getFirstByAggregateIdOrderByTimestampDesc(leagueId) } returns null
         // then
         assertFalse(repository.exist(leagueId))
@@ -185,7 +177,7 @@ internal class PostgresLeagueRepositoryTest {
     @Test
     internal fun `Should create entity`() {
         // given
-        val aggregateId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
         val type = "event-type"
         val version: Long = 5
         val timestamp: Long = 12345

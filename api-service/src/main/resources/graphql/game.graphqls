@@ -1,36 +1,36 @@
 input PlayGameCommand {
-    playerOneId: UUID!
-    playerTwoId: UUID!
+    playerOneId: String!
+    playerTwoId: String!
     playerOneScore: Int!
     playerTwoScore: Int!
 }
 
 input ScheduleGameCommand {
-    playerOneId: UUID!
-    playerTwoId: UUID!
+    playerOneId: String!
+    playerTwoId: String!
     dateTime: LocalDateTime!
 }
 
 input CompleteGameCommand {
-    gameId: UUID!
+    gameId: String!
     playerOneScore: Int!
     playerTwoScore: Int!
 }
 
 input GetGamesForLeagueQuery {
-    leagueId: UUID!
+    leagueId: String!
     first: Int!
     after: String
 }
 
 type Game {
-    id: UUID!
+    id: String!
     dateTime: LocalDateTime!
-    playerOneId: UUID!
+    playerOneId: String!
     playerOneName: String!
     playerOneRating: Int!
     playerOneDeviation: Int!
-    playerTwoId: UUID!
+    playerTwoId: String!
     playerTwoName: String!
     playerTwoRating: Int!
     playerTwoDeviation: Int!

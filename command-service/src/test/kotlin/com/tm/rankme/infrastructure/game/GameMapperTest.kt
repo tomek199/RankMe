@@ -1,5 +1,6 @@
 package com.tm.rankme.infrastructure.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.fasterxml.jackson.core.JsonParseException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.game.Game
@@ -8,7 +9,6 @@ import com.tm.rankme.domain.game.GameScheduled
 import com.tm.rankme.infrastructure.InfrastructureException
 import org.junit.jupiter.api.Test
 import java.time.Instant
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
@@ -18,8 +18,8 @@ internal class GameMapperTest {
     @Test
     internal fun `Should serialize 'game-scheduled' event`() {
         // given
-        val event = GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            Instant.now().toEpochMilli(), UUID.randomUUID())
+        val event = GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(),
+            Instant.now().toEpochMilli(), randomNanoId())
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -39,9 +39,9 @@ internal class GameMapperTest {
     internal fun `Should serialize 'game-played' event`() {
         // given
         val event = GamePlayed(
-            UUID.randomUUID(),
-            UUID.randomUUID(), 5, 286, -57, 1841, 125,
-            UUID.randomUUID(), 2, 312, -48, 1407, -132)
+            randomNanoId(),
+            randomNanoId(), 5, 286, -57, 1841, 125,
+            randomNanoId(), 2, 312, -48, 1407, -132)
         // when
         val serializedEvent = mapper.serialize(event)
         // then
@@ -71,7 +71,7 @@ internal class GameMapperTest {
     internal fun `Should throw exception when cannot serialize event`() {
         // given
         val game = Game.from(listOf(
-            GameScheduled(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), Instant.now().toEpochMilli())
+            GameScheduled(randomNanoId(), randomNanoId(), randomNanoId(), Instant.now().toEpochMilli())
         ))
         val event = object : Event<Game>(game.id, 1) {
             override val type: String = "unknown-event"
@@ -86,10 +86,10 @@ internal class GameMapperTest {
     @Test
     internal fun `Should deserialize 'scheduled' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
         val event = """{"type": "game-scheduled", "aggregateId": "$aggregateId", "version": 0, "timestamp": 0, "leagueId": "$leagueId", 
-            "firstId": "1e56a755-1134-4f17-94fe-e6f2abe8ec07", "secondId": "bb47a873-78ed-4320-a3b9-c214e63c9f6e", 
+            "firstId": "gl7qIh4I1OYbRUA9We9IM", "secondId": "eOrItOXv2vVRWwe2awH-8", 
             "dateTime": 1622276383}"""
         // when
         val deserializedEvent = mapper.deserialize("game-scheduled", event)
@@ -100,20 +100,20 @@ internal class GameMapperTest {
             assertEquals(0, it.version)
             assertEquals(leagueId, it.leagueId)
             assertEquals(1622276383, it.dateTime)
-            assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), it.firstId)
-            assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), it.secondId)
+            assertEquals("gl7qIh4I1OYbRUA9We9IM", it.firstId)
+            assertEquals("eOrItOXv2vVRWwe2awH-8", it.secondId)
         }
     }
 
     @Test
     internal fun `Should deserialize 'played' event`() {
         // given
-        val aggregateId = UUID.randomUUID()
-        val leagueId = UUID.randomUUID()
+        val aggregateId = randomNanoId()
+        val leagueId = randomNanoId()
         val event = """{"type": "game-played", "aggregateId": "$aggregateId", "version": 1, "timestamp": 0, "leagueId": "$leagueId", 
-            "firstId": "1e56a755-1134-4f17-94fe-e6f2abe8ec07", "firstScore": 4,
+            "firstId": "gl7qIh4I1OYbRUA9We9IM", "firstScore": 4,
             "firstDeviation": 184, "firstDeviationDelta": -23, "firstRating": 2864, "firstRatingDelta": 78,
-            "secondId": "bb47a873-78ed-4320-a3b9-c214e63c9f6e", "secondScore": 3, 
+            "secondId": "eOrItOXv2vVRWwe2awH-8", "secondScore": 3, 
             "secondDeviation": 285, "secondDeviationDelta": -35, "secondRating": 1981, "secondRatingDelta": -63, 
             "dateTime": 1611176383}"""
         // when
@@ -125,13 +125,13 @@ internal class GameMapperTest {
             assertEquals(1, it.version)
             assertEquals(leagueId, it.leagueId)
             assertEquals(1611176383, it.dateTime)
-            assertEquals(UUID.fromString("1e56a755-1134-4f17-94fe-e6f2abe8ec07"), it.firstId)
+            assertEquals("gl7qIh4I1OYbRUA9We9IM", it.firstId)
             assertEquals(4, it.firstScore)
             assertEquals(184, it.firstDeviation)
             assertEquals(-23, it.firstDeviationDelta)
             assertEquals(2864, it.firstRating)
             assertEquals(78, it.firstRatingDelta)
-            assertEquals(UUID.fromString("bb47a873-78ed-4320-a3b9-c214e63c9f6e"), it.secondId)
+            assertEquals("eOrItOXv2vVRWwe2awH-8", it.secondId)
             assertEquals(3, it.secondScore)
             assertEquals(285, it.secondDeviation)
             assertEquals(-35, it.secondDeviationDelta)

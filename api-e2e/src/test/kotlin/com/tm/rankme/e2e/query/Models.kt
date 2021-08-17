@@ -1,9 +1,7 @@
 package com.tm.rankme.e2e.query
 
-import java.util.*
-
 data class Player(
-    val id: UUID,
+    val id: String,
     val name: String,
     val deviation: Int,
     val rating: Int,
@@ -11,7 +9,7 @@ data class Player(
 )
 
 data class League(
-    val id: UUID,
+    val id: String,
     val name: String,
     val allowDraws: Boolean,
     val maxScore: Int,
@@ -20,13 +18,13 @@ data class League(
 )
 
 data class Game(
-    val id: UUID,
+    val id: String,
     val dateTime: String,
-    val playerOneId: UUID,
+    val playerOneId: String,
     val playerOneName: String,
     val playerOneRating: Int,
     val playerOneDeviation: Int,
-    val playerTwoId: UUID,
+    val playerTwoId: String,
     val playerTwoName: String,
     val playerTwoRating: Int,
     val playerTwoDeviation: Int,

@@ -1,13 +1,11 @@
 package com.tm.rankme.infrastructure.player
 
-import java.util.*
-
 internal data class Created(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
-    val leagueId: UUID,
+    val leagueId: String,
     val name: String,
     val deviation: Int,
     val rating: Int
@@ -15,7 +13,7 @@ internal data class Created(
 
 internal data class PlayedGame(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
     val deviationDelta: Int,

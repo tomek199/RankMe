@@ -1,7 +1,7 @@
 package com.tm.rankme.domain.league
 
-import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 
 internal class SettingsTest {

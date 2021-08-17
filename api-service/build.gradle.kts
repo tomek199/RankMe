@@ -25,6 +25,8 @@ dependencies {
     implementation("com.graphql-java-kickstart:graphql-java-tools:6.2.0")
     implementation("com.graphql-java-kickstart:graphiql-spring-boot-starter:8.0.0")
 
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+    
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:${plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion}")
     testImplementation("io.mockk:mockk:1.10.5")

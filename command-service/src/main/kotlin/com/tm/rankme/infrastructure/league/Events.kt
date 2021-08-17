@@ -1,10 +1,8 @@
 package com.tm.rankme.infrastructure.league
 
-import java.util.*
-
 internal data class Created(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
     val name: String,
@@ -14,7 +12,7 @@ internal data class Created(
 
 internal data class Renamed(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
     val name: String
@@ -22,7 +20,7 @@ internal data class Renamed(
 
 internal data class SettingsChanged(
     val type: String,
-    val aggregateId: UUID,
+    val aggregateId: String,
     val version: Long,
     val timestamp: Long,
     val allowDraws: Boolean = false,

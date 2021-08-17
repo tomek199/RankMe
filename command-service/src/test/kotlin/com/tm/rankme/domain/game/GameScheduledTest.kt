@@ -1,19 +1,19 @@
 package com.tm.rankme.domain.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.junit.jupiter.api.Test
 
 internal class GameScheduledTest {
     @Test
     internal fun `Should create event`() {
         // given
-        val leagueId = UUID.randomUUID()
-        val playerOneId = UUID.randomUUID()
-        val playerTwoId = UUID.randomUUID()
+        val leagueId = randomNanoId()
+        val playerOneId = randomNanoId()
+        val playerTwoId = randomNanoId()
         val dateTime = LocalDateTime.now()
         // when
         val event = GameScheduled(leagueId, playerOneId, playerTwoId, dateTime.toEpochSecond(ZoneOffset.UTC))

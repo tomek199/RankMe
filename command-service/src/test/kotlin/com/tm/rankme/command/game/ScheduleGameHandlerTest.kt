@@ -1,5 +1,6 @@
 package com.tm.rankme.command.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -11,7 +12,6 @@ import com.tm.rankme.domain.league.League
 import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.*
 
@@ -24,8 +24,8 @@ internal class ScheduleGameHandlerTest {
     @Test
     internal fun `Should create played game`() {
         // given
-        val command = ScheduleGameCommand(UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now())
-        val leagueId = UUID.randomUUID()
+        val command = ScheduleGameCommand(randomNanoId(), randomNanoId(), LocalDateTime.now())
+        val leagueId = randomNanoId()
         every { playerPort.extractLeagueId(command.playerOneId, command.playerTwoId) } returns leagueId
         every { repository.store(any()) } just Runs
         every { eventBus.emit(any()) } just Runs
@@ -48,7 +48,7 @@ internal class ScheduleGameHandlerTest {
     @Test
     internal fun `Should throw exception when port throws exception`() {
         // given
-        val command = ScheduleGameCommand(UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now())
+        val command = ScheduleGameCommand(randomNanoId(), randomNanoId(), LocalDateTime.now())
         every {
             playerPort.extractLeagueId(command.playerOneId, command.playerTwoId)
         } throws AggregateException("Cannot extract league id")

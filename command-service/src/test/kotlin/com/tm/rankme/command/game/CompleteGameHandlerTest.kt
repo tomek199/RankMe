@@ -1,5 +1,6 @@
 package com.tm.rankme.command.game
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -9,7 +10,6 @@ import io.mockk.*
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDateTime
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -25,12 +25,12 @@ internal class CompleteGameHandlerTest {
     @Test
     internal fun `Should create played game`() {
         // given
-        val command = CompleteGameCommand(UUID.randomUUID(), 3, 2)
-        val leagueId = UUID.randomUUID()
+        val command = CompleteGameCommand(randomNanoId(), 3, 2)
+        val leagueId = randomNanoId()
         val firstResult = Result(command.playerOneScore, 229, -34, 1983, -85)
         val secondResult = Result(command.playerTwoScore, 193, -45, 2314, 79)
         val game = Game.from(listOf(
-            GameScheduled(leagueId, UUID.randomUUID(), UUID.randomUUID(), Instant.now().toEpochMilli(), UUID.randomUUID())
+            GameScheduled(leagueId, randomNanoId(), randomNanoId(), Instant.now().toEpochMilli(), randomNanoId())
         ))
         every { repository.byId(command.gameId) } returns game
         every { repository.store(any()) } just Runs
@@ -62,10 +62,10 @@ internal class CompleteGameHandlerTest {
     @Test
     internal fun `Should throw exception when try to complete already played game`() {
         // given
-        val command = CompleteGameCommand(UUID.randomUUID(), 3, 4)
+        val command = CompleteGameCommand(randomNanoId(), 3, 4)
         val firstResult = Result(command.playerOneScore, 229, -34, 1983, -85)
         val secondResult = Result(command.playerTwoScore, 193, -45, 2314, 79)
-        val game = Game.played(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), firstResult, secondResult)
+        val game = Game.played(randomNanoId(), randomNanoId(), randomNanoId(), firstResult, secondResult)
         every { repository.byId(command.gameId) } returns game
         // when
         val exception = assertFailsWith<AggregateException> { handler.accept(command) }
@@ -76,11 +76,11 @@ internal class CompleteGameHandlerTest {
     @Test
     internal fun `Should throw exception when port throws exception`() {
         // given
-        val game = Game.scheduled(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(), UUID.randomUUID())
+        val game = Game.scheduled(randomNanoId(), LocalDateTime.now(), randomNanoId(), randomNanoId())
         val command = CompleteGameCommand(game.id, 3, 2)
         every { repository.byId(command.gameId) } returns game
         every {
-            playerPort.playGame(ofType(UUID::class), ofType(UUID::class), command.playerOneScore, command.playerTwoScore)
+            playerPort.playGame(ofType(String::class), ofType(String::class), command.playerOneScore, command.playerTwoScore)
         } throws AggregateException("Cannot complete game")
         // when
         val exception = assertFailsWith<AggregateException> { (handler.accept(command)) }

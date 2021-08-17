@@ -1,9 +1,7 @@
 package com.tm.rankme.model.player
 
-import java.util.*
-
 interface PlayerRepository {
-    fun byId(id: UUID): Player?
+    fun byId(id: String): Player?
     fun store(player: Player)
-    fun byLeagueId(leagueId: UUID): List<Player>
+    fun byLeagueId(leagueId: String): List<Player>
 }

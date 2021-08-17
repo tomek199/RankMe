@@ -1,17 +1,16 @@
 package com.tm.rankme.model.game
 
 import java.time.LocalDateTime
-import java.util.*
 
 data class Game(
-    val id: UUID,
-    val leagueId: UUID,
+    val id: String,
+    val leagueId: String,
     val dateTime: LocalDateTime,
-    val playerOneId: UUID,
+    val playerOneId: String,
     val playerOneName: String,
     var playerOneRating: Int,
     var playerOneDeviation: Int,
-    val playerTwoId: UUID,
+    val playerTwoId: String,
     val playerTwoName: String,
     var playerTwoRating: Int,
     var playerTwoDeviation: Int,

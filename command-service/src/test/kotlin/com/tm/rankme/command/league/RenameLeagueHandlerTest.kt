@@ -1,5 +1,6 @@
 package com.tm.rankme.command.league
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.tm.rankme.domain.base.AggregateException
 import com.tm.rankme.domain.base.Event
 import com.tm.rankme.domain.base.EventBus
@@ -9,7 +10,6 @@ import com.tm.rankme.domain.league.LeagueRenamed
 import com.tm.rankme.domain.league.LeagueRepository
 import io.mockk.*
 import org.junit.jupiter.api.Test
-import java.util.*
 import java.util.function.Consumer
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -43,7 +43,7 @@ internal class RenameLeagueHandlerTest {
     @Test
     internal fun `Should throw exception when league does not exist`() {
         // given
-        val id = UUID.randomUUID()
+        val id = randomNanoId()
         val exceptionMessage = "League is not found"
         val command = RenameLeagueCommand(id, "Transformers")
         every { repository.byId(id) } throws AggregateException(exceptionMessage)

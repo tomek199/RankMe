@@ -1,11 +1,10 @@
 package com.tm.rankme.model.game
 
 import com.tm.rankme.model.Page
-import java.util.*
 
 interface GameRepository {
-    fun byId(id: UUID): Game?
+    fun byId(id: String): Game?
     fun store(game: Game)
-    fun byLeagueId(leagueId: UUID, first: Int, after: String? = null): Page<Game>
-    fun byPlayerId(playerId: UUID, first: Int, after: String? = null): Page<Game>
+    fun byLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
+    fun byPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
 }

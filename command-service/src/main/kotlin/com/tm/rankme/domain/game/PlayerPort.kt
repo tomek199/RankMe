@@ -1,8 +1,6 @@
 package com.tm.rankme.domain.game
 
-import java.util.*
-
 interface PlayerPort {
-    fun playGame(firstPlayerId: UUID, secondPlayerId: UUID, firstScore: Int, secondScore: Int): Game
-    fun extractLeagueId(firstPlayerId: UUID, secondPlayerId: UUID): UUID
+    fun playGame(firstPlayerId: String, secondPlayerId: String, firstScore: Int, secondScore: Int): Game
+    fun extractLeagueId(firstPlayerId: String, secondPlayerId: String): String
 }

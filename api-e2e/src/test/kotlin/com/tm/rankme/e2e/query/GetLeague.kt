@@ -1,11 +1,10 @@
 package com.tm.rankme.e2e.query
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
-import java.util.*
 import kotlin.reflect.KClass
 
 class GetLeague(
-    id: UUID, games: String = ""
+    id: String, games: String = ""
 ) : GraphQLClientRequest<GetLeague.Result> {
 
     override val query: String =
@@ -21,7 +20,7 @@ class GetLeague(
             }
         }"""
 
-    constructor(id: UUID, firstGames: Int) : this(
+    constructor(id: String, firstGames: Int) : this(
         id,
         """games(first: $firstGames) {
             pageInfo {

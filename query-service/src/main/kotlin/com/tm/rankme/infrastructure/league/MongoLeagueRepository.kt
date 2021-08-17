@@ -4,14 +4,13 @@ import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class MongoLeagueRepository(
     private val accessor: MongoLeagueAccessor
 ) : LeagueRepository {
 
-    override fun byId(id: UUID): League? = accessor.findByIdOrNull(id)?.let {
+    override fun byId(id: String): League? = accessor.findByIdOrNull(id)?.let {
         League(it.id, it.name, it.allowDraws, it.maxScore)
     }
 

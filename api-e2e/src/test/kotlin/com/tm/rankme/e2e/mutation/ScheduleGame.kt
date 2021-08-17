@@ -2,12 +2,11 @@ package com.tm.rankme.e2e.mutation
 
 import com.expediagroup.graphql.client.types.GraphQLClientRequest
 import java.time.LocalDateTime
-import java.util.*
 import kotlin.reflect.KClass
 
 class ScheduleGame(
-    playerOneId: UUID,
-    playerTwoId: UUID,
+    playerOneId: String,
+    playerTwoId: String,
     dateTime: LocalDateTime
 ) : GraphQLClientRequest<ScheduleGame.Result> {
 

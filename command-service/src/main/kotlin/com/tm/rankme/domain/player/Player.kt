@@ -6,14 +6,13 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
-import java.util.*
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class Player private constructor() : AggregateRoot() {
     val pendingEvents = mutableListOf<Event<Player>>()
-    lateinit var leagueId: UUID
+    lateinit var leagueId: String
         private set
     lateinit var name: String
         private set
@@ -24,7 +23,7 @@ class Player private constructor() : AggregateRoot() {
     var lastGame: LocalDate? = null
 
     companion object {
-        fun create(leagueId: UUID, name: String): Player {
+        fun create(leagueId: String, name: String): Player {
             val event = PlayerCreated(leagueId, name)
             val player = Player()
             player.add(event)

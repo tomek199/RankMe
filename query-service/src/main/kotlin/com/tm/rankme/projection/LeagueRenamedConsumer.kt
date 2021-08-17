@@ -3,7 +3,6 @@ package com.tm.rankme.projection
 import com.tm.rankme.model.league.LeagueRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.util.*
 import java.util.function.Consumer
 
 @Service("leagueRenamedMessageConsumer")
@@ -24,6 +23,6 @@ class LeagueRenamedConsumer(
 }
 
 data class LeagueRenamedMessage(
-    val aggregateId: UUID,
+    val aggregateId: String,
     val name: String
 )
