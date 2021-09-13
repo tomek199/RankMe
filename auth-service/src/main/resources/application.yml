@@ -1,0 +1,11 @@
+server:
+  port: 9100
+spring:
+  application:
+    name: auth-service
+  config:
+    import: ${CONFIG_SERVICE_URI:optional:configserver:http://localhost:9900}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9800/eureka
