@@ -1,4 +1,5 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -18,6 +19,7 @@ repositories {
     }
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_11
 extra["springCloudVersion"] = "2020.0.4"
 
 dependencies {
@@ -31,7 +33,7 @@ dependencies {
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:${plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion}")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:${project.getKotlinPluginVersion()}")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

@@ -7,12 +7,11 @@ plugins {
     kotlin("plugin.spring") version "1.5.21"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-
 repositories {
     mavenCentral()
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_11
 extra["springCloudVersion"] = "2020.0.4"
 
 dependencies {

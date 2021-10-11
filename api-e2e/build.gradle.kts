@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 plugins {
     kotlin("jvm")
@@ -9,7 +9,9 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+val kotlinVersion = project.getKotlinPluginVersion()
 val cucumberVersion = "6.11.0"
 val graphqlKotlinVersion = "5.1.0"
 val springBootVersion = "2.5.5"
@@ -39,4 +41,6 @@ task<Test>("e2e") {
 
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
+    java.sourceCompatibility = JavaVersion.VERSION_11
+    java.targetCompatibility = JavaVersion.VERSION_11
 }
