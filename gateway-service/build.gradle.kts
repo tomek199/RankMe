@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    id("org.springframework.boot") version "2.4.2"
+    id("org.springframework.boot") version "2.5.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("plugin.spring") version "1.5.21"
 }
@@ -13,7 +13,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2020.0.1"
+extra["springCloudVersion"] = "2020.0.4"
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")

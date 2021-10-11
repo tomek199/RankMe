@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
     jacoco
     id("org.sonarqube")
-    id("org.springframework.boot") version "2.4.2"
+    id("org.springframework.boot") version "2.5.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("plugin.spring") version "1.5.21"
     kotlin("plugin.jpa") version "1.5.21"
@@ -18,7 +18,7 @@ repositories {
     }
 }
 
-extra["springCloudVersion"] = "2020.0.1"
+extra["springCloudVersion"] = "2020.0.4"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -30,9 +30,9 @@ dependencies {
     implementation("com.github.EventStore:EventStoreDB-Client-Java:trunk-SNAPSHOT")
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test:${plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion}")
-    testImplementation("io.mockk:mockk:1.10.5")
+    testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito", module = "mockito-core")
