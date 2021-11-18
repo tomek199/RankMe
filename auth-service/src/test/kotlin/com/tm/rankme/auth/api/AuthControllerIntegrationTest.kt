@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.post
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["test"])
 @AutoConfigureMockMvc
-@WireMockTest(httpPort = 9700)
+@WireMockTest(httpPort = 9999)
 internal class AuthControllerIntegrationTest {
     @Autowired
     private lateinit var mvc: MockMvc
