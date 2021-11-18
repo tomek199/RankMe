@@ -9,3 +9,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:9800/eureka
+gateway:
+  url: http://localhost:9700
+application:
+  id:
+  key:

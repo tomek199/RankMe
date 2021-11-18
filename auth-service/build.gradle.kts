@@ -28,6 +28,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:${project.getKotlinPluginVersion()}")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.31.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito", module = "mockito-core")

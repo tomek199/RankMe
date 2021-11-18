@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false
+application:
+  id: app-id
+  key: app-key
