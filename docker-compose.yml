@@ -34,7 +34,7 @@ services:
     ports:
       - 9800:9800
     environment:
-      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
 
   gateway-service:
@@ -45,7 +45,7 @@ services:
     ports:
       - 9700:9700
     environment:
-      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_DISCOVERY_SERVICE: discovery-service:9800
 
@@ -57,7 +57,7 @@ services:
     ports:
       - 9000:9000
     environment:
-      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_RABBITMQ: rabbitmq:15672
 
@@ -70,7 +70,7 @@ services:
     ports:
       - 9200:9200
     environment:
-      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_RABBITMQ: rabbitmq:15672
       WAIT_POSTGRES: postgres:5432
@@ -84,7 +84,7 @@ services:
     ports:
       - 9300:9300
     environment:
-      CONFIG_SERVICE_URI: configserver:http://config-service:9900/
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_RABBITMQ: rabbitmq:15672
       WAIT_MONGODB: mongodb:27017

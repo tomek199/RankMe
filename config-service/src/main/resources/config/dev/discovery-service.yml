@@ -1,6 +1,0 @@
-eureka:
-  server:
-    maxThreadsForPeerReplication: 0
-  client:
-    register-with-eureka: false
-    fetch-registry: false
