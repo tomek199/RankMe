@@ -1,8 +1,0 @@
-spring:
-  rabbitmq:
-    host: dev
-    port: 5672
-    username: guest
-    password: guest
-gateway:
-  url: http://dev:9700

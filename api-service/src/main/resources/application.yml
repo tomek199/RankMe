@@ -4,7 +4,7 @@ spring:
   application:
     name: api-service
   config:
-    import: ${CONFIG_SERVICE_URI:optional:configserver:http://localhost:9900}
+    import: optional:configserver:http://localhost:9900
   rabbitmq:
     host: localhost
     port: 5672
