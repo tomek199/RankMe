@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false
+gateway:
+  url: http://localhost:9999
+application:
+  id: app-id
+  key: app-key

@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 plugins {
     kotlin("jvm")
@@ -9,10 +9,12 @@ repositories {
     mavenCentral()
 }
 
-val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
-val cucumberVersion = "6.10.2"
-val graphqlKotlinVersion = "4.0.0-rc.1" // FIXME change to stable version when available
-val springBootVersion = "2.4.4"
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+val kotlinVersion = project.getKotlinPluginVersion()
+val cucumberVersion = "6.11.0"
+val graphqlKotlinVersion = "5.1.0"
+val springBootVersion = "2.5.5"
 
 dependencies {
     testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
@@ -26,7 +28,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-data-mongodb:$springBootVersion")
-    testImplementation("org.testcontainers:junit-jupiter:1.15.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.16.0")
 }
 
 tasks.test {
@@ -39,4 +41,6 @@ task<Test>("e2e") {
 
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
+    java.sourceCompatibility = JavaVersion.VERSION_11
+    java.targetCompatibility = JavaVersion.VERSION_11
 }
