@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Apollo, gql } from "apollo-angular";
+import { InfoService } from './info.service';
 
 @Component({
   selector: 'app-header',
@@ -8,14 +8,14 @@ import { Apollo, gql } from "apollo-angular";
 })
 export class HeaderComponent implements OnInit {
   apiVersion: any;
-  leagueId: string = 'JYxBPfIJIl7NOcGQeU68D';
 
-  constructor(private apollo: Apollo) {
-  }
+  constructor(private infoService: InfoService) { }
 
   ngOnInit(): void {
-    this.apollo.query<any>({
-      query: gql`{info}`
-    }).subscribe(({data}) => this.apiVersion = data.info);
+    this.getApiVersion()
+  }
+
+  private getApiVersion() {
+    this.infoService.apiVersion().subscribe(({data}) => this.apiVersion = data.info)
   }
 }
