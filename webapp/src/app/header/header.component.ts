@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InfoService } from './info.service';
+import { VersionService } from './version.service';
 
 @Component({
   selector: 'app-header',
@@ -9,13 +9,13 @@ import { InfoService } from './info.service';
 export class HeaderComponent implements OnInit {
   apiVersion: any;
 
-  constructor(private infoService: InfoService) { }
+  constructor(private versionService: VersionService) { }
 
   ngOnInit(): void {
     this.getApiVersion()
   }
 
   private getApiVersion() {
-    this.infoService.apiVersion().subscribe(({data}) => this.apiVersion = data.info)
+    this.versionService.apiVersion().subscribe(({data}) => this.apiVersion = data.version)
   }
 }

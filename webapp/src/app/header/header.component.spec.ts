@@ -2,22 +2,22 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderComponent } from './header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { InfoService } from './info.service';
+import { VersionService } from './version.service';
 import { of } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  let infoServiceSpy = jasmine.createSpyObj('InfoService', ['apiVersion'])
+  let infoServiceSpy = jasmine.createSpyObj('VersionService', ['apiVersion'])
 
   beforeEach(async () => {
-    infoServiceSpy.apiVersion.and.returnValue(of({data: {info: 'API 1.2.3'}} as ApolloQueryResult<any>));
+    infoServiceSpy.apiVersion.and.returnValue(of({data: {version: '1.2.3'}} as ApolloQueryResult<any>));
     await TestBed.configureTestingModule({
       declarations: [ HeaderComponent ],
       imports: [ MatToolbarModule ],
       providers: [
-        { provide: InfoService, useValue: infoServiceSpy }
+        { provide: VersionService, useValue: infoServiceSpy }
       ]
     })
     .compileComponents();

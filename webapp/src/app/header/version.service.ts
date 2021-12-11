@@ -6,13 +6,13 @@ import { ApolloQueryResult } from '@apollo/client';
 @Injectable({
   providedIn: 'root'
 })
-export class InfoService {
+export class VersionService {
 
   constructor(private apollo: Apollo) { }
 
   apiVersion(): Observable<ApolloQueryResult<any>> {
     return this.apollo.query<any>({
-      query: gql`{info}`
+      query: gql`{version}`
     });
   }
 }
