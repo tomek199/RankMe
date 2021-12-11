@@ -9,7 +9,7 @@ class GetPlayer(
 
     override val query: String =
         """{
-            getPlayer(query: {
+            player(query: {
                 id: "$id" 
             }) {
                 id name deviation rating
@@ -55,6 +55,6 @@ class GetPlayer(
     override fun responseType(): KClass<Result> = Result::class
 
     data class Result(
-        val getPlayer: Player,
+        val player: Player,
     )
 }

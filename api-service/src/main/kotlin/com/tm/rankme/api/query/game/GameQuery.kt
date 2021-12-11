@@ -9,5 +9,5 @@ class GameQuery(
     private val queryHandler: GameQueryHandler
 ) : GraphQLQueryResolver {
 
-    fun getGames(query: GetGamesForLeagueQuery): Connection<Game> = queryHandler.handle(query)
+    fun games(query: GetGamesForLeagueQuery): Connection<Game> = queryHandler.handle(query)
 }

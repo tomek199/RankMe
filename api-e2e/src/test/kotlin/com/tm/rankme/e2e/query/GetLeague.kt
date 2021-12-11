@@ -9,7 +9,7 @@ class GetLeague(
 
     override val query: String =
         """{
-            getLeague(query: {
+            league(query: {
                 id: "$id" 
             }) {
                 id name allowDraws maxScore
@@ -58,6 +58,6 @@ class GetLeague(
     override fun responseType(): KClass<Result> = Result::class
 
     data class Result(
-        val getLeague: League,
+        val league: League,
     )
 }

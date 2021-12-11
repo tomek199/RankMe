@@ -58,10 +58,10 @@ class LeagueSteps(
                 val id = dbUtil.leagueIdByName(name)
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
-                    assertEquals(id, it.getLeague.id)
-                    assertEquals(name, it.getLeague.name)
-                    assertEquals(allowDraws, it.getLeague.allowDraws)
-                    assertEquals(maxScore, it.getLeague.maxScore)
+                    assertEquals(id, it.league.id)
+                    assertEquals(name, it.league.name)
+                    assertEquals(allowDraws, it.league.allowDraws)
+                    assertEquals(maxScore, it.league.maxScore)
                 } ?: fail("Cannot get league by id $id")
             }
         }
@@ -74,7 +74,7 @@ class LeagueSteps(
                 graphQlClient.execute(query).data?.let {
                     val expectedPlayers = playersTable.asMaps()
                     expectedPlayers.forEachIndexed { index, expectedPlayer ->
-                        val player = it.getLeague.players[index]
+                        val player = it.league.players[index]
                         assertEquals(expectedPlayer["name"], player.name)
                         assertEquals(expectedPlayer["deviation"]?.toInt(), player.deviation)
                         assertEquals(expectedPlayer["rating"]?.toInt(), player.rating)
@@ -90,14 +90,14 @@ class LeagueSteps(
                 val id = dbUtil.leagueIdByName(name)
                 val query = GetLeague(id, first)
                 graphQlClient.execute(query).data?.let {
-                    assertNotNull(it.getLeague.games)
-                    assertFalse(it.getLeague.games.pageInfo.hasPreviousPage)
-                    assertEquals(first < of, it.getLeague.games.pageInfo.hasNextPage)
-                    assertEquals(first, it.getLeague.games.edges.size)
-                    assertEquals(it.getLeague.games.pageInfo.startCursor, it.getLeague.games.edges.first().cursor)
-                    assertEquals(it.getLeague.games.pageInfo.endCursor, it.getLeague.games.edges.last().cursor)
-                    it.getLeague.games.edges.forEach { edge ->
-                        it.getLeague.players.map { player -> player.id }.toList()
+                    assertNotNull(it.league.games)
+                    assertFalse(it.league.games.pageInfo.hasPreviousPage)
+                    assertEquals(first < of, it.league.games.pageInfo.hasNextPage)
+                    assertEquals(first, it.league.games.edges.size)
+                    assertEquals(it.league.games.pageInfo.startCursor, it.league.games.edges.first().cursor)
+                    assertEquals(it.league.games.pageInfo.endCursor, it.league.games.edges.last().cursor)
+                    it.league.games.edges.forEach { edge ->
+                        it.league.players.map { player -> player.id }.toList()
                             .also { players -> players.contains(edge.node.playerOneId) }
                             .also { players -> players.contains(edge.node.playerTwoId) }
                     }

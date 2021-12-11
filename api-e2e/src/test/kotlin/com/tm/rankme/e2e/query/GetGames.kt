@@ -11,7 +11,7 @@ class GetGames(
 
     override val query: String =
         """{
-            getGames(query: {
+            games(query: {
                 leagueId: "$leagueId", 
                 first: $first 
                 ${if (after != null) ", after: \"$after\"" else ""}
@@ -51,6 +51,6 @@ class GetGames(
     override fun responseType(): KClass<Result> = Result::class
 
     data class Result(
-        val getGames: Connection<Game>,
+        val games: Connection<Game>,
     )
 }
