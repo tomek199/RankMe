@@ -11,11 +11,11 @@ spring:
     username: guest
     password: guest
   cloud:
-    stream:
-      function:
-        definition: "leagueCreatedMessageConsumer;leagueRenamedMessageConsumer;leagueSettingsChangedMessageConsumer;\
+    function:
+      definition: "leagueCreatedMessageConsumer;leagueRenamedMessageConsumer;leagueSettingsChangedMessageConsumer;\
         playerCreatedMessageConsumer;playerPlayedGameMessageConsumer;\
         gameScheduledMessageConsumer;gamePlayedMessageConsumer"
+    stream:
       bindings:
         leagueCreatedMessageConsumer-in-0:
           destination: command.query

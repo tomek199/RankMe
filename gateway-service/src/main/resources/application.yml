@@ -11,9 +11,16 @@ spring:
         - id: query-service
           uri: lb://QUERY-SERVICE
           predicates:
-          - Path=/query-service/**
+            - Path=/query-service/**
           filters:
-          - RewritePath=/query-service/(?<segment>.*), /$\{segment}
+            - RewritePath=/query-service/(?<segment>.*), /$\{segment}
+        - id: api-service
+          uri: lb://API-SERVICE
+          predicates:
+            - Path=/api
+            - Method=GET,POST
+          filters:
+            - RewritePath=/api, /graphql
 eureka:
   client:
     register-with-eureka: false

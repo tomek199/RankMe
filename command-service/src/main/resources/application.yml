@@ -1,6 +1,5 @@
 server:
   port: 9100
-
 spring:
   application:
     name: command-service
@@ -15,17 +14,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
   cloud:
-    stream:
-      function:
-        definition: "createLeagueCommandHandler;renameLeagueCommandHandler;changeLeagueSettingsCommandHandler;\
+    function:
+      definition: "createLeagueCommandHandler;renameLeagueCommandHandler;changeLeagueSettingsCommandHandler;\
         createPlayerCommandHandler;playGameCommandHandler;scheduleGameCommandHandler;completeGameCommandHandler"
+    stream:
       bindings:
         createLeagueCommandHandler-in-0:
           destination: api.command
