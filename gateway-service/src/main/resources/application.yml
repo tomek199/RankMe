@@ -7,6 +7,15 @@ spring:
     import: optional:configserver:http://localhost:9900
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders:
+              - content-type
+            allowedMethods:
+              - GET
+              - POST
       routes:
         - id: query-service
           uri: lb://QUERY-SERVICE
@@ -18,7 +27,7 @@ spring:
           uri: lb://API-SERVICE
           predicates:
             - Path=/api
-            - Method=GET,POST
+            - Method=GET,POST,OPTIONS
           filters:
             - RewritePath=/api, /graphql
 eureka:

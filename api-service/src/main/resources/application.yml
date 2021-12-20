@@ -28,7 +28,7 @@ graphql:
   servlet:
     mapping: /graphql
     enabled: true
-    corsEnabled: true
+    corsEnabled: false
 graphiql:
   mapping: /graphiql
   enabled: true
