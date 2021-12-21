@@ -198,8 +198,8 @@ internal class MongoGameRepositoryTest {
         val page = repository.byLeagueId(leagueId, 7)
         // then
         assertEquals(7, page.items.size)
-        assertEquals(games[0].id, page.items.first().node.id)
-        assertEquals(games[6].id, page.items.last().node.id)
+        assertEquals(games.first().id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
         assertFalse(page.hasPreviousPage)
         assertTrue(page.hasNextPage)
     }
@@ -216,15 +216,15 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId, games[0].timestamp, ofType(Pageable::class))
+            accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId, games.first().timestamp, ofType(Pageable::class))
         } returns PageImpl(games.subList(1, 8), PageRequest.of(0, 7), 10)
-        val afterCursor = Base64.getEncoder().encodeToString(games[0].timestamp.toString().toByteArray())
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
         // when
         val page = repository.byLeagueId(leagueId, 5, afterCursor)
         // then
         assertEquals(7, page.items.size)
         assertEquals(games[1].id, page.items.first().node.id)
-        assertEquals(games[7].id, page.items.last().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
         assertTrue(page.hasPreviousPage)
         assertTrue(page.hasNextPage)
     }
@@ -241,15 +241,15 @@ internal class MongoGameRepositoryTest {
             )
         }
         every {
-            accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId, games[0].timestamp, ofType(Pageable::class))
+            accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId, games.first().timestamp, ofType(Pageable::class))
         } returns PageImpl(games.takeLast(6), PageRequest.of(0, 6), 6)
-        val afterCursor = Base64.getEncoder().encodeToString(games[0].timestamp.toString().toByteArray())
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
         // when
         val page = repository.byLeagueId(leagueId, 6, afterCursor)
         // then
         assertEquals(6, page.items.size)
         assertEquals(games[1].id, page.items.first().node.id)
-        assertEquals(games[6].id, page.items.last().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
         assertTrue(page.hasPreviousPage)
         assertFalse(page.hasNextPage)
     }
@@ -287,8 +287,8 @@ internal class MongoGameRepositoryTest {
         val page = repository.byPlayerId(playerId, 3)
         // then
         assertEquals(3, page.items.size)
-        assertEquals(games[0].id, page.items.first().node.id)
-        assertEquals(games[2].id, page.items.last().node.id)
+        assertEquals(games.first().id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
         assertFalse(page.hasPreviousPage)
         assertTrue(page.hasNextPage)
     }
@@ -307,16 +307,16 @@ internal class MongoGameRepositoryTest {
         }
         every {
             accessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(
-                playerId, games[0].timestamp, ofType(Pageable::class)
+                playerId, games.first().timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(games.subList(1, 6), PageRequest.of(0, 5), 8)
-        val afterCursor = Base64.getEncoder().encodeToString(games[0].timestamp.toString().toByteArray())
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
         // when
         val page = repository.byPlayerId(playerId, 5, afterCursor)
         // then
         assertEquals(5, page.items.size)
         assertEquals(games[1].id, page.items.first().node.id)
-        assertEquals(games[5].id, page.items.last().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
         assertTrue(page.hasPreviousPage)
         assertTrue(page.hasNextPage)
     }
@@ -335,16 +335,16 @@ internal class MongoGameRepositoryTest {
         }
         every {
             accessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(
-                playerId, games[0].timestamp, ofType(Pageable::class)
+                playerId, games.first().timestamp, ofType(Pageable::class)
             )
         } returns PageImpl(games.takeLast(5), PageRequest.of(0, 5), 5)
-        val afterCursor = Base64.getEncoder().encodeToString(games[0].timestamp.toString().toByteArray())
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
         // when
         val page = repository.byPlayerId(playerId, 5, afterCursor)
         // then
         assertEquals(5, page.items.size)
         assertEquals(games[1].id, page.items.first().node.id)
-        assertEquals(games[5].id, page.items.last().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
         assertTrue(page.hasPreviousPage)
         assertFalse(page.hasNextPage)
     }

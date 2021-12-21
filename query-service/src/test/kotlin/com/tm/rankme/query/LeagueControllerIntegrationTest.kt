@@ -9,9 +9,13 @@ import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import java.util.*
 
 @WebMvcTest(controllers = [LeagueController::class, LeagueRepository::class])
 internal class LeagueControllerIntegrationTest {
@@ -48,6 +52,53 @@ internal class LeagueControllerIntegrationTest {
         result.andExpect {
             status { isOk() }
             jsonPath("$") { doesNotExist() }
+        }
+    }
+
+    @Test
+    internal fun `Should return page for leagues`() {
+        // given
+        val entities = listOf(
+            LeagueEntity(randomNanoId(), "Star Wars", false, 3),
+            LeagueEntity(randomNanoId(), "Marvel", true, 12),
+        )
+        val timestamp = System.currentTimeMillis()
+        val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        every {
+            leagueAccessor.getByTimestampGreaterThanOrderByTimestampAsc(timestamp, ofType(Pageable::class))
+        } returns PageImpl(entities, PageRequest.of(0, 2), 2)
+        // when
+        val result = mvc.get("/leagues?first=2&after=$afterCursor")
+        // then
+        result.andExpect {
+            status { isOk() }
+            jsonPath("$.hasPreviousPage") { value(true) }
+            jsonPath("$.hasNextPage") { value(false) }
+            jsonPath("$.items[0].node.id") { value(entities[0].id) }
+            jsonPath("$.items[0].cursor") {
+                Base64.getEncoder().encodeToString(entities[0].timestamp.toString().toByteArray())
+            }
+            jsonPath("$.items[1].node.id") { value(entities[1].id) }
+            jsonPath("$.items[1].cursor") {
+                Base64.getEncoder().encodeToString(entities[1].timestamp.toString().toByteArray())
+            }
+        }
+    }
+
+    @Test
+    internal fun `Should return empty page for leagues`() {
+        // given
+        every {
+            leagueAccessor.getAllByOrderByTimestampAsc(ofType(Pageable::class))
+        } returns PageImpl(emptyList(), PageRequest.of(0, 3), 0)
+        // when
+        val result = mvc.get("/leagues?first=3")
+        // then
+        result.andExpect {
+            status { isOk() }
+            jsonPath("$.hasPreviousPage") { value(false) }
+            jsonPath("$.hasNextPage") { value(false) }
+            jsonPath("$.items") { isEmpty() }
         }
     }
 }

@@ -8,5 +8,6 @@ class LeagueEntity(
     @Id val id: String,
     var name: String,
     var allowDraws: Boolean,
-    var maxScore: Int
+    var maxScore: Int,
+    val timestamp: Long = System.currentTimeMillis()
 )
