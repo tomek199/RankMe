@@ -47,8 +47,8 @@ internal class GameQueryHandlerTest {
         // then
         assertFalse(result.pageInfo.isHasPreviousPage)
         assertTrue(result.pageInfo.isHasNextPage)
-        assertEquals(games[0].id, result.pageInfo.startCursor.value)
-        assertEquals(games[5].id, result.pageInfo.endCursor.value)
+        assertEquals(games.first().id, result.pageInfo.startCursor.value)
+        assertEquals(games.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge ->
             assertEquals(games[index].id, edge.cursor.value)
             assertEquals(games[index].id, edge.node.id)
@@ -80,18 +80,19 @@ internal class GameQueryHandlerTest {
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt())
         }
         val page = Page(games.map { Item(it, it.id) }, true, false)
+        val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
         every {
-            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=7&after=${games[0].id}",
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=7&after=$cursor",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val query = GetGamesForLeagueQuery(leagueId, 7, games[0].id)
+        val query = GetGamesForLeagueQuery(leagueId, 7, cursor)
         // when
         val result = handler.handle(query)
         // then
         assertTrue(result.pageInfo.isHasPreviousPage)
         assertFalse(result.pageInfo.isHasNextPage)
-        assertEquals(games[0].id, result.pageInfo.startCursor.value)
-        assertEquals(games[6].id, result.pageInfo.endCursor.value)
+        assertEquals(games.first().id, result.pageInfo.startCursor.value)
+        assertEquals(games.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge ->
             assertEquals(games[index].id, edge.cursor.value)
             assertEquals(games[index].id, edge.node.id)
@@ -112,18 +113,15 @@ internal class GameQueryHandlerTest {
     internal fun `Should throw exception when league games connection response body is empty`() {
         // given
         val leagueId = randomNanoId()
+        val endpoint = "$url/query-service/leagues/$leagueId/games?first=12"
         every {
-            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=12",
-                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+            restTemplate.exchange(endpoint, HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.ok().body(null)
         val query = GetGamesForLeagueQuery(leagueId, 12)
         // when
         val exception = assertFailsWith<QueryException> { handler.handle(query) }
         // then
-        assertEquals(
-            "Empty response body for query=GetGamesForLeagueQuery(leagueId=$leagueId, first=12, after=null)",
-            exception.message
-        )
+        assertEquals("Empty response body for GET query=$endpoint", exception.message)
     }
 
     @Test
@@ -152,8 +150,8 @@ internal class GameQueryHandlerTest {
         // then
         assertFalse(result.pageInfo.isHasPreviousPage)
         assertTrue(result.pageInfo.isHasNextPage)
-        assertEquals(games[0].id, result.pageInfo.startCursor.value)
-        assertEquals(games[3].id, result.pageInfo.endCursor.value)
+        assertEquals(games.first().id, result.pageInfo.startCursor.value)
+        assertEquals(games.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge ->
             assertEquals(games[index].id, edge.cursor.value)
             assertEquals(games[index].id, edge.node.id)
@@ -185,18 +183,19 @@ internal class GameQueryHandlerTest {
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt())
         }
         val page = Page(games.map { Item(it, it.id) }, true, false)
+        val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
         every {
-            restTemplate.exchange("$url/query-service/players/$playerId/games?first=5&after=${games[0].id}",
+            restTemplate.exchange("$url/query-service/players/$playerId/games?first=5&after=$cursor",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val query = GetGamesForPlayerQuery(playerId, 5, games[0].id)
+        val query = GetGamesForPlayerQuery(playerId, 5, cursor)
         // when
         val result = handler.handle(query)
         // then
         assertTrue(result.pageInfo.isHasPreviousPage)
         assertFalse(result.pageInfo.isHasNextPage)
-        assertEquals(games[0].id, result.pageInfo.startCursor.value)
-        assertEquals(games[4].id, result.pageInfo.endCursor.value)
+        assertEquals(games.first().id, result.pageInfo.startCursor.value)
+        assertEquals(games.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge ->
             assertEquals(games[index].id, edge.cursor.value)
             assertEquals(games[index].id, edge.node.id)
@@ -217,17 +216,14 @@ internal class GameQueryHandlerTest {
     internal fun `Should throw exception when player games connection response body is empty`() {
         // given
         val playerId = randomNanoId()
+        val endpoint = "$url/query-service/players/$playerId/games?first=11"
         every {
-            restTemplate.exchange("$url/query-service/players/$playerId/games?first=11",
-                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+            restTemplate.exchange(endpoint, HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.ok().body(null)
         val query = GetGamesForPlayerQuery(playerId, 11)
         // when
         val exception = assertFailsWith<QueryException> { handler.handle(query) }
         // then
-        assertEquals(
-            "Empty response body for query=GetGamesForPlayerQuery(playerId=$playerId, first=11, after=null)",
-            exception.message
-        )
+        assertEquals("Empty response body for GET query=$endpoint", exception.message)
     }
 }
