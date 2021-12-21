@@ -1,5 +1,5 @@
 query {
-    getPlayer(query: {
+    player(query: {
         id: "9KOnSx8yFXd382KJbeaqO"
     }) {
         id

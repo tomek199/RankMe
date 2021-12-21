@@ -3,6 +3,7 @@
 CONFIG_SERVICE=(${WAIT_CONFIG_SERVICE//:/ })
 RABBITMQ=(${WAIT_RABBITMQ//:/ })
 MONGODB=(${WAIT_MONGODB//:/ })
+DISCOVERY_SERVICE=(${WAIT_DISCOVERY_SERVICE//:/ })
 
 while ! nc -z ${CONFIG_SERVICE[0]} ${CONFIG_SERVICE[1]}; do
   echo "Waiting for $WAIT_CONFIG_SERVICE"
@@ -16,6 +17,11 @@ done;
 
 while ! nc -z ${MONGODB[0]} ${MONGODB[1]}; do
   echo "Waiting for $WAIT_MONGODB"
+  sleep 5;
+done;
+
+while ! nc -z ${DISCOVERY_SERVICE[0]} ${DISCOVERY_SERVICE[1]}; do
+  echo "Waiting for $WAIT_DISCOVERY_SERVICE"
   sleep 5;
 done;
 

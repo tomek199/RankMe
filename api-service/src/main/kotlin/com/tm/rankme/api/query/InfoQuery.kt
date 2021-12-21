@@ -9,5 +9,5 @@ class InfoQuery(
     private val buildProperties: BuildProperties,
 ) : GraphQLQueryResolver {
 
-    fun info(): String = "RankMe GraphQL API ${buildProperties.version}"
+    fun version(): String = buildProperties.version
 }

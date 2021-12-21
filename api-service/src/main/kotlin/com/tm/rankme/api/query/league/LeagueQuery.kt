@@ -8,5 +8,5 @@ class LeagueQuery(
     private val queryHandler: LeagueQueryHandler
 ) : GraphQLQueryResolver {
 
-    fun getLeague(query: GetLeagueQuery): League? = queryHandler.handle(query)
+    fun league(query: GetLeagueQuery): League? = queryHandler.handle(query)
 }

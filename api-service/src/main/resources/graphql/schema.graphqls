@@ -14,10 +14,10 @@ type Mutation {
 }
 
 type Query {
-    info: String!
-    getLeague(query: GetLeagueQuery): League
-    getPlayer(query: GetPlayerQuery): Player
-    getGames(query: GetGamesForLeagueQuery): GameConnection @connection(for: "Game")
+    version: String!
+    league(query: GetLeagueQuery): League
+    player(query: GetPlayerQuery): Player
+    games(query: GetGamesForLeagueQuery): GameConnection @connection(for: "Game")
 }
 
 scalar String

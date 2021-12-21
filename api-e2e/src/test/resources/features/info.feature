@@ -1,5 +1,5 @@
 Feature: API Info
 
-  Scenario: Show API info
-    When I send query to get info message
-    Then I receive info message "RankMe GraphQL API 0.52-SNAPSHOT"
+  Scenario: Show API version
+    When I send query to get API version
+    Then I receive API version "0.53-SNAPSHOT"

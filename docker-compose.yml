@@ -7,23 +7,23 @@ services:
       POSTGRES_PASSWORD: devpass
       POSTGRES_DB: rankme
     ports:
-      - 5432:5432
+      - "5432:5432"
 
   rabbitmq:
     image: library/rabbitmq:3.8.9-management
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
 
   mongodb:
     image: library/mongo:4.4.2
     ports:
-      - 27017:27017
+      - "27017:27017"
 
   config-service:
     build: config-service
     ports:
-      - 9900:9900
+      - "9900:9900"
     environment:
       SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH-LOCATIONS: classpath:config/docker
 
@@ -32,7 +32,7 @@ services:
     depends_on:
       - config-service
     ports:
-      - 9800:9800
+      - "9800:9800"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
@@ -43,7 +43,7 @@ services:
       - config-service
       - discovery-service
     ports:
-      - 9700:9700
+      - "9700:9700"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
@@ -55,11 +55,12 @@ services:
       - config-service
       - rabbitmq
     ports:
-      - 9000:9000
+      - "9000:9000"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_RABBITMQ: rabbitmq:15672
+      WAIT_DISCOVERY_SERVICE: discovery-service:9800
 
   command-service:
     build: command-service
@@ -68,7 +69,7 @@ services:
       - rabbitmq
       - postgres
     ports:
-      - 9200:9200
+      - "9200:9200"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
@@ -82,9 +83,11 @@ services:
       - rabbitmq
       - mongodb
     ports:
-      - 9300:9300
+      - "9300:9300"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_RABBITMQ: rabbitmq:15672
       WAIT_MONGODB: mongodb:27017
+      WAIT_DISCOVERY_SERVICE: discovery-service:9800
+

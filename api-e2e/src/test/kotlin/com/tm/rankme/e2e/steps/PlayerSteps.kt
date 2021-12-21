@@ -71,7 +71,7 @@ class PlayerSteps(
                 delay(stepDelay)
                 val playerOneId = dbUtil.playerIdByName(playerOneName)
                 val query = GetPlayer(playerOneId, 1)
-                val gameId = graphQlClient.execute(query).data?.getPlayer?.games?.edges?.first { edge ->
+                val gameId = graphQlClient.execute(query).data?.player?.games?.edges?.first { edge ->
                     edge.node.playerOneName == playerOneName && edge.node.playerTwoName == playerTwoName
                 } ?.node?.id ?: fail("Cannot get scheduled game for players $playerOneName and $playerTwoName")
                 val mutation = CompleteGame(gameId, playerOneScore, playerTwoScore)
@@ -88,10 +88,10 @@ class PlayerSteps(
                 val id = dbUtil.playerIdByName(name)
                 val query = GetPlayer(id)
                 graphQlClient.execute(query).data?.let {
-                    assertEquals(id, it.getPlayer.id)
-                    assertEquals(name, it.getPlayer.name)
-                    assertEquals(deviation, it.getPlayer.deviation)
-                    assertEquals(rating, it.getPlayer.rating)
+                    assertEquals(id, it.player.id)
+                    assertEquals(name, it.player.name)
+                    assertEquals(deviation, it.player.deviation)
+                    assertEquals(rating, it.player.rating)
                 } ?: fail("Cannot get player by id $id")
             }
         }
@@ -103,14 +103,14 @@ class PlayerSteps(
                 val id = dbUtil.playerIdByName(name)
                 val query = GetPlayer(id, first)
                 graphQlClient.execute(query).data?.let {
-                    assertNotNull(it.getPlayer.games)
-                    assertFalse(it.getPlayer.games.pageInfo.hasPreviousPage)
-                    assertEquals(first < of, it.getPlayer.games.pageInfo.hasNextPage)
-                    assertEquals(first, it.getPlayer.games.edges.size)
-                    assertEquals(it.getPlayer.games.pageInfo.startCursor, it.getPlayer.games.edges.first().cursor)
-                    assertEquals(it.getPlayer.games.pageInfo.endCursor, it.getPlayer.games.edges.last().cursor)
-                    it.getPlayer.games.edges.forEach { edge ->
-                        assertTrue(it.getPlayer.id == edge.node.playerOneId || it.getPlayer.id == edge.node.playerTwoId)
+                    assertNotNull(it.player.games)
+                    assertFalse(it.player.games.pageInfo.hasPreviousPage)
+                    assertEquals(first < of, it.player.games.pageInfo.hasNextPage)
+                    assertEquals(first, it.player.games.edges.size)
+                    assertEquals(it.player.games.pageInfo.startCursor, it.player.games.edges.first().cursor)
+                    assertEquals(it.player.games.pageInfo.endCursor, it.player.games.edges.last().cursor)
+                    it.player.games.edges.forEach { edge ->
+                        assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
                     }
                 } ?: fail("Cannot get player by id $id")
             }

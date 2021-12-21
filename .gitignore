@@ -9,3 +9,20 @@ build
 
 # GraphQL
 */out
+
+# Angular
+webapp/node_modules
+webapp/dist
+webapp/tmp
+webapp/out-tsc
+webapp/bazel-out
+webapp/.angular/cache
+webapp/.sass-cache
+webapp/connect.lock
+webapp/coverage
+webapp/libpeerconnection.log
+webapp/npm-debug.log
+webapp/yarn-error.log
+webapp/testem.log
+webapp/typings
+chrome-profiler-events*.json

@@ -6,14 +6,16 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.verify
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import kotlin.test.assertTrue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(profiles = ["test"])
 internal class MutationIntegrationTest {
     @Autowired
     private lateinit var template: GraphQLTestTemplate

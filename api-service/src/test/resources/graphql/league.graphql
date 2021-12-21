@@ -1,5 +1,5 @@
 query {
-    getLeague(query: {
+    league(query: {
         id: "xAeksxNOS-lq5mnKmm1tk"
     }) {
         id

@@ -8,5 +8,5 @@ class PlayerQuery(
     private val queryHandler: PlayerQueryHandler
 ) : GraphQLQueryResolver {
 
-    fun getPlayer(query: GetPlayerQuery): Player? = queryHandler.handle(query)
+    fun player(query: GetPlayerQuery): Player? = queryHandler.handle(query)
 }
