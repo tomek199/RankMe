@@ -27,8 +27,7 @@ class GameSteps(
                 val leagueId = dbUtil.leagueIdByName(leagueName)
                 val cursors = allGamesCursors(leagueId, of)
                 val query = GetGames(leagueId, first)
-                val result = graphQlClient.execute(query)
-                result.data?.let {
+                graphQlClient.execute(query).data?.let {
                     assertFalse(it.games.pageInfo.hasPreviousPage)
                     assertEquals(of > first, it.games.pageInfo.hasNextPage)
                     assertEquals(cursors.first(), it.games.pageInfo.startCursor)
@@ -45,14 +44,13 @@ class GameSteps(
                 val leagueId = dbUtil.leagueIdByName(leagueName)
                 val cursors = allGamesCursors(leagueId, of)
                 val query = GetGames(leagueId, first, cursors[after - 1])
-                val result = graphQlClient.execute(query)
-                result.data?.let {
+                graphQlClient.execute(query).data?.let {
                     assertTrue(it.games.pageInfo.hasPreviousPage)
                     assertEquals(of > first + after, it.games.pageInfo.hasNextPage)
                     assertEquals(cursors[after], it.games.pageInfo.startCursor)
                     assertEquals(cursors[after + first - 1], it.games.pageInfo.endCursor)
                     it.games.edges.forEachIndexed { index, edge -> assertEquals(cursors[after + index], edge.cursor) }
-                } ?: fail("Games not found first=$first of=$of")
+                } ?: fail("Games not found first=$first after=$after of=$of")
             }
         }
 
@@ -87,6 +85,6 @@ class GameSteps(
     private suspend fun allGamesCursors(leagueId: String, of: Int): List<String> {
         val query = GetGames(leagueId, of)
         val allResults = graphQlClient.execute(query)
-        return allResults.data?.games?.edges?.map { it.cursor }?.toList() ?: fail("Games cursors not found")
+        return allResults.data?.games?.edges?.map { it.cursor } ?.toList() ?: fail("Games cursors not found")
     }
 }

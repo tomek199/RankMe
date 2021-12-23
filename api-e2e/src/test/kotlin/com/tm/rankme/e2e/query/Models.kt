@@ -13,7 +13,7 @@ data class League(
     val name: String,
     val allowDraws: Boolean,
     val maxScore: Int,
-    val players: List<Player>,
+    val players: List<Player>?,
     val games: Connection<Game>?
 )
 

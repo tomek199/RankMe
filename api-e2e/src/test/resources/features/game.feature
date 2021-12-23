@@ -1,9 +1,7 @@
 Feature: Player
 
   Background: I init and cleanup database
-    Given I create league "To init league scheme"
-    * I create player "To init player scheme" in league "To init league scheme"
-    * I cleanup database
+    Given I cleanup database
 
   Scenario: Play multiple games to check pagination
     Given I create league "Star Wars"

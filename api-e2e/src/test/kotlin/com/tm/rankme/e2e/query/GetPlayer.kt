@@ -21,31 +21,18 @@ class GetPlayer(
         id,
         """games(first: $firstGames) {
             pageInfo {
-                hasPreviousPage
-                hasNextPage
-                startCursor
-                endCursor
+                hasPreviousPage hasNextPage startCursor endCursor
             }
             edges {
                 cursor
                 node {
                     id
                     dateTime
-                    playerOneId
-                    playerOneName
-                    playerOneRating
-                    playerOneDeviation
-                    playerTwoId
-                    playerTwoName
-                    playerTwoRating
-                    playerTwoDeviation
+                    playerOneId playerOneName playerOneRating playerOneDeviation
+                    playerTwoId playerTwoName playerTwoRating playerTwoDeviation
                     result {
-                        playerOneScore
-                        playerOneDeviationDelta
-                        playerOneRatingDelta
-                        playerTwoScore
-                        playerTwoDeviationDelta
-                        playerTwoRatingDelta
+                        playerOneScore playerOneDeviationDelta playerOneRatingDelta
+                        playerTwoScore playerTwoDeviationDelta playerTwoRatingDelta
                     }
                 }
             }
@@ -54,7 +41,5 @@ class GetPlayer(
 
     override fun responseType(): KClass<Result> = Result::class
 
-    data class Result(
-        val player: Player,
-    )
+    data class Result(val player: Player)
 }

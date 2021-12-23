@@ -1,9 +1,7 @@
 Feature: League
 
   Background: I init and cleanup database
-    Given I create league "To init league scheme"
-    * I create player "To init player scheme" in league "To init league scheme"
-    * I cleanup database
+    Given I cleanup database
 
   Scenario: Create new league and change league data
     Given I create league "Star Wars"
@@ -26,3 +24,12 @@ Feature: League
     * I create player "Darth Vader" in league "Star Wars"
     When I play 6 games between "Han Solo" and "Darth Vader"
     Then I have first 4 of 6 games connected in league "Star Wars"
+
+  Scenario: Create multiple leagues to check pagination
+    When I create 10 leagues
+    Then I have first 2 of 10 leagues listed
+    * I have first 6 of 10 leagues listed
+    * I have first 10 of 10 leagues listed
+    * I have first 3 after 4 of 10 leagues listed
+    * I have first 5 after 3 of 10 leagues listed
+    * I have first 4 after 6 of 10 leagues listed
