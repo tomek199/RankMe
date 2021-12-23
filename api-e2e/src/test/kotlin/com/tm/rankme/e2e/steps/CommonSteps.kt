@@ -1,6 +1,6 @@
 package com.tm.rankme.e2e.steps
 
-import com.tm.rankme.e2e.db.DatabaseUtil
+import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

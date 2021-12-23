@@ -1,8 +1,9 @@
 package com.tm.rankme.e2e.steps
 
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
-import com.tm.rankme.e2e.db.DatabaseUtil
 import com.tm.rankme.e2e.query.GetGames
+import com.tm.rankme.e2e.util.ApplicationContext
+import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
@@ -16,15 +17,16 @@ import kotlin.test.fail
 class GameSteps(
     private val graphQlClient: GraphQLKtorClient,
     private val dbUtil: DatabaseUtil,
+    private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
 ) : En {
 
     init {
-        Then("I have first {int} of {int} games listed for league {string}") {
-                first: Int, of: Int, leagueName: String ->
+        Then("I have first {int} of {int} games listed") {
+                first: Int, of: Int ->
             runBlocking {
                 delay(stepDelay)
-                val leagueId = dbUtil.leagueIdByName(leagueName)
+                val leagueId = context.leagueId()
                 val cursors = allGamesCursors(leagueId, of)
                 val query = GetGames(leagueId, first)
                 graphQlClient.execute(query).data?.let {
@@ -37,11 +39,11 @@ class GameSteps(
             }
         }
 
-        Then("I have first {int} after {int} of {int} games listed for league {string}") {
-                first: Int, after: Int, of: Int, leagueName: String ->
+        Then("I have first {int} after {int} of {int} games listed") {
+                first: Int, after: Int, of: Int ->
             runBlocking {
                 delay(stepDelay)
-                val leagueId = dbUtil.leagueIdByName(leagueName)
+                val leagueId = context.leagueId()
                 val cursors = allGamesCursors(leagueId, of)
                 val query = GetGames(leagueId, first, cursors[after - 1])
                 graphQlClient.execute(query).data?.let {
@@ -54,11 +56,11 @@ class GameSteps(
             }
         }
 
-        Then("I have {int} games in league {string}:") {
-                first: Int, leagueName: String, gamesTable: DataTable ->
+        Then("I have {int} games:") {
+                first: Int, gamesTable: DataTable ->
             runBlocking {
                 delay(stepDelay)
-                val leagueId = dbUtil.leagueIdByName(leagueName)
+                val leagueId = context.leagueId()
                 val query = GetGames(leagueId, first)
                 graphQlClient.execute(query).data?.let {
                     val expectedGames = gamesTable.asMaps()

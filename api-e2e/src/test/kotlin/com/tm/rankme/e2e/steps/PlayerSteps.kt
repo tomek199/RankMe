@@ -1,12 +1,13 @@
 package com.tm.rankme.e2e.steps
 
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
-import com.tm.rankme.e2e.db.DatabaseUtil
 import com.tm.rankme.e2e.mutation.CompleteGame
 import com.tm.rankme.e2e.mutation.CreatePlayer
 import com.tm.rankme.e2e.mutation.PlayGame
 import com.tm.rankme.e2e.mutation.ScheduleGame
 import com.tm.rankme.e2e.query.GetPlayer
+import com.tm.rankme.e2e.util.ApplicationContext
+import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -18,18 +19,19 @@ import kotlin.test.*
 class PlayerSteps(
     private val graphQlClient: GraphQLKtorClient,
     private val dbUtil: DatabaseUtil,
+    private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
 ) : En {
 
     init {
-        Given("I create player {string} in league {string}") {
-                playerName: String, leagueName: String ->
+        Given("I create player {string}") {
+                playerName: String ->
             runBlocking {
                 delay(stepDelay)
-                val leagueId = dbUtil.leagueIdByName(leagueName)
-                val mutation = CreatePlayer(leagueId, playerName)
+                val mutation = CreatePlayer(context.leagueId(), playerName)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.createPlayer)
+                context.update()
             }
         }
 
@@ -55,8 +57,8 @@ class PlayerSteps(
                 playerOneName: String, playerTwoName: String, hours: Int ->
             runBlocking {
                 delay(stepDelay)
-                val playerOneId = dbUtil.playerIdByName(playerOneName)
-                val playerTwoId = dbUtil.playerIdByName(playerTwoName)
+                val playerOneId = context.playerId(playerOneName)
+                val playerTwoId = context.playerId(playerTwoName)
                 val dateTime = LocalDateTime.now().plusHours(hours.toLong())
                 val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
                 graphQlClient.execute(mutation).data?.let {
@@ -69,7 +71,7 @@ class PlayerSteps(
                 playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int ->
             runBlocking {
                 delay(stepDelay)
-                val playerOneId = dbUtil.playerIdByName(playerOneName)
+                val playerOneId = context.playerId(playerOneName)
                 val query = GetPlayer(playerOneId, 1)
                 val gameId = graphQlClient.execute(query).data?.player?.games?.edges?.first { edge ->
                     edge.node.playerOneName == playerOneName && edge.node.playerTwoName == playerTwoName
@@ -85,7 +87,7 @@ class PlayerSteps(
                 name: String, deviation: Int, rating: Int ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.playerIdByName(name)
+                val id = context.playerId(name)
                 val query = GetPlayer(id)
                 graphQlClient.execute(query).data?.let {
                     assertEquals(id, it.player.id)
@@ -100,7 +102,7 @@ class PlayerSteps(
                 name: String, first: Int, of: Int ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.playerIdByName(name)
+                val id = context.playerId(name)
                 val query = GetPlayer(id, first)
                 graphQlClient.execute(query).data?.let {
                     assertNotNull(it.player.games)
@@ -118,8 +120,8 @@ class PlayerSteps(
     }
 
     private suspend fun playGame(playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int) {
-        val playerOneId = dbUtil.playerIdByName(playerOneName)
-        val playerTwoId = dbUtil.playerIdByName(playerTwoName)
+        val playerOneId = context.playerId(playerOneName)
+        val playerTwoId = context.playerId(playerTwoName)
         val mutation = PlayGame(playerOneId, playerTwoId, playerOneScore, playerTwoScore)
         graphQlClient.execute(mutation).data?.let {
             assertEquals(status, it.playGame)

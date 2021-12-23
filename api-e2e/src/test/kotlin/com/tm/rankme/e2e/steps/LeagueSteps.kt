@@ -1,12 +1,13 @@
 package com.tm.rankme.e2e.steps
 
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
-import com.tm.rankme.e2e.db.DatabaseUtil
 import com.tm.rankme.e2e.mutation.ChangeLeagueSettings
 import com.tm.rankme.e2e.mutation.CreateLeague
 import com.tm.rankme.e2e.mutation.RenameLeague
 import com.tm.rankme.e2e.query.GetLeague
 import com.tm.rankme.e2e.query.GetLeagues
+import com.tm.rankme.e2e.util.ApplicationContext
+import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
@@ -18,6 +19,7 @@ import kotlin.test.*
 class LeagueSteps(
     private val graphQlClient: GraphQLKtorClient,
     private val dbUtil: DatabaseUtil,
+    private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
 ) : En {
 
@@ -42,20 +44,30 @@ class LeagueSteps(
             }
         }
 
-        When("I change league {string} settings to allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
+        Given("I use league {string}") { name: String ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.leagueIdByName(name)
+                val leagueId = graphQlClient.execute(GetLeagues(1)).data?.leagues?.edges
+                    ?.find { it.node.name == name } ?.node?.id ?: fail("Cannot find league $name")
+                context.leagueId = leagueId
+            }
+        }
+
+        When("I change league settings to allow draws {} and max score {int}") {
+                allowDraws: Boolean, maxScore: Int ->
+            runBlocking {
+                delay(stepDelay)
+                val id = context.leagueId()
                 val mutation = ChangeLeagueSettings(id, allowDraws, maxScore)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.changeLeagueSettings)
             }
         }
 
-        When("I rename league {string} to {string}") { name: String, newName: String ->
+        When("I rename league to {string}") { newName: String ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.leagueIdByName(name)
+                val id = context.leagueId()
                 val mutation = RenameLeague(id, newName)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.renameLeague)
@@ -65,7 +77,7 @@ class LeagueSteps(
         Then("I have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.leagueIdByName(name)
+                val id = context.leagueId()
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
                     assertEquals(id, it.league.id)
@@ -76,10 +88,10 @@ class LeagueSteps(
             }
         }
 
-        Then("I have players in league {string}:") { name: String, playersTable: DataTable ->
+        Then("I have players in league:") { playersTable: DataTable ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.leagueIdByName(name)
+                val id = context.leagueId()
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
                     val expectedPlayers = playersTable.asMaps()
@@ -93,11 +105,11 @@ class LeagueSteps(
             }
         }
 
-        Then("I have first {int} of {int} games connected in league {string}") {
-                first: Int, of: Int, name: String ->
+        Then("I have first {int} of {int} games connected in league") {
+                first: Int, of: Int ->
             runBlocking {
                 delay(stepDelay)
-                val id = dbUtil.leagueIdByName(name)
+                val id = context.leagueId()
                 val query = GetLeague(id, first)
                 graphQlClient.execute(query).data?.let {
                     assertNotNull(it.league.games)
