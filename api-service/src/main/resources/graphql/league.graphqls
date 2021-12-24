@@ -17,6 +17,11 @@ input GetLeagueQuery {
     id: String!
 }
 
+input GetLeaguesQuery {
+    first: Int!
+    after: String
+}
+
 type League {
     id: String!
     name: String!

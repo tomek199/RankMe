@@ -16,6 +16,7 @@ type Mutation {
 type Query {
     version: String!
     league(query: GetLeagueQuery): League
+    leagues(query: GetLeaguesQuery): LeagueConnection @connection(for: "League")
     player(query: GetPlayerQuery): Player
     games(query: GetGamesForLeagueQuery): GameConnection @connection(for: "Game")
 }

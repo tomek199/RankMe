@@ -8,10 +8,13 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Test
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import java.util.*
+import kotlin.random.Random
+import kotlin.test.*
 
 internal class MongoLeagueRepositoryTest {
     private val accessor: MongoLeagueAccessor = mockk()
@@ -58,6 +61,76 @@ internal class MongoLeagueRepositoryTest {
             assertEquals(league.name, it.name)
             assertEquals(league.allowDraws, it.allowDraws)
             assertEquals(league.maxScore, it.maxScore)
+            assertNotNull(it.timestamp)
         }
+    }
+
+    @Test
+    internal fun `Should return empty leagues page`() {
+        // given
+        every { accessor.getAllByOrderByTimestampAsc(ofType(Pageable::class)) } returns
+                PageImpl(emptyList(), PageRequest.of(0, 3), 0)
+        // when
+        val page = repository.list(3)
+        // then
+        assertTrue(page.items.isEmpty())
+        assertFalse(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first leagues page`() {
+        // given
+        val leagues = List(4) {
+            LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        every { accessor.getAllByOrderByTimestampAsc(ofType(Pageable::class)) } returns
+                PageImpl(leagues, PageRequest.of(0, 4), 12)
+        // when
+        val page = repository.list(4)
+        // then
+        assertEquals(4, page.items.size)
+        assertEquals(leagues.first().id, page.items.first().node.id)
+        assertEquals(leagues.last().id, page.items.last().node.id)
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return middle leagues page`() {
+        // given
+        val leagues = List(6) {
+            LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        every { accessor.getByTimestampGreaterThanOrderByTimestampAsc(leagues.first().timestamp, ofType(Pageable::class)) } returns
+                PageImpl(leagues.subList(1, 6), PageRequest.of(0, 5), 11)
+        val afterCursor = Base64.getEncoder().encodeToString(leagues.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.list(4, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(leagues[1].id, page.items.first().node.id)
+        assertEquals(leagues.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return last leagues page`() {
+        // given
+        val leagues = List(9) {
+            LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        every { accessor.getByTimestampGreaterThanOrderByTimestampAsc(leagues.first().timestamp, ofType(Pageable::class)) } returns
+                PageImpl(leagues.takeLast(8), PageRequest.of(0, 8), 8)
+        val afterCursor = Base64.getEncoder().encodeToString(leagues.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.list(8, afterCursor)
+        // then
+        assertEquals(8, page.items.size)
+        assertEquals(leagues[1].id, page.items.first().node.id)
+        assertEquals(leagues.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
     }
 }

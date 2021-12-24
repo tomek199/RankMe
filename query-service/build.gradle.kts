@@ -56,6 +56,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
+
 tasks.test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)

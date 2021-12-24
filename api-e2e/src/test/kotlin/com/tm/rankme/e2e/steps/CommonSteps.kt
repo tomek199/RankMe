@@ -1,16 +1,21 @@
 package com.tm.rankme.e2e.steps
 
-import com.tm.rankme.e2e.db.DatabaseUtil
+import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.springframework.beans.factory.annotation.Value
 
-class CommonSteps(private val dbUtil: DatabaseUtil) : En {
+class CommonSteps(
+    private val dbUtil: DatabaseUtil,
+    @Value("\${cucumber.step-delay}") private val stepDelay: Long
+) : En {
     init {
         Then("I cleanup database") {
             runBlocking {
-                delay(1000)
+                delay(stepDelay)
                 dbUtil.cleanup()
+                delay(stepDelay)
             }
         }
     }

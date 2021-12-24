@@ -58,8 +58,8 @@ internal class GameQueryIntegrationTest {
         assertTrue(response.isOk)
         assertEquals(page.hasPreviousPage, response.get("$.data.games.pageInfo.hasPreviousPage", Boolean::class.java))
         assertEquals(page.hasNextPage, response.get("$.data.games.pageInfo.hasNextPage", Boolean::class.java))
-        assertEquals(page.items[0].cursor, response.get("$.data.games.pageInfo.startCursor"))
-        assertEquals(page.items[4].cursor, response.get("$.data.games.pageInfo.endCursor"))
+        assertEquals(page.items.first().cursor, response.get("$.data.games.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.games.pageInfo.endCursor"))
 
         games.forEachIndexed {index, game ->
             assertEquals(game.id, response.get("$.data.games.edges[$index].cursor"))

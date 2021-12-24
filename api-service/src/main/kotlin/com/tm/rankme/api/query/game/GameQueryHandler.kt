@@ -22,21 +22,21 @@ class GameQueryHandler(
             object : ParameterizedTypeReference<Page<Game>>() {}
         )
         return response.body?.let { DefaultConnection(edges(it), pageInfo(it)) }
-            ?: throw QueryException("Empty response body for query=$query")
+            ?: throw QueryException("Empty response body for GET query=$endpoint")
     }
 
     fun handle(query: GetGamesForPlayerQuery): Connection<Game> {
         var endpoint = "$url/query-service/players/${query.playerId}/games?first=${query.first}"
-        query.after?.let { endpoint += "&after=${query.after}" }
-        return request(endpoint, query)
+        query.after?.let { endpoint += "&after=$it" }
+        return request(endpoint)
     }
 
-    private fun request(endpoint: String, query: GetGamesForPlayerQuery): Connection<Game> {
+    private fun request(endpoint: String): Connection<Game> {
         val response = restTemplate.exchange(endpoint, HttpMethod.GET, null,
             object : ParameterizedTypeReference<Page<Game>>() {}
         )
         return response.body?.let { DefaultConnection(edges(it), pageInfo(it)) }
-            ?: throw QueryException("Empty response body for query=$query")
+            ?: throw QueryException("Empty response body for GET query=$endpoint")
     }
 
     private fun edges(page: Page<Game>): List<Edge<Game>> = page.items.map {

@@ -73,14 +73,14 @@ internal class LeagueQueryIntegrationTest {
         assertEquals(league.name, response.get("$.data.league.name"))
         assertEquals(league.allowDraws, response.get("$.data.league.allowDraws", Boolean::class.java))
         assertEquals(league.maxScore, response.get("$.data.league.maxScore", Int::class.java))
-        assertEquals(players[0].id, response.get("$.data.league.players[0].id"))
-        assertEquals(players[0].name, response.get("$.data.league.players[0].name"))
-        assertEquals(players[0].deviation, response.get("$.data.league.players[0].deviation").toInt())
-        assertEquals(players[0].rating, response.get("$.data.league.players[0].rating").toInt())
+        assertEquals(players.first().id, response.get("$.data.league.players[0].id"))
+        assertEquals(players.first().name, response.get("$.data.league.players[0].name"))
+        assertEquals(players.first().deviation, response.get("$.data.league.players[0].deviation").toInt())
+        assertEquals(players.first().rating, response.get("$.data.league.players[0].rating").toInt())
         assertEquals(page.hasPreviousPage, response.get("$.data.league.games.pageInfo.hasPreviousPage", Boolean::class.java))
         assertEquals(page.hasNextPage, response.get("$.data.league.games.pageInfo.hasNextPage", Boolean::class.java))
-        assertEquals(page.items[0].cursor, response.get("$.data.league.games.pageInfo.startCursor"))
-        assertEquals(page.items[2].cursor, response.get("$.data.league.games.pageInfo.endCursor"))
+        assertEquals(page.items.first().cursor, response.get("$.data.league.games.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.league.games.pageInfo.endCursor"))
 
         games.forEachIndexed {index, game ->
             assertEquals(game.id, response.get("$.data.league.games.edges[$index].cursor"))
@@ -100,6 +100,35 @@ internal class LeagueQueryIntegrationTest {
             assertEquals(game.result!!.playerTwoScore, response.get("$.data.league.games.edges[$index].node.result.playerTwoScore", Int::class.java))
             assertEquals(game.result!!.playerTwoDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
             assertEquals(game.result!!.playerTwoRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+        }
+    }
+
+    @Test
+    internal fun `Should return leagues`() {
+        // given
+        val leagues = List(8) {
+            League(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        val page = Page(leagues.map { Item(it, it.id) }, true, true)
+        every {
+            restTemplate.exchange("$url/query-service/leagues?first=8&after=MTY0MDExNzM5MDA0MA==",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val request = "graphql/leagues.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(page.hasPreviousPage, response.get("$.data.leagues.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(page.hasNextPage, response.get("$.data.leagues.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(page.items.first().cursor, response.get("$.data.leagues.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.leagues.pageInfo.endCursor"))
+        leagues.forEachIndexed { index, league ->
+            assertEquals(league.id, response.get("$.data.leagues.edges[$index].cursor"))
+            assertEquals(league.id, response.get("$.data.leagues.edges[$index].node.id"))
+            assertEquals(league.name, response.get("$.data.leagues.edges[$index].node.name"))
+            assertEquals(league.allowDraws, response.get("$.data.leagues.edges[$index].node.allowDraws", Boolean::class.java))
+            assertEquals(league.maxScore, response.get("$.data.leagues.edges[$index].node.maxScore", Int::class.java))
         }
     }
 }
