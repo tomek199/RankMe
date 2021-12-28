@@ -1,0 +1,13 @@
+#container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#container > * {
+  flex: 1 100%;
+}
+
+#content {
+  padding: 2em;
+}
+

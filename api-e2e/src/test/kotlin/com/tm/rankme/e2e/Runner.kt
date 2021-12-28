@@ -19,7 +19,8 @@ import java.time.Duration
 @PropertySource("classpath:cucumber.properties")
 @CucumberOptions(
     features = ["src/test/resources/features"],
-    plugin = ["pretty", "summary"]
+    plugin = ["pretty", "summary"],
+    tags = "not @Ignore"
 )
 class Runner(
     @Value("\${api-service.url}") private val apiServiceUrl: String
