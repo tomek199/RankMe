@@ -8,11 +8,17 @@ import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from './header/header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { LeagueListComponent } from './leagues/league-list/league-list.component';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
+    HeaderComponent,
+    LeagueListComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +26,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     BrowserAnimationsModule,
     GraphQLModule,
     HttpClientModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatListModule,
+    MatCardModule,
+    MatButtonModule,
+    MatProgressBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

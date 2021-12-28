@@ -1,0 +1,18 @@
+<div class="leagues">
+  <mat-card>
+    <mat-card-title>Select league</mat-card-title>
+    <mat-card-content>
+      <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let league of leagues" [value]="league.id" (click)="select(league.id)">
+          {{league.name}}
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button [disabled]="!pageInfo?.hasNextPage" (click)="loadMore()">Load more</button>
+    </mat-card-actions>
+    <mat-card-footer *ngIf="isLoading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </mat-card-footer>
+  </mat-card>
+</div>
