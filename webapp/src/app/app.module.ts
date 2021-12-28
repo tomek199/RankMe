@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
-import { HeaderComponent } from './header/header.component';
+import { HeaderComponent } from './shared/header/header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LeagueListComponent } from './leagues/league-list/league-list.component';
 import { MatListModule } from '@angular/material/list';
