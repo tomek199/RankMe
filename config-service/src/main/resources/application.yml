@@ -1,10 +1,29 @@
 server:
   port: 9900
 spring:
+  application:
+    name: config-service
   profiles:
     active: native
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     config:
+      import-check:
+        enabled: false
       server:
         native:
           search-locations: classpath:config/local
+    stream:
+      rabbit:
+        default:
+          consumer:
+            anonymousGroupPrefix: ${spring.application.name}-${server.port}.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: busrefresh
