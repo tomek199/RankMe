@@ -47,6 +47,9 @@ spring:
           playerPlayedGameMessageConsumer-in-0.consumer.bindingRoutingKey: player-played-game
           gameScheduledMessageConsumer-in-0.consumer.bindingRoutingKey: game-scheduled
           gamePlayedMessageConsumer-in-0.consumer.bindingRoutingKey: game-played
+        default:
+          consumer:
+            anonymousGroupPrefix: ${spring.application.name}-${server.port}.
   data:
     mongodb:
       uri: mongodb://localhost:27017/rankme

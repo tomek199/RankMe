@@ -1,3 +1,9 @@
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 eureka:
   server:
     maxThreadsForPeerReplication: 0

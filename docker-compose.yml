@@ -26,34 +26,30 @@ services:
       - "9900:9900"
     environment:
       SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH-LOCATIONS: classpath:config/docker
+      SPRING_RABBITMQ_HOST: rabbitmq
+      WAIT_RABBITMQ: rabbitmq:15672
 
   discovery-service:
     build: discovery-service
-    depends_on:
-      - config-service
     ports:
       - "9800:9800"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
+      WAIT_RABBITMQ: rabbitmq:15672
       WAIT_CONFIG_SERVICE: config-service:9900
 
   gateway-service:
     build: gateway-service
-    depends_on:
-      - config-service
-      - discovery-service
     ports:
       - "9700:9700"
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
+      WAIT_RABBITMQ: rabbitmq:15672
       WAIT_CONFIG_SERVICE: config-service:9900
       WAIT_DISCOVERY_SERVICE: discovery-service:9800
 
   api-service:
     build: api-service
-    depends_on:
-      - config-service
-      - rabbitmq
     ports:
       - "9000:9000"
     environment:
@@ -64,10 +60,6 @@ services:
 
   command-service:
     build: command-service
-    depends_on:
-      - config-service
-      - rabbitmq
-      - postgres
     ports:
       - "9200:9200"
     environment:
@@ -78,10 +70,6 @@ services:
 
   query-service:
     build: query-service
-    depends_on:
-      - config-service
-      - rabbitmq
-      - mongodb
     ports:
       - "9300:9300"
     environment:
