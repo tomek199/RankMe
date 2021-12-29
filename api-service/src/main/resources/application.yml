@@ -20,6 +20,9 @@ spring:
           apiCommand-out-0:
             producer:
               routingKeyExpression: headers['type']
+        default:
+          consumer:
+            anonymousGroupPrefix: ${spring.application.name}-${server.port}.
 eureka:
   client:
     service-url:

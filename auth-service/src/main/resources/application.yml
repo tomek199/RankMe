@@ -5,6 +5,17 @@ spring:
     name: auth-service
   config:
     import: optional:configserver:http://localhost:9900
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      rabbit:
+        default:
+          consumer:
+            anonymousGroupPrefix: ${spring.application.name}-${server.port}.
 eureka:
   client:
     service-url:
