@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -20,18 +21,19 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     HeaderComponent,
     LeagueListComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    GraphQLModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatListModule,
-    MatCardModule,
-    MatButtonModule,
-    MatProgressBarModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        GraphQLModule,
+        HttpClientModule,
+        MatToolbarModule,
+        MatListModule,
+        MatCardModule,
+        MatButtonModule,
+        MatProgressBarModule,
+        MatSidenavModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
