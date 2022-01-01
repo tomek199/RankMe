@@ -26,6 +26,7 @@ Requirements:
 - Java 11
 - Angular CLI 12
 - Docker, Docker Compose
+
 To start the whole system it needs to run both **backend** and **frontend** parts.
 
 ### Backend

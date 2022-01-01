@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 describe('LeagueListComponent', () => {
   let component: LeagueListComponent;
   let fixture: ComponentFixture<LeagueListComponent>;
-  let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues'])
+  let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues']);
   const leaguesPage = {
     pageInfo: {
       hasPreviousPage: false, hasNextPage: true, startCursor: 'a1a1a1', endCursor: 'b2b2b2'
@@ -38,18 +38,18 @@ describe('LeagueListComponent', () => {
   } as Page<League>;
 
   beforeEach(async () => {
-    leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: leaguesPage }}));
     await TestBed.configureTestingModule({
       declarations: [ LeagueListComponent ],
       imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule ],
       providers: [
-        { provide: LeagueService, useValue: leagueServiceSpy}
+        { provide: LeagueService, useValue: leagueServiceSpy }
       ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: leaguesPage }}));
     fixture = TestBed.createComponent(LeagueListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

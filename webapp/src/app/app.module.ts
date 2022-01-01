@@ -14,12 +14,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { DashboardComponent } from './leagues/dashboard/dashboard.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    LeagueListComponent
+    LeagueListComponent,
+    DashboardComponent
   ],
     imports: [
         BrowserModule,
@@ -32,7 +35,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
         MatCardModule,
         MatButtonModule,
         MatProgressBarModule,
-        MatSidenavModule
+        MatSidenavModule,
+        MatProgressSpinnerModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,4 @@
+<ng-container [ngSwitch]="isLoading">
+  <mat-spinner *ngSwitchCase="true"></mat-spinner>
+  <p *ngSwitchCase="false">{{league | json}}</p>
+</ng-container>
