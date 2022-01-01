@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { Page } from '../../shared/model/page';
 import { League } from '../../shared/model/league';
-import { LEAGUE_WITH_PLAYERS_AND_LEAGUE, LEAGUES_PAGE } from '../../../testing/data';
+import { LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE } from '../../../testing/data';
 
 describe('LeagueService', () => {
   let service: LeagueService;
@@ -42,13 +42,13 @@ describe('LeagueService', () => {
   });
 
   it('should return league with players and games', () => {
-    apolloSpy.query.and.returnValue(of({data: {league: LEAGUE_WITH_PLAYERS_AND_LEAGUE}} as ApolloQueryResult<{league: League}>));
-    service.leagueWithPlayersAndGames(LEAGUE_WITH_PLAYERS_AND_LEAGUE.id).subscribe(({data}) => {
-      expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.id);
-      expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.name);
-      expect(data.league.players).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.players)
-      expect(data.league.games.pageInfo).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.games.pageInfo)
-      expect(data.league.games.edges).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.games.edges)
+    apolloSpy.query.and.returnValue(of({data: {league: LEAGUE_WITH_PLAYERS_AND_GAMES}} as ApolloQueryResult<{league: League}>));
+    service.leagueWithPlayersAndGames(LEAGUE_WITH_PLAYERS_AND_GAMES.id).subscribe(({data}) => {
+      expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
+      expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.name);
+      expect(data.league.players).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.players)
+      expect(data.league.games.pageInfo).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.pageInfo)
+      expect(data.league.games.edges).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges)
     })
   });
 });

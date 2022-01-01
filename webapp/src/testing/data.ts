@@ -21,7 +21,7 @@ export const LEAGUES_PAGE = {
   ]
 } as Page<League>
 
-export const LEAGUE_WITH_PLAYERS_AND_LEAGUE = {
+export const LEAGUE_WITH_PLAYERS_AND_GAMES = {
   id: 'league-1', name: "League-1",
   players: [
     {id: 'player-1', name: 'Player-1', rating: 2367},

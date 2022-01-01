@@ -16,13 +16,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { DashboardComponent } from './leagues/dashboard/dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PlayerRankingComponent } from './players/player-ranking/player-ranking.component';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     LeagueListComponent,
-    DashboardComponent
+    DashboardComponent,
+    PlayerRankingComponent
   ],
     imports: [
         BrowserModule,
@@ -36,7 +39,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatButtonModule,
         MatProgressBarModule,
         MatSidenavModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatTableModule
     ],
   providers: [],
   bootstrap: [AppComponent]
