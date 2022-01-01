@@ -6,29 +6,11 @@ import { of } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { Page } from '../../shared/model/page';
 import { League } from '../../shared/model/league';
+import { LEAGUE_WITH_PLAYERS_AND_LEAGUE, LEAGUES_PAGE } from '../../../testing/data';
 
 describe('LeagueService', () => {
   let service: LeagueService;
   let apolloSpy = jasmine.createSpyObj('Apollo', ['query'])
-  const leaguesPage = {
-    pageInfo: {
-      hasPreviousPage: false, hasNextPage: true, startCursor: 'league-1-cur', endCursor: 'league-2-cur'
-    },
-    edges: [
-      {
-        cursor: 'league-1-cur',
-        node: {
-          id: 'league-1', name: 'League-1'
-        }
-      },
-      {
-        cursor: 'league-2-cur',
-        node: {
-          id: 'league-2', name: 'League-2'
-        }
-      }
-    ]
-  } as Page<League>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,56 +26,29 @@ describe('LeagueService', () => {
   });
 
   it('should return leagues page', () => {
-    apolloSpy.query.and.returnValue(of({data: {leagues: leaguesPage}} as ApolloQueryResult<{leagues: Page<League>}>));
+    apolloSpy.query.and.returnValue(of({data: {leagues: LEAGUES_PAGE}} as ApolloQueryResult<{leagues: Page<League>}>));
     service.leagues(2).subscribe(({data}) => {
-      expect(data.leagues.pageInfo).toEqual(leaguesPage.pageInfo);
-      expect(data.leagues.edges).toEqual(leaguesPage.edges)
+      expect(data.leagues.pageInfo).toEqual(LEAGUES_PAGE.pageInfo);
+      expect(data.leagues.edges).toEqual(LEAGUES_PAGE.edges)
     })
   });
 
   it('should return leagues page after given cursor', () => {
-    apolloSpy.query.and.returnValue(of({data: {leagues: leaguesPage}} as ApolloQueryResult<{leagues: Page<League>}>));
+    apolloSpy.query.and.returnValue(of({data: {leagues: LEAGUES_PAGE}} as ApolloQueryResult<{leagues: Page<League>}>));
     service.leagues(2, "league-3-cur").subscribe(({data}) => {
-      expect(data.leagues.pageInfo).toEqual(leaguesPage.pageInfo);
-      expect(data.leagues.edges).toEqual(leaguesPage.edges)
+      expect(data.leagues.pageInfo).toEqual(LEAGUES_PAGE.pageInfo);
+      expect(data.leagues.edges).toEqual(LEAGUES_PAGE.edges)
     })
   });
 
   it('should return league with players and games', () => {
-    const league = {
-      id: 'league-1', name: "League-1",
-      players: [
-        {id: 'player-1', name: 'Player-1', rating: 2367},
-        {id: 'player-2', name: 'Player-2', rating: 1594}
-      ],
-      games: {
-        pageInfo: {
-          endCursor: 'game-1-cur',
-          hasNextPage: false
-        },
-        edges: [
-          {
-            cursor: 'game-1-cur',
-            node: {
-              id: 'game-1', dateTime: '2021-12-30T15:38:05',
-              playerOneId: 'player-1', playerOneName: 'Player-1', playerOneRating: 2367,
-              playerTwoId: 'player-2', playerTwoName: 'Player-2', playerTwoRating: 1594,
-              result: {
-                playerOneScore: 2, playerOneRatingDelta: 67,
-                playerTwoScore: 1, playerTwoRatingDelta: -67
-              }
-            }
-          }
-        ]
-      }
-    } as League;
-    apolloSpy.query.and.returnValue(of({data: {league: league}} as ApolloQueryResult<{league: League}>));
-    service.leagueWithPlayersAndGames(league.id).subscribe(({data}) => {
-      expect(data.league.id).toEqual(league.id);
-      expect(data.league.name).toEqual(league.name);
-      expect(data.league.players).toEqual(data.league.players)
-      expect(data.league.games.pageInfo).toEqual(league.games.pageInfo)
-      expect(data.league.games.edges).toEqual(league.games.edges)
+    apolloSpy.query.and.returnValue(of({data: {league: LEAGUE_WITH_PLAYERS_AND_LEAGUE}} as ApolloQueryResult<{league: League}>));
+    service.leagueWithPlayersAndGames(LEAGUE_WITH_PLAYERS_AND_LEAGUE.id).subscribe(({data}) => {
+      expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.id);
+      expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.name);
+      expect(data.league.players).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.players)
+      expect(data.league.games.pageInfo).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.games.pageInfo)
+      expect(data.league.games.edges).toEqual(LEAGUE_WITH_PLAYERS_AND_LEAGUE.games.edges)
     })
   });
 });
