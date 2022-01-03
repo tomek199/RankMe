@@ -10,6 +10,8 @@ import { LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data';
 import { Component, Input } from '@angular/core';
 import { Player } from '../../shared/model/player';
 import { By } from '@angular/platform-browser';
+import { Page } from '../../shared/model/page';
+import { Game } from '../../shared/model/game';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -20,7 +22,7 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteStub();
     await TestBed.configureTestingModule({
-      declarations: [ DashboardComponent, PlayerRankingComponentStub ],
+      declarations: [ DashboardComponent, PlayerRankingComponentStub, GameListPreviewComponentStub ],
       imports: [ MatProgressSpinnerModule ],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -56,4 +58,10 @@ describe('DashboardComponent', () => {
 @Component({selector: 'app-player-ranking', template: ''})
 class PlayerRankingComponentStub {
   @Input() players: Player[];
+}
+
+@Component({selector: 'app-game-list-preview', template: ''})
+class GameListPreviewComponentStub {
+  @Input() leagueId: string;
+  @Input() set gamesPage(gamesPage: Page<Game>) { }
 }
