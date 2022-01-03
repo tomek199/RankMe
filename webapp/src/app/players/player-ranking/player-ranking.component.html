@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-title>Players ranking</mat-card-title>
   <mat-card-content>
-    <table mat-table [dataSource]="players" class="ranking-table">
+    <table mat-table [dataSource]="players" class="width-100p">
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef>Position</th>
         <td mat-cell *matCellDef="let i = index">{{i + 1}}</td>

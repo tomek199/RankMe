@@ -1,6 +1,7 @@
 <ng-container [ngSwitch]="isLoading">
   <mat-spinner *ngSwitchCase="true"></mat-spinner>
-  <ng-container *ngSwitchCase="false">
+  <div class="dashboard-container" *ngSwitchCase="false">
     <app-player-ranking [players]="league.players"></app-player-ranking>
-  </ng-container>
+    <app-game-list-preview [leagueId]="league.id" [gamesPage]="league.games"></app-game-list-preview>
+  </div>
 </ng-container>

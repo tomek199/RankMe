@@ -18,6 +18,9 @@ import { DashboardComponent } from './leagues/dashboard/dashboard.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PlayerRankingComponent } from './players/player-ranking/player-ranking.component';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { GameListPreviewComponent } from './games/game-list-preview/game-list-preview.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -25,23 +28,26 @@ import { MatTableModule } from '@angular/material/table';
     HeaderComponent,
     LeagueListComponent,
     DashboardComponent,
-    PlayerRankingComponent
+    PlayerRankingComponent,
+    GameListPreviewComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        GraphQLModule,
-        HttpClientModule,
-        MatToolbarModule,
-        MatListModule,
-        MatCardModule,
-        MatButtonModule,
-        MatProgressBarModule,
-        MatSidenavModule,
-        MatProgressSpinnerModule,
-        MatTableModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    GraphQLModule,
+    HttpClientModule,
+    MatToolbarModule,
+    MatListModule,
+    MatCardModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatSidenavModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
