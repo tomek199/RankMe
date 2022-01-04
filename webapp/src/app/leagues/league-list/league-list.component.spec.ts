@@ -13,6 +13,7 @@ import { By } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { LEAGUES_PAGE } from '../../../testing/data';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('LeagueListComponent', () => {
   let component: LeagueListComponent;
@@ -22,7 +23,7 @@ describe('LeagueListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ LeagueListComponent ],
-      imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule ],
+      imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule, MatIconModule ],
       providers: [
         { provide: LeagueService, useValue: leagueServiceSpy }
       ]
@@ -65,7 +66,7 @@ describe('LeagueListComponent', () => {
     } as Page<League>;
     leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: moreLeaguesPage }}));
     // click "Load more" button
-    const loadMoreButton = fixture.debugElement.query(By.css('button.mat-button'));
+    const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
     loadMoreButton.triggerEventHandler('click', null)
     fixture.detectChanges()
     // check leagues list and button state
