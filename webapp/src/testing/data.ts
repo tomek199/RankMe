@@ -97,7 +97,7 @@ export const GAMES_PAGE = {
       node: {
         id: 'game-3', dateTime: '2021-12-30T16:20:00',
         playerOneId: 'player-3', playerOneName: 'Player-3', playerOneRating: 2210,
-        playerTwoId: 'player-3', playerTwoName: 'Player-1', playerTwoRating: 1865,
+        playerTwoId: 'player-1', playerTwoName: 'Player-1', playerTwoRating: 1865,
         result: {
           playerOneScore: 2, playerOneRatingDelta: -34,
           playerTwoScore: 2, playerTwoRatingDelta: 34

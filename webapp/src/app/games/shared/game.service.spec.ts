@@ -32,7 +32,7 @@ describe('GameService', () => {
 
   it('should return games page after given cursor', () => {
     apolloSpy.query.and.returnValue(of({data: {games: GAMES_PAGE}}));
-    service.games('league-1', 3).subscribe(({data}) => {
+    service.games('league-1', 3, 'game-5').subscribe(({data}) => {
       expect(data.games.pageInfo).toEqual(GAMES_PAGE.pageInfo);
       expect(data.games.edges).toEqual(GAMES_PAGE.edges);
     });
