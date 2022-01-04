@@ -1,13 +1,18 @@
 #container {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-#container > * {
-  flex: 1 100%;
+#sidenav-container {
+  flex: 1;
+  margin-top: 64px;
 }
 
 #content {
-  padding: 2em;
+  margin: 2em;
 }
-

@@ -18,7 +18,10 @@ Feature: Test data generator
     * I play 5 games between "Han Solo" and "Chewbacca"
     * I play 14 games between "Luke Skywalker" and "Yoda"
     * I play 6 games between "Han Solo" and "Darth Vader"
+    * I schedule game between "Han Solo" and "Luke Skywalker" in 4 hours
     * I play 13 games between "Chewbacca" and "Luke Skywalker"
+    * I schedule game between "Yoda" and "Chewbacca" in 1 hours
+    * I schedule game between "Darth Vader" and "Luke Skywalker" in 2 hours
 
   Scenario: I create multiple leagues
     * I create league "Marvel"

@@ -2,4 +2,4 @@ Feature: API Info
 
   Scenario: Show API version
     When I send query to get API version
-    Then I receive API version "0.56-SNAPSHOT"
+    Then I receive API version "0.57-SNAPSHOT"

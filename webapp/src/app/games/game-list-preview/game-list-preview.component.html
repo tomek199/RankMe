@@ -1,0 +1,45 @@
+<mat-card>
+  <mat-card-title>Latest games</mat-card-title>
+  <mat-card-content>
+    <table mat-table [dataSource]="dataSource" class="width-100p">
+      <ng-container matColumnDef="datetime">
+        <th mat-header-cell *matHeaderCellDef>Datetime</th>
+        <td mat-cell *matCellDef="let game">
+          <p>{{game.dateTime | date : 'EEE, dd-MM' }}</p>
+          <p>{{game.dateTime | date : 'HH:mm' }}</p>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="player">
+        <th mat-header-cell *matHeaderCellDef>Players</th>
+        <td mat-cell *matCellDef="let game">
+          <p>{{game.playerOneName}}</p>
+          <p>{{game.playerTwoName}}</p>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef>Score</th>
+        <td mat-cell *matCellDef="let game">
+          <ng-container *ngIf="game.result">
+            <p>{{game.result.playerOneScore}}</p>
+            <p>{{game.result.playerTwoScore}}</p>
+          </ng-container>
+          <p *ngIf="!game.result">-</p>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="3">No data</td>
+      </tr>
+    </table>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-raised-button (click)="loadMore()" [disabled]="!pageInfo.hasNextPage">
+      <mat-icon>download</mat-icon>
+      Load more
+    </button>
+  </mat-card-actions>
+  <mat-card-footer *ngIf="isLoading">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </mat-card-footer>
+</mat-card>

@@ -12,44 +12,27 @@ import { League } from '../../shared/model/league';
 import { By } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { LEAGUES_PAGE } from '../../../testing/data';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('LeagueListComponent', () => {
   let component: LeagueListComponent;
   let fixture: ComponentFixture<LeagueListComponent>;
-  let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues'])
-  const leaguesPage = {
-    pageInfo: {
-      hasPreviousPage: false, hasNextPage: true, startCursor: 'a1a1a1', endCursor: 'b2b2b2'
-    },
-    edges: [
-      {
-        cursor: 'a1a1a1',
-        node: {
-          id: 'aaa111', name: 'League-aaa111'
-        }
-      },
-      {
-        cursor: 'b2b2b2',
-        node: {
-          id: 'bbb222', name: 'League-bbb222'
-        }
-      }
-    ]
-  } as Page<League>;
+  let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues']);
 
   beforeEach(async () => {
-    leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: leaguesPage }}));
     await TestBed.configureTestingModule({
       declarations: [ LeagueListComponent ],
-      imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule ],
+      imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule, MatIconModule ],
       providers: [
-        { provide: LeagueService, useValue: leagueServiceSpy}
+        { provide: LeagueService, useValue: leagueServiceSpy }
       ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
+    leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: LEAGUES_PAGE }}));
     fixture = TestBed.createComponent(LeagueListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -63,8 +46,8 @@ describe('LeagueListComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const listOptions = compiled.querySelectorAll('mat-list-option');
     expect(listOptions.length).toEqual(2);
-    expect(listOptions[0].textContent?.trim()).toEqual(leaguesPage.edges[0].node.name);
-    expect(listOptions[1].textContent?.trim()).toEqual(leaguesPage.edges[1].node.name);
+    expect(listOptions[0].textContent?.trim()).toEqual(LEAGUES_PAGE.edges[0].node.name);
+    expect(listOptions[1].textContent?.trim()).toEqual(LEAGUES_PAGE.edges[1].node.name);
   });
 
   it('should load more leagues after button click', () => {
@@ -83,7 +66,7 @@ describe('LeagueListComponent', () => {
     } as Page<League>;
     leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: moreLeaguesPage }}));
     // click "Load more" button
-    const loadMoreButton = fixture.debugElement.query(By.css('button.mat-button'));
+    const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
     loadMoreButton.triggerEventHandler('click', null)
     fixture.detectChanges()
     // check leagues list and button state
@@ -97,6 +80,6 @@ describe('LeagueListComponent', () => {
     spyOn(router, 'navigate').and.stub();
     const listOptions = fixture.debugElement.queryAll(By.css('mat-list-option'));
     listOptions[1].triggerEventHandler('click', null)
-    expect(router.navigate).toHaveBeenCalledOnceWith(['/leagues', leaguesPage.edges[1].node.id])
+    expect(router.navigate).toHaveBeenCalledOnceWith(['/leagues', LEAGUES_PAGE.edges[1].node.id])
   }));
 });

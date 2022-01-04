@@ -13,12 +13,23 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { DashboardComponent } from './leagues/dashboard/dashboard.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PlayerRankingComponent } from './players/player-ranking/player-ranking.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { GameListPreviewComponent } from './games/game-list-preview/game-list-preview.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    LeagueListComponent
+    LeagueListComponent,
+    DashboardComponent,
+    PlayerRankingComponent,
+    GameListPreviewComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +41,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSidenavModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,15 @@
 <div id="container">
   <app-header></app-header>
-  <div id="content">
-    <router-outlet></router-outlet>
-  </div>
+  <mat-sidenav-container id="sidenav-container">
+    <mat-sidenav [mode]="'side'">
+      <mat-nav-list>
+        <!-- TODO add navigation -->
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div id="content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
