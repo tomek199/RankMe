@@ -3,9 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { LeagueService } from './league.service';
 import { Apollo } from 'apollo-angular';
 import { of } from 'rxjs';
-import { ApolloQueryResult } from '@apollo/client';
-import { Page } from '../../shared/model/page';
-import { League } from '../../shared/model/league';
 import { LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE } from '../../../testing/data';
 
 describe('LeagueService', () => {
@@ -26,7 +23,7 @@ describe('LeagueService', () => {
   });
 
   it('should return leagues page', () => {
-    apolloSpy.query.and.returnValue(of({data: {leagues: LEAGUES_PAGE}} as ApolloQueryResult<{leagues: Page<League>}>));
+    apolloSpy.query.and.returnValue(of({data: {leagues: LEAGUES_PAGE}}));
     service.leagues(2).subscribe(({data}) => {
       expect(data.leagues.pageInfo).toEqual(LEAGUES_PAGE.pageInfo);
       expect(data.leagues.edges).toEqual(LEAGUES_PAGE.edges)
@@ -34,7 +31,7 @@ describe('LeagueService', () => {
   });
 
   it('should return leagues page after given cursor', () => {
-    apolloSpy.query.and.returnValue(of({data: {leagues: LEAGUES_PAGE}} as ApolloQueryResult<{leagues: Page<League>}>));
+    apolloSpy.query.and.returnValue(of({data: {leagues: LEAGUES_PAGE}}));
     service.leagues(2, "league-3-cur").subscribe(({data}) => {
       expect(data.leagues.pageInfo).toEqual(LEAGUES_PAGE.pageInfo);
       expect(data.leagues.edges).toEqual(LEAGUES_PAGE.edges)
@@ -42,7 +39,7 @@ describe('LeagueService', () => {
   });
 
   it('should return league with players and games', () => {
-    apolloSpy.query.and.returnValue(of({data: {league: LEAGUE_WITH_PLAYERS_AND_GAMES}} as ApolloQueryResult<{league: League}>));
+    apolloSpy.query.and.returnValue(of({data: {league: LEAGUE_WITH_PLAYERS_AND_GAMES}}));
     service.leagueWithPlayersAndGames(LEAGUE_WITH_PLAYERS_AND_GAMES.id).subscribe(({data}) => {
       expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
       expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.name);

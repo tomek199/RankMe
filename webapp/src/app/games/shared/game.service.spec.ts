@@ -4,9 +4,6 @@ import { GameService } from './game.service';
 import { Apollo } from 'apollo-angular';
 import { of } from 'rxjs';
 import { GAMES_PAGE } from '../../../testing/data';
-import { ApolloQueryResult } from '@apollo/client';
-import { Game } from '../../shared/model/game';
-import { Page } from '../../shared/model/page';
 
 describe('GameService', () => {
   let service: GameService;
