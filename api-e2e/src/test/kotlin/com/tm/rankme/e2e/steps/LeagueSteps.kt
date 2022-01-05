@@ -158,6 +158,20 @@ class LeagueSteps(
                 } ?: fail("Leagues not found first=$first after=$after of=$of")
             }
         }
+
+        Then("I have no leagues") {
+            runBlocking {
+                delay(stepDelay)
+                val query = GetLeagues(1)
+                graphQlClient.execute(query).data?.let {
+                    assertFalse(it.leagues.pageInfo.hasPreviousPage)
+                    assertFalse(it.leagues.pageInfo.hasNextPage)
+                    assertNull(it.leagues.pageInfo.startCursor)
+                    assertNull(it.leagues.pageInfo.endCursor)
+                    assertTrue(it.leagues.edges.isEmpty())
+                } ?: fail("No response data")
+            }
+        }
     }
 
     private suspend fun allLeaguesCursors(of: Int): List<String> {

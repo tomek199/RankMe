@@ -5,6 +5,9 @@ Feature: Player
     * I create league "Star Wars"
     * I use league "Star Wars"
 
+  Scenario: Show empty games list
+    Then I have no games
+
   Scenario: Play multiple games to check pagination
     * I create player "Darth Vader"
     * I create player "Han Solo"
