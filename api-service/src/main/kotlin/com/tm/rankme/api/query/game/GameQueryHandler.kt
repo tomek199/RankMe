@@ -44,8 +44,8 @@ class GameQueryHandler(
     }
 
     private fun pageInfo(page: Page<Game>): PageInfo = DefaultPageInfo(
-            DefaultConnectionCursor(page.items.first().cursor),
-            DefaultConnectionCursor(page.items.last().cursor),
-            page.hasPreviousPage, page.hasNextPage
+        if (page.items.isNotEmpty()) DefaultConnectionCursor(page.items.first().cursor) else null,
+        if (page.items.isNotEmpty()) DefaultConnectionCursor(page.items.last().cursor) else null,
+        page.hasPreviousPage, page.hasNextPage
     )
 }

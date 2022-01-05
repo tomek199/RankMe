@@ -105,6 +105,25 @@ internal class LeagueQueryHandlerTest {
     }
 
     @Test
+    internal fun `Should return empty leagues connection`() {
+        // given
+        val page = Page(emptyList<Item<League>>(), false, false)
+        every {
+            restTemplate.exchange("$url/query-service/leagues?first=3",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetLeaguesQuery(3)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertFalse(result.pageInfo.isHasNextPage)
+        assertNull(result.pageInfo.startCursor)
+        assertNull(result.pageInfo.endCursor)
+        assertTrue(result.edges.isEmpty())
+    }
+
+    @Test
     internal fun `Should throw exception when leagues connection response body is empty`() {
         // given
         val endpoint = "$url/query-service/leagues?first=3"
