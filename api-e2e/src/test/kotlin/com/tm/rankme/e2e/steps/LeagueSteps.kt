@@ -105,6 +105,21 @@ class LeagueSteps(
             }
         }
 
+        Then("I have players in league sorted by ranking") {
+            runBlocking {
+                delay(stepDelay)
+                val id = context.leagueId()
+                val query = GetLeague(id)
+                var previousRating = Int.MAX_VALUE
+                graphQlClient.execute(query).data?.let {
+                    it.league.players?.forEach { player ->
+                        assertTrue(player.rating <= previousRating)
+                        previousRating = player.rating
+                    } ?: fail("League does not contain any players")
+                } ?: fail("Cannot get league by id $id")
+            }
+        }
+
         Then("I have first {int} of {int} games connected in league") {
                 first: Int, of: Int ->
             runBlocking {
