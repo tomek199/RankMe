@@ -60,7 +60,7 @@ internal class PlayerControllerIntegrationTest {
             PlayerEntity(randomNanoId(), leagueId, "Optimus Prime", 245, 1783),
             PlayerEntity(randomNanoId(), leagueId, "Megatron", 184, 1298),
         )
-        every { playerAccessor.findAllByLeagueId(leagueId) } returns entities
+        every { playerAccessor.findAllByLeagueIdOrderByRatingDesc(leagueId) } returns entities
         // when
         val result = mvc.get("/leagues/$leagueId/players")
         // then
@@ -83,7 +83,7 @@ internal class PlayerControllerIntegrationTest {
     internal fun `Should return empty list for players by league id`() {
         // given
         val leagueId = randomNanoId()
-        every { playerAccessor.findAllByLeagueId(leagueId) } returns emptyList()
+        every { playerAccessor.findAllByLeagueIdOrderByRatingDesc(leagueId) } returns emptyList()
         // when
         val result = mvc.get("/leagues/$leagueId/players")
         // then

@@ -68,11 +68,11 @@ internal class MongoPlayerRepositoryTest {
         // given
         val leagueId = randomNanoId()
         val playerEntities = listOf(
+            PlayerEntity(randomNanoId(), leagueId, "Bumblebee", 326, 2864),
             PlayerEntity(randomNanoId(), leagueId, "Optimus Prime", 245, 1783),
-            PlayerEntity(randomNanoId(), leagueId, "Megatron", 184, 1298),
-            PlayerEntity(randomNanoId(), leagueId, "Bumblebee", 326, 2864)
+            PlayerEntity(randomNanoId(), leagueId, "Megatron", 184, 1298)
         )
-        every { accessor.findAllByLeagueId(leagueId) } returns playerEntities
+        every { accessor.findAllByLeagueIdOrderByRatingDesc(leagueId) } returns playerEntities
         // when
         val players = repository.byLeagueId(leagueId)
         // then
@@ -89,7 +89,7 @@ internal class MongoPlayerRepositoryTest {
     internal fun `Should return empty list for players by league id`() {
         // given
         val leagueId = randomNanoId()
-        every { accessor.findAllByLeagueId(leagueId) } returns emptyList()
+        every { accessor.findAllByLeagueIdOrderByRatingDesc(leagueId) } returns emptyList()
         // when
         val players = repository.byLeagueId(leagueId)
         // then

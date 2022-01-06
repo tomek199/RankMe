@@ -9,5 +9,6 @@ data class PlayerEntity(
     val leagueId: String,
     var name: String,
     var deviation: Int,
-    var rating: Int
+    var rating: Int,
+    val timestamp: Long = System.currentTimeMillis()
 )
