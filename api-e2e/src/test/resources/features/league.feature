@@ -23,13 +23,23 @@ Feature: League
       | Optimus Prime | 350       | 1500   |
       | Bumblebee     | 350       | 1500   |
 
-  Scenario: Create league with games
+  Scenario: Create league with games and players
     * I create league "Star Wars"
     * I use league "Star Wars"
     * I create player "Han Solo"
     * I create player "Darth Vader"
-    When I play 6 games between "Han Solo" and "Darth Vader"
-    Then I have first 4 of 6 games connected in league
+    * I create player "Chewbacca"
+    * I create player "R2D2"
+    * I create player "Luke Skywalker"
+    When I play 2 games between "Han Solo" and "Darth Vader"
+    * I play 2 games between "Darth Vader" and "Chewbacca"
+    * I play 2 games between "Chewbacca" and "Han Solo"
+    * I play 2 games between "Luke Skywalker" and "Han Solo"
+    * I play 2 games between "R2D2" and "Darth Vader"
+    * I play 2 games between "Han Solo" and "Luke Skywalker"
+    * I play 2 games between "Chewbacca" and "R2D2"
+    Then I have first 14 of 14 games connected in league
+    * I have players in league sorted by ranking
 
   Scenario: Create multiple leagues to check pagination
     When I create 10 leagues

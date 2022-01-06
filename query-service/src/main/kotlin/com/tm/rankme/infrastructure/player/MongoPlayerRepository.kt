@@ -19,7 +19,7 @@ class MongoPlayerRepository(
         accessor.save(entity)
     }
 
-    override fun byLeagueId(leagueId: String): List<Player> = accessor.findAllByLeagueId(leagueId).map {
+    override fun byLeagueId(leagueId: String): List<Player> = accessor.findAllByLeagueIdOrderByRatingDesc(leagueId).map {
         Player(it.id, it.leagueId, it.name, it.deviation, it.rating)
     }
 }
