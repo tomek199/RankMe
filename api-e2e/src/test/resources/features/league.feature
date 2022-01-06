@@ -3,6 +3,9 @@ Feature: League
   Background: I init and cleanup database
     Given I cleanup database
 
+  Scenario: Show empty leagues list
+    Then I have no leagues
+
   Scenario: Create new league and change league data
     * I create league "Star Wars"
     * I use league "Star Wars"

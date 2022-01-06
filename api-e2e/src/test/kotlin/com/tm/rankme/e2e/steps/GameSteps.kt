@@ -9,10 +9,7 @@ import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 
 class GameSteps(
     private val graphQlClient: GraphQLKtorClient,
@@ -80,6 +77,21 @@ class GameSteps(
                         assertEquals(expectedGame["secondDeviationDelta"]?.toInt(), game.result?.playerTwoDeviationDelta)
                     }
                 } ?: fail("Games not found first=$first")
+            }
+        }
+
+        Then("I have no games") {
+            runBlocking {
+                delay(stepDelay)
+                val leagueId = context.leagueId()
+                val query = GetGames(leagueId, 1)
+                graphQlClient.execute(query).data?.let {
+                    assertFalse(it.games.pageInfo.hasPreviousPage)
+                    assertFalse(it.games.pageInfo.hasNextPage)
+                    assertNull(it.games.pageInfo.startCursor)
+                    assertNull(it.games.pageInfo.endCursor)
+                    assertTrue(it.games.edges.isEmpty())
+                } ?: fail("No response data")
             }
         }
     }

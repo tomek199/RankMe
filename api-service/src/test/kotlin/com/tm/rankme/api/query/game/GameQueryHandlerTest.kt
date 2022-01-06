@@ -110,6 +110,26 @@ internal class GameQueryHandlerTest {
     }
 
     @Test
+    internal fun `Should return empty league games connection`() {
+        // given
+        val leagueId = randomNanoId()
+        val page = Page(emptyList<Item<Game>>(), false, false)
+        every {
+            restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=4",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetGamesForLeagueQuery(leagueId, 4)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertFalse(result.pageInfo.isHasNextPage)
+        assertNull(result.pageInfo.startCursor)
+        assertNull(result.pageInfo.endCursor)
+        assertTrue(result.edges.isEmpty())
+    }
+
+    @Test
     internal fun `Should throw exception when league games connection response body is empty`() {
         // given
         val leagueId = randomNanoId()
@@ -210,6 +230,26 @@ internal class GameQueryHandlerTest {
             assertEquals(games[index].playerTwoRating, edge.node.playerTwoRating)
             assertNull(edge.node.result)
         }
+    }
+
+    @Test
+    internal fun `Should return empty player games connection`() {
+        // given
+        val playerId = randomNanoId()
+        val page = Page(emptyList<Item<Game>>(), false, false)
+        every {
+            restTemplate.exchange("$url/query-service/players/$playerId/games?first=6",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetGamesForPlayerQuery(playerId, 6)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertFalse(result.pageInfo.isHasNextPage)
+        assertNull(result.pageInfo.startCursor)
+        assertNull(result.pageInfo.endCursor)
+        assertTrue(result.edges.isEmpty())
     }
 
     @Test

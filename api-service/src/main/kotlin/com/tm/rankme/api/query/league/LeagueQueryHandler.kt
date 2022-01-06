@@ -38,8 +38,8 @@ class LeagueQueryHandler(
     }
 
     private fun pageInfo(page: Page<League>): PageInfo = DefaultPageInfo(
-        DefaultConnectionCursor(page.items.first().cursor),
-        DefaultConnectionCursor(page.items.last().cursor),
+        if (page.items.isNotEmpty()) DefaultConnectionCursor(page.items.first().cursor) else null,
+        if (page.items.isNotEmpty()) DefaultConnectionCursor(page.items.last().cursor) else null,
         page.hasPreviousPage, page.hasNextPage
     )
 }
