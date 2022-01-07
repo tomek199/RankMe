@@ -35,10 +35,12 @@ To start the whole system it needs to run both **backend** and **frontend** part
 - Run `docker-compose up`
 
 Services:
-- http://localhost:9000/graphiql - GraphQL API
-- http://localhost:9900 - Config service
-- http://localhost:9800 - Eureka Discovery Service
-- http://localhost:9700 - Gateway
+- http://localhost:9010 - Config service
+- http://localhost:9020 - Gateway service
+- http://localhost:9030 - Eureka Discovery Service
+- http://localhost:9040/graphiql - GraphQL API
+- http://localhost:9050 - Command service
+- http://localhost:9060 - QueryService
 ___
 All services might be also run separately without Docker as standard Spring Boot Application. They require running *RabbitMQ*, *MongoDB* and *PostgreSQL/Event Store* instances.
 ### Frontend

@@ -1,10 +1,10 @@
 server:
-  port: 9800
+  port: 9030
 spring:
   application:
     name: discovery-service
   config:
-    import: optional:configserver:http://localhost:9900
+    import: optional:configserver:http://localhost:9010
   rabbitmq:
     host: localhost
     port: 5672
