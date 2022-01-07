@@ -23,59 +23,59 @@ services:
   config-service:
     build: config-service
     ports:
-      - "9900:9900"
+      - "9010:9010"
     environment:
       SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH-LOCATIONS: classpath:config/docker
       SPRING_RABBITMQ_HOST: rabbitmq
       WAIT_RABBITMQ: rabbitmq:15672
 
-  discovery-service:
-    build: discovery-service
-    ports:
-      - "9800:9800"
-    environment:
-      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
-      WAIT_RABBITMQ: rabbitmq:15672
-      WAIT_CONFIG_SERVICE: config-service:9900
-
   gateway-service:
     build: gateway-service
     ports:
-      - "9700:9700"
+      - "9020:9020"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9010/
       WAIT_RABBITMQ: rabbitmq:15672
-      WAIT_CONFIG_SERVICE: config-service:9900
-      WAIT_DISCOVERY_SERVICE: discovery-service:9800
+      WAIT_CONFIG_SERVICE: config-service:9010
+      WAIT_DISCOVERY_SERVICE: discovery-service:9030
+
+  discovery-service:
+    build: discovery-service
+    ports:
+      - "9030:9030"
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9010/
+      WAIT_RABBITMQ: rabbitmq:15672
+      WAIT_CONFIG_SERVICE: config-service:9010
 
   api-service:
     build: api-service
     ports:
-      - "9000:9000"
+      - "9040:9040"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
-      WAIT_CONFIG_SERVICE: config-service:9900
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9010/
+      WAIT_CONFIG_SERVICE: config-service:9010
       WAIT_RABBITMQ: rabbitmq:15672
-      WAIT_DISCOVERY_SERVICE: discovery-service:9800
+      WAIT_DISCOVERY_SERVICE: discovery-service:9030
 
   command-service:
     build: command-service
     ports:
-      - "9200:9200"
+      - "9050:9050"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
-      WAIT_CONFIG_SERVICE: config-service:9900
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9010/
+      WAIT_CONFIG_SERVICE: config-service:9010
       WAIT_RABBITMQ: rabbitmq:15672
       WAIT_POSTGRES: postgres:5432
 
   query-service:
     build: query-service
     ports:
-      - "9300:9300"
+      - "9060:9060"
     environment:
-      SPRING_CONFIG_IMPORT: configserver:http://config-service:9900/
-      WAIT_CONFIG_SERVICE: config-service:9900
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9010/
+      WAIT_CONFIG_SERVICE: config-service:9010
       WAIT_RABBITMQ: rabbitmq:15672
       WAIT_MONGODB: mongodb:27017
-      WAIT_DISCOVERY_SERVICE: discovery-service:9800
+      WAIT_DISCOVERY_SERVICE: discovery-service:9030
 

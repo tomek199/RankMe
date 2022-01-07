@@ -7,4 +7,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://discovery-service:9800/eureka
+      defaultZone: http://discovery-service:9030/eureka

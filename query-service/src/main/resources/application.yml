@@ -1,10 +1,10 @@
 server:
-  port: 9200
+  port: 9060
 spring:
   application:
     name: query-service
   config:
-    import: optional:configserver:http://localhost:9900
+    import: optional:configserver:http://localhost:9010
   rabbitmq:
     host: localhost
     port: 5672
@@ -56,4 +56,4 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:9800/eureka
+      defaultZone: http://localhost:9030/eureka

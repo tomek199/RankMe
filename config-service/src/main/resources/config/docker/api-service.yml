@@ -5,8 +5,8 @@ spring:
     username: guest
     password: guest
 gateway:
-  url: http://gateway-service:9700
+  url: http://gateway-service:9020
 eureka:
   client:
     service-url:
-      defaultZone: http://discovery-service:9800/eureka
+      defaultZone: http://discovery-service:9030/eureka

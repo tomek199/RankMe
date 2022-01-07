@@ -1,10 +1,10 @@
 server:
-  port: 9100
+  port: 9050
 spring:
   application:
     name: command-service
   config:
-    import: optional:configserver:http://localhost:9900
+    import: optional:configserver:http://localhost:9010
   profiles:
     active: postgresql
   datasource:
