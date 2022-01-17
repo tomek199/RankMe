@@ -3,6 +3,7 @@ package com.tm.rankme.api.query.game
 import com.tm.rankme.api.query.Page
 import com.tm.rankme.api.query.QueryException
 import graphql.relay.*
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
@@ -15,7 +16,10 @@ class GameQueryHandler(
     @Value("\${gateway.url}") private val url: String
 ) {
 
+    private val log = LoggerFactory.getLogger(GameQueryHandler::class.java)
+
     fun handle(query: GetGamesForLeagueQuery): Connection<Game> {
+        log.info("Handle query {}", query)
         var endpoint = "$url/query-service/leagues/${query.leagueId}/games?first=${query.first}"
         query.after?.let { endpoint += "&after=${query.after}" }
         val response = restTemplate.exchange(endpoint, HttpMethod.GET, null,
@@ -26,6 +30,7 @@ class GameQueryHandler(
     }
 
     fun handle(query: GetGamesForPlayerQuery): Connection<Game> {
+        log.info("Handle query {}", query)
         var endpoint = "$url/query-service/players/${query.playerId}/games?first=${query.first}"
         query.after?.let { endpoint += "&after=$it" }
         return request(endpoint)
