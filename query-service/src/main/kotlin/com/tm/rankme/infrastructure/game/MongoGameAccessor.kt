@@ -14,6 +14,22 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
         leagueId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 
+    fun getByLeagueIdAndResultNotNullOrderByTimestampDesc(
+        leagueId: String, pageable: Pageable
+    ): Page<GameEntity>
+
+    fun getByLeagueIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(
+        leagueId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
+    fun getByLeagueIdAndResultNullOrderByTimestampDesc(
+        leagueId: String, pageable: Pageable
+    ): Page<GameEntity>
+
+    fun getByLeagueIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(
+        leagueId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
     @Query(value = "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}",
         sort = "{timestamp : -1}")
     fun getByPlayerIdOrderByTimestampDesc(
