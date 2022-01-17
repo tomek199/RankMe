@@ -9,6 +9,8 @@ interface GameRepository {
     fun byLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
     fun completedByLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
     fun scheduledByLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
+    @Deprecated("Games split")
     fun byPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
-
+    fun completedByPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
+    fun scheduledByPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
 }

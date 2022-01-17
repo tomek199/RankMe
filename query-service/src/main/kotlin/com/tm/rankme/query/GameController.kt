@@ -52,4 +52,24 @@ class GameController(private val repository: GameRepository) {
         log.info("Get games by playerId=$playerId, first=$first, after=$after")
         return repository.byPlayerId(playerId, first, after)
     }
+
+    @GetMapping("/players/{playerId}/completed-games")
+    fun completedGamesByPlayerId(
+        @PathVariable playerId: String,
+        @RequestParam first: Int,
+        @RequestParam(required = false) after: String?
+    ): Page<Game> {
+        log.info("Get completed games by playerId=$playerId, first=$first, after=$after")
+        return repository.completedByPlayerId(playerId, first, after)
+    }
+
+    @GetMapping("/players/{playerId}/scheduled-games")
+    fun scheduledGamesByPlayerId(
+        @PathVariable playerId: String,
+        @RequestParam first: Int,
+        @RequestParam(required = false) after: String?
+    ): Page<Game> {
+        log.info("Get scheduled games by playerId=$playerId, first=$first, after=$after")
+        return repository.scheduledByPlayerId(playerId, first, after)
+    }
 }
