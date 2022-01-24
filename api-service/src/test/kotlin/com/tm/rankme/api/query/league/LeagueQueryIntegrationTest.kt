@@ -5,8 +5,10 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.api.query.Item
 import com.tm.rankme.api.query.Page
+import com.tm.rankme.api.query.game.CompletedGame
 import com.tm.rankme.api.query.game.Game
 import com.tm.rankme.api.query.game.Result
+import com.tm.rankme.api.query.game.ScheduledGame
 import com.tm.rankme.api.query.player.Player
 import io.mockk.every
 import org.junit.jupiter.api.Test
@@ -41,8 +43,8 @@ internal class LeagueQueryIntegrationTest {
         val players = listOf(
             Player(randomNanoId(), "Optimus Prime", 145, 2746),
         )
-        val games = List(3) {
-            Game(
+        val completedGames = List(2) {
+            CompletedGame(
                 randomNanoId(), LocalDateTime.now(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
@@ -52,6 +54,14 @@ internal class LeagueQueryIntegrationTest {
                 )
             )
         }
+        val scheduledGames = List(1) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
         val page = Page(games.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java)
@@ -94,12 +104,14 @@ internal class LeagueQueryIntegrationTest {
             assertEquals(game.playerTwoName, response.get("$.data.league.games.edges[$index].node.playerTwoName"))
             assertEquals(game.playerTwoDeviation, response.get("$.data.league.games.edges[$index].node.playerTwoDeviation", Int::class.java))
             assertEquals(game.playerTwoRating, response.get("$.data.league.games.edges[$index].node.playerTwoRating", Int::class.java))
-            assertEquals(game.result!!.playerOneScore, response.get("$.data.league.games.edges[$index].node.result.playerOneScore", Int::class.java))
-            assertEquals(game.result!!.playerOneDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerOneDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerOneRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerOneRatingDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoScore, response.get("$.data.league.games.edges[$index].node.result.playerTwoScore", Int::class.java))
-            assertEquals(game.result!!.playerTwoDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+            if (game is CompletedGame) {
+                assertEquals(game.result.playerOneScore, response.get("$.data.league.games.edges[$index].node.result.playerOneScore", Int::class.java))
+                assertEquals(game.result.playerOneDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerOneDeviationDelta", Int::class.java))
+                assertEquals(game.result.playerOneRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerOneRatingDelta", Int::class.java))
+                assertEquals(game.result.playerTwoScore, response.get("$.data.league.games.edges[$index].node.result.playerTwoScore", Int::class.java))
+                assertEquals(game.result.playerTwoDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
+                assertEquals(game.result.playerTwoRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+            }
         }
     }
 

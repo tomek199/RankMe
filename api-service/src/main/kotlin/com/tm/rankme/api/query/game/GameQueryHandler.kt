@@ -22,11 +22,7 @@ class GameQueryHandler(
         log.info("Handle query {}", query)
         var endpoint = "$url/query-service/leagues/${query.leagueId}/games?first=${query.first}"
         query.after?.let { endpoint += "&after=${query.after}" }
-        val response = restTemplate.exchange(endpoint, HttpMethod.GET, null,
-            object : ParameterizedTypeReference<Page<Game>>() {}
-        )
-        return response.body?.let { DefaultConnection(edges(it), pageInfo(it)) }
-            ?: throw QueryException("Empty response body for GET query=$endpoint")
+        return request(endpoint)
     }
 
     fun handle(query: GetGamesForPlayerQuery): Connection<Game> {

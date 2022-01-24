@@ -25,8 +25,8 @@ internal class GameQueryHandlerTest {
     internal fun `Should return league games connection`() {
         // given
         val leagueId = randomNanoId()
-        val games = List(6) {
-            Game(
+        val completedGames = List(3) {
+            CompletedGame(
                 randomNanoId(), LocalDateTime.now(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
@@ -36,6 +36,14 @@ internal class GameQueryHandlerTest {
                 )
             )
         }
+        val scheduledGames = List(3) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
         val page = Page(games.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=6",
@@ -61,12 +69,16 @@ internal class GameQueryHandlerTest {
             assertEquals(games[index].playerTwoName, edge.node.playerTwoName)
             assertEquals(games[index].playerTwoDeviation, edge.node.playerTwoDeviation)
             assertEquals(games[index].playerTwoRating, edge.node.playerTwoRating)
-            assertEquals(games[index].result!!.playerOneScore, edge.node.result!!.playerOneScore)
-            assertEquals(games[index].result!!.playerOneDeviationDelta, edge.node.result!!.playerOneDeviationDelta)
-            assertEquals(games[index].result!!.playerOneRatingDelta, edge.node.result!!.playerOneRatingDelta)
-            assertEquals(games[index].result!!.playerTwoScore, edge.node.result!!.playerTwoScore)
-            assertEquals(games[index].result!!.playerTwoDeviationDelta, edge.node.result!!.playerTwoDeviationDelta)
-            assertEquals(games[index].result!!.playerTwoRatingDelta, edge.node.result!!.playerTwoRatingDelta)
+            edge.node.let { game ->
+                if (game is CompletedGame) {
+                    assertEquals(completedGames[index].result.playerOneScore, game.result.playerOneScore)
+                    assertEquals(completedGames[index].result.playerOneDeviationDelta, game.result.playerOneDeviationDelta)
+                    assertEquals(completedGames[index].result.playerOneRatingDelta, game.result.playerOneRatingDelta)
+                    assertEquals(completedGames[index].result.playerTwoScore, game.result.playerTwoScore)
+                    assertEquals(completedGames[index].result.playerTwoDeviationDelta, game.result.playerTwoDeviationDelta)
+                    assertEquals(completedGames[index].result.playerTwoRatingDelta, game.result.playerTwoRatingDelta)
+                }
+            }
         }
     }
 
@@ -74,11 +86,24 @@ internal class GameQueryHandlerTest {
     internal fun `Should return league games connection for given cursor`() {
         // given
         val leagueId = randomNanoId()
-        val games = List(7) {
-            Game(randomNanoId(), LocalDateTime.now(),
+        val completedGames = List(4) {
+            CompletedGame(randomNanoId(), LocalDateTime.now(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt())
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
+                )
+            )
         }
+        val scheduledGames = List(3) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
         val page = Page(games.map { Item(it, it.id) }, true, false)
         val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
         every {
@@ -105,7 +130,16 @@ internal class GameQueryHandlerTest {
             assertEquals(games[index].playerTwoName, edge.node.playerTwoName)
             assertEquals(games[index].playerTwoDeviation, edge.node.playerTwoDeviation)
             assertEquals(games[index].playerTwoRating, edge.node.playerTwoRating)
-            assertNull(edge.node.result)
+            edge.node.let { game ->
+                if (game is CompletedGame) {
+                    assertEquals(completedGames[index].result.playerOneScore, game.result.playerOneScore)
+                    assertEquals(completedGames[index].result.playerOneDeviationDelta, game.result.playerOneDeviationDelta)
+                    assertEquals(completedGames[index].result.playerOneRatingDelta, game.result.playerOneRatingDelta)
+                    assertEquals(completedGames[index].result.playerTwoScore, game.result.playerTwoScore)
+                    assertEquals(completedGames[index].result.playerTwoDeviationDelta, game.result.playerTwoDeviationDelta)
+                    assertEquals(completedGames[index].result.playerTwoRatingDelta, game.result.playerTwoRatingDelta)
+                }
+            }
         }
     }
 
@@ -148,8 +182,8 @@ internal class GameQueryHandlerTest {
     internal fun `Should return player games connection`() {
         // given
         val playerId = randomNanoId()
-        val games = List(4) {
-            Game(
+        val completedGames = List(2) {
+            CompletedGame(
                 randomNanoId(), LocalDateTime.now(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
@@ -159,6 +193,14 @@ internal class GameQueryHandlerTest {
                 )
             )
         }
+        val scheduledGames = List(2) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
         val page = Page(games.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.exchange("$url/query-service/players/$playerId/games?first=4",
@@ -184,12 +226,16 @@ internal class GameQueryHandlerTest {
             assertEquals(games[index].playerTwoName, edge.node.playerTwoName)
             assertEquals(games[index].playerTwoDeviation, edge.node.playerTwoDeviation)
             assertEquals(games[index].playerTwoRating, edge.node.playerTwoRating)
-            assertEquals(games[index].result!!.playerOneScore, edge.node.result!!.playerOneScore)
-            assertEquals(games[index].result!!.playerOneDeviationDelta, edge.node.result!!.playerOneDeviationDelta)
-            assertEquals(games[index].result!!.playerOneRatingDelta, edge.node.result!!.playerOneRatingDelta)
-            assertEquals(games[index].result!!.playerTwoScore, edge.node.result!!.playerTwoScore)
-            assertEquals(games[index].result!!.playerTwoDeviationDelta, edge.node.result!!.playerTwoDeviationDelta)
-            assertEquals(games[index].result!!.playerTwoRatingDelta, edge.node.result!!.playerTwoRatingDelta)
+            edge.node.let { game ->
+                if (game is CompletedGame) {
+                    assertEquals(completedGames[index].result.playerOneScore, game.result.playerOneScore)
+                    assertEquals(completedGames[index].result.playerOneDeviationDelta, game.result.playerOneDeviationDelta)
+                    assertEquals(completedGames[index].result.playerOneRatingDelta, game.result.playerOneRatingDelta)
+                    assertEquals(completedGames[index].result.playerTwoScore, game.result.playerTwoScore)
+                    assertEquals(completedGames[index].result.playerTwoDeviationDelta, game.result.playerTwoDeviationDelta)
+                    assertEquals(completedGames[index].result.playerTwoRatingDelta, game.result.playerTwoRatingDelta)
+                }
+            }
         }
     }
 
@@ -197,11 +243,24 @@ internal class GameQueryHandlerTest {
     internal fun `Should return player games connection for given cursor`() {
         // given
         val playerId = randomNanoId()
-        val games = List(5) {
-            Game(randomNanoId(), LocalDateTime.now(),
+        val completedGames = List(2) {
+            CompletedGame(randomNanoId(), LocalDateTime.now(),
                 playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
-                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt())
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
+                )
+            )
         }
+        val scheduledGames = List(3) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
         val page = Page(games.map { Item(it, it.id) }, true, false)
         val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
         every {
@@ -228,7 +287,16 @@ internal class GameQueryHandlerTest {
             assertEquals(games[index].playerTwoName, edge.node.playerTwoName)
             assertEquals(games[index].playerTwoDeviation, edge.node.playerTwoDeviation)
             assertEquals(games[index].playerTwoRating, edge.node.playerTwoRating)
-            assertNull(edge.node.result)
+            edge.node.let { game ->
+                if (game is CompletedGame) {
+                    assertEquals(completedGames[index].result.playerOneScore, game.result.playerOneScore)
+                    assertEquals(completedGames[index].result.playerOneDeviationDelta, game.result.playerOneDeviationDelta)
+                    assertEquals(completedGames[index].result.playerOneRatingDelta, game.result.playerOneRatingDelta)
+                    assertEquals(completedGames[index].result.playerTwoScore, game.result.playerTwoScore)
+                    assertEquals(completedGames[index].result.playerTwoDeviationDelta, game.result.playerTwoDeviationDelta)
+                    assertEquals(completedGames[index].result.playerTwoRatingDelta, game.result.playerTwoRatingDelta)
+                }
+            }
         }
     }
 

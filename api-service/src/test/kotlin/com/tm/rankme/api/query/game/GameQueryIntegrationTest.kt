@@ -35,8 +35,8 @@ internal class GameQueryIntegrationTest {
     internal fun `Should return games`() {
         // given
         val leagueId = "HKQqvVmIT-MD3XwgUFK9-"
-        val games = List(5) {
-            Game(
+        val completedGames = List(3) {
+            CompletedGame(
                 randomNanoId(), LocalDateTime.now(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
@@ -46,6 +46,14 @@ internal class GameQueryIntegrationTest {
                 )
             )
         }
+        val scheduledGames = List(2) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
         val page = Page(games.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=5&after=MTYyMjg0MDE1NzI0Nw==",
@@ -73,12 +81,14 @@ internal class GameQueryIntegrationTest {
             assertEquals(game.playerTwoName, response.get("$.data.games.edges[$index].node.playerTwoName"))
             assertEquals(game.playerTwoDeviation, response.get("$.data.games.edges[$index].node.playerTwoDeviation", Int::class.java))
             assertEquals(game.playerTwoRating, response.get("$.data.games.edges[$index].node.playerTwoRating", Int::class.java))
-            assertEquals(game.result!!.playerOneScore, response.get("$.data.games.edges[$index].node.result.playerOneScore", Int::class.java))
-            assertEquals(game.result!!.playerOneDeviationDelta, response.get("$.data.games.edges[$index].node.result.playerOneDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerOneRatingDelta, response.get("$.data.games.edges[$index].node.result.playerOneRatingDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoScore, response.get("$.data.games.edges[$index].node.result.playerTwoScore", Int::class.java))
-            assertEquals(game.result!!.playerTwoDeviationDelta, response.get("$.data.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoRatingDelta, response.get("$.data.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+            if (game is CompletedGame) {
+                assertEquals(game.result.playerOneScore, response.get("$.data.games.edges[$index].node.result.playerOneScore", Int::class.java))
+                assertEquals(game.result.playerOneDeviationDelta, response.get("$.data.games.edges[$index].node.result.playerOneDeviationDelta", Int::class.java))
+                assertEquals(game.result.playerOneRatingDelta, response.get("$.data.games.edges[$index].node.result.playerOneRatingDelta", Int::class.java))
+                assertEquals(game.result.playerTwoScore, response.get("$.data.games.edges[$index].node.result.playerTwoScore", Int::class.java))
+                assertEquals(game.result.playerTwoDeviationDelta, response.get("$.data.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
+                assertEquals(game.result.playerTwoRatingDelta, response.get("$.data.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+            }
         }
     }
 }

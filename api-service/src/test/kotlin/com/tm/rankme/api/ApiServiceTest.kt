@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.test.context.ActiveProfiles
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -30,5 +31,21 @@ internal class ApiServiceTest {
         val restTemplate = ApiService().queryServiceRestTemplate(RestTemplateBuilder())
         // then
         assertNotNull(restTemplate)
+    }
+
+    @Test
+    internal fun `Should return schema parser dictionary`() {
+        // when
+        val dictionary = ApiService().schemaParserDictionary()
+        // then
+        assertEquals(setOf("CompletedGame", "ScheduledGame"), dictionary.getDictionary().keys)
+    }
+
+    @Test
+    internal fun `Should return object mapper module for game deserialization`() {
+        // when
+        val module = ApiService().objectMapperGameModule()
+        // then
+        assertContains(module.moduleName, "SimpleModule")
     }
 }

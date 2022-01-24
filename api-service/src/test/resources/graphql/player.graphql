@@ -26,13 +26,15 @@ query {
                     playerTwoName
                     playerTwoRating
                     playerTwoDeviation
-                    result {
-                        playerOneScore
-                        playerOneDeviationDelta
-                        playerOneRatingDelta
-                        playerTwoScore
-                        playerTwoDeviationDelta
-                        playerTwoRatingDelta
+                    ... on CompletedGame {
+                        result {
+                            playerOneScore
+                            playerOneDeviationDelta
+                            playerOneRatingDelta
+                            playerTwoScore
+                            playerTwoDeviationDelta
+                            playerTwoRatingDelta
+                        }
                     }
                 }
             }

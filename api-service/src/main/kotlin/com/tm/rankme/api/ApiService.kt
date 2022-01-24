@@ -1,6 +1,12 @@
 package com.tm.rankme.api
 
+import com.fasterxml.jackson.databind.Module
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.tm.rankme.api.query.game.CompletedGame
+import com.tm.rankme.api.query.game.Game
+import com.tm.rankme.api.query.game.ScheduledGame
 import com.tm.rankme.api.scalar.LocalDateTimeCoercing
+import graphql.kickstart.tools.SchemaParserDictionary
 import graphql.schema.GraphQLScalarType
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -23,6 +29,20 @@ class ApiService {
     @Bean
     fun queryServiceRestTemplate(builder: RestTemplateBuilder): RestTemplate {
         return builder.build()
+    }
+
+    @Bean
+    fun schemaParserDictionary(): SchemaParserDictionary {
+        return SchemaParserDictionary()
+            .add(CompletedGame::class)
+            .add(ScheduledGame::class)
+    }
+
+    @Bean
+    fun objectMapperGameModule(): Module {
+        val gameModule = SimpleModule()
+        gameModule.addDeserializer(Game::class.java, GameDeserializer())
+        return gameModule
     }
 }
 

@@ -21,6 +21,4 @@ type Query {
     games(query: GetGamesForLeagueQuery): GameConnection @connection(for: "Game")
 }
 
-scalar String
-
 scalar LocalDateTime
