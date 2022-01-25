@@ -23,7 +23,7 @@ Feature: League
       | Optimus Prime | 350       | 1500   |
       | Bumblebee     | 350       | 1500   |
 
-  Scenario: Create league with games and players
+  Scenario: Create league with players and games
     * I create league "Star Wars"
     * I use league "Star Wars"
     * I create player "Han Solo"

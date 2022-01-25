@@ -33,9 +33,11 @@ class GetLeague(
                     dateTime
                     playerOneId playerOneName playerOneRating playerOneDeviation
                     playerTwoId playerTwoName playerTwoRating playerTwoDeviation
-                    result {
-                        playerOneScore playerOneDeviationDelta playerOneRatingDelta
-                        playerTwoScore playerTwoDeviationDelta playerTwoRatingDelta
+                    ... on CompletedGame {
+                        result {
+                            playerOneScore playerOneDeviationDelta playerOneRatingDelta
+                            playerTwoScore playerTwoDeviationDelta playerTwoRatingDelta
+                        }
                     }
                 }
             }
