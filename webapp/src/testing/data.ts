@@ -58,6 +58,14 @@ export const LEAGUE_WITH_PLAYERS_AND_GAMES = {
             playerTwoScore: 0, playerTwoRatingDelta: -34
           }
         }
+      },
+      {
+        cursor: 'game-3-cur',
+        node: {
+          id: 'game-3', dateTime: '2021-12-30T16:25:00',
+          playerOneId: 'player-3', playerOneName: 'Player-3', playerOneRating: 1438,
+          playerTwoId: 'player-1', playerTwoName: 'Player-1', playerTwoRating: 1285
+        }
       }
     ]
   }
@@ -85,11 +93,7 @@ export const GAMES_PAGE = {
       node: {
         id: 'game-2', dateTime: '2021-12-30T15:50:00',
         playerOneId: 'player-2', playerOneName: 'Player-2', playerOneRating: 2367,
-        playerTwoId: 'player-3', playerTwoName: 'Player-3', playerTwoRating: 1594,
-        result: {
-          playerOneScore: 2, playerOneRatingDelta: 34,
-          playerTwoScore: 0, playerTwoRatingDelta: -34
-        }
+        playerTwoId: 'player-3', playerTwoName: 'Player-3', playerTwoRating: 1594
       }
     },
     {

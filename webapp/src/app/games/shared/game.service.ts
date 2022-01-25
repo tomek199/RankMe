@@ -28,9 +28,11 @@ export class GameService {
                 id dateTime
                 playerOneId playerOneName playerOneRating
                 playerTwoId playerTwoName playerTwoRating
-                result {
-                  playerOneScore playerOneRatingDelta
-                  playerTwoScore playerTwoRatingDelta
+                ... on CompletedGame {
+                  result {
+                    playerOneScore playerOneRatingDelta
+                    playerTwoScore playerTwoRatingDelta
+                  }
                 }
               }
             }
@@ -57,9 +59,11 @@ export class GameService {
                 id dateTime
                 playerOneId playerOneName playerOneRating
                 playerTwoId playerTwoName playerTwoRating
-                result {
-                  playerOneScore playerOneRatingDelta
-                  playerTwoScore playerTwoRatingDelta
+                ... on CompletedGame {
+                  result {
+                    playerOneScore playerOneRatingDelta
+                    playerTwoScore playerTwoRatingDelta
+                  }
                 }
               }
             }

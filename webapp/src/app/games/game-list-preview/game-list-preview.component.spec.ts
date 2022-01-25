@@ -61,9 +61,13 @@ describe('GameListPreviewComponent', () => {
       const players = columns[1].querySelectorAll('p');
       expect(players[0].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.playerOneName);
       expect(players[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.playerTwoName);
-      const result = columns[2].querySelectorAll('p');
-      expect(result[0].textContent).toBeDefined();
-      expect(result[1].textContent).toBeDefined();
+      if(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.result != null) {
+        const result = columns[2].querySelectorAll('p');
+        expect(result[0].textContent).toBeDefined();
+        expect(result[1].textContent).toBeDefined();
+      } else {
+        expect(columns[2].querySelector('p')?.textContent).toEqual('-');
+      }
     })
   });
 
@@ -73,6 +77,6 @@ describe('GameListPreviewComponent', () => {
     loadMoreButton.triggerEventHandler('click', null)
     fixture.detectChanges()
     const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
-    expect(rows.length).toEqual(5);
+    expect(rows.length).toEqual(6);
   });
 });
