@@ -23,6 +23,18 @@ input GetGamesForLeagueQuery {
     after: String
 }
 
+input GetCompletedGamesForLeagueQuery {
+    leagueId: String!
+    first: Int!
+    after: String
+}
+
+input GetScheduledGamesForLeagueQuery {
+    leagueId: String!
+    first: Int!
+    after: String
+}
+
 interface Game {
     id: String!
     dateTime: LocalDateTime!
