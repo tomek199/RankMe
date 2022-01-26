@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.tm.rankme.api.query.game.CompletedGame
 import com.tm.rankme.api.query.game.Game
+import com.tm.rankme.api.query.game.GameDeserializer
 import com.tm.rankme.api.query.game.ScheduledGame
 import com.tm.rankme.api.scalar.LocalDateTimeCoercing
 import graphql.kickstart.tools.SchemaParserDictionary

@@ -1,4 +1,4 @@
-package com.tm.rankme.api
+package com.tm.rankme.api.query.game
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
 import com.fasterxml.jackson.core.JsonParser
@@ -7,9 +7,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.tm.rankme.api.query.game.CompletedGame
-import com.tm.rankme.api.query.game.Result
-import com.tm.rankme.api.query.game.ScheduledGame
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test

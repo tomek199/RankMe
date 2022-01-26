@@ -1,4 +1,4 @@
-package com.tm.rankme.api
+package com.tm.rankme.api.query.game
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
@@ -6,9 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.tm.rankme.api.query.game.CompletedGame
-import com.tm.rankme.api.query.game.Game
-import com.tm.rankme.api.query.game.ScheduledGame
 
 class GameDeserializer : JsonDeserializer<Game>() {
     private val mapper = jacksonObjectMapper().also {
