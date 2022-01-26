@@ -6,7 +6,7 @@ query {
         name
         deviation
         rating
-        games(first: 3) {
+        games(first: 5) {
             pageInfo {
                 hasPreviousPage
                 hasNextPage
@@ -36,6 +36,60 @@ query {
                             playerTwoRatingDelta
                         }
                     }
+                }
+            }
+        }
+        completedGames(first: 3) {
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+                startCursor
+                endCursor
+            }
+            edges {
+                cursor
+                node {
+                    id
+                    dateTime
+                    playerOneId
+                    playerOneName
+                    playerOneRating
+                    playerOneDeviation
+                    playerTwoId
+                    playerTwoName
+                    playerTwoRating
+                    playerTwoDeviation
+                    result {
+                        playerOneScore
+                        playerOneDeviationDelta
+                        playerOneRatingDelta
+                        playerTwoScore
+                        playerTwoDeviationDelta
+                        playerTwoRatingDelta
+                    }
+                }
+            }
+        }
+        scheduledGames(first: 2) {
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+                startCursor
+                endCursor
+            }
+            edges {
+                cursor
+                node {
+                    id
+                    dateTime
+                    playerOneId
+                    playerOneName
+                    playerOneRating
+                    playerOneDeviation
+                    playerTwoId
+                    playerTwoName
+                    playerTwoRating
+                    playerTwoDeviation
                 }
             }
         }
