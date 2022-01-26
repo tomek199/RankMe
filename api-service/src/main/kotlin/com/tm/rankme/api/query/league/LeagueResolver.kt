@@ -1,8 +1,6 @@
 package com.tm.rankme.api.query.league
 
-import com.tm.rankme.api.query.game.Game
-import com.tm.rankme.api.query.game.GameQueryHandler
-import com.tm.rankme.api.query.game.GetGamesForLeagueQuery
+import com.tm.rankme.api.query.game.*
 import com.tm.rankme.api.query.player.GetPlayersQuery
 import com.tm.rankme.api.query.player.Player
 import com.tm.rankme.api.query.player.PlayerQueryHandler
@@ -21,4 +19,10 @@ class LeagueResolver(
 
     fun games(league: League, first: Int, after: String?, env: DataFetchingEnvironment): Connection<Game> =
         gameQueryHandler.handle(GetGamesForLeagueQuery(league.id, first, after))
+
+    fun completedGames(league: League, first: Int, after: String?, env: DataFetchingEnvironment): Connection<CompletedGame> =
+        gameQueryHandler.handle(GetCompletedGamesForLeagueQuery(league.id, first, after))
+
+    fun scheduledGames(league: League, first: Int, after: String?, env: DataFetchingEnvironment): Connection<ScheduledGame> =
+        gameQueryHandler.handle(GetScheduledGamesForLeagueQuery(league.id, first, after))
 }
