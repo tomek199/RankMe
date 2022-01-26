@@ -5,11 +5,9 @@ import com.tm.rankme.model.Page
 interface GameRepository {
     fun byId(id: String): Game?
     fun store(game: Game)
-    @Deprecated("Games split")
     fun byLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
     fun completedByLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
     fun scheduledByLeagueId(leagueId: String, first: Int, after: String? = null): Page<Game>
-    @Deprecated("Games split")
     fun byPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
     fun completedByPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
     fun scheduledByPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
