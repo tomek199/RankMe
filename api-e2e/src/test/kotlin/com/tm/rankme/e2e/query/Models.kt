@@ -31,6 +31,20 @@ data class Game(
     val result: Result? = null
 )
 
+data class CompletedGame(
+    val id: String,
+    val dateTime: String,
+    val playerOneId: String,
+    val playerOneName: String,
+    val playerOneRating: Int,
+    val playerOneDeviation: Int,
+    val playerTwoId: String,
+    val playerTwoName: String,
+    val playerTwoRating: Int,
+    val playerTwoDeviation: Int,
+    val result: Result? = null
+)
+
 data class Result(
     val playerOneScore: Int,
     val playerOneDeviationDelta: Int,
@@ -38,6 +52,19 @@ data class Result(
     val playerTwoScore: Int,
     val playerTwoDeviationDelta: Int,
     val playerTwoRatingDelta: Int
+)
+
+data class ScheduledGame(
+    val id: String,
+    val dateTime: String,
+    val playerOneId: String,
+    val playerOneName: String,
+    val playerOneRating: Int,
+    val playerOneDeviation: Int,
+    val playerTwoId: String,
+    val playerTwoName: String,
+    val playerTwoRating: Int,
+    val playerTwoDeviation: Int,
 )
 
 data class Connection<T>(

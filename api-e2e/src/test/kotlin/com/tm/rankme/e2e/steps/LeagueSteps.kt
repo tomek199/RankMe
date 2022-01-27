@@ -18,7 +18,6 @@ import kotlin.test.*
 
 class LeagueSteps(
     private val graphQlClient: GraphQLKtorClient,
-    private val dbUtil: DatabaseUtil,
     private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
 ) : En {
@@ -142,6 +141,7 @@ class LeagueSteps(
                 } ?: fail("Cannot get league by id $id")
             }
         }
+
         Then("I have first {int} of {int} leagues listed") {
                 first: Int, of: Int ->
             runBlocking {

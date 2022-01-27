@@ -7,7 +7,6 @@ import com.tm.rankme.e2e.mutation.PlayGame
 import com.tm.rankme.e2e.mutation.ScheduleGame
 import com.tm.rankme.e2e.query.GetPlayer
 import com.tm.rankme.e2e.util.ApplicationContext
-import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -18,7 +17,6 @@ import kotlin.test.*
 
 class PlayerSteps(
     private val graphQlClient: GraphQLKtorClient,
-    private val dbUtil: DatabaseUtil,
     private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
 ) : En {
@@ -57,13 +55,17 @@ class PlayerSteps(
                 playerOneName: String, playerTwoName: String, hours: Int ->
             runBlocking {
                 delay(stepDelay)
-                val playerOneId = context.playerId(playerOneName)
-                val playerTwoId = context.playerId(playerTwoName)
-                val dateTime = LocalDateTime.now().plusHours(hours.toLong())
-                val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
-                graphQlClient.execute(mutation).data?.let {
-                    assertEquals(status, it.scheduleGame)
-                } ?: fail("Cannot execute scheduleGame command")
+                scheduleGame(playerOneName, playerTwoName, hours)
+            }
+        }
+
+        When("I schedule {int} games between {string} and {string} in {int} hours") {
+                numberOfGames: Int, playerOneName: String, playerTwoName: String, hours: Int ->
+            runBlocking {
+                delay(stepDelay)
+                repeat(numberOfGames) {
+                    scheduleGame(playerOneName, playerTwoName, hours + it)
+                }
             }
         }
 
@@ -126,5 +128,15 @@ class PlayerSteps(
         graphQlClient.execute(mutation).data?.let {
             assertEquals(status, it.playGame)
         } ?: fail("Cannot execute playGame command")
+    }
+
+    private suspend fun scheduleGame(playerOneName: String, playerTwoName: String, hours: Int) {
+        val playerOneId = context.playerId(playerOneName)
+        val playerTwoId = context.playerId(playerTwoName)
+        val dateTime = LocalDateTime.now().plusHours(hours.toLong())
+        val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
+        graphQlClient.execute(mutation).data?.let {
+            assertEquals(status, it.scheduleGame)
+        } ?: fail("Cannot execute scheduleGame command")
     }
 }
