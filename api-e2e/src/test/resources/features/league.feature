@@ -42,7 +42,8 @@ Feature: League
     * I play 2 games between "Han Solo" and "Luke Skywalker"
     * I play 2 games between "Chewbacca" and "R2D2"
     * I schedule 3 games between "Han Solo" and "Darth Vader" in 4 hours
-    Then I have first 26 of 26 games connected in league
+    Then I have 26 games connected in league
+    * I have 14 completed and 12 scheduled games connected in league
     * I have players in league sorted by ranking
 
   Scenario: Create multiple leagues to check pagination

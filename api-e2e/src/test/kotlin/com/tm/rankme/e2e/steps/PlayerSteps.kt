@@ -99,19 +99,47 @@ class PlayerSteps(
             }
         }
 
-        Then("I have player {string} with first {int} of {int} games connected") {
-                name: String, first: Int, of: Int ->
+        Then("I have player {string} with {int} games connected") {
+                name: String, numberOfGames: Int ->
             runBlocking {
                 val id = context.playerId(name)
-                val query = GetPlayer(id, first)
+                val query = GetPlayer(id, numberOfGames)
                 graphQlClient.execute(query).data?.let {
                     assertNotNull(it.player.games)
                     assertFalse(it.player.games.pageInfo.hasPreviousPage)
-                    assertEquals(first < of, it.player.games.pageInfo.hasNextPage)
-                    assertEquals(first, it.player.games.edges.size)
+                    assertFalse(it.player.games.pageInfo.hasNextPage)
+                    assertEquals(numberOfGames, it.player.games.edges.size)
                     assertEquals(it.player.games.pageInfo.startCursor, it.player.games.edges.first().cursor)
                     assertEquals(it.player.games.pageInfo.endCursor, it.player.games.edges.last().cursor)
                     it.player.games.edges.forEach { edge ->
+                        assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
+                    }
+                } ?: fail("Cannot get player by id $id")
+            }
+        }
+
+        Then("I have player {string} with {int} completed and {int} scheduled games connected") {
+                name: String, numberOfCompletedGame: Int, numberOfScheduledGames: Int ->
+            runBlocking {
+                val id = context.playerId(name)
+                val query = GetPlayer(id, numberOfCompletedGame, numberOfScheduledGames)
+                graphQlClient.execute(query).data?.let {
+                    assertNotNull(it.player.completedGames)
+                    assertFalse(it.player.completedGames.pageInfo.hasPreviousPage)
+                    assertFalse(it.player.completedGames.pageInfo.hasNextPage)
+                    assertEquals(numberOfCompletedGame, it.player.completedGames.edges.size)
+                    assertEquals(it.player.completedGames.pageInfo.startCursor, it.player.completedGames.edges.first().cursor)
+                    assertEquals(it.player.completedGames.pageInfo.endCursor, it.player.completedGames.edges.last().cursor)
+                    it.player.completedGames.edges.forEach { edge ->
+                        assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
+                    }
+                    assertNotNull(it.player.scheduledGames)
+                    assertFalse(it.player.scheduledGames.pageInfo.hasPreviousPage)
+                    assertFalse(it.player.scheduledGames.pageInfo.hasNextPage)
+                    assertEquals(numberOfScheduledGames, it.player.scheduledGames.edges.size)
+                    assertEquals(it.player.scheduledGames.pageInfo.startCursor, it.player.scheduledGames.edges.first().cursor)
+                    assertEquals(it.player.scheduledGames.pageInfo.endCursor, it.player.scheduledGames.edges.last().cursor)
+                    it.player.scheduledGames.edges.forEach { edge ->
                         assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
                     }
                 } ?: fail("Cannot get player by id $id")

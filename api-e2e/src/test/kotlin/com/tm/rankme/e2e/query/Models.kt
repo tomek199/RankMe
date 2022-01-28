@@ -5,7 +5,9 @@ data class Player(
     val name: String,
     val deviation: Int,
     val rating: Int,
-    val games: Connection<Game>?
+    val games: Connection<Game>?,
+    val completedGames: Connection<CompletedGame>?,
+    val scheduledGames: Connection<ScheduledGame>?
 )
 
 data class League(
@@ -14,7 +16,9 @@ data class League(
     val allowDraws: Boolean,
     val maxScore: Int,
     val players: List<Player>?,
-    val games: Connection<Game>?
+    val games: Connection<Game>?,
+    val completedGames: Connection<CompletedGame>?,
+    val scheduledGames: Connection<ScheduledGame>?
 )
 
 data class Game(

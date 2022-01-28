@@ -75,7 +75,7 @@ class LeagueSteps(
         Then("I have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
             runBlocking {
                 val id = context.leagueId()
-                val query = GetLeague(id)
+                val query = GetLeague(id = id, )
                 graphQlClient.execute(query).data?.let {
                     assertEquals(id, it.league.id)
                     assertEquals(name, it.league.name)
@@ -115,23 +115,52 @@ class LeagueSteps(
             }
         }
 
-        Then("I have first {int} of {int} games connected in league") {
-                first: Int, of: Int ->
+        Then("I have {int} games connected in league") { numberOfGames: Int ->
             runBlocking {
                 val id = context.leagueId()
-                val query = GetLeague(id, first)
+                val query = GetLeague(id, numberOfGames)
                 graphQlClient.execute(query).data?.let {
                     assertNotNull(it.league.games)
                     assertFalse(it.league.games.pageInfo.hasPreviousPage)
-                    assertEquals(first < of, it.league.games.pageInfo.hasNextPage)
-                    assertEquals(first, it.league.games.edges.size)
+                    assertFalse(it.league.games.pageInfo.hasNextPage)
+                    assertEquals(numberOfGames, it.league.games.edges.size)
                     assertEquals(it.league.games.pageInfo.startCursor, it.league.games.edges.first().cursor)
                     assertEquals(it.league.games.pageInfo.endCursor, it.league.games.edges.last().cursor)
+                    val playerIds = it.league.players?.map { player -> player.id } ?.toList()
+                        ?: fail("Cannot get players for league ${it.league.name}")
                     it.league.games.edges.forEach { edge ->
-                        it.league.players?.map { player -> player.id } ?.toList()
-                            .also { players -> players?.contains(edge.node.playerOneId) }
-                            .also { players -> players?.contains(edge.node.playerTwoId) }
-                            ?: fail("Cannot get players for league ${it.league.name}")
+                        assertTrue(playerIds.contains(edge.node.playerOneId))
+                        assertTrue(playerIds.contains(edge.node.playerTwoId))
+                    }
+                } ?: fail("Cannot get league by id $id")
+            }
+        }
+
+        Then("I have {int} completed and {int} scheduled games connected in league") {
+                numberOfCompletedGames: Int, numberOfScheduledGames: Int ->
+            runBlocking {
+                val id = context.leagueId()
+                val query = GetLeague(id, numberOfCompletedGames, numberOfScheduledGames)
+                graphQlClient.execute(query).data?.let {
+                    assertNotNull(it.league.completedGames)
+                    assertFalse(it.league.completedGames.pageInfo.hasPreviousPage)
+                    assertFalse(it.league.completedGames.pageInfo.hasNextPage)
+                    assertEquals(it.league.completedGames.pageInfo.startCursor, it.league.completedGames.edges.first().cursor)
+                    assertEquals(it.league.completedGames.pageInfo.endCursor, it.league.completedGames.edges.last().cursor)
+                    assertNotNull(it.league.scheduledGames)
+                    assertFalse(it.league.scheduledGames.pageInfo.hasPreviousPage)
+                    assertFalse(it.league.scheduledGames.pageInfo.hasNextPage)
+                    assertEquals(it.league.scheduledGames.pageInfo.startCursor, it.league.scheduledGames.edges.first().cursor)
+                    assertEquals(it.league.scheduledGames.pageInfo.endCursor, it.league.scheduledGames.edges.last().cursor)
+                    val playerIds = it.league.players?.map { player -> player.id } ?.toList()
+                        ?: fail("Cannot get players for league ${it.league.name}")
+                    it.league.completedGames.edges.forEach { edge ->
+                        assertTrue(playerIds.contains(edge.node.playerOneId))
+                        assertTrue(playerIds.contains(edge.node.playerTwoId))
+                    }
+                    it.league.scheduledGames.edges.forEach { edge ->
+                        assertTrue(playerIds.contains(edge.node.playerOneId))
+                        assertTrue(playerIds.contains(edge.node.playerTwoId))
                     }
                 } ?: fail("Cannot get league by id $id")
             }
