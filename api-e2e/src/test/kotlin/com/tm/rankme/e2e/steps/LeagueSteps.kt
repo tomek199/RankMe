@@ -7,7 +7,6 @@ import com.tm.rankme.e2e.mutation.RenameLeague
 import com.tm.rankme.e2e.query.GetLeague
 import com.tm.rankme.e2e.query.GetLeagues
 import com.tm.rankme.e2e.util.ApplicationContext
-import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
@@ -25,57 +24,56 @@ class LeagueSteps(
     init {
         Given("I create league {string}") { name: String ->
             runBlocking {
-                delay(stepDelay)
                 val mutation = CreateLeague(name)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.createLeague)
+                delay(stepDelay)
             }
         }
 
         Given("I create {int} leagues") { numberOfLeagues: Int ->
             runBlocking {
-                delay(stepDelay)
                 repeat(numberOfLeagues) {
                     val mutation = CreateLeague("League ${Random.nextInt()}")
                     val result = graphQlClient.execute(mutation)
                     assertEquals(status, result.data?.createLeague)
                 }
+                delay(stepDelay)
             }
         }
 
         Given("I use league {string}") { name: String ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = graphQlClient.execute(GetLeagues(1)).data?.leagues?.edges
                     ?.find { it.node.name == name } ?.node?.id ?: fail("Cannot find league $name")
                 context.leagueId = leagueId
+                delay(stepDelay)
             }
         }
 
         When("I change league settings to allow draws {} and max score {int}") {
                 allowDraws: Boolean, maxScore: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.leagueId()
                 val mutation = ChangeLeagueSettings(id, allowDraws, maxScore)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.changeLeagueSettings)
+                delay(stepDelay)
             }
         }
 
         When("I rename league to {string}") { newName: String ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.leagueId()
                 val mutation = RenameLeague(id, newName)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.renameLeague)
+                delay(stepDelay)
             }
         }
 
         Then("I have league {string} with allow draws {} and max score {int}") { name: String, allowDraws: Boolean, maxScore: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.leagueId()
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
@@ -89,7 +87,6 @@ class LeagueSteps(
 
         Then("I have players in league:") { playersTable: DataTable ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.leagueId()
                 val query = GetLeague(id)
                 graphQlClient.execute(query).data?.let {
@@ -106,7 +103,6 @@ class LeagueSteps(
 
         Then("I have players in league sorted by ranking") {
             runBlocking {
-                delay(stepDelay)
                 val id = context.leagueId()
                 val query = GetLeague(id)
                 var previousRating = Int.MAX_VALUE
@@ -122,7 +118,6 @@ class LeagueSteps(
         Then("I have first {int} of {int} games connected in league") {
                 first: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.leagueId()
                 val query = GetLeague(id, first)
                 graphQlClient.execute(query).data?.let {
@@ -145,7 +140,6 @@ class LeagueSteps(
         Then("I have first {int} of {int} leagues listed") {
                 first: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val cursors = allLeaguesCursors(of)
                 val query = GetLeagues(first)
                 graphQlClient.execute(query).data?.let {
@@ -161,7 +155,6 @@ class LeagueSteps(
         Then("I have first {int} after {int} of {int} leagues listed") {
                 first: Int, after: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val cursors = allLeaguesCursors(of)
                 val query = GetLeagues(first, cursors[after - 1])
                 graphQlClient.execute(query).data?.let {
@@ -176,7 +169,6 @@ class LeagueSteps(
 
         Then("I have no leagues") {
             runBlocking {
-                delay(stepDelay)
                 val query = GetLeagues(1)
                 graphQlClient.execute(query).data?.let {
                     assertFalse(it.leagues.pageInfo.hasPreviousPage)

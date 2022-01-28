@@ -25,54 +25,53 @@ class PlayerSteps(
         Given("I create player {string}") {
                 playerName: String ->
             runBlocking {
-                delay(stepDelay)
                 val mutation = CreatePlayer(context.leagueId(), playerName)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.createPlayer)
                 context.update()
+                delay(stepDelay)
             }
         }
 
         When("I play game between {string} and {string} with result {int} : {int}") {
                 playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int ->
             runBlocking {
-                delay(stepDelay)
                 playGame(playerOneName, playerTwoName, playerOneScore, playerTwoScore)
+                delay(stepDelay)
             }
         }
 
         When("I play {int} games between {string} and {string}") {
                 numberOfGames: Int, playerOneName: String, playerTwoName: String ->
             runBlocking {
-                delay(stepDelay)
                 repeat(numberOfGames) {
                     playGame(playerOneName, playerTwoName, Random.nextInt(10), Random.nextInt(10))
                 }
+                delay(stepDelay)
             }
         }
 
         When("I schedule game between {string} and {string} in {int} hours") {
                 playerOneName: String, playerTwoName: String, hours: Int ->
             runBlocking {
-                delay(stepDelay)
                 scheduleGame(playerOneName, playerTwoName, hours)
+                delay(stepDelay)
             }
         }
 
         When("I schedule {int} games between {string} and {string} in {int} hours") {
                 numberOfGames: Int, playerOneName: String, playerTwoName: String, hours: Int ->
             runBlocking {
-                delay(stepDelay)
                 repeat(numberOfGames) {
                     scheduleGame(playerOneName, playerTwoName, hours + it)
                 }
+                delay(stepDelay)
             }
         }
 
         When("I complete game between {string} and {string} with result {int} : {int}") {
                 playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int ->
             runBlocking {
-                delay(stepDelay)
                 val playerOneId = context.playerId(playerOneName)
                 val query = GetPlayer(playerOneId, 1)
                 val gameId = graphQlClient.execute(query).data?.player?.games?.edges?.first { edge ->
@@ -82,13 +81,13 @@ class PlayerSteps(
                 graphQlClient.execute(mutation).data?.let {
                     assertEquals(status, it.completeGame)
                 } ?: fail("Cannot execute completeGame command")
+                delay(stepDelay)
             }
         }
 
         Then("I have player {string} with deviation {int} and rating {int}") {
                 name: String, deviation: Int, rating: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.playerId(name)
                 val query = GetPlayer(id)
                 graphQlClient.execute(query).data?.let {
@@ -103,7 +102,6 @@ class PlayerSteps(
         Then("I have player {string} with first {int} of {int} games connected") {
                 name: String, first: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.playerId(name)
                 val query = GetPlayer(id, first)
                 graphQlClient.execute(query).data?.let {

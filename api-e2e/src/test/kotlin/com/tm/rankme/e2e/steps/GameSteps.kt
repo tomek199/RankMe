@@ -7,7 +7,6 @@ import com.tm.rankme.e2e.query.GetScheduledGames
 import com.tm.rankme.e2e.util.ApplicationContext
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import kotlin.test.*
@@ -22,7 +21,6 @@ class GameSteps(
         Then("I have first {int} of {int} games listed") {
                 first: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val cursors = allGamesCursors(leagueId, of)
                 val query = GetGames(leagueId, first)
@@ -39,7 +37,6 @@ class GameSteps(
         Then("I have first {int} after {int} of {int} games listed") {
                 first: Int, after: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val cursors = allGamesCursors(leagueId, of)
                 val query = GetGames(leagueId, first, cursors[after - 1])
@@ -56,7 +53,6 @@ class GameSteps(
         Then("I have first {int} of {int} completed games listed") {
                 first: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val cursors = allCompletedGamesCursors(leagueId, of)
                 val query = GetCompletedGames(leagueId, first)
@@ -73,7 +69,6 @@ class GameSteps(
         Then("I have first {int} after {int} of {int} completed games listed") {
                 first: Int, after: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val cursors = allCompletedGamesCursors(leagueId, of)
                 val query = GetCompletedGames(leagueId, first, cursors[after - 1])
@@ -90,7 +85,6 @@ class GameSteps(
         Then("I have first {int} of {int} scheduled games listed") {
                 first: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val cursors = allScheduledGamesCursors(leagueId, of)
                 val query = GetScheduledGames(leagueId, first)
@@ -107,7 +101,6 @@ class GameSteps(
         Then("I have first {int} after {int} of {int} scheduled games listed") {
                 first: Int, after: Int, of: Int ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val cursors = allScheduledGamesCursors(leagueId, of)
                 val query = GetScheduledGames(leagueId, first, cursors[after - 1])
@@ -124,7 +117,6 @@ class GameSteps(
         Then("I have {int} games:") {
                 first: Int, gamesTable: DataTable ->
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val query = GetGames(leagueId, first)
                 graphQlClient.execute(query).data?.let {
@@ -150,7 +142,6 @@ class GameSteps(
 
         Then("I have no games") {
             runBlocking {
-                delay(stepDelay)
                 val leagueId = context.leagueId()
                 val query = GetGames(leagueId, 1)
                 graphQlClient.execute(query).data?.let {
