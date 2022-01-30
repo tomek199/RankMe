@@ -23,7 +23,19 @@ input GetGamesForLeagueQuery {
     after: String
 }
 
-type Game {
+input GetCompletedGamesForLeagueQuery {
+    leagueId: String!
+    first: Int!
+    after: String
+}
+
+input GetScheduledGamesForLeagueQuery {
+    leagueId: String!
+    first: Int!
+    after: String
+}
+
+interface Game {
     id: String!
     dateTime: LocalDateTime!
     playerOneId: String!
@@ -34,7 +46,33 @@ type Game {
     playerTwoName: String!
     playerTwoRating: Int!
     playerTwoDeviation: Int!
-    result: Result
+}
+
+type CompletedGame implements Game {
+    id: String!
+    dateTime: LocalDateTime!
+    playerOneId: String!
+    playerOneName: String!
+    playerOneRating: Int!
+    playerOneDeviation: Int!
+    playerTwoId: String!
+    playerTwoName: String!
+    playerTwoRating: Int!
+    playerTwoDeviation: Int!
+    result: Result!
+}
+
+type ScheduledGame implements Game {
+    id: String!
+    dateTime: LocalDateTime!
+    playerOneId: String!
+    playerOneName: String!
+    playerOneRating: Int!
+    playerOneDeviation: Int!
+    playerTwoId: String!
+    playerTwoName: String!
+    playerTwoRating: Int!
+    playerTwoDeviation: Int!
 }
 
 type Result {

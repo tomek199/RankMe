@@ -12,7 +12,40 @@ query {
             deviation
             rating
         }
-        games(first: 3) {
+        games(first: 5) {
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+                startCursor
+                endCursor
+            }
+            edges {
+                cursor
+                node {
+                    id
+                    dateTime
+                    playerOneId
+                    playerOneName
+                    playerOneRating
+                    playerOneDeviation
+                    playerTwoId
+                    playerTwoName
+                    playerTwoRating
+                    playerTwoDeviation
+                    ... on CompletedGame {
+                        result {
+                            playerOneScore
+                            playerOneDeviationDelta
+                            playerOneRatingDelta
+                            playerTwoScore
+                            playerTwoDeviationDelta
+                            playerTwoRatingDelta
+                        }
+                    }
+                }
+            }
+        }
+        completedGames(first: 2) {
             pageInfo {
                 hasPreviousPage
                 hasNextPage
@@ -40,6 +73,29 @@ query {
                         playerTwoDeviationDelta
                         playerTwoRatingDelta
                     }
+                }
+            }
+        }
+        scheduledGames(first: 3) {
+            pageInfo {
+                hasPreviousPage
+                hasNextPage
+                startCursor
+                endCursor
+            }
+            edges {
+                cursor
+                node {
+                    id
+                    dateTime
+                    playerOneId
+                    playerOneName
+                    playerOneRating
+                    playerOneDeviation
+                    playerTwoId
+                    playerTwoName
+                    playerTwoRating
+                    playerTwoDeviation
                 }
             }
         }

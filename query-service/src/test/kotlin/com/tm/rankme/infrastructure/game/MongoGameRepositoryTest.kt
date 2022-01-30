@@ -16,10 +16,7 @@ import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.random.Random
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 internal class MongoGameRepositoryTest {
     private val accessor: MongoGameAccessor = mockk()
@@ -255,6 +252,191 @@ internal class MongoGameRepositoryTest {
     }
 
     @Test
+    internal fun `Should return empty completed games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        every { accessor.getByLeagueIdAndResultNotNullOrderByTimestampDesc(leagueId, ofType(Pageable::class)) } returns
+                PageImpl(emptyList(), PageRequest.of(0, 5), 0)
+        // when
+        val page = repository.completedByLeagueId(leagueId, 5)
+        // then
+        assertTrue(page.items.isEmpty())
+        assertFalse(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first completed games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        val games = List(7) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+
+        every { accessor.getByLeagueIdAndResultNotNullOrderByTimestampDesc(leagueId, ofType(Pageable::class)) } returns
+                PageImpl(games, PageRequest.of(0, 7), 10)
+        // when
+        val page = repository.completedByLeagueId(leagueId, 7)
+        // then
+        assertEquals(7, page.items.size)
+        assertEquals(games.first().id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return middle completed games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        val games = List(8) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+        every {
+            accessor.getByLeagueIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(leagueId, games.first().timestamp, ofType(Pageable::class))
+        } returns PageImpl(games.subList(1, 8), PageRequest.of(0, 7), 10)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.completedByLeagueId(leagueId, 5, afterCursor)
+        // then
+        assertEquals(7, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return last completed games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        val games = List(7) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+        every {
+            accessor.getByLeagueIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(leagueId, games.first().timestamp, ofType(Pageable::class))
+        } returns PageImpl(games.takeLast(6), PageRequest.of(0, 6), 6)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.completedByLeagueId(leagueId, 6, afterCursor)
+        // then
+        assertEquals(6, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return empty scheduled games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        every { accessor.getByLeagueIdAndResultNullOrderByTimestampDesc(leagueId, ofType(Pageable::class)) } returns
+                PageImpl(emptyList(), PageRequest.of(0, 5), 0)
+        // when
+        val page = repository.scheduledByLeagueId(leagueId, 5)
+        // then
+        assertTrue(page.items.isEmpty())
+        assertFalse(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first scheduled games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        val games = List(7) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+
+        every { accessor.getByLeagueIdAndResultNullOrderByTimestampDesc(leagueId, ofType(Pageable::class)) } returns
+                PageImpl(games, PageRequest.of(0, 7), 10)
+        // when
+        val page = repository.scheduledByLeagueId(leagueId, 7)
+        // then
+        assertEquals(7, page.items.size)
+        assertEquals(games.first().id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return middle scheduled games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        val games = List(8) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        every {
+            accessor.getByLeagueIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(leagueId, games.first().timestamp, ofType(Pageable::class))
+        } returns PageImpl(games.subList(1, 8), PageRequest.of(0, 7), 10)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.scheduledByLeagueId(leagueId, 5, afterCursor)
+        // then
+        assertEquals(7, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return last scheduled games page for league`() {
+        // given
+        val leagueId = randomNanoId()
+        val games = List(7) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        every {
+            accessor.getByLeagueIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(leagueId, games.first().timestamp, ofType(Pageable::class))
+        } returns PageImpl(games.takeLast(6), PageRequest.of(0, 6), 6)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.scheduledByLeagueId(leagueId, 6, afterCursor)
+        // then
+        assertEquals(6, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
     internal fun `Should return empty games page for player`() {
         // given
         val playerId = randomNanoId()
@@ -347,5 +529,204 @@ internal class MongoGameRepositoryTest {
         assertEquals(games.last().id, page.items.last().node.id)
         assertTrue(page.hasPreviousPage)
         assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return empty completed games page for player`() {
+        // given
+        val playerId = randomNanoId()
+        every { accessor.getByPlayerIdAndResultNotNullOrderByTimestampDesc(playerId, ofType(Pageable::class)) } returns
+                PageImpl(emptyList(), PageRequest.of(0, 3), 0)
+        // when
+        val page = repository.completedByPlayerId(playerId, 3)
+        // then
+        assertTrue(page.items.isEmpty())
+        assertFalse(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first completed games page for player`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(3) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+
+        every { accessor.getByPlayerIdAndResultNotNullOrderByTimestampDesc(playerId, ofType(Pageable::class)) } returns
+                PageImpl(games, PageRequest.of(0, 3), 8)
+        // when
+        val page = repository.completedByPlayerId(playerId, 3)
+        // then
+        assertEquals(3, page.items.size)
+        assertEquals(games.first().id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return middle completed games page for player`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(6) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+        every {
+            accessor.getByPlayerIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(
+                playerId, games.first().timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.subList(1, 6), PageRequest.of(0, 5), 8)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.completedByPlayerId(playerId, 5, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return last completed games page for player`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(6) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+        every {
+            accessor.getByPlayerIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(
+                playerId, games.first().timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.takeLast(5), PageRequest.of(0, 5), 5)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.completedByPlayerId(playerId, 5, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return empty scheduled games page for player`() {
+        // given
+        val playerId = randomNanoId()
+        every { accessor.getByPlayerIdAndResultNullOrderByTimestampDesc(playerId, ofType(Pageable::class)) } returns
+                PageImpl(emptyList(), PageRequest.of(0, 3), 0)
+        // when
+        val page = repository.scheduledByPlayerId(playerId, 3)
+        // then
+        assertTrue(page.items.isEmpty())
+        assertFalse(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first scheduled games page for player`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(3) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+
+        every { accessor.getByPlayerIdAndResultNullOrderByTimestampDesc(playerId, ofType(Pageable::class)) } returns
+                PageImpl(games, PageRequest.of(0, 3), 8)
+        // when
+        val page = repository.scheduledByPlayerId(playerId, 3)
+        // then
+        assertEquals(3, page.items.size)
+        assertEquals(games.first().id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return middle scheduled games page for player`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(6) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        every {
+            accessor.getByPlayerIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(
+                playerId, games.first().timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.subList(1, 6), PageRequest.of(0, 5), 8)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.scheduledByPlayerId(playerId, 5, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return last scheduled games page for player`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(6) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        every {
+            accessor.getByPlayerIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(
+                playerId, games.first().timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.takeLast(5), PageRequest.of(0, 5), 5)
+        val afterCursor = Base64.getEncoder().encodeToString(games.first().timestamp.toString().toByteArray())
+        // when
+        val page = repository.scheduledByPlayerId(playerId, 5, afterCursor)
+        // then
+        assertEquals(5, page.items.size)
+        assertEquals(games[1].id, page.items.first().node.id)
+        assertEquals(games.last().id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertFalse(page.hasNextPage)
+        page.items.forEach { item -> assertNull(item.node.result) }
     }
 }

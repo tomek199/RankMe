@@ -13,7 +13,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 val kotlinVersion = project.getKotlinPluginVersion()
 val cucumberVersion = "6.11.0"
-val graphqlKotlinVersion = "5.1.0"
+val graphqlKotlinVersion = "5.3.2"
 val springBootVersion = "2.5.5"
 
 dependencies {

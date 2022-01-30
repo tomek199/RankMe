@@ -2,7 +2,6 @@ package com.tm.rankme.e2e.util
 
 import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import com.tm.rankme.e2e.query.GetLeague
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -21,7 +20,6 @@ class ApplicationContext(
 
     fun update() {
         runBlocking {
-            delay(stepDelay)
             val id = leagueId ?: throw IllegalStateException("League id is not initialized")
             graphQlClient.execute(GetLeague(id)).data
                 ?.let { it.league.players?.forEach { player -> players[player.name] = player.id } }

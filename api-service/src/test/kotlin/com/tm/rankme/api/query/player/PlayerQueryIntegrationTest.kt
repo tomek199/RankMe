@@ -5,8 +5,12 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.api.query.Item
 import com.tm.rankme.api.query.Page
+import com.tm.rankme.api.query.assertCompletedGame
+import com.tm.rankme.api.query.assertScheduledGame
+import com.tm.rankme.api.query.game.CompletedGame
 import com.tm.rankme.api.query.game.Game
 import com.tm.rankme.api.query.game.Result
+import com.tm.rankme.api.query.game.ScheduledGame
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,8 +41,8 @@ internal class PlayerQueryIntegrationTest {
     internal fun `Should return player`() {
         // given
         val player = Player("9KOnSx8yFXd382KJbeaqO", "Optimus Prime", 186, 2481)
-        val games = List(3) {
-            Game(
+        val completedGames = List(3) {
+            CompletedGame(
                 randomNanoId(), LocalDateTime.now(),
                 player.id, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
@@ -48,12 +52,31 @@ internal class PlayerQueryIntegrationTest {
                 )
             )
         }
-        val page = Page(games.map { Item(it, it.id) }, false, true)
+        val scheduledGames = List(2) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
+        val gamesPage = Page(games.map { Item(it, it.id) }, false, true)
+        val completedGamesPage = Page(completedGames.map { Item(it, it.id) }, false, true)
+        val scheduledGamesPage = Page(scheduledGames.map { Item(it, it.id) }, false, true)
         every { restTemplate.getForObject("$url/query-service/players/${player.id}", Player::class.java) } returns player
         every {
-            restTemplate.exchange("$url/query-service/players/${player.id}/games?first=3",
+            restTemplate.exchange("$url/query-service/players/${player.id}/games?first=5",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
-        } returns ResponseEntity.of(Optional.of(page))
+        } returns ResponseEntity.of(Optional.of(gamesPage))
+        every {
+            restTemplate.exchange("$url/query-service/players/${player.id}/completed-games?first=3",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(completedGamesPage))
+        every {
+            restTemplate.exchange("$url/query-service/players/${player.id}/scheduled-games?first=2",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(scheduledGamesPage))
+
         val request = "graphql/player.graphql"
         // when
         val response = template.postForResource(request)
@@ -64,24 +87,29 @@ internal class PlayerQueryIntegrationTest {
         assertEquals(player.deviation, response.get("$.data.player.deviation", Int::class.java))
         assertEquals(player.rating, response.get("$.data.player.rating", Int::class.java))
 
+        assertEquals(gamesPage.hasPreviousPage, response.get("$.data.player.games.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(gamesPage.hasNextPage, response.get("$.data.player.games.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(gamesPage.items.first().cursor, response.get("$.data.player.games.pageInfo.startCursor"))
+        assertEquals(gamesPage.items.last().cursor, response.get("$.data.player.games.pageInfo.endCursor"))
         games.forEachIndexed {index, game ->
-            assertEquals(game.id, response.get("$.data.player.games.edges[$index].cursor"))
-            assertEquals(game.id, response.get("$.data.player.games.edges[$index].node.id"))
-            assertEquals(game.dateTime.toString(), response.get("$.data.player.games.edges[$index].node.dateTime"))
-            assertEquals(game.playerOneId, response.get("$.data.player.games.edges[$index].node.playerOneId"))
-            assertEquals(game.playerOneName, response.get("$.data.player.games.edges[$index].node.playerOneName"))
-            assertEquals(game.playerOneDeviation, response.get("$.data.player.games.edges[$index].node.playerOneDeviation", Int::class.java))
-            assertEquals(game.playerOneRating, response.get("$.data.player.games.edges[$index].node.playerOneRating", Int::class.java))
-            assertEquals(game.playerTwoId, response.get("$.data.player.games.edges[$index].node.playerTwoId"))
-            assertEquals(game.playerTwoName, response.get("$.data.player.games.edges[$index].node.playerTwoName"))
-            assertEquals(game.playerTwoDeviation, response.get("$.data.player.games.edges[$index].node.playerTwoDeviation", Int::class.java))
-            assertEquals(game.playerTwoRating, response.get("$.data.player.games.edges[$index].node.playerTwoRating", Int::class.java))
-            assertEquals(game.result!!.playerOneScore, response.get("$.data.player.games.edges[$index].node.result.playerOneScore", Int::class.java))
-            assertEquals(game.result!!.playerOneDeviationDelta, response.get("$.data.player.games.edges[$index].node.result.playerOneDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerOneRatingDelta, response.get("$.data.player.games.edges[$index].node.result.playerOneRatingDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoScore, response.get("$.data.player.games.edges[$index].node.result.playerTwoScore", Int::class.java))
-            assertEquals(game.result!!.playerTwoDeviationDelta, response.get("$.data.player.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoRatingDelta, response.get("$.data.player.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+            if (game is CompletedGame) assertCompletedGame(game, response, "$.data.player.games.edges[$index]")
+            else if (game is ScheduledGame) assertScheduledGame(game, response, "$.data.player.games.edges[$index]")
+        }
+
+        assertEquals(completedGamesPage.hasPreviousPage, response.get("$.data.player.completedGames.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(completedGamesPage.hasNextPage, response.get("$.data.player.completedGames.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(completedGamesPage.items.first().cursor, response.get("$.data.player.completedGames.pageInfo.startCursor"))
+        assertEquals(completedGamesPage.items.last().cursor, response.get("$.data.player.completedGames.pageInfo.endCursor"))
+        completedGames.forEachIndexed { index, game ->
+            assertCompletedGame(game, response, "$.data.player.completedGames.edges[$index]")
+        }
+
+        assertEquals(scheduledGamesPage.hasPreviousPage, response.get("$.data.player.scheduledGames.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(scheduledGamesPage.hasNextPage, response.get("$.data.player.scheduledGames.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(scheduledGamesPage.items.first().cursor, response.get("$.data.player.scheduledGames.pageInfo.startCursor"))
+        assertEquals(scheduledGamesPage.items.last().cursor, response.get("$.data.player.scheduledGames.pageInfo.endCursor"))
+        scheduledGames.forEachIndexed { index, game ->
+            assertScheduledGame(game, response, "$.data.player.scheduledGames.edges[$index]")
         }
     }
 }

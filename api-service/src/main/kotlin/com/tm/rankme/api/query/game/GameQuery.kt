@@ -10,4 +10,8 @@ class GameQuery(
 ) : GraphQLQueryResolver {
 
     fun games(query: GetGamesForLeagueQuery): Connection<Game> = queryHandler.handle(query)
+
+    fun completedGames(query: GetCompletedGamesForLeagueQuery): Connection<CompletedGame> = queryHandler.handle(query)
+
+    fun scheduledGames(query: GetScheduledGamesForLeagueQuery): Connection<ScheduledGame> = queryHandler.handle(query)
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { League } from '../../shared/model/league';
 import { Page } from '../../shared/model/page';
+import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS, SCHEDULED_GAME_EDGE_FIELDS } from '../../shared/graphql-fields';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,7 @@ export class LeagueService {
       query: gql`
         query leagues($first: Int!) {
           leagues(query: {first: $first}) {
-            pageInfo {
-              hasNextPage endCursor
-            }
+            ${PAGE_INFO_FIELDS}
             edges {
               node {
                 id name
@@ -41,9 +40,7 @@ export class LeagueService {
       query: gql`
         query leagues($first: Int!, $after: String) {
           leagues(query: {first: $first, after: $after}) {
-            pageInfo {
-              hasNextPage endCursor
-            }
+            ${PAGE_INFO_FIELDS}
             edges {
               node {
                 id name
@@ -59,37 +56,30 @@ export class LeagueService {
     });
   }
 
-  leagueWithPlayersAndGames(id: string, firstGames: number = 5) {
+  leagueWithPlayersAndGames(id: string, firstCompletedGames: number = 5, firstScheduledGames: number = 5) {
     return this.apollo.query<{league: League}>({
       query: gql`
-        query league($id: String!, $firstGames: Int!) {
+        query league($id: String!, $firstCompletedGames: Int!, $firstScheduledGames: Int!) {
           league(query: {id: $id}) {
             id name
             players {
               id name rating
             }
-            games(first: $firstGames) {
-              pageInfo {
-                hasNextPage endCursor
-              }
-              edges {
-                node {
-                  id dateTime
-                  playerOneId playerOneName playerOneRating
-                  playerTwoId playerTwoName playerTwoRating
-                  result {
-                    playerOneScore playerOneRatingDelta
-                    playerTwoScore playerTwoRatingDelta
-                  }
-                }
-              }
+            completedGames(first: $firstCompletedGames) {
+              ${PAGE_INFO_FIELDS}
+              ${COMPLETED_GAME_EDGE_FIELDS}
+            }
+            scheduledGames(first: $firstScheduledGames) {
+              ${PAGE_INFO_FIELDS}
+              ${SCHEDULED_GAME_EDGE_FIELDS}
             }
           }
         }
       `,
       variables: {
         id: id,
-        firstGames: firstGames
+        firstCompletedGames: firstCompletedGames,
+        firstScheduledGames: firstScheduledGames
       }
     });
   }

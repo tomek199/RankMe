@@ -11,17 +11,18 @@ Feature: Test data generator
     * I create player "Chewbacca"
     * I create player "Darth Vader"
     And I play 8 games between "Han Solo" and "Yoda"
+    * I schedule 3 games between "Han Solo" and "Luke Skywalker" in 4 hours
     * I play 7 games between "Chewbacca" and "Luke Skywalker"
     * I play 12 games between "Luke Skywalker" and "Han Solo"
+    * I schedule 4 games between "Yoda" and "Chewbacca" in 1 hours
     * I play 10 games between "Darth Vader" and "Yoda"
     * I play 9 games between "Yoda" and "Han Solo"
+    * I schedule 2 games between "Darth Vader" and "Luke Skywalker" in 5 hours
     * I play 5 games between "Han Solo" and "Chewbacca"
     * I play 14 games between "Luke Skywalker" and "Yoda"
     * I play 6 games between "Han Solo" and "Darth Vader"
-    * I schedule game between "Han Solo" and "Luke Skywalker" in 4 hours
+    * I schedule 3 games between "Chewbacca" and "Yoda" in 10 hours
     * I play 13 games between "Chewbacca" and "Luke Skywalker"
-    * I schedule game between "Yoda" and "Chewbacca" in 1 hours
-    * I schedule game between "Darth Vader" and "Luke Skywalker" in 2 hours
 
   Scenario: I create multiple leagues
     * I create league "Marvel"

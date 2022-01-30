@@ -11,13 +11,23 @@ Feature: Player
   Scenario: Play multiple games to check pagination
     * I create player "Darth Vader"
     * I create player "Han Solo"
-    When I play 10 games between "Darth Vader" and "Han Solo"
-    Then I have first 3 of 10 games listed
-    * I have first 6 of 10 games listed
-    * I have first 10 of 10 games listed
-    * I have first 3 after 2 of 10 games listed
-    * I have first 4 after 3 of 10 games listed
-    * I have first 2 after 8 of 10 games listed
+    When I play 12 games between "Darth Vader" and "Han Solo"
+    * I schedule 13 games between "Han Solo" and "Darth Vader" in 2 hours
+    Then I have first 14 of 25 games listed
+    * I have first 25 of 25 games listed
+    * I have first 17 after 3 of 25 games listed
+    * I have first 6 after 14 of 25 games listed
+    * I have first 21 after 4 of 25 games listed
+    And I have first 7 of 12 completed games listed
+    * I have first 12 of 12 completed games listed
+    * I have first 5 after 3 of 12 completed games listed
+    * I have first 3 after 7 of 12 completed games listed
+    * I have first 8 after 4 of 12 completed games listed
+    And I have first 9 of 13 scheduled games listed
+    * I have first 13 of 13 scheduled games listed
+    * I have first 3 after 6 of 13 scheduled games listed
+    * I have first 8 after 3 of 13 scheduled games listed
+    * I have first 11 after 2 of 13 scheduled games listed
 
   Scenario: Play multiple games to check games data
     * I create player "Luke Skywalker"

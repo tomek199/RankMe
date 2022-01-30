@@ -23,6 +23,26 @@ class GameController(private val repository: GameRepository) {
         return repository.byLeagueId(leagueId, first, after)
     }
 
+    @GetMapping("/leagues/{leagueId}/completed-games")
+    fun completedGamesByLeagueId(
+        @PathVariable leagueId: String,
+        @RequestParam first: Int,
+        @RequestParam(required = false) after: String?
+    ): Page<Game> {
+        log.info("Get completed games by leagueId=$leagueId, first=$first, after=$after")
+        return repository.completedByLeagueId(leagueId, first, after)
+    }
+
+    @GetMapping("/leagues/{leagueId}/scheduled-games")
+    fun scheduledGamesByLeagueId(
+        @PathVariable leagueId: String,
+        @RequestParam first: Int,
+        @RequestParam(required = false) after: String?
+    ): Page<Game> {
+        log.info("Get scheduled games by leagueId=$leagueId, first=$first, after=$after")
+        return repository.scheduledByLeagueId(leagueId, first, after)
+    }
+
     @GetMapping("/players/{playerId}/games")
     fun gamesByPlayerId(
         @PathVariable playerId: String,
@@ -31,5 +51,25 @@ class GameController(private val repository: GameRepository) {
     ): Page<Game> {
         log.info("Get games by playerId=$playerId, first=$first, after=$after")
         return repository.byPlayerId(playerId, first, after)
+    }
+
+    @GetMapping("/players/{playerId}/completed-games")
+    fun completedGamesByPlayerId(
+        @PathVariable playerId: String,
+        @RequestParam first: Int,
+        @RequestParam(required = false) after: String?
+    ): Page<Game> {
+        log.info("Get completed games by playerId=$playerId, first=$first, after=$after")
+        return repository.completedByPlayerId(playerId, first, after)
+    }
+
+    @GetMapping("/players/{playerId}/scheduled-games")
+    fun scheduledGamesByPlayerId(
+        @PathVariable playerId: String,
+        @RequestParam first: Int,
+        @RequestParam(required = false) after: String?
+    ): Page<Game> {
+        log.info("Get scheduled games by playerId=$playerId, first=$first, after=$after")
+        return repository.scheduledByPlayerId(playerId, first, after)
     }
 }

@@ -5,8 +5,12 @@ import com.graphql.spring.boot.test.GraphQLTestTemplate
 import com.ninjasquad.springmockk.MockkBean
 import com.tm.rankme.api.query.Item
 import com.tm.rankme.api.query.Page
+import com.tm.rankme.api.query.assertCompletedGame
+import com.tm.rankme.api.query.assertScheduledGame
+import com.tm.rankme.api.query.game.CompletedGame
 import com.tm.rankme.api.query.game.Game
 import com.tm.rankme.api.query.game.Result
+import com.tm.rankme.api.query.game.ScheduledGame
 import com.tm.rankme.api.query.player.Player
 import io.mockk.every
 import org.junit.jupiter.api.Test
@@ -41,8 +45,8 @@ internal class LeagueQueryIntegrationTest {
         val players = listOf(
             Player(randomNanoId(), "Optimus Prime", 145, 2746),
         )
-        val games = List(3) {
-            Game(
+        val completedGames = List(2) {
+            CompletedGame(
                 randomNanoId(), LocalDateTime.now(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
                 randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
@@ -52,7 +56,17 @@ internal class LeagueQueryIntegrationTest {
                 )
             )
         }
-        val page = Page(games.map { Item(it, it.id) }, false, true)
+        val scheduledGames = List(3) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
+        val gamesPage = Page(games.map { Item(it, it.id) }, false, true)
+        val completedGamesPage = Page(completedGames.map { Item(it, it.id) }, false, true)
+        val scheduledGamesPage = Page(scheduledGames.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.getForObject("$url/query-service/leagues/${league.id}", League::class.java)
         } returns league
@@ -61,9 +75,17 @@ internal class LeagueQueryIntegrationTest {
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(players))
         every {
-            restTemplate.exchange("$url/query-service/leagues/${league.id}/games?first=3",
+            restTemplate.exchange("$url/query-service/leagues/${league.id}/games?first=5",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
-        } returns ResponseEntity.of(Optional.of(page))
+        } returns ResponseEntity.of(Optional.of(gamesPage))
+        every {
+            restTemplate.exchange("$url/query-service/leagues/${league.id}/completed-games?first=2",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(completedGamesPage))
+        every {
+            restTemplate.exchange("$url/query-service/leagues/${league.id}/scheduled-games?first=3",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(scheduledGamesPage))
         val request = "graphql/league.graphql"
         // when
         val response = template.postForResource(request)
@@ -77,29 +99,30 @@ internal class LeagueQueryIntegrationTest {
         assertEquals(players.first().name, response.get("$.data.league.players[0].name"))
         assertEquals(players.first().deviation, response.get("$.data.league.players[0].deviation").toInt())
         assertEquals(players.first().rating, response.get("$.data.league.players[0].rating").toInt())
-        assertEquals(page.hasPreviousPage, response.get("$.data.league.games.pageInfo.hasPreviousPage", Boolean::class.java))
-        assertEquals(page.hasNextPage, response.get("$.data.league.games.pageInfo.hasNextPage", Boolean::class.java))
-        assertEquals(page.items.first().cursor, response.get("$.data.league.games.pageInfo.startCursor"))
-        assertEquals(page.items.last().cursor, response.get("$.data.league.games.pageInfo.endCursor"))
 
+        assertEquals(gamesPage.hasPreviousPage, response.get("$.data.league.games.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(gamesPage.hasNextPage, response.get("$.data.league.games.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(gamesPage.items.first().cursor, response.get("$.data.league.games.pageInfo.startCursor"))
+        assertEquals(gamesPage.items.last().cursor, response.get("$.data.league.games.pageInfo.endCursor"))
         games.forEachIndexed {index, game ->
-            assertEquals(game.id, response.get("$.data.league.games.edges[$index].cursor"))
-            assertEquals(game.id, response.get("$.data.league.games.edges[$index].node.id"))
-            assertEquals(game.dateTime.toString(), response.get("$.data.league.games.edges[$index].node.dateTime"))
-            assertEquals(game.playerOneId, response.get("$.data.league.games.edges[$index].node.playerOneId"))
-            assertEquals(game.playerOneName, response.get("$.data.league.games.edges[$index].node.playerOneName"))
-            assertEquals(game.playerOneDeviation, response.get("$.data.league.games.edges[$index].node.playerOneDeviation", Int::class.java))
-            assertEquals(game.playerOneRating, response.get("$.data.league.games.edges[$index].node.playerOneRating", Int::class.java))
-            assertEquals(game.playerTwoId, response.get("$.data.league.games.edges[$index].node.playerTwoId"))
-            assertEquals(game.playerTwoName, response.get("$.data.league.games.edges[$index].node.playerTwoName"))
-            assertEquals(game.playerTwoDeviation, response.get("$.data.league.games.edges[$index].node.playerTwoDeviation", Int::class.java))
-            assertEquals(game.playerTwoRating, response.get("$.data.league.games.edges[$index].node.playerTwoRating", Int::class.java))
-            assertEquals(game.result!!.playerOneScore, response.get("$.data.league.games.edges[$index].node.result.playerOneScore", Int::class.java))
-            assertEquals(game.result!!.playerOneDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerOneDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerOneRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerOneRatingDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoScore, response.get("$.data.league.games.edges[$index].node.result.playerTwoScore", Int::class.java))
-            assertEquals(game.result!!.playerTwoDeviationDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoDeviationDelta", Int::class.java))
-            assertEquals(game.result!!.playerTwoRatingDelta, response.get("$.data.league.games.edges[$index].node.result.playerTwoRatingDelta", Int::class.java))
+            if (game is CompletedGame) assertCompletedGame(game, response, "$.data.league.games.edges[$index]")
+            else if (game is ScheduledGame) assertScheduledGame(game, response, "$.data.league.games.edges[$index]")
+        }
+
+        assertEquals(completedGamesPage.hasPreviousPage, response.get("$.data.league.completedGames.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(completedGamesPage.hasNextPage, response.get("$.data.league.completedGames.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(completedGamesPage.items.first().cursor, response.get("$.data.league.completedGames.pageInfo.startCursor"))
+        assertEquals(completedGamesPage.items.last().cursor, response.get("$.data.league.completedGames.pageInfo.endCursor"))
+        completedGames.forEachIndexed { index, game ->
+            assertCompletedGame(game, response, "$.data.league.completedGames.edges[$index]")
+        }
+
+        assertEquals(scheduledGamesPage.hasPreviousPage, response.get("$.data.league.scheduledGames.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(scheduledGamesPage.hasNextPage, response.get("$.data.league.scheduledGames.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(scheduledGamesPage.items.first().cursor, response.get("$.data.league.scheduledGames.pageInfo.startCursor"))
+        assertEquals(scheduledGamesPage.items.last().cursor, response.get("$.data.league.scheduledGames.pageInfo.endCursor"))
+        scheduledGames.forEachIndexed { index, game ->
+            assertScheduledGame(game, response, "$.data.league.scheduledGames.edges[$index]")
         }
     }
 

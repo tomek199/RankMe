@@ -7,7 +7,6 @@ import com.tm.rankme.e2e.mutation.PlayGame
 import com.tm.rankme.e2e.mutation.ScheduleGame
 import com.tm.rankme.e2e.query.GetPlayer
 import com.tm.rankme.e2e.util.ApplicationContext
-import com.tm.rankme.e2e.util.DatabaseUtil
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -18,7 +17,6 @@ import kotlin.test.*
 
 class PlayerSteps(
     private val graphQlClient: GraphQLKtorClient,
-    private val dbUtil: DatabaseUtil,
     private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
 ) : En {
@@ -27,50 +25,53 @@ class PlayerSteps(
         Given("I create player {string}") {
                 playerName: String ->
             runBlocking {
-                delay(stepDelay)
                 val mutation = CreatePlayer(context.leagueId(), playerName)
                 val result = graphQlClient.execute(mutation)
                 assertEquals(status, result.data?.createPlayer)
                 context.update()
+                delay(stepDelay)
             }
         }
 
         When("I play game between {string} and {string} with result {int} : {int}") {
                 playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int ->
             runBlocking {
-                delay(stepDelay)
                 playGame(playerOneName, playerTwoName, playerOneScore, playerTwoScore)
+                delay(stepDelay)
             }
         }
 
         When("I play {int} games between {string} and {string}") {
                 numberOfGames: Int, playerOneName: String, playerTwoName: String ->
             runBlocking {
-                delay(stepDelay)
                 repeat(numberOfGames) {
                     playGame(playerOneName, playerTwoName, Random.nextInt(10), Random.nextInt(10))
                 }
+                delay(stepDelay)
             }
         }
 
         When("I schedule game between {string} and {string} in {int} hours") {
                 playerOneName: String, playerTwoName: String, hours: Int ->
             runBlocking {
+                scheduleGame(playerOneName, playerTwoName, hours)
                 delay(stepDelay)
-                val playerOneId = context.playerId(playerOneName)
-                val playerTwoId = context.playerId(playerTwoName)
-                val dateTime = LocalDateTime.now().plusHours(hours.toLong())
-                val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
-                graphQlClient.execute(mutation).data?.let {
-                    assertEquals(status, it.scheduleGame)
-                } ?: fail("Cannot execute scheduleGame command")
+            }
+        }
+
+        When("I schedule {int} games between {string} and {string} in {int} hours") {
+                numberOfGames: Int, playerOneName: String, playerTwoName: String, hours: Int ->
+            runBlocking {
+                repeat(numberOfGames) {
+                    scheduleGame(playerOneName, playerTwoName, hours + it)
+                }
+                delay(stepDelay)
             }
         }
 
         When("I complete game between {string} and {string} with result {int} : {int}") {
                 playerOneName: String, playerTwoName: String, playerOneScore: Int, playerTwoScore: Int ->
             runBlocking {
-                delay(stepDelay)
                 val playerOneId = context.playerId(playerOneName)
                 val query = GetPlayer(playerOneId, 1)
                 val gameId = graphQlClient.execute(query).data?.player?.games?.edges?.first { edge ->
@@ -80,13 +81,13 @@ class PlayerSteps(
                 graphQlClient.execute(mutation).data?.let {
                     assertEquals(status, it.completeGame)
                 } ?: fail("Cannot execute completeGame command")
+                delay(stepDelay)
             }
         }
 
         Then("I have player {string} with deviation {int} and rating {int}") {
                 name: String, deviation: Int, rating: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.playerId(name)
                 val query = GetPlayer(id)
                 graphQlClient.execute(query).data?.let {
@@ -98,20 +99,47 @@ class PlayerSteps(
             }
         }
 
-        Then("I have player {string} with first {int} of {int} games connected") {
-                name: String, first: Int, of: Int ->
+        Then("I have player {string} with {int} games connected") {
+                name: String, numberOfGames: Int ->
             runBlocking {
-                delay(stepDelay)
                 val id = context.playerId(name)
-                val query = GetPlayer(id, first)
+                val query = GetPlayer(id, numberOfGames)
                 graphQlClient.execute(query).data?.let {
                     assertNotNull(it.player.games)
                     assertFalse(it.player.games.pageInfo.hasPreviousPage)
-                    assertEquals(first < of, it.player.games.pageInfo.hasNextPage)
-                    assertEquals(first, it.player.games.edges.size)
+                    assertFalse(it.player.games.pageInfo.hasNextPage)
+                    assertEquals(numberOfGames, it.player.games.edges.size)
                     assertEquals(it.player.games.pageInfo.startCursor, it.player.games.edges.first().cursor)
                     assertEquals(it.player.games.pageInfo.endCursor, it.player.games.edges.last().cursor)
                     it.player.games.edges.forEach { edge ->
+                        assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
+                    }
+                } ?: fail("Cannot get player by id $id")
+            }
+        }
+
+        Then("I have player {string} with {int} completed and {int} scheduled games connected") {
+                name: String, numberOfCompletedGame: Int, numberOfScheduledGames: Int ->
+            runBlocking {
+                val id = context.playerId(name)
+                val query = GetPlayer(id, numberOfCompletedGame, numberOfScheduledGames)
+                graphQlClient.execute(query).data?.let {
+                    assertNotNull(it.player.completedGames)
+                    assertFalse(it.player.completedGames.pageInfo.hasPreviousPage)
+                    assertFalse(it.player.completedGames.pageInfo.hasNextPage)
+                    assertEquals(numberOfCompletedGame, it.player.completedGames.edges.size)
+                    assertEquals(it.player.completedGames.pageInfo.startCursor, it.player.completedGames.edges.first().cursor)
+                    assertEquals(it.player.completedGames.pageInfo.endCursor, it.player.completedGames.edges.last().cursor)
+                    it.player.completedGames.edges.forEach { edge ->
+                        assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
+                    }
+                    assertNotNull(it.player.scheduledGames)
+                    assertFalse(it.player.scheduledGames.pageInfo.hasPreviousPage)
+                    assertFalse(it.player.scheduledGames.pageInfo.hasNextPage)
+                    assertEquals(numberOfScheduledGames, it.player.scheduledGames.edges.size)
+                    assertEquals(it.player.scheduledGames.pageInfo.startCursor, it.player.scheduledGames.edges.first().cursor)
+                    assertEquals(it.player.scheduledGames.pageInfo.endCursor, it.player.scheduledGames.edges.last().cursor)
+                    it.player.scheduledGames.edges.forEach { edge ->
                         assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
                     }
                 } ?: fail("Cannot get player by id $id")
@@ -126,5 +154,15 @@ class PlayerSteps(
         graphQlClient.execute(mutation).data?.let {
             assertEquals(status, it.playGame)
         } ?: fail("Cannot execute playGame command")
+    }
+
+    private suspend fun scheduleGame(playerOneName: String, playerTwoName: String, hours: Int) {
+        val playerOneId = context.playerId(playerOneName)
+        val playerTwoId = context.playerId(playerTwoName)
+        val dateTime = LocalDateTime.now().plusHours(hours.toLong())
+        val mutation = ScheduleGame(playerOneId, playerTwoId, dateTime)
+        graphQlClient.execute(mutation).data?.let {
+            assertEquals(status, it.scheduleGame)
+        } ?: fail("Cannot execute scheduleGame command")
     }
 }

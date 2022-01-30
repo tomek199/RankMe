@@ -4,6 +4,7 @@ import { PlayerRankingComponent } from './player-ranking.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('PlayerRankingComponent', () => {
   let component: PlayerRankingComponent;
@@ -12,7 +13,7 @@ describe('PlayerRankingComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ PlayerRankingComponent ],
-      imports: [ MatCardModule, MatTableModule ]
+      imports: [ MatCardModule, MatTableModule, MatIconModule ]
     })
     .compileComponents();
   });

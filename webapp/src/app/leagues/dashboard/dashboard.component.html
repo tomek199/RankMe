@@ -2,6 +2,7 @@
   <mat-spinner *ngSwitchCase="true"></mat-spinner>
   <div class="dashboard-container" *ngSwitchCase="false">
     <app-player-ranking [players]="league.players"></app-player-ranking>
-    <app-game-list-preview [leagueId]="league.id" [gamesPage]="league.games"></app-game-list-preview>
+    <app-recently-played-games [leagueId]="league.id" [gamesPage]="league.completedGames"></app-recently-played-games>
+    <app-scheduled-games [leagueId]="league.id" [gamesPage]="league.scheduledGames"></app-scheduled-games>
   </div>
 </ng-container>

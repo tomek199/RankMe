@@ -29,9 +29,15 @@ Feature: Player
     * I create player "Batman"
     * I create player "Spiderman"
     When I play 3 games between "Superman" and "Batman"
+    * I schedule 2 games between "Batman" and "Superman" in 4 hours
     * I play 4 games between "Batman" and "Spiderman"
+    * I schedule 5 games between "Spiderman" and "Batman" in 5 hours
     * I play 5 games between "Spiderman" and "Superman"
-    Then I have first 12 of 12 games connected in league
-    * I have player "Batman" with first 7 of 7 games connected
-    * I have player "Spiderman" with first 5 of 9 games connected
-    * I have player "Superman" with first 4 of 8 games connected
+    * I schedule 3 games between "Superman" and "Spiderman" in 6 hours
+    Then I have 22 games connected in league
+    * I have player "Superman" with 13 games connected
+    * I have player "Batman" with 14 games connected
+    * I have player "Spiderman" with 17 games connected
+    * I have player "Superman" with 8 completed and 5 scheduled games connected
+    * I have player "Batman" with 7 completed and 7 scheduled games connected
+    * I have player "Spiderman" with 9 completed and 8 scheduled games connected

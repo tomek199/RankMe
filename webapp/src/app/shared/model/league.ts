@@ -1,6 +1,6 @@
 import { Player } from './player';
 import { Page } from './page';
-import { Game } from './game';
+import { CompletedGame, ScheduledGame } from './game';
 
 export interface League {
   id: string;
@@ -8,5 +8,6 @@ export interface League {
   allowDraws: boolean;
   maxScore: number;
   players: Player[];
-  games: Page<Game>;
+  completedGames: Page<CompletedGame>;
+  scheduledGames: Page<ScheduledGame>;
 }
