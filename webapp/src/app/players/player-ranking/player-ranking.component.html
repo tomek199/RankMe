@@ -1,5 +1,8 @@
 <mat-card>
-  <mat-card-title>Players ranking</mat-card-title>
+  <mat-card-title>
+    <mat-icon>format_list_numbered</mat-icon>
+    Players ranking
+  </mat-card-title>
   <mat-card-content>
     <table mat-table [dataSource]="players" class="width-100p">
       <ng-container matColumnDef="position">

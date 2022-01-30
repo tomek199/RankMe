@@ -1,5 +1,8 @@
 <mat-card>
-  <mat-card-title>Scheduled games</mat-card-title>
+  <mat-card-title>
+    <mat-icon>event_note</mat-icon>
+    Scheduled games
+  </mat-card-title>
   <mat-card-content>
     <table mat-table [dataSource]="dataSource" class="width-100p">
       <ng-container matColumnDef="datetime">

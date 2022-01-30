@@ -1,5 +1,8 @@
 <mat-card>
-  <mat-card-title>Recently played games</mat-card-title>
+  <mat-card-title>
+    <mat-icon>list_alt</mat-icon>
+    Recently played games
+  </mat-card-title>
   <mat-card-content>
     <table mat-table [dataSource]="dataSource" class="width-100p">
       <ng-container matColumnDef="datetime">
