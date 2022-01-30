@@ -1,21 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from './game.service';
-import { Apollo } from 'apollo-angular';
-import { of } from 'rxjs';
 import { GAMES_PAGE } from '../../../testing/data';
+import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
 
 describe('GameService', () => {
   let service: GameService;
-  let apolloSpy = jasmine.createSpyObj('Apollo', ['query'])
+  let controller: ApolloTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: Apollo, useValue: apolloSpy }
-      ]
+      imports: [ ApolloTestingModule ]
     });
     service = TestBed.inject(GameService);
+    controller = TestBed.inject(ApolloTestingController);
   });
 
   it('should be created', () => {
@@ -23,18 +21,29 @@ describe('GameService', () => {
   });
 
   it('should return games page', () => {
-    apolloSpy.query.and.returnValue(of({data: {games: GAMES_PAGE}}));
     service.games('league-1', 3).subscribe(({data}) => {
-      expect(data.games.pageInfo).toEqual(GAMES_PAGE.pageInfo);
-      expect(data.games.edges).toEqual(GAMES_PAGE.edges);
+      expect(data.games.pageInfo.hasNextPage).toEqual(GAMES_PAGE.pageInfo.hasNextPage);
+      expect(data.games.pageInfo.endCursor).toEqual(GAMES_PAGE.pageInfo.endCursor);
+      expect(data.games.edges.length).toEqual(GAMES_PAGE.edges.length);
     });
+    const operation = controller.expectOne('games');
+    operation.flush({data: {games: GAMES_PAGE}});
+    expect(operation.operation.variables.leagueId).toEqual('league-1');
+    expect(operation.operation.variables.first).toEqual(3);
+    controller.verify();
   });
 
   it('should return games page after given cursor', () => {
-    apolloSpy.query.and.returnValue(of({data: {games: GAMES_PAGE}}));
     service.games('league-1', 3, 'game-5').subscribe(({data}) => {
-      expect(data.games.pageInfo).toEqual(GAMES_PAGE.pageInfo);
-      expect(data.games.edges).toEqual(GAMES_PAGE.edges);
+      expect(data.games.pageInfo.hasNextPage).toEqual(GAMES_PAGE.pageInfo.hasNextPage);
+      expect(data.games.pageInfo.endCursor).toEqual(GAMES_PAGE.pageInfo.endCursor);
+      expect(data.games.edges.length).toEqual(GAMES_PAGE.edges.length);
     });
+    const operation = controller.expectOne('games');
+    operation.flush({data: {games: GAMES_PAGE}});
+    expect(operation.operation.variables.leagueId).toEqual('league-1');
+    expect(operation.operation.variables.first).toEqual(3);
+    expect(operation.operation.variables.after).toEqual('game-5');
+    controller.verify();
   });
 });

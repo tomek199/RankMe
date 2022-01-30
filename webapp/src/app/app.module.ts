@@ -19,7 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PlayerRankingComponent } from './players/player-ranking/player-ranking.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { GameListPreviewComponent } from './games/game-list-preview/game-list-preview.component';
+import { RecentlyPlayedGames } from './games/recently-played-games/recently-played-games.component';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
@@ -29,7 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
     LeagueListComponent,
     DashboardComponent,
     PlayerRankingComponent,
-    GameListPreviewComponent
+    RecentlyPlayedGames
   ],
   imports: [
     BrowserModule,

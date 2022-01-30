@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GameListPreviewComponent } from './game-list-preview.component';
+import { RecentlyPlayedGames } from './recently-played-games.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,14 +11,14 @@ import { GAMES_PAGE, LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
-describe('GameListPreviewComponent', () => {
-  let component: GameListPreviewComponent;
-  let fixture: ComponentFixture<GameListPreviewComponent>;
+describe('RecentlyPlayedGamesComponent', () => {
+  let component: RecentlyPlayedGames;
+  let fixture: ComponentFixture<RecentlyPlayedGames>;
   let gameServiceSpy = jasmine.createSpyObj('GameService', ['games']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GameListPreviewComponent ],
+      declarations: [ RecentlyPlayedGames ],
       imports: [ MatCardModule, MatTableModule, MatIconModule, MatButtonModule, MatProgressBarModule ],
       providers: [
         { provide: GameService, useValue: gameServiceSpy }
@@ -28,7 +28,7 @@ describe('GameListPreviewComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GameListPreviewComponent);
+    fixture = TestBed.createComponent(RecentlyPlayedGames);
     component = fixture.componentInstance;
     component.leagueId = 'league-1';
     component.gamesPage = LEAGUE_WITH_PLAYERS_AND_GAMES.games;

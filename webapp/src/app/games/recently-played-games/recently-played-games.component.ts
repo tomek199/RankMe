@@ -5,11 +5,11 @@ import { GameService } from '../shared/game.service';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-game-list-preview',
-  templateUrl: './game-list-preview.component.html',
-  styleUrls: ['./game-list-preview.component.scss']
+  selector: 'app-recently-played-games',
+  templateUrl: './recently-played-games.component.html',
+  styleUrls: ['./recently-played-games.component.scss']
 })
-export class GameListPreviewComponent implements OnInit {
+export class RecentlyPlayedGames implements OnInit {
   @Input() leagueId: string;
   @Input() set gamesPage(gamesPage: Page<Game>) {
     this.pageInfo = gamesPage.pageInfo;
