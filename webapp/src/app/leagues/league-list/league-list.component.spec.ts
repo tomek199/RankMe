@@ -53,7 +53,7 @@ describe('LeagueListComponent', () => {
   it('should load more leagues after button click', () => {
     const moreLeaguesPage = {
       pageInfo: {
-        hasPreviousPage: true, hasNextPage: false, startCursor: 'c3c3c3', endCursor: 'c3c3c3'
+        hasNextPage: false, endCursor: 'c3c3c3'
       },
       edges: [
         {

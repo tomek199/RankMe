@@ -36,7 +36,7 @@ export class LeagueListComponent implements OnInit {
 
   loadMore() {
     this.isLoading = true;
-    this.leagueService.leagues(this.PAGE_SIZE, this.pageInfo.endCursor).subscribe(({data}) => {
+    this.leagueService.leagues(this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
       this.pageInfo = data.leagues.pageInfo;
       this.leagues.push(...data.leagues.edges.map(edge => edge.node));
       this.isLoading = false;

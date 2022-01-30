@@ -59,16 +59,16 @@ export class LeagueService {
     });
   }
 
-  leagueWithPlayersAndGames(id: string, firstGames: number = 5) {
+  leagueWithPlayersAndGames(id: string, firstCompletedGames: number = 5) {
     return this.apollo.query<{league: League}>({
       query: gql`
-        query league($id: String!, $firstGames: Int!) {
+        query league($id: String!, $firstCompletedGames: Int!) {
           league(query: {id: $id}) {
             id name
             players {
               id name rating
             }
-            games(first: $firstGames) {
+            completedGames(first: $firstCompletedGames) {
               pageInfo {
                 hasNextPage endCursor
               }
@@ -77,11 +77,9 @@ export class LeagueService {
                   id dateTime
                   playerOneId playerOneName playerOneRating
                   playerTwoId playerTwoName playerTwoRating
-                  ... on CompletedGame {
-                    result {
-                      playerOneScore playerOneRatingDelta
-                      playerTwoScore playerTwoRatingDelta
-                    }
+                  result {
+                    playerOneScore playerOneRatingDelta
+                    playerTwoScore playerTwoRatingDelta
                   }
                 }
               }
@@ -91,7 +89,7 @@ export class LeagueService {
       `,
       variables: {
         id: id,
-        firstGames: firstGames
+        firstCompletedGames: firstCompletedGames
       }
     });
   }

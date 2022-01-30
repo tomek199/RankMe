@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Page, PageInfo } from '../../shared/model/page';
-import { Game } from '../../shared/model/game';
+import { CompletedGame } from '../../shared/model/game';
 import { GameService } from '../shared/game.service';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -11,15 +11,15 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class RecentlyPlayedGames implements OnInit {
   @Input() leagueId: string;
-  @Input() set gamesPage(gamesPage: Page<Game>) {
+  @Input() set gamesPage(gamesPage: Page<CompletedGame>) {
     this.pageInfo = gamesPage.pageInfo;
-    this.dataSource = new MatTableDataSource<Game>(gamesPage.edges.map(edge => edge.node))
+    this.dataSource = new MatTableDataSource<CompletedGame>(gamesPage.edges.map(edge => edge.node))
   }
   private PAGE_SIZE = 5;
   isLoading: boolean = false;
   pageInfo: PageInfo;
   displayedColumns = ['datetime', 'player', 'score'];
-  dataSource: MatTableDataSource<Game>
+  dataSource: MatTableDataSource<CompletedGame>
 
   constructor(private gameService: GameService) { }
 
@@ -27,9 +27,9 @@ export class RecentlyPlayedGames implements OnInit {
 
   loadMore() {
     this.isLoading = true;
-    this.gameService.games(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor).subscribe(({data}) => {
-      this.pageInfo = data.games.pageInfo;
-      this.dataSource.data = [...this.dataSource.data, ...data.games.edges.map(edge => edge.node)]
+    this.gameService.completedGames(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
+      this.pageInfo = data.completedGames.pageInfo;
+      this.dataSource.data = [...this.dataSource.data, ...data.completedGames.edges.map(edge => edge.node)]
       this.isLoading = false;
     });
   }

@@ -1,10 +1,10 @@
 import { Page } from '../app/shared/model/page';
 import { League } from '../app/shared/model/league';
-import { Game } from '../app/shared/model/game';
+import { CompletedGame } from '../app/shared/model/game';
 
 export const LEAGUES_PAGE = {
   pageInfo: {
-    hasPreviousPage: false, hasNextPage: true, startCursor: 'league-1-cur', endCursor: 'league-2-cur'
+    hasNextPage: true, endCursor: 'league-2-cur'
   },
   edges: [
     {
@@ -29,7 +29,7 @@ export const LEAGUE_WITH_PLAYERS_AND_GAMES = {
     {id: 'player-2', name: 'Player-2', rating: 1594},
     {id: 'player-3', name: 'Player-3', rating: 1863},
   ],
-  games: {
+  completedGames: {
     pageInfo: {
       endCursor: 'game-2-cur',
       hasNextPage: false
@@ -64,16 +64,20 @@ export const LEAGUE_WITH_PLAYERS_AND_GAMES = {
         node: {
           id: 'game-3', dateTime: '2021-12-30T16:25:00',
           playerOneId: 'player-3', playerOneName: 'Player-3', playerOneRating: 1438,
-          playerTwoId: 'player-1', playerTwoName: 'Player-1', playerTwoRating: 1285
+          playerTwoId: 'player-1', playerTwoName: 'Player-1', playerTwoRating: 1285,
+          result: {
+            playerOneScore: 1, playerOneRatingDelta: 45,
+            playerTwoScore: 0, playerTwoRatingDelta: -45
+          }
         }
       }
     ]
   }
 } as League;
 
-export const GAMES_PAGE = {
+export const COMPLETED_GAMES_PAGE = {
   pageInfo: {
-    hasPreviousPage: false, hasNextPage: true, startCursor: 'game-1-cur', endCursor: 'game-3-cur'
+    hasNextPage: true, endCursor: 'game-3-cur'
   },
   edges: [
     {
@@ -93,7 +97,11 @@ export const GAMES_PAGE = {
       node: {
         id: 'game-2', dateTime: '2021-12-30T15:50:00',
         playerOneId: 'player-2', playerOneName: 'Player-2', playerOneRating: 2367,
-        playerTwoId: 'player-3', playerTwoName: 'Player-3', playerTwoRating: 1594
+        playerTwoId: 'player-3', playerTwoName: 'Player-3', playerTwoRating: 1594,
+        result: {
+          playerOneScore: 1, playerOneRatingDelta: 45,
+          playerTwoScore: 0, playerTwoRatingDelta: -45
+        }
       }
     },
     {
@@ -109,4 +117,4 @@ export const GAMES_PAGE = {
       }
     }
   ]
-} as Page<Game>
+} as Page<CompletedGame>

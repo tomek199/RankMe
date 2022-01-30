@@ -4,10 +4,8 @@ export interface Page<T> {
 }
 
 export interface PageInfo {
-  hasPreviousPage: boolean;
   hasNextPage: boolean;
-  startCursor: string;
-  endCursor: string;
+  endCursor: string | null;
 }
 
 export interface Edge<T> {

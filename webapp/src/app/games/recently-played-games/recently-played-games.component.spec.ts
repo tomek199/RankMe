@@ -7,14 +7,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { GameService } from '../shared/game.service';
-import { GAMES_PAGE, LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data';
+import { COMPLETED_GAMES_PAGE, LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data';
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
 describe('RecentlyPlayedGamesComponent', () => {
   let component: RecentlyPlayedGames;
   let fixture: ComponentFixture<RecentlyPlayedGames>;
-  let gameServiceSpy = jasmine.createSpyObj('GameService', ['games']);
+  let gameServiceSpy = jasmine.createSpyObj('GameService', ['completedGames']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,7 +31,7 @@ describe('RecentlyPlayedGamesComponent', () => {
     fixture = TestBed.createComponent(RecentlyPlayedGames);
     component = fixture.componentInstance;
     component.leagueId = 'league-1';
-    component.gamesPage = LEAGUE_WITH_PLAYERS_AND_GAMES.games;
+    component.gamesPage = LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames;
     fixture.detectChanges();
   });
 
@@ -41,7 +41,7 @@ describe('RecentlyPlayedGamesComponent', () => {
 
   it('should show "No data" row when there is no games', () => {
     component.gamesPage = {
-      pageInfo: {hasPreviousPage: false, hasNextPage: false, startCursor: '', endCursor: ''},
+      pageInfo: {hasNextPage: false, endCursor: null},
       edges: []
     }
     fixture.detectChanges();
@@ -50,29 +50,23 @@ describe('RecentlyPlayedGamesComponent', () => {
   });
 
   it('should show games in table', () => {
-    component.gamesPage = LEAGUE_WITH_PLAYERS_AND_GAMES.games;
-    fixture.detectChanges();
     const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
     rows.forEach((row: Element, index: number) => {
       const columns = row.querySelectorAll('td');
       const datetime = columns[0].querySelectorAll('p');
       expect(datetime[0].textContent).toBeDefined();
-      expect(datetime[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.dateTime.substring(11, 16))
+      expect(datetime[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.dateTime.substring(11, 16))
       const players = columns[1].querySelectorAll('p');
-      expect(players[0].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.playerOneName);
-      expect(players[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.playerTwoName);
-      if(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges[index].node.result != null) {
-        const result = columns[2].querySelectorAll('p');
-        expect(result[0].textContent).toBeDefined();
-        expect(result[1].textContent).toBeDefined();
-      } else {
-        expect(columns[2].querySelector('p')?.textContent).toEqual('-');
-      }
+      expect(players[0].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.playerOneName);
+      expect(players[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.playerTwoName);
+      const result = columns[2].querySelectorAll('p');
+      expect(result[0].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.result.playerOneScore.toString())
+      expect(result[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.result.playerTwoScore.toString());
     })
   });
 
   it('should load more games after button click', () => {
-    gameServiceSpy.games.and.returnValue(of({data: { games: GAMES_PAGE }}));
+    gameServiceSpy.completedGames.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
     const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
     loadMoreButton.triggerEventHandler('click', null)
     fixture.detectChanges()

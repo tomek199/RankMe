@@ -50,14 +50,14 @@ describe('LeagueService', () => {
       expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
       expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.name);
       expect(data.league.players.length).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.players.length);
-      expect(data.league.games.pageInfo.hasNextPage).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.pageInfo.hasNextPage);
-      expect(data.league.games.pageInfo.endCursor).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.pageInfo.endCursor);
-      expect(data.league.games.edges.length).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.games.edges.length);
+      expect(data.league.completedGames.pageInfo.hasNextPage).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.pageInfo.hasNextPage);
+      expect(data.league.completedGames.pageInfo.endCursor).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.pageInfo.endCursor);
+      expect(data.league.completedGames.edges.length).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges.length);
     });
     const operation = controller.expectOne('league');
     operation.flush({data: {league: LEAGUE_WITH_PLAYERS_AND_GAMES}});
     expect(operation.operation.variables.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
-    expect(operation.operation.variables.firstGames).toEqual(5);
+    expect(operation.operation.variables.firstCompletedGames).toEqual(5);
     controller.verify();
   });
 });

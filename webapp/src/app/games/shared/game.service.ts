@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Page } from '../../shared/model/page';
-import { Game } from '../../shared/model/game';
+import { CompletedGame } from '../../shared/model/game';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +10,16 @@ export class GameService {
 
   constructor(private apollo: Apollo) { }
 
-  games(leagueId: string, first: number, after?: string) {
-    if (after) return this.firstGamesAfter(leagueId, first, after)
-    else return this.firstGames(leagueId, first);
+  completedGames(leagueId: string, first: number, after?: string) {
+    if (after) return this.firstCompletedGamesAfter(leagueId, first, after)
+    else return this.firstCompletedGames(leagueId, first);
   }
 
-  private firstGames(leagueId: string, first: number) {
-    return this.apollo.query<{ games: Page<Game> }>({
+  private firstCompletedGames(leagueId: string, first: number) {
+    return this.apollo.query<{completedGames: Page<CompletedGame>}>({
       query: gql`
-        query games($leagueId: String!, $first: Int!) {
-          games(query: {leagueId: $leagueId, first: $first}) {
+        query completedGames($leagueId: String!, $first: Int!) {
+          completedGames(query: {leagueId: $leagueId, first: $first}) {
             pageInfo {
               hasNextPage endCursor
             }
@@ -28,11 +28,9 @@ export class GameService {
                 id dateTime
                 playerOneId playerOneName playerOneRating
                 playerTwoId playerTwoName playerTwoRating
-                ... on CompletedGame {
-                  result {
-                    playerOneScore playerOneRatingDelta
-                    playerTwoScore playerTwoRatingDelta
-                  }
+                result {
+                  playerOneScore playerOneRatingDelta
+                  playerTwoScore playerTwoRatingDelta
                 }
               }
             }
@@ -46,11 +44,11 @@ export class GameService {
     });
   }
 
-  private firstGamesAfter(leagueId: string, first: number, after: string) {
-    return this.apollo.query<{ games: Page<Game> }>({
+  private firstCompletedGamesAfter(leagueId: string, first: number, after: string) {
+    return this.apollo.query<{completedGames: Page<CompletedGame>}>({
       query: gql`
-        query games($leagueId: String!, $first: Int!, $after: String) {
-          games(query: {leagueId: $leagueId, first: $first, after: $after}) {
+        query completedGames($leagueId: String!, $first: Int!, $after: String) {
+          completedGames(query: {leagueId: $leagueId, first: $first, after: $after}) {
             pageInfo {
               hasNextPage endCursor
             }
@@ -59,11 +57,9 @@ export class GameService {
                 id dateTime
                 playerOneId playerOneName playerOneRating
                 playerTwoId playerTwoName playerTwoRating
-                ... on CompletedGame {
-                  result {
-                    playerOneScore playerOneRatingDelta
-                    playerTwoScore playerTwoRatingDelta
-                  }
+                result {
+                  playerOneScore playerOneRatingDelta
+                  playerTwoScore playerTwoRatingDelta
                 }
               }
             }
