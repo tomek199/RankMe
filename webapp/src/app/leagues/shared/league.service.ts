@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { League } from '../../shared/model/league';
 import { Page } from '../../shared/model/page';
-import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS } from '../../shared/graphql-fields';
+import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS, SCHEDULED_GAME_EDGE_FIELDS } from '../../shared/graphql-fields';
 
 @Injectable({
   providedIn: 'root'
@@ -56,10 +56,10 @@ export class LeagueService {
     });
   }
 
-  leagueWithPlayersAndGames(id: string, firstCompletedGames: number = 5) {
+  leagueWithPlayersAndGames(id: string, firstCompletedGames: number = 5, firstScheduledGames: number = 5) {
     return this.apollo.query<{league: League}>({
       query: gql`
-        query league($id: String!, $firstCompletedGames: Int!) {
+        query league($id: String!, $firstCompletedGames: Int!, $firstScheduledGames: Int!) {
           league(query: {id: $id}) {
             id name
             players {
@@ -69,12 +69,17 @@ export class LeagueService {
               ${PAGE_INFO_FIELDS}
               ${COMPLETED_GAME_EDGE_FIELDS}
             }
+            scheduledGames(first: $firstScheduledGames) {
+              ${PAGE_INFO_FIELDS}
+              ${SCHEDULED_GAME_EDGE_FIELDS}
+            }
           }
         }
       `,
       variables: {
         id: id,
-        firstCompletedGames: firstCompletedGames
+        firstCompletedGames: firstCompletedGames,
+        firstScheduledGames: firstScheduledGames
       }
     });
   }

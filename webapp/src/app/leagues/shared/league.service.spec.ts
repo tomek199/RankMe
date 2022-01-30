@@ -45,7 +45,7 @@ describe('LeagueService', () => {
     controller.verify();
   });
 
-  it('should return league with players and completed games', () => {
+  it('should return league with players, completed and scheduled games', () => {
     service.leagueWithPlayersAndGames(LEAGUE_WITH_PLAYERS_AND_GAMES.id).subscribe(({data}) => {
       expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
       expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.name);
@@ -53,11 +53,15 @@ describe('LeagueService', () => {
       expect(data.league.completedGames.pageInfo.hasNextPage).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.pageInfo.hasNextPage);
       expect(data.league.completedGames.pageInfo.endCursor).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.pageInfo.endCursor);
       expect(data.league.completedGames.edges.length).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges.length);
+      expect(data.league.scheduledGames.pageInfo.hasNextPage).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.scheduledGames.pageInfo.hasNextPage);
+      expect(data.league.scheduledGames.pageInfo.endCursor).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.scheduledGames.pageInfo.endCursor);
+      expect(data.league.scheduledGames.edges.length).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.scheduledGames.edges.length);
     });
     const operation = controller.expectOne('league');
     operation.flush({data: {league: LEAGUE_WITH_PLAYERS_AND_GAMES}});
     expect(operation.operation.variables.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
     expect(operation.operation.variables.firstCompletedGames).toEqual(5);
+    expect(operation.operation.variables.firstScheduledGames).toEqual(5);
     controller.verify();
   });
 });

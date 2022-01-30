@@ -22,7 +22,12 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     activatedRouteStub = new ActivatedRouteStub();
     await TestBed.configureTestingModule({
-      declarations: [ DashboardComponent, PlayerRankingComponentStub, RecentlyPlayedGamesComponentStub ],
+      declarations: [
+        DashboardComponent,
+        PlayerRankingComponentStub,
+        RecentlyPlayedGamesComponentStub,
+        ScheduledGamesComponentStub
+      ],
       imports: [ MatProgressSpinnerModule ],
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteStub },
@@ -58,6 +63,11 @@ describe('DashboardComponent', () => {
     const recentlyPlayedGamesComponent = fixture.debugElement.query(By.directive(RecentlyPlayedGamesComponentStub));
     expect(recentlyPlayedGamesComponent).toBeTruthy();
   });
+
+  it('should contain scheduled-games component', () => {
+    const scheduledGamesComponent = fixture.debugElement.query(By.directive(ScheduledGamesComponentStub));
+    expect(scheduledGamesComponent).toBeTruthy();
+  });
 });
 
 @Component({selector: 'app-player-ranking', template: ''})
@@ -67,6 +77,12 @@ class PlayerRankingComponentStub {
 
 @Component({selector: 'app-recently-played-games', template: ''})
 class RecentlyPlayedGamesComponentStub {
+  @Input() leagueId: string;
+  @Input() set gamesPage(gamesPage: Page<Game>) { }
+}
+
+@Component({selector: 'app-scheduled-games', template: ''})
+class ScheduledGamesComponentStub {
   @Input() leagueId: string;
   @Input() set gamesPage(gamesPage: Page<Game>) { }
 }

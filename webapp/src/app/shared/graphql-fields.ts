@@ -17,3 +17,13 @@ export const COMPLETED_GAME_EDGE_FIELDS = `
     }
   }
 `;
+
+export const SCHEDULED_GAME_EDGE_FIELDS = `
+  edges {
+    node {
+      id dateTime
+      playerOneId playerOneName playerOneRating
+      playerTwoId playerTwoName playerTwoRating
+    }
+  }
+`;

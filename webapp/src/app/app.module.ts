@@ -21,16 +21,19 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { RecentlyPlayedGames } from './games/recently-played-games/recently-played-games.component';
 import { MatIconModule } from '@angular/material/icon';
+import { ScheduledGamesComponent } from './games/scheduled-games/scheduled-games.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    LeagueListComponent,
-    DashboardComponent,
-    PlayerRankingComponent,
-    RecentlyPlayedGames
-  ],
+    declarations: [
+        AppComponent,
+        HeaderComponent,
+        LeagueListComponent,
+        DashboardComponent,
+        PlayerRankingComponent,
+        RecentlyPlayedGames,
+        ScheduledGamesComponent,
+        ScheduledGamesComponentStub
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,
