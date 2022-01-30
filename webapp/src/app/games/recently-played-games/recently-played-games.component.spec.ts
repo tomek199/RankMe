@@ -39,7 +39,7 @@ describe('RecentlyPlayedGamesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show "No data" row when there is no games', () => {
+  it('should show "No data" row when there is no completed games', () => {
     component.gamesPage = {
       pageInfo: {hasNextPage: false, endCursor: null},
       edges: []
@@ -49,23 +49,23 @@ describe('RecentlyPlayedGamesComponent', () => {
     expect(noDataRow.textContent).toEqual("No data");
   });
 
-  it('should show games in table', () => {
+  it('should show completed games in table', () => {
     const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
     rows.forEach((row: Element, index: number) => {
       const columns = row.querySelectorAll('td');
-      const datetime = columns[0].querySelectorAll('p');
+      const datetime = columns[0].querySelectorAll('span');
       expect(datetime[0].textContent).toBeDefined();
       expect(datetime[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.dateTime.substring(11, 16))
-      const players = columns[1].querySelectorAll('p');
+      const players = columns[1].querySelectorAll('span');
       expect(players[0].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.playerOneName);
       expect(players[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.playerTwoName);
-      const result = columns[2].querySelectorAll('p');
+      const result = columns[2].querySelectorAll('span');
       expect(result[0].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.result.playerOneScore.toString())
       expect(result[1].textContent).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.completedGames.edges[index].node.result.playerTwoScore.toString());
     })
   });
 
-  it('should load more games after button click', () => {
+  it('should load more completed games after button click', () => {
     gameServiceSpy.completedGames.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
     const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
     loadMoreButton.triggerEventHandler('click', null)

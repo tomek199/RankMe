@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Page, PageInfo } from '../../shared/model/page';
 import { CompletedGame } from '../../shared/model/game';
 import { GameService } from '../shared/game.service';
@@ -9,7 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './recently-played-games.component.html',
   styleUrls: ['./recently-played-games.component.scss']
 })
-export class RecentlyPlayedGames implements OnInit {
+export class RecentlyPlayedGames {
   @Input() leagueId: string;
   @Input() set gamesPage(gamesPage: Page<CompletedGame>) {
     this.pageInfo = gamesPage.pageInfo;
@@ -18,12 +18,10 @@ export class RecentlyPlayedGames implements OnInit {
   private PAGE_SIZE = 5;
   isLoading: boolean = false;
   pageInfo: PageInfo;
-  displayedColumns = ['datetime', 'player', 'score'];
+  displayedColumns = ['datetime', 'players', 'score'];
   dataSource: MatTableDataSource<CompletedGame>
 
   constructor(private gameService: GameService) { }
-
-  ngOnInit(): void { }
 
   loadMore() {
     this.isLoading = true;

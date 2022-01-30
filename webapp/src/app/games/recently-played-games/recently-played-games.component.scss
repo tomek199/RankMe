@@ -1,4 +1,5 @@
-.mat-cell p {
-  margin: 0;
-  padding: 0;
+.mat-column-players, .mat-column-datetime, .mat-column-score {
+  span {
+    display: block;
+  }
 }

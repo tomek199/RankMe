@@ -31,8 +31,7 @@ import { ScheduledGamesComponent } from './games/scheduled-games/scheduled-games
         DashboardComponent,
         PlayerRankingComponent,
         RecentlyPlayedGames,
-        ScheduledGamesComponent,
-        ScheduledGamesComponentStub
+        ScheduledGamesComponent
     ],
   imports: [
     BrowserModule,
