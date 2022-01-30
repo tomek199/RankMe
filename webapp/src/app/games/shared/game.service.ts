@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Page } from '../../shared/model/page';
 import { CompletedGame } from '../../shared/model/game';
+import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS } from '../../shared/graphql-fields';
 
 @Injectable({
   providedIn: 'root'
@@ -20,20 +21,8 @@ export class GameService {
       query: gql`
         query completedGames($leagueId: String!, $first: Int!) {
           completedGames(query: {leagueId: $leagueId, first: $first}) {
-            pageInfo {
-              hasNextPage endCursor
-            }
-            edges {
-              node {
-                id dateTime
-                playerOneId playerOneName playerOneRating
-                playerTwoId playerTwoName playerTwoRating
-                result {
-                  playerOneScore playerOneRatingDelta
-                  playerTwoScore playerTwoRatingDelta
-                }
-              }
-            }
+            ${PAGE_INFO_FIELDS}
+            ${COMPLETED_GAME_EDGE_FIELDS}
           }
         }
       `,
@@ -49,20 +38,8 @@ export class GameService {
       query: gql`
         query completedGames($leagueId: String!, $first: Int!, $after: String) {
           completedGames(query: {leagueId: $leagueId, first: $first, after: $after}) {
-            pageInfo {
-              hasNextPage endCursor
-            }
-            edges {
-              node {
-                id dateTime
-                playerOneId playerOneName playerOneRating
-                playerTwoId playerTwoName playerTwoRating
-                result {
-                  playerOneScore playerOneRatingDelta
-                  playerTwoScore playerTwoRatingDelta
-                }
-              }
-            }
+            ${PAGE_INFO_FIELDS}
+            ${COMPLETED_GAME_EDGE_FIELDS}
           }
         }
       `,
