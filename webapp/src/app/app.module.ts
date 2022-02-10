@@ -22,6 +22,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { RecentlyPlayedGames } from './games/recently-played-games/recently-played-games.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ScheduledGamesComponent } from './games/scheduled-games/scheduled-games.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
     declarations: [
@@ -48,7 +49,8 @@ import { ScheduledGamesComponent } from './games/scheduled-games/scheduled-games
     MatProgressSpinnerModule,
     MatTableModule,
     MatPaginatorModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

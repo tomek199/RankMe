@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  api: 'http://localhost:9020/api'
+  api: 'http://raspberry:9020/api'
 };
 
 /*
