@@ -3,6 +3,7 @@ import { Page, PageInfo } from '../../shared/model/page';
 import { ScheduledGame } from '../../shared/model/game';
 import { MatTableDataSource } from '@angular/material/table';
 import { GameService } from '../shared/game.service';
+import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
 
 @Component({
   selector: 'app-scheduled-games',
@@ -21,7 +22,10 @@ export class ScheduledGamesComponent {
   displayedColumns = ['datetime', 'players'];
   dataSource: MatTableDataSource<ScheduledGame>
 
-  constructor(private gameService: GameService) { }
+  constructor(
+    private gameService: GameService,
+    private errorHandler: ErrorHandlerService
+  ) { }
 
   loadMore() {
     this.isLoading = true;
@@ -29,6 +33,6 @@ export class ScheduledGamesComponent {
       this.pageInfo = data.scheduledGames.pageInfo;
       this.dataSource.data = [...this.dataSource.data, ...data.scheduledGames.edges.map(edge => edge.node)]
       this.isLoading = false;
-    });
+    }, this.errorHandler.handle).add(() => this.isLoading = false);
   }
 }

@@ -10,6 +10,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
+import { ErrorHandlerServiceStub } from '../../../testing/stubs';
 
 describe('ScheduledGamesComponent', () => {
   let component: ScheduledGamesComponent;
@@ -21,7 +23,8 @@ describe('ScheduledGamesComponent', () => {
       declarations: [ ScheduledGamesComponent ],
       imports: [ MatCardModule, MatTableModule, MatIconModule, MatButtonModule, MatProgressBarModule ],
       providers: [
-        { provide: GameService, useValue: gameServiceSpy }
+        { provide: GameService, useValue: gameServiceSpy },
+        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub }
       ]
     })
     .compileComponents();

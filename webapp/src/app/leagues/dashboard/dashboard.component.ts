@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { League } from '../../shared/model/league';
 import { LeagueService } from '../shared/league.service';
+import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +16,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private leagueService: LeagueService
+    private router: Router,
+    private leagueService: LeagueService,
+    private errorHandler: ErrorHandlerService
   ) { }
 
   ngOnInit(): void {
@@ -25,10 +29,11 @@ export class DashboardComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.isLoading = true;
       const leagueId = params['league_id'];
-      this.leagueService.leagueWithPlayersAndGames(leagueId).subscribe(({data}) => {
-        this.isLoading = false;
-        this.league = data.league;
-      })
+      this.leagueService.leagueWithPlayersAndGames(leagueId)
+        .subscribe(({data}) => {
+          if (data.league) this.league = data.league;
+          else this.router.navigate(['/leagues']);
+        }, this.errorHandler.handle).add(() => this.isLoading = false);
     });
   }
 }

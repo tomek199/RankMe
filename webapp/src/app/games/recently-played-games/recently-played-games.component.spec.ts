@@ -10,6 +10,8 @@ import { GameService } from '../shared/game.service';
 import { COMPLETED_GAMES_PAGE, LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data';
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
+import { ErrorHandlerServiceStub } from '../../../testing/stubs';
 
 describe('RecentlyPlayedGamesComponent', () => {
   let component: RecentlyPlayedGames;
@@ -21,7 +23,8 @@ describe('RecentlyPlayedGamesComponent', () => {
       declarations: [ RecentlyPlayedGames ],
       imports: [ MatCardModule, MatTableModule, MatIconModule, MatButtonModule, MatProgressBarModule ],
       providers: [
-        { provide: GameService, useValue: gameServiceSpy }
+        { provide: GameService, useValue: gameServiceSpy },
+        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub }
       ]
     })
     .compileComponents();

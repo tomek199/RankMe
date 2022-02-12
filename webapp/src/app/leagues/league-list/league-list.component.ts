@@ -3,6 +3,7 @@ import { LeagueService } from '../shared/league.service';
 import { League } from '../../shared/model/league';
 import { PageInfo } from '../../shared/model/page';
 import { Router } from '@angular/router';
+import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
 
 @Component({
   selector: 'app-league-list',
@@ -18,7 +19,8 @@ export class LeagueListComponent implements OnInit {
 
   constructor(
     private leagueService: LeagueService,
-    private router: Router
+    private router: Router,
+    private errorHandler: ErrorHandlerService
   ) { }
 
   ngOnInit(): void {
@@ -30,8 +32,7 @@ export class LeagueListComponent implements OnInit {
     this.leagueService.leagues(this.PAGE_SIZE).subscribe(({data}) => {
       this.pageInfo = data.leagues.pageInfo;
       this.leagues = data.leagues.edges.map(edge => edge.node);
-      this.isLoading = false;
-    });
+    }, this.errorHandler.handle).add(() => this.isLoading = false);
   }
 
   loadMore() {

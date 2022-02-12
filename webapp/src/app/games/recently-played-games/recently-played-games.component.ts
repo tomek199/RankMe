@@ -3,6 +3,7 @@ import { Page, PageInfo } from '../../shared/model/page';
 import { CompletedGame } from '../../shared/model/game';
 import { GameService } from '../shared/game.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
 
 @Component({
   selector: 'app-recently-played-games',
@@ -21,14 +22,16 @@ export class RecentlyPlayedGames {
   displayedColumns = ['datetime', 'players', 'score'];
   dataSource: MatTableDataSource<CompletedGame>
 
-  constructor(private gameService: GameService) { }
+  constructor(
+    private gameService: GameService,
+    private errorHandler: ErrorHandlerService
+  ) { }
 
   loadMore() {
     this.isLoading = true;
     this.gameService.completedGames(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
       this.pageInfo = data.completedGames.pageInfo;
       this.dataSource.data = [...this.dataSource.data, ...data.completedGames.edges.map(edge => edge.node)]
-      this.isLoading = false;
-    });
+    }, this.errorHandler.handle).add(() => this.isLoading = false);
   }
 }

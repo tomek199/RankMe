@@ -1,5 +1,6 @@
 import { ReplaySubject } from 'rxjs';
 import { convertToParamMap, ParamMap, Params } from '@angular/router';
+import { Injectable } from '@angular/core';
 
 export class ActivatedRouteStub {
     private subject = new ReplaySubject<ParamMap>();
@@ -13,4 +14,10 @@ export class ActivatedRouteStub {
     setParamMap(params: Params = {}) {
         this.subject.next(convertToParamMap(params));
     }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ErrorHandlerServiceStub {
 }
