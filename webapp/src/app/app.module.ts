@@ -23,6 +23,8 @@ import { RecentlyPlayedGames } from './games/recently-played-games/recently-play
 import { MatIconModule } from '@angular/material/icon';
 import { ScheduledGamesComponent } from './games/scheduled-games/scheduled-games.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { PlayGameComponent } from './games/play-game/play-game.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
     declarations: [
@@ -32,7 +34,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         DashboardComponent,
         PlayerRankingComponent,
         RecentlyPlayedGames,
-        ScheduledGamesComponent
+        ScheduledGamesComponent,
+        PlayGameComponent
     ],
   imports: [
     BrowserModule,
@@ -50,7 +53,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

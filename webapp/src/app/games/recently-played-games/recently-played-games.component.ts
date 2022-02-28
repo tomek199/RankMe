@@ -4,6 +4,8 @@ import { CompletedGame } from '../../shared/model/game';
 import { GameService } from '../shared/game.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PlayGameComponent } from '../play-game/play-game.component';
 
 @Component({
   selector: 'app-recently-played-games',
@@ -24,7 +26,8 @@ export class RecentlyPlayedGames {
 
   constructor(
     private gameService: GameService,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private dialog: MatDialog
   ) { }
 
   loadMore() {
@@ -32,6 +35,21 @@ export class RecentlyPlayedGames {
     this.gameService.completedGames(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
       this.pageInfo = data.completedGames.pageInfo;
       this.dataSource.data = [...this.dataSource.data, ...data.completedGames.edges.map(edge => edge.node)]
+    }, this.errorHandler.handle).add(() => this.isLoading = false);
+  }
+
+  playGame() {
+    const dialogRef = this.dialog.open(PlayGameComponent, {data: this.leagueId});
+    dialogRef.afterClosed().subscribe((gamePlayed: boolean) => {
+      if (gamePlayed) this.getFirstPage();
+    });
+  }
+
+  private getFirstPage() {
+    this.isLoading = true;
+    this.gameService.completedGames(this.leagueId, this.PAGE_SIZE).subscribe(({data}) => {
+      this.pageInfo = data.completedGames.pageInfo;
+      this.dataSource.data = data.completedGames.edges.map(edge => edge.node);
     }, this.errorHandler.handle).add(() => this.isLoading = false);
   }
 }

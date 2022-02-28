@@ -12,11 +12,13 @@ import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
 import { ErrorHandlerServiceStub } from '../../../testing/stubs';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('RecentlyPlayedGamesComponent', () => {
   let component: RecentlyPlayedGames;
   let fixture: ComponentFixture<RecentlyPlayedGames>;
   let gameServiceSpy = jasmine.createSpyObj('GameService', ['completedGames']);
+  let matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -24,7 +26,8 @@ describe('RecentlyPlayedGamesComponent', () => {
       imports: [ MatCardModule, MatTableModule, MatIconModule, MatButtonModule, MatProgressBarModule ],
       providers: [
         { provide: GameService, useValue: gameServiceSpy },
-        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub }
+        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub },
+        { provide: MatDialog, useValue: matDialogSpy }
       ]
     })
     .compileComponents();
@@ -75,5 +78,17 @@ describe('RecentlyPlayedGamesComponent', () => {
     fixture.detectChanges()
     const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
     expect(rows.length).toEqual(6);
+  });
+
+  it('should reload first completed games page when new game is played', () => {
+    gameServiceSpy.completedGames.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
+    const matDialogRefSpy = jasmine.createSpyObj('MatDialog', ['afterClosed']);
+    matDialogSpy.open.and.returnValue(matDialogRefSpy);
+    matDialogRefSpy.afterClosed.and.returnValue(of(true));
+    const playGameButton = fixture.debugElement.query(By.css('button.mat-raised-button[color=primary]'));
+    playGameButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    expect(gameServiceSpy.completedGames).toHaveBeenCalledWith(component.leagueId, 5);
+    expect(fixture.nativeElement.querySelectorAll('table tbody tr').length).toEqual(COMPLETED_GAMES_PAGE.edges.length);
   });
 });
