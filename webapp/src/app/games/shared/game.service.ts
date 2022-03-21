@@ -3,6 +3,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Page } from '../../shared/model/page';
 import { CompletedGame, ScheduledGame } from '../../shared/model/game';
 import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS, SCHEDULED_GAME_EDGE_FIELDS } from '../../shared/graphql-fields';
+import { PlayGameCommand } from './game.model';
 
 @Injectable({
   providedIn: 'root'
@@ -87,6 +88,19 @@ export class GameService {
         leagueId: leagueId,
         first: first,
         after: after
+      }
+    });
+  }
+
+  playGame(command: PlayGameCommand) {
+    return this.apollo.mutate<{playGame: string}>({
+      mutation: gql`
+        mutation playGame($command: PlayGameCommand!) {
+          playGame(command: $command)
+        }
+      `,
+      variables: {
+        command: command
       }
     });
   }
