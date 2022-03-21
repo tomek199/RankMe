@@ -10,8 +10,8 @@ import { GameService } from '../shared/game.service';
 import { COMPLETED_GAMES_PAGE, LEAGUE_WITH_PLAYERS_AND_GAMES } from '../../../testing/data';
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
-import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
-import { ErrorHandlerServiceStub } from '../../../testing/stubs';
+import { SnackbarService } from '../../shared/snackbar/snackbar.service';
+import { SnackbarServiceStub } from '../../../testing/stubs';
 import { MatDialog } from '@angular/material/dialog';
 
 describe('RecentlyPlayedGamesComponent', () => {
@@ -26,7 +26,7 @@ describe('RecentlyPlayedGamesComponent', () => {
       imports: [ MatCardModule, MatTableModule, MatIconModule, MatButtonModule, MatProgressBarModule ],
       providers: [
         { provide: GameService, useValue: gameServiceSpy },
-        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub },
+        { provide: SnackbarService, useClass: SnackbarServiceStub },
         { provide: MatDialog, useValue: matDialogSpy }
       ]
     })

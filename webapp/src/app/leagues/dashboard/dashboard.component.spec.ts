@@ -5,14 +5,14 @@ import { of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LeagueService } from '../shared/league.service';
-import { ActivatedRouteStub, ErrorHandlerServiceStub } from '../../../testing/stubs';
+import { ActivatedRouteStub, SnackbarServiceStub } from '../../../testing/stubs';
 import { LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE } from '../../../testing/data';
 import { Component, Input } from '@angular/core';
 import { Player } from '../../shared/model/player';
 import { By } from '@angular/platform-browser';
 import { Page } from '../../shared/model/page';
 import { Game } from '../../shared/model/game';
-import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
+import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('DashboardComponent', () => {
@@ -34,7 +34,7 @@ describe('DashboardComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: LeagueService, useValue: leagueServiceSpy },
-        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub }
+        { provide: SnackbarService, useClass: SnackbarServiceStub }
       ]
     })
     .compileComponents();

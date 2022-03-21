@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LeagueService } from '../../leagues/shared/league.service';
-import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
+import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { League } from '../../shared/model/league';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -25,7 +25,7 @@ export class PlayGameComponent implements OnInit {
     private dialogRef: MatDialogRef<PlayGameComponent>,
     private leagueService: LeagueService,
     private gameService: GameService,
-    private errorHandler: ErrorHandlerService
+    private snackbarService: SnackbarService
   ) {
     this.playGameForm = new FormGroup({
       playerOne: new FormControl(null, [Validators.required, this.playerValidator()]),
@@ -76,12 +76,12 @@ export class PlayGameComponent implements OnInit {
     });
   }
 
-  getLeague() {
+  getLeague(): void {
     this.isLoading = true;
     this.leagueService.leagueWithPlayers(this.leagueId)
       .subscribe(({data}) => {
         this.league = data.league;
-      }, this.errorHandler.handle).add(() => this.isLoading = false);
+      }, this.snackbarService.handleError).add(() => this.isLoading = false);
   }
 
   private filter(value: any): Player[] {
@@ -94,7 +94,7 @@ export class PlayGameComponent implements OnInit {
     if (player) return player.name
   }
 
-  showGeneralValidationError() {
+  showGeneralValidationError(): boolean {
     return this.playGameForm.controls.playerOne.valid && this.playGameForm.controls.playerTwo.valid;
   }
 
@@ -105,7 +105,10 @@ export class PlayGameComponent implements OnInit {
     );
     this.gameService.playGame(command).subscribe(() => {
       this.isLoading = true;
-      window.setTimeout(() => this.dialogRef.close(true), 1000);
+      window.setTimeout(() => {
+        this.dialogRef.close(true);
+        this.snackbarService.showMessage("Game played!");
+      }, 1000);
     })
   }
 }

@@ -19,5 +19,5 @@ export class ActivatedRouteStub {
 @Injectable({
   providedIn: 'root'
 })
-export class ErrorHandlerServiceStub {
+export class SnackbarServiceStub {
 }

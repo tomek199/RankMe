@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { League } from '../../shared/model/league';
 import { LeagueService } from '../shared/league.service';
-import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +17,7 @@ export class DashboardComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private leagueService: LeagueService,
-    private errorHandler: ErrorHandlerService
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +32,7 @@ export class DashboardComponent implements OnInit {
         .subscribe(({data}) => {
           if (data.league) this.league = data.league;
           else this.router.navigate(['/leagues']);
-        }, this.errorHandler.handle).add(() => this.isLoading = false);
+        }, this.snackbarService.handleError).add(() => this.isLoading = false);
     });
   }
 }

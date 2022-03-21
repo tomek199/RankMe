@@ -14,8 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { LEAGUES_PAGE } from '../../../testing/data';
 import { MatIconModule } from '@angular/material/icon';
-import { ErrorHandlerService } from '../../shared/error-handler/error-handler.service';
-import { ErrorHandlerServiceStub } from '../../../testing/stubs';
+import { SnackbarService } from '../../shared/snackbar/snackbar.service';
+import { SnackbarServiceStub } from '../../../testing/stubs';
 
 describe('LeagueListComponent', () => {
   let component: LeagueListComponent;
@@ -28,7 +28,7 @@ describe('LeagueListComponent', () => {
       imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule, MatIconModule ],
       providers: [
         { provide: LeagueService, useValue: leagueServiceSpy },
-        { provide: ErrorHandlerService, useClass: ErrorHandlerServiceStub }
+        { provide: SnackbarService, useClass: SnackbarServiceStub }
       ]
     })
     .compileComponents();
