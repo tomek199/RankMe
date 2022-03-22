@@ -91,4 +91,14 @@ describe('RecentlyPlayedGamesComponent', () => {
     expect(gameServiceSpy.completedGames).toHaveBeenCalledWith(component.leagueId, 5);
     expect(fixture.nativeElement.querySelectorAll('table tbody tr').length).toEqual(COMPLETED_GAMES_PAGE.edges.length);
   });
+
+  it('should do nothing when play-game dialog is closed by cancel button', () => {
+    const matDialogRefSpy = jasmine.createSpyObj('MatDialog', ['afterClosed']);
+    matDialogSpy.open.and.returnValue(matDialogRefSpy);
+    matDialogRefSpy.afterClosed.and.returnValue(of(false));
+    const playGameButton = fixture.debugElement.query(By.css('button.mat-raised-button[color=primary]'));
+    playGameButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('table tbody tr').length).toEqual(COMPLETED_GAMES_PAGE.edges.length);
+  });
 });

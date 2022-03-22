@@ -106,7 +106,7 @@ export const PLAYERS = [
 ] as Player[];
 
 export const LEAGUE_WITH_PLAYERS = {
-  id: 'league-1', name: "League-1", allowDraws: true, maxScore: 3,
+  id: 'league-1', name: "League-1", allowDraws: false, maxScore: 3,
   players: PLAYERS
 } as League;
 

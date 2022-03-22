@@ -4,7 +4,7 @@
     <h1 mat-dialog-title>Play game</h1>
     <form [formGroup]="playGameForm" (ngSubmit)="playGame()">
       <mat-dialog-content>
-        <ng-container *ngIf="showGeneralValidationError()">
+        <ng-container *ngIf="isPlayersValid()">
           <mat-error *ngIf="playGameForm.errors?.drawNotAllowed">Draw is not allowed</mat-error>
           <mat-error *ngIf="playGameForm.errors?.samePlayers">Please select two different players</mat-error>
         </ng-container>

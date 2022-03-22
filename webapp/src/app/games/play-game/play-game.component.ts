@@ -94,7 +94,7 @@ export class PlayGameComponent implements OnInit {
     if (player) return player.name
   }
 
-  showGeneralValidationError(): boolean {
+  isPlayersValid(): boolean {
     return this.playGameForm.controls.playerOne.valid && this.playGameForm.controls.playerTwo.valid;
   }
 
@@ -104,11 +104,8 @@ export class PlayGameComponent implements OnInit {
       this.playGameForm.value.playerOneScore, this.playGameForm.value.playerTwoScore
     );
     this.gameService.playGame(command).subscribe(() => {
-      this.isLoading = true;
-      window.setTimeout(() => {
-        this.dialogRef.close(true);
-        this.snackbarService.showMessage("Game played!");
-      }, 1000);
-    })
+      this.snackbarService.showMessage("Game played!");
+      this.dialogRef.close(true);
+    });
   }
 }
