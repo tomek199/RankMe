@@ -104,8 +104,7 @@ export class PlayGameComponent implements OnInit {
       this.playGameForm.value.playerOneScore, this.playGameForm.value.playerTwoScore
     );
     this.gameService.playGame(command).subscribe(() => {
-      this.snackbarService.showMessage("Game played!");
-      this.dialogRef.close(true);
+      this.dialogRef.close(this.snackbarService.showMessage("Game played!"));
     });
   }
 }

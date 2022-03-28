@@ -1,9 +1,8 @@
-import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlayGameComponent } from './play-game.component';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { SnackbarService } from '../../shared/snackbar/snackbar.service';
-import { SnackbarServiceStub } from '../../../testing/stubs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LeagueService } from '../../leagues/shared/league.service';
 import { of } from 'rxjs';
-import { COMPLETED_GAMES_PAGE, LEAGUE_WITH_PLAYERS } from '../../../testing/data';
+import { LEAGUE_WITH_PLAYERS } from '../../../testing/data';
 import { By } from '@angular/platform-browser';
 import { GameService } from '../shared/game.service';
 import { PlayGameCommand } from '../shared/game.model';

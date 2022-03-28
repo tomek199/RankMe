@@ -84,7 +84,7 @@ describe('RecentlyPlayedGamesComponent', () => {
     gameServiceSpy.completedGames.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
     const matDialogRefSpy = jasmine.createSpyObj('MatDialog', ['afterClosed']);
     matDialogSpy.open.and.returnValue(matDialogRefSpy);
-    matDialogRefSpy.afterClosed.and.returnValue(of(true));
+    matDialogRefSpy.afterClosed.and.returnValue(of(of(true)));
     const playGameButton = fixture.debugElement.query(By.css('button.mat-raised-button[color=primary]'));
     playGameButton.triggerEventHandler('click', null);
     fixture.detectChanges();
@@ -95,7 +95,7 @@ describe('RecentlyPlayedGamesComponent', () => {
   it('should do nothing when play-game dialog is closed by cancel button', () => {
     const matDialogRefSpy = jasmine.createSpyObj('MatDialog', ['afterClosed']);
     matDialogSpy.open.and.returnValue(matDialogRefSpy);
-    matDialogRefSpy.afterClosed.and.returnValue(of(false));
+    matDialogRefSpy.afterClosed.and.returnValue(of(null));
     const playGameButton = fixture.debugElement.query(By.css('button.mat-raised-button[color=primary]'));
     playGameButton.triggerEventHandler('click', null);
     fixture.detectChanges();

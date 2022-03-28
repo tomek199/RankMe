@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PlayGameComponent } from '../play-game/play-game.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-recently-played-games',
@@ -40,8 +41,8 @@ export class RecentlyPlayedGames {
 
   playGame() {
     const dialogRef = this.dialog.open(PlayGameComponent, {data: this.leagueId});
-    dialogRef.afterClosed().subscribe((gamePlayed: boolean) => {
-      if (gamePlayed) this.getFirstPage();
+    dialogRef.afterClosed().subscribe((event: Observable<any>) => {
+      if (event) event.subscribe(() => this.getFirstPage());
     });
   }
 
