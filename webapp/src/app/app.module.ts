@@ -23,6 +23,15 @@ import { RecentlyPlayedGames } from './games/recently-played-games/recently-play
 import { MatIconModule } from '@angular/material/icon';
 import { ScheduledGamesComponent } from './games/scheduled-games/scheduled-games.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { PlayGameComponent } from './games/play-game/play-game.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @NgModule({
     declarations: [
@@ -32,7 +41,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         DashboardComponent,
         PlayerRankingComponent,
         RecentlyPlayedGames,
-        ScheduledGamesComponent
+        ScheduledGamesComponent,
+        PlayGameComponent
     ],
   imports: [
     BrowserModule,
@@ -50,7 +60,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatSliderModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

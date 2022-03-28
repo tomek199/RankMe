@@ -1,6 +1,7 @@
 import { Page } from '../app/shared/model/page';
 import { League } from '../app/shared/model/league';
 import { CompletedGame, ScheduledGame } from '../app/shared/model/game';
+import { Player } from '../app/shared/model/player';
 
 export const LEAGUES_PAGE = {
   pageInfo: {
@@ -98,13 +99,20 @@ export const SCHEDULED_GAMES_PAGE = {
   ]
 } as Page<ScheduledGame>
 
+export const PLAYERS = [
+  {id: 'player-1', name: 'Player-1', rating: 2367},
+  {id: 'player-2', name: 'Player-2', rating: 1594},
+  {id: 'player-3', name: 'Player-3', rating: 1863}
+] as Player[];
+
+export const LEAGUE_WITH_PLAYERS = {
+  id: 'league-1', name: "League-1", allowDraws: false, maxScore: 3,
+  players: PLAYERS
+} as League;
+
 export const LEAGUE_WITH_PLAYERS_AND_GAMES = {
   id: 'league-1', name: "League-1",
-  players: [
-    {id: 'player-1', name: 'Player-1', rating: 2367},
-    {id: 'player-2', name: 'Player-2', rating: 1594},
-    {id: 'player-3', name: 'Player-3', rating: 1863},
-  ],
+  players: PLAYERS,
   completedGames: COMPLETED_GAMES_PAGE,
   scheduledGames: SCHEDULED_GAMES_PAGE
 } as League;

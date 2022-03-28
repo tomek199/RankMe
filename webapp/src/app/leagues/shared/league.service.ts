@@ -56,6 +56,24 @@ export class LeagueService {
     });
   }
 
+  leagueWithPlayers(id: string) {
+    return this.apollo.query<{league: League}>({
+      query: gql`
+        query league($id: String!) {
+          league(query: {id: $id}) {
+            id name allowDraws maxScore
+            players {
+              id name rating
+            }
+          }
+        }
+      `,
+      variables: {
+        id: id
+      }
+    });
+  }
+
   leagueWithPlayersAndGames(id: string, firstCompletedGames: number = 5, firstScheduledGames: number = 5) {
     return this.apollo.query<{league: League}>({
       query: gql`

@@ -1,23 +1,23 @@
-import { ReplaySubject } from 'rxjs';
-import { convertToParamMap, ParamMap, Params } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 export class ActivatedRouteStub {
-    private subject = new ReplaySubject<ParamMap>();
+  private subject = new BehaviorSubject(this.testParams);
+  private _testParams: {};
+  params = this.subject.asObservable();
 
-    constructor(initialParams?: Params) {
-        this.setParamMap(initialParams);
-    }
+  get testParams() {
+    return this._testParams;
+  }
 
-    readonly params = this.subject.asObservable();
-
-    setParamMap(params: Params = {}) {
-        this.subject.next(convertToParamMap(params));
-    }
+  set testParams(params: {}) {
+    this._testParams = params;
+    this.subject.next(params);
+  }
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class ErrorHandlerServiceStub {
+export class SnackbarServiceStub {
 }

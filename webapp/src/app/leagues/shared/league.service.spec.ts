@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { LeagueService } from './league.service';
-import { LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE } from '../../../testing/data';
+import { LEAGUE_WITH_PLAYERS, LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE } from '../../../testing/data';
 import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
 
 describe('LeagueService', () => {
@@ -43,6 +43,19 @@ describe('LeagueService', () => {
     expect(operation.operation.variables.first).toEqual(2);
     expect(operation.operation.variables.after).toEqual("league-3-cur");
     controller.verify();
+  });
+
+  it('should return league with players', () => {
+    service.leagueWithPlayers(LEAGUE_WITH_PLAYERS.id).subscribe(({data}) => {
+      expect(data.league.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
+      expect(data.league.name).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.name);
+      expect(data.league.allowDraws).toEqual(LEAGUE_WITH_PLAYERS.allowDraws);
+      expect(data.league.maxScore).toEqual(LEAGUE_WITH_PLAYERS.maxScore);
+      expect(data.league.players.length).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.players.length);
+    });
+    const operation = controller.expectOne('league');
+    operation.flush({data: {league: LEAGUE_WITH_PLAYERS}});
+    expect(operation.operation.variables.id).toEqual(LEAGUE_WITH_PLAYERS.id);
   });
 
   it('should return league with players, completed and scheduled games', () => {

@@ -1,0 +1,78 @@
+<ng-container [ngSwitch]="isLoading">
+  <mat-spinner *ngSwitchCase="true"></mat-spinner>
+  <ng-container *ngSwitchCase="false">
+    <h1 mat-dialog-title>Play game</h1>
+    <form [formGroup]="playGameForm" (ngSubmit)="playGame()">
+      <mat-dialog-content>
+        <ng-container *ngIf="isPlayersValid()">
+          <mat-error *ngIf="playGameForm.errors?.drawNotAllowed">Draw is not allowed</mat-error>
+          <mat-error *ngIf="playGameForm.errors?.samePlayers">Please select two different players</mat-error>
+        </ng-container>
+        <table>
+          <tr>
+            <td>
+              <mat-form-field>
+                <mat-label>Player one</mat-label>
+                <input type="text" matInput formControlName="playerOne" [matAutocomplete]="playerOneAuto">
+                <span matSuffix>Score: {{playGameForm.controls.playerOneScore.value}}</span>
+                <mat-autocomplete autoActiveFirstOption #playerOneAuto="matAutocomplete" [displayWith]="displayPlayerName">
+                  <mat-option *ngFor="let player of filteredPlayers | async" [value]="player">
+                    {{player.name}}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="playGameForm.controls.playerOne.invalid">Please select first player</mat-error>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-slider
+                [max]="league?.maxScore"
+                [min]="0"
+                [step]="1"
+                [thumbLabel]="true"
+                [tickInterval]="1"
+                formControlName="playerOneScore"
+                aria-labelledby="example-name-label">
+              </mat-slider>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <mat-form-field>
+                <mat-label>Player two</mat-label>
+                <input type="text" matInput formControlName="playerTwo" [matAutocomplete]="playerTwoAuto">
+                <span matSuffix>Score: {{playGameForm.controls.playerTwoScore.value}}</span>
+                <mat-autocomplete autoActiveFirstOption #playerTwoAuto="matAutocomplete" [displayWith]="displayPlayerName">
+                  <mat-option *ngFor="let player of filteredPlayers | async" [value]="player">
+                    {{player.name}}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="playGameForm.controls.playerTwo.invalid">Please select second player</mat-error>
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-slider
+                [max]="league?.maxScore"
+                [min]="0"
+                [step]="1"
+                [thumbLabel]="true"
+                [tickInterval]="1"
+                formControlName="playerTwoScore"
+                aria-labelledby="example-name-label">
+              </mat-slider>
+            </td>
+          </tr>
+        </table>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-raised-button [mat-dialog-close]="null">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="playGameForm.invalid">
+          <mat-icon>check</mat-icon>
+          Play
+        </button>
+      </mat-dialog-actions>
+    </form>
+  </ng-container>
+</ng-container>
