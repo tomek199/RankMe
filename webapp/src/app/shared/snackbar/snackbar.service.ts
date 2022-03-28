@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarDismiss } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,9 @@ export class SnackbarService {
     });
   }
 
-  showMessage(message: string): void {
-    this.snackbar.open(message, undefined, {
+  showMessage(message: string): Observable<MatSnackBarDismiss> {
+    return this.snackbar.open(message, undefined, {
       verticalPosition: 'bottom', duration: 3000
-    });
+    }).afterDismissed();
   }
 }

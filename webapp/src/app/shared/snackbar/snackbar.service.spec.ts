@@ -2,10 +2,12 @@ import { TestBed } from '@angular/core/testing';
 
 import { SnackbarService } from './snackbar.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { of } from 'rxjs';
 
 describe('SnackbarService', () => {
   let service: SnackbarService;
   let snackbarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
+  let snackbarRefSpy = jasmine.createSpyObj('MatSnackBarRef', ['afterDismissed']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -15,6 +17,8 @@ describe('SnackbarService', () => {
       ]
     });
     service = TestBed.inject(SnackbarService);
+    snackbarSpy.open.and.returnValue(snackbarRefSpy);
+    snackbarRefSpy.afterDismissed.and.returnValue(of(true));
   });
 
   it('should be created', () => {
@@ -53,7 +57,8 @@ describe('SnackbarService', () => {
 
   it('should show snackbar with given message', () => {
     const message = 'Command submitted!';
-    service.showMessage(message);
+    const matSnackBarDismiss = service.showMessage(message);
+    expect(matSnackBarDismiss).toBeTruthy();
     expect(snackbarSpy.open).toHaveBeenCalledWith(
       message,
       undefined,
