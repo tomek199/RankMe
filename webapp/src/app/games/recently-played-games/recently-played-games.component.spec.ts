@@ -80,15 +80,16 @@ describe('RecentlyPlayedGamesComponent', () => {
     expect(rows.length).toEqual(6);
   });
 
-  it('should reload first completed games page when new game is played', () => {
+  it('should emit event when new game is played', () => {
     gameServiceSpy.completedGames.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
+    spyOn(component.gamePlayed, 'emit');
     const matDialogRefSpy = jasmine.createSpyObj('MatDialog', ['afterClosed']);
     matDialogSpy.open.and.returnValue(matDialogRefSpy);
     matDialogRefSpy.afterClosed.and.returnValue(of(of(true)));
     const playGameButton = fixture.debugElement.query(By.css('button.mat-raised-button[color=primary]'));
     playGameButton.triggerEventHandler('click', null);
     fixture.detectChanges();
-    expect(gameServiceSpy.completedGames).toHaveBeenCalledWith(component.leagueId, 5);
+    expect(component.gamePlayed.emit).toHaveBeenCalledWith(true);
     expect(fixture.nativeElement.querySelectorAll('table tbody tr').length).toEqual(COMPLETED_GAMES_PAGE.edges.length);
   });
 
