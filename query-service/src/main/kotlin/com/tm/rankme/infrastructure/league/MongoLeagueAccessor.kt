@@ -12,4 +12,8 @@ interface MongoLeagueAccessor : MongoRepository<LeagueEntity, String> {
     fun getByTimestampGreaterThanOrderByTimestampAsc(
         timestamp: Long, pageable: Pageable
     ) : Page<LeagueEntity>
+
+    fun getByTimestampLessThanOrderByTimestampDesc(
+        timestamp: Long, pageable: Pageable
+    ) : Page<LeagueEntity>
 }

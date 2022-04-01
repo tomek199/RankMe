@@ -20,9 +20,12 @@ class LeagueController(private val repository: LeagueRepository) {
     @GetMapping("")
     fun leagues(
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<League> {
-        log.info("Get leagues first=$first, after=$after")
-        return repository.list(first, after)
+        log.info("Get leagues first=$first, after=$after, before=$before")
+        return if (after != null) repository.listAfter(first, after)
+            else if (before != null) repository.listBefore(first, before)
+            else repository.list(first)
     }
 }

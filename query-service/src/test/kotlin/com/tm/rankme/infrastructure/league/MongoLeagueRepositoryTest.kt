@@ -97,7 +97,7 @@ internal class MongoLeagueRepositoryTest {
     }
 
     @Test
-    internal fun `Should return middle leagues page`() {
+    internal fun `Should return middle leagues page after given cursor`() {
         // given
         val leagues = List(6) {
             LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
@@ -106,7 +106,7 @@ internal class MongoLeagueRepositoryTest {
                 PageImpl(leagues.subList(1, 6), PageRequest.of(0, 5), 11)
         val afterCursor = Base64.getEncoder().encodeToString(leagues.first().timestamp.toString().toByteArray())
         // when
-        val page = repository.list(4, afterCursor)
+        val page = repository.listAfter(4, afterCursor)
         // then
         assertEquals(5, page.items.size)
         assertEquals(leagues[1].id, page.items.first().node.id)
@@ -116,7 +116,7 @@ internal class MongoLeagueRepositoryTest {
     }
 
     @Test
-    internal fun `Should return last leagues page`() {
+    internal fun `Should return last leagues page after given cursor`() {
         // given
         val leagues = List(9) {
             LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
@@ -125,12 +125,50 @@ internal class MongoLeagueRepositoryTest {
                 PageImpl(leagues.takeLast(8), PageRequest.of(0, 8), 8)
         val afterCursor = Base64.getEncoder().encodeToString(leagues.first().timestamp.toString().toByteArray())
         // when
-        val page = repository.list(8, afterCursor)
+        val page = repository.listAfter(8, afterCursor)
         // then
         assertEquals(8, page.items.size)
         assertEquals(leagues[1].id, page.items.first().node.id)
         assertEquals(leagues.last().id, page.items.last().node.id)
         assertTrue(page.hasPreviousPage)
         assertFalse(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return middle leagues page before given cursor`() {
+        // given
+        val leagues = List(5) {
+            LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        every { accessor.getByTimestampLessThanOrderByTimestampDesc(leagues.last().timestamp, ofType(Pageable::class)) } returns
+                PageImpl(leagues.subList(0, 4).reversed(), PageRequest.of(0, 4), 12)
+        val beforeCursor = Base64.getEncoder().encodeToString(leagues.last().timestamp.toString().toByteArray())
+        // when
+        val page = repository.listBefore(4, beforeCursor)
+        // then
+        assertEquals(4, page.items.size)
+        assertEquals(leagues.first().id, page.items.first().node.id)
+        assertEquals(leagues[3].id, page.items.last().node.id)
+        assertTrue(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
+    }
+
+    @Test
+    internal fun `Should return first leagues page before given cursor`() {
+        // given
+        val leagues = List(8) {
+            LeagueEntity(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        every { accessor.getByTimestampLessThanOrderByTimestampDesc(leagues.last().timestamp, ofType(Pageable::class)) } returns
+                PageImpl(leagues.subList(0, 7).reversed(), PageRequest.of(0, 7), 7)
+        val beforeCursor = Base64.getEncoder().encodeToString(leagues.last().timestamp.toString().toByteArray())
+        // when
+        val page = repository.listBefore(7, beforeCursor)
+        // then
+        assertEquals(7, page.items.size)
+        assertEquals(leagues.first().id, page.items.first().node.id)
+        assertEquals(leagues[6].id, page.items.last().node.id)
+        assertFalse(page.hasPreviousPage)
+        assertTrue(page.hasNextPage)
     }
 }
