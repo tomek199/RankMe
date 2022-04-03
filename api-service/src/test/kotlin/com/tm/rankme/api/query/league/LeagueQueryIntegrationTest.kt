@@ -134,7 +134,7 @@ internal class LeagueQueryIntegrationTest {
         }
         val page = Page(leagues.map { Item(it, it.id) }, true, true)
         every {
-            restTemplate.exchange("$url/query-service/leagues?first=8&after=MTY0MDExNzM5MDA0MA==",
+            restTemplate.exchange("$url/query-service/leagues?first=8",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
         val request = "graphql/leagues.graphql"

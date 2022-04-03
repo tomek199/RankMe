@@ -76,7 +76,7 @@ internal class LeagueQueryHandlerTest {
     }
 
     @Test
-    internal fun `Should return leagues connection for given cursor`() {
+    internal fun `Should return leagues connection for given cursor after`() {
         // given
         val leagues = List(7) {
             League(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
@@ -87,12 +87,41 @@ internal class LeagueQueryHandlerTest {
             restTemplate.exchange("$url/query-service/leagues?first=7&after=$cursor",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val query = GetLeaguesQuery(7, cursor)
+        val query = GetLeaguesQuery(7, after = cursor)
         // when
         val result = handler.handle(query)
         // then
         assertTrue(result.pageInfo.isHasPreviousPage)
         assertFalse(result.pageInfo.isHasNextPage)
+        assertEquals(leagues.first().id, result.pageInfo.startCursor.value)
+        assertEquals(leagues.last().id, result.pageInfo.endCursor.value)
+        result.edges.forEachIndexed { index, edge ->
+            assertEquals(leagues[index].id, edge.cursor.value)
+            assertEquals(leagues[index].id, edge.node.id)
+            assertEquals(leagues[index].name, edge.node.name)
+            assertEquals(leagues[index].allowDraws, edge.node.allowDraws)
+            assertEquals(leagues[index].maxScore, edge.node.maxScore)
+        }
+    }
+
+    @Test
+    internal fun `Should return leagues connection for given cursor before`() {
+        // given
+        val leagues = List(4) {
+            League(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        val page = Page(leagues.map { Item(it, it.id) }, false, true)
+        val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
+        every {
+            restTemplate.exchange("$url/query-service/leagues?first=4&before=$cursor",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetLeaguesQuery(4, before = cursor)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertTrue(result.pageInfo.isHasNextPage)
         assertEquals(leagues.first().id, result.pageInfo.startCursor.value)
         assertEquals(leagues.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge ->

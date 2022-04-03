@@ -1,7 +1,6 @@
 query {
     leagues(query: {
         first: 8
-        after: "MTY0MDExNzM5MDA0MA=="
     }) {
         pageInfo {
             hasPreviousPage
