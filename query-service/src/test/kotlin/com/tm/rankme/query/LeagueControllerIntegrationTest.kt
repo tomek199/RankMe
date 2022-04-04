@@ -56,7 +56,7 @@ internal class LeagueControllerIntegrationTest {
     }
 
     @Test
-    internal fun `Should return page for leagues after given cursor`() {
+    internal fun `Should return leagues page after given cursor`() {
         // given
         val entities = listOf(
             LeagueEntity(randomNanoId(), "Star Wars", false, 3),
@@ -86,7 +86,7 @@ internal class LeagueControllerIntegrationTest {
     }
 
     @Test
-    internal fun `Should return page for leagues before given cursor`() {
+    internal fun `Should return leagues page before given cursor`() {
         // given
         val entities = listOf(
             LeagueEntity(randomNanoId(), "Star Wars", false, 3),
@@ -116,7 +116,7 @@ internal class LeagueControllerIntegrationTest {
     }
 
     @Test
-    internal fun `Should return empty page for leagues`() {
+    internal fun `Should return empty leagues page`() {
         // given
         every {
             leagueAccessor.getAllByOrderByTimestampAsc(ofType(Pageable::class))
