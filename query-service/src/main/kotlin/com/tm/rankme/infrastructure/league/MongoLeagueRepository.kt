@@ -23,13 +23,25 @@ class MongoLeagueRepository(
         accessor.save(entity)
     }
 
-    override fun list(first: Int, after: String?): Page<League> {
+    override fun list(first: Int): Page<League> {
         val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getAllByOrderByTimestampAsc(pageable)
-            else accessor.getByTimestampGreaterThanOrderByTimestampAsc(decode(after), pageable)
+        val page = accessor.getAllByOrderByTimestampAsc(pageable)
         val leagues: List<Item<League>> = page.content.map(this::itemForEntity)
-        return Page(leagues, after != null, page.hasNext())
+        return Page(leagues, false, page.hasNext())
+    }
+
+    override fun listAfter(first: Int, after: String): Page<League> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByTimestampGreaterThanOrderByTimestampAsc(decode(after), pageable)
+        val leagues: List<Item<League>> = page.content.map(this::itemForEntity)
+        return Page(leagues, true, page.hasNext())
+    }
+
+    override fun listBefore(first: Int, before: String): Page<League> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByTimestampLessThanOrderByTimestampDesc(decode(before), pageable)
+        val leagues: List<Item<League>> = page.content.reversed().map(this::itemForEntity)
+        return Page(leagues, page.hasNext(), true)
     }
 
     private fun itemForEntity(entity: LeagueEntity) = Item(leagueFromEntity(entity), encode(entity.timestamp))

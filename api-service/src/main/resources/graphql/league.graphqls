@@ -20,6 +20,7 @@ input GetLeagueQuery {
 input GetLeaguesQuery {
     first: Int!
     after: String
+    before: String
 }
 
 type League {

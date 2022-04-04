@@ -28,6 +28,7 @@ class LeagueQueryHandler(
         log.info("Handle query {}", query)
         var endpoint = "$url/query-service/leagues?first=${query.first}"
         query.after?.let { endpoint += "&after=$it" }
+        query.before?.let { endpoint += "&before=$it" }
         val response = restTemplate.exchange(endpoint, HttpMethod.GET, null,
             object : ParameterizedTypeReference<Page<League>>() {}
         )

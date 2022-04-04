@@ -56,7 +56,7 @@ internal class LeagueControllerIntegrationTest {
     }
 
     @Test
-    internal fun `Should return page for leagues`() {
+    internal fun `Should return leagues page after given cursor`() {
         // given
         val entities = listOf(
             LeagueEntity(randomNanoId(), "Star Wars", false, 3),
@@ -86,7 +86,37 @@ internal class LeagueControllerIntegrationTest {
     }
 
     @Test
-    internal fun `Should return empty page for leagues`() {
+    internal fun `Should return leagues page before given cursor`() {
+        // given
+        val entities = listOf(
+            LeagueEntity(randomNanoId(), "Star Wars", false, 3),
+            LeagueEntity(randomNanoId(), "Marvel", true, 12)
+        )
+        val timestamp = System.currentTimeMillis()
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        every {
+            leagueAccessor.getByTimestampLessThanOrderByTimestampDesc(timestamp, ofType(Pageable::class))
+        } returns PageImpl(entities.reversed(), PageRequest.of(0, 2), 3)
+        // when
+        val result = mvc.get("/leagues?first=2&before=$beforeCursor")
+        // then
+        result.andExpect {
+            status { isOk() }
+            jsonPath("$.hasPreviousPage") { value(true) }
+            jsonPath("$.hasNextPage") { value(true) }
+            jsonPath("$.items[0].node.id") { value(entities[0].id) }
+            jsonPath("$.items[0].cursor") {
+                Base64.getEncoder().encodeToString(entities[0].timestamp.toString().toByteArray())
+            }
+            jsonPath("$.items[1].node.id") { value(entities[1].id) }
+            jsonPath("$.items[1].cursor") {
+                Base64.getEncoder().encodeToString(entities[1].timestamp.toString().toByteArray())
+            }
+        }
+    }
+
+    @Test
+    internal fun `Should return empty leagues page`() {
         // given
         every {
             leagueAccessor.getAllByOrderByTimestampAsc(ofType(Pageable::class))

@@ -6,6 +6,8 @@ import com.tm.rankme.e2e.mutation.CreateLeague
 import com.tm.rankme.e2e.mutation.RenameLeague
 import com.tm.rankme.e2e.query.GetLeague
 import com.tm.rankme.e2e.query.GetLeagues
+import com.tm.rankme.e2e.query.RequestCursor
+import com.tm.rankme.e2e.query.RequestCursor.Direction
 import com.tm.rankme.e2e.util.ApplicationContext
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
@@ -185,7 +187,7 @@ class LeagueSteps(
                 first: Int, after: Int, of: Int ->
             runBlocking {
                 val cursors = allLeaguesCursors(of)
-                val query = GetLeagues(first, cursors[after - 1])
+                val query = GetLeagues(first, RequestCursor(Direction.AFTER, cursors[after - 1]))
                 graphQlClient.execute(query).data?.let {
                     assertTrue(it.leagues.pageInfo.hasPreviousPage)
                     assertEquals(of > first + after, it.leagues.pageInfo.hasNextPage)
@@ -193,6 +195,21 @@ class LeagueSteps(
                     assertEquals(cursors[after + first - 1], it.leagues.pageInfo.endCursor)
                     it.leagues.edges.forEachIndexed { index, edge -> assertEquals(cursors[after + index], edge.cursor) }
                 } ?: fail("Leagues not found first=$first after=$after of=$of")
+            }
+        }
+
+        Then("I have first {int} before {int} of {int} leagues listed") {
+                first: Int, before: Int, of: Int ->
+            runBlocking {
+                val cursors = allLeaguesCursors(of)
+                val query = GetLeagues(first, RequestCursor(Direction.BEFORE, cursors[before - 1]))
+                graphQlClient.execute(query).data?.let {
+                    assertTrue(it.leagues.pageInfo.hasNextPage)
+                    assertEquals(first + 1 < before, it.leagues.pageInfo.hasPreviousPage)
+                    assertEquals(cursors[before - first - 1], it.leagues.pageInfo.startCursor)
+                    assertEquals(cursors[before - 2], it.leagues.pageInfo.endCursor)
+                    it.leagues.edges.forEachIndexed { index, edge -> assertEquals(cursors[before - first - 1 + index], edge.cursor) }
+                } ?: fail("Leagues not found first=$first before=$before of=$of")
             }
         }
 

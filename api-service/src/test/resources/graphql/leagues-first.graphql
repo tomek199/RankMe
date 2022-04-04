@@ -1,0 +1,21 @@
+query {
+    leagues(query: {
+        first: 8
+    }) {
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+            startCursor
+            endCursor
+        }
+        edges {
+            cursor
+            node {
+                id
+                name
+                allowDraws
+                maxScore
+            }
+        }
+    }
+}
