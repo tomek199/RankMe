@@ -5,14 +5,14 @@ import kotlin.reflect.KClass
 
 class GetLeagues(
     first: Int,
-    after: String? = null
+    cursor: RequestCursor? = null
 ) : GraphQLClientRequest<GetLeagues.Result> {
 
     override val query: String =
         """{
             leagues(query: {
                 first: $first 
-                ${if (after != null) ", after: \"$after\"" else ""}
+                ${if (cursor != null) ", ${cursor.direction}: \"${cursor.value}\"" else ""}
             }) {
                 pageInfo {
                     hasPreviousPage hasNextPage startCursor endCursor

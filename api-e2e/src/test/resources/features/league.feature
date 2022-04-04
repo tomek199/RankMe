@@ -50,6 +50,7 @@ Feature: League
     When I create 10 leagues
     Then I have first 6 of 10 leagues listed
     * I have first 10 of 10 leagues listed
-    * I have first 3 after 4 of 10 leagues listed
     * I have first 5 after 3 of 10 leagues listed
     * I have first 4 after 6 of 10 leagues listed
+    * I have first 9 before 10 of 10 leagues listed
+    * I have first 5 before 8 of 10 leagues listed
