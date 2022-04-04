@@ -127,17 +127,75 @@ internal class LeagueQueryIntegrationTest {
     }
 
     @Test
-    internal fun `Should return leagues`() {
+    internal fun `Should return first leagues page`() {
         // given
         val leagues = List(8) {
             League(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
         }
-        val page = Page(leagues.map { Item(it, it.id) }, true, true)
+        val page = Page(leagues.map { Item(it, it.id) }, false, true)
         every {
             restTemplate.exchange("$url/query-service/leagues?first=8",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/leagues.graphql"
+        val request = "graphql/leagues-first.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(page.hasPreviousPage, response.get("$.data.leagues.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(page.hasNextPage, response.get("$.data.leagues.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(page.items.first().cursor, response.get("$.data.leagues.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.leagues.pageInfo.endCursor"))
+        leagues.forEachIndexed { index, league ->
+            assertEquals(league.id, response.get("$.data.leagues.edges[$index].cursor"))
+            assertEquals(league.id, response.get("$.data.leagues.edges[$index].node.id"))
+            assertEquals(league.name, response.get("$.data.leagues.edges[$index].node.name"))
+            assertEquals(league.allowDraws, response.get("$.data.leagues.edges[$index].node.allowDraws", Boolean::class.java))
+            assertEquals(league.maxScore, response.get("$.data.leagues.edges[$index].node.maxScore", Int::class.java))
+        }
+    }
+
+    @Test
+    internal fun `Should return leagues page after given cursor`() {
+        // given
+        val leagues = List(6) {
+            League(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        val page = Page(leagues.map { Item(it, it.id) }, true, false)
+        every {
+            restTemplate.exchange("$url/query-service/leagues?first=6&after=MTY0MDExNzM5MDA0MA==",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val request = "graphql/leagues-after.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(page.hasPreviousPage, response.get("$.data.leagues.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(page.hasNextPage, response.get("$.data.leagues.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(page.items.first().cursor, response.get("$.data.leagues.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.leagues.pageInfo.endCursor"))
+        leagues.forEachIndexed { index, league ->
+            assertEquals(league.id, response.get("$.data.leagues.edges[$index].cursor"))
+            assertEquals(league.id, response.get("$.data.leagues.edges[$index].node.id"))
+            assertEquals(league.name, response.get("$.data.leagues.edges[$index].node.name"))
+            assertEquals(league.allowDraws, response.get("$.data.leagues.edges[$index].node.allowDraws", Boolean::class.java))
+            assertEquals(league.maxScore, response.get("$.data.leagues.edges[$index].node.maxScore", Int::class.java))
+        }
+    }
+
+    @Test
+    internal fun `Should return leagues page before given cursor`() {
+        // given
+        val leagues = List(14) {
+            League(randomNanoId(), "League-${Random.nextInt()}", Random.nextBoolean(), Random.nextInt(10))
+        }
+        val page = Page(leagues.map { Item(it, it.id) }, false, true)
+        every {
+            restTemplate.exchange("$url/query-service/leagues?first=14&before=GyW_fkykbSJtdjDMOIxtk",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val request = "graphql/leagues-before.graphql"
         // when
         val response = template.postForResource(request)
         // then

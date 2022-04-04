@@ -1,0 +1,22 @@
+query {
+    leagues(query: {
+        first: 14
+        before: "GyW_fkykbSJtdjDMOIxtk"
+    }) {
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+            startCursor
+            endCursor
+        }
+        edges {
+            cursor
+            node {
+                id
+                name
+                allowDraws
+                maxScore
+            }
+        }
+    }
+}
