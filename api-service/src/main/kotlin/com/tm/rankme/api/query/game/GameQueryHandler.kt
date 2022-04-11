@@ -23,6 +23,7 @@ class GameQueryHandler(
         log.info("Handle query {}", query)
         var endpoint = "$url/query-service/leagues/${query.leagueId}/games?first=${query.first}"
         query.after?.let { endpoint += "&after=${query.after}" }
+        query.before?.let { endpoint += "&before=${query.before}" }
         val response =  restTemplate.exchange(endpoint, HttpMethod.GET, null,
             object : ParameterizedTypeReference<Page<Game>>() {}
         )
@@ -34,6 +35,7 @@ class GameQueryHandler(
         log.info("Handle query {}", query)
         var endpoint = "$url/query-service/leagues/${query.leagueId}/completed-games?first=${query.first}"
         query.after?.let { endpoint += "&after=${query.after}" }
+        query.before?.let { endpoint += "&before=${query.before}" }
         val response =  restTemplate.exchange(endpoint, HttpMethod.GET, null,
             object : ParameterizedTypeReference<Page<CompletedGame>>() {}
         )
@@ -45,6 +47,7 @@ class GameQueryHandler(
         log.info("Handle query {}", query)
         var endpoint = "$url/query-service/leagues/${query.leagueId}/scheduled-games?first=${query.first}"
         query.after?.let { endpoint += "&after=${query.after}" }
+        query.before?.let { endpoint += "&before=${query.before}" }
         val response =  restTemplate.exchange(endpoint, HttpMethod.GET, null,
             object : ParameterizedTypeReference<Page<ScheduledGame>>() {}
         )

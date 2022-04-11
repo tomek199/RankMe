@@ -21,18 +21,21 @@ input GetGamesForLeagueQuery {
     leagueId: String!
     first: Int!
     after: String
+    before: String
 }
 
 input GetCompletedGamesForLeagueQuery {
     leagueId: String!
     first: Int!
     after: String
+    before: String
 }
 
 input GetScheduledGamesForLeagueQuery {
     leagueId: String!
     first: Int!
     after: String
+    before: String
 }
 
 interface Game {

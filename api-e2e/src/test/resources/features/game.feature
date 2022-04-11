@@ -16,18 +16,21 @@ Feature: Player
     Then I have first 14 of 25 games listed
     * I have first 25 of 25 games listed
     * I have first 17 after 3 of 25 games listed
-    * I have first 6 after 14 of 25 games listed
     * I have first 21 after 4 of 25 games listed
+    * I have first 24 before 25 of 25 games listed
+    * I have first 13 before 18 of 25 games listed
     And I have first 7 of 12 completed games listed
     * I have first 12 of 12 completed games listed
     * I have first 5 after 3 of 12 completed games listed
-    * I have first 3 after 7 of 12 completed games listed
     * I have first 8 after 4 of 12 completed games listed
+    * I have first 11 before 12 of 12 completed games listed
+    * I have first 5 before 8 of 12 completed games listed
     And I have first 9 of 13 scheduled games listed
     * I have first 13 of 13 scheduled games listed
     * I have first 3 after 6 of 13 scheduled games listed
-    * I have first 8 after 3 of 13 scheduled games listed
     * I have first 11 after 2 of 13 scheduled games listed
+    * I have first 12 before 13 of 13 scheduled games listed
+    * I have first 8 before 11 of 13 scheduled games listed
 
   Scenario: Play multiple games to check games data
     * I create player "Luke Skywalker"

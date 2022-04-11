@@ -17,30 +17,39 @@ class GameController(private val repository: GameRepository) {
     fun gamesByLeagueId(
         @PathVariable leagueId: String,
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<Game> {
         log.info("Get games by leagueId=$leagueId, first=$first, after=$after")
-        return repository.byLeagueId(leagueId, first, after)
+        return if (after != null) repository.byLeagueIdAfter(leagueId, first, after)
+            else if (before != null) repository.byLeagueIdBefore(leagueId, first, before)
+            else repository.byLeagueId(leagueId, first)
     }
 
     @GetMapping("/leagues/{leagueId}/completed-games")
     fun completedGamesByLeagueId(
         @PathVariable leagueId: String,
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<Game> {
         log.info("Get completed games by leagueId=$leagueId, first=$first, after=$after")
-        return repository.completedByLeagueId(leagueId, first, after)
+        return if (after != null) repository.completedByLeagueIdAfter(leagueId, first, after)
+            else if (before != null) repository.completedByLeagueIdBefore(leagueId, first, before)
+            else repository.completedByLeagueId(leagueId, first)
     }
 
     @GetMapping("/leagues/{leagueId}/scheduled-games")
     fun scheduledGamesByLeagueId(
         @PathVariable leagueId: String,
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<Game> {
         log.info("Get scheduled games by leagueId=$leagueId, first=$first, after=$after")
-        return repository.scheduledByLeagueId(leagueId, first, after)
+        return if (after != null) repository.scheduledByLeagueIdAfter(leagueId, first, after)
+            else if (before != null) repository.scheduledByLeagueIdBefore(leagueId, first, before)
+            else repository.scheduledByLeagueId(leagueId, first)
     }
 
     @GetMapping("/players/{playerId}/games")

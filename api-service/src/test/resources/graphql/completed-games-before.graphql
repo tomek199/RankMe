@@ -1,0 +1,37 @@
+query {
+    completedGames(query: {
+        leagueId: "HKQqvVmIT-MD3XwgUFK9-"
+        first: 5
+        before: "MTYyMjg0MDE1NzI0Nw=="
+    }) {
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+            startCursor
+            endCursor
+        }
+        edges {
+            cursor
+            node {
+                id
+                dateTime
+                playerOneId
+                playerOneName
+                playerOneRating
+                playerOneDeviation
+                playerTwoId
+                playerTwoName
+                playerTwoRating
+                playerTwoDeviation
+                result {
+                    playerOneScore
+                    playerOneDeviationDelta
+                    playerOneRatingDelta
+                    playerTwoScore
+                    playerTwoDeviationDelta
+                    playerTwoRatingDelta
+                }
+            }
+        }
+    }
+}

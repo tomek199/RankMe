@@ -34,28 +34,67 @@ class MongoGameRepository(
         accessor.save(entity)
     }
 
-    override fun byLeagueId(leagueId: String, first: Int, after: String?): Page<Game> {
+    override fun byLeagueId(leagueId: String, first: Int): Page<Game> {
         val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getByLeagueIdOrderByTimestampDesc(leagueId, pageable)
-            else accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId, decode(after), pageable)
-        return Page(pageItems(page), after != null, page.hasNext())
+        val page = accessor.getByLeagueIdOrderByTimestampDesc(leagueId, pageable)
+        val games = page.content.map(this::itemForEntity)
+        return Page(games, false, page.hasNext())
     }
 
-    override fun completedByLeagueId(leagueId: String, first: Int, after: String?): Page<Game> {
+    override fun byLeagueIdAfter(leagueId: String, first: Int, after: String): Page<Game> {
         val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getByLeagueIdAndResultNotNullOrderByTimestampDesc(leagueId, pageable)
-            else accessor.getByLeagueIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(leagueId, decode(after), pageable)
-        return Page(pageItems(page), after != null, page.hasNext())
+        val page = accessor.getByLeagueIdAndTimestampLessThanOrderByTimestampDesc(leagueId, decode(after), pageable)
+        val games = page.content.map(this::itemForEntity)
+        return Page(games, true, page.hasNext())
     }
 
-    override fun scheduledByLeagueId(leagueId: String, first: Int, after: String?): Page<Game> {
+    override fun byLeagueIdBefore(leagueId: String, first: Int, before: String): Page<Game> {
         val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getByLeagueIdAndResultNullOrderByTimestampDesc(leagueId, pageable)
-            else accessor.getByLeagueIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(leagueId, decode(after), pageable)
-        return Page(pageItems(page), after != null, page.hasNext())
+        val page = accessor.getByLeagueIdAndTimestampGreaterThanOrderByTimestampAsc(leagueId, decode(before), pageable)
+        val games = page.content.reversed().map(this::itemForEntity)
+        return Page(games, page.hasNext(), true)
+    }
+
+    override fun completedByLeagueId(leagueId: String, first: Int): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByLeagueIdAndResultNotNullOrderByTimestampDesc(leagueId, pageable)
+        val games = page.content.map(this::itemForEntity)
+        return Page(games, false, page.hasNext())
+    }
+
+    override fun completedByLeagueIdAfter(leagueId: String, first: Int, after: String): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByLeagueIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(leagueId, decode(after), pageable)
+        val games = page.content.map(this::itemForEntity)
+        return Page(games, true, page.hasNext())
+    }
+
+    override fun completedByLeagueIdBefore(leagueId: String, first: Int, before: String): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByLeagueIdAndTimestampGreaterThanAndResultNotNullOrderByTimestampAsc(leagueId, decode(before), pageable)
+        val games = page.content.reversed().map(this::itemForEntity)
+        return Page(games, page.hasNext(), true)
+    }
+
+    override fun scheduledByLeagueId(leagueId: String, first: Int): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByLeagueIdAndResultNullOrderByTimestampDesc(leagueId, pageable)
+        val games = page.content.map(this::itemForEntity)
+        return Page(games, false, page.hasNext())
+    }
+
+    override fun scheduledByLeagueIdAfter(leagueId: String, first: Int, after: String): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByLeagueIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(leagueId, decode(after), pageable)
+        val games = page.content.map(this::itemForEntity)
+        return Page(games, true, page.hasNext())
+    }
+
+    override fun scheduledByLeagueIdBefore(leagueId: String, first: Int, before: String): Page<Game> {
+        val pageable = PageRequest.of(0, first)
+        val page = accessor.getByLeagueIdAndTimestampGreaterThanAndResultNullOrderByTimestampAsc(leagueId, decode(before), pageable)
+        val games = page.content.reversed().map(this::itemForEntity)
+        return Page(games, page.hasNext(), true)
     }
 
     override fun byPlayerId(playerId: String, first: Int, after: String?): Page<Game> {

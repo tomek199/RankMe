@@ -14,6 +14,10 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
         leagueId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 
+    fun getByLeagueIdAndTimestampGreaterThanOrderByTimestampAsc(
+        leagueId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
     fun getByLeagueIdAndResultNotNullOrderByTimestampDesc(
         leagueId: String, pageable: Pageable
     ): Page<GameEntity>
@@ -22,11 +26,19 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
         leagueId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 
+    fun getByLeagueIdAndTimestampGreaterThanAndResultNotNullOrderByTimestampAsc(
+        leagueId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
     fun getByLeagueIdAndResultNullOrderByTimestampDesc(
         leagueId: String, pageable: Pageable
     ): Page<GameEntity>
 
     fun getByLeagueIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(
+        leagueId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
+    fun getByLeagueIdAndTimestampGreaterThanAndResultNullOrderByTimestampAsc(
         leagueId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 
