@@ -204,8 +204,8 @@ class LeagueSteps(
                 val cursors = allLeaguesCursors(of)
                 val query = GetLeagues(first, RequestCursor(Direction.BEFORE, cursors[before - 1]))
                 graphQlClient.execute(query).data?.let {
-                    assertTrue(it.leagues.pageInfo.hasNextPage)
                     assertEquals(first + 1 < before, it.leagues.pageInfo.hasPreviousPage)
+                    assertTrue(it.leagues.pageInfo.hasNextPage)
                     assertEquals(cursors[before - first - 1], it.leagues.pageInfo.startCursor)
                     assertEquals(cursors[before - 2], it.leagues.pageInfo.endCursor)
                     it.leagues.edges.forEachIndexed { index, edge -> assertEquals(cursors[before - first - 1 + index], edge.cursor) }

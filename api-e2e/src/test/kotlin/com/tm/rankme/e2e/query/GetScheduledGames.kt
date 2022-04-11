@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 class GetScheduledGames(
     leagueId: String,
     first: Int,
-    after: String? = null
+    cursor: RequestCursor? = null
 ) : GraphQLClientRequest<GetScheduledGames.Result> {
 
     override val query: String =
@@ -14,7 +14,7 @@ class GetScheduledGames(
             scheduledGames(query: {
                 leagueId: "$leagueId", 
                 first: $first 
-                ${if (after != null) ", after: \"$after\"" else ""}
+                ${if (cursor != null) ", ${cursor.direction}: \"${cursor.value}\"" else ""}
             }) {
                 pageInfo {
                     hasPreviousPage hasNextPage startCursor endCursor
