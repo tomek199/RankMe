@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import java.util.*
-import org.springframework.data.domain.Page as JdbcPage
 
 @Repository
 class MongoGameRepository(
@@ -96,32 +95,6 @@ class MongoGameRepository(
         val games = page.content.reversed().map(this::itemForEntity)
         return Page(games, page.hasNext(), true)
     }
-
-    override fun byPlayerId(playerId: String, first: Int, after: String?): Page<Game> {
-        val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getByPlayerIdOrderByTimestampDesc(playerId, pageable)
-            else accessor.getByPlayerIdAndTimestampLessThanOrderByTimestampDesc(playerId, decode(after), pageable)
-        return Page(pageItems(page), after != null, page.hasNext())
-    }
-
-    override fun completedByPlayerId(playerId: String, first: Int, after: String?): Page<Game> {
-        val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getByPlayerIdAndResultNotNullOrderByTimestampDesc(playerId, pageable)
-            else accessor.getByPlayerIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(playerId, decode(after), pageable)
-        return Page(pageItems(page), after != null, page.hasNext())
-    }
-
-    override fun scheduledByPlayerId(playerId: String, first: Int, after: String?): Page<Game> {
-        val pageable = PageRequest.of(0, first)
-        val page =
-            if (after == null) accessor.getByPlayerIdAndResultNullOrderByTimestampDesc(playerId, pageable)
-            else accessor.getByPlayerIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(playerId, decode(after), pageable)
-        return Page(pageItems(page), after != null, page.hasNext())
-    }
-
-    private fun pageItems(page: JdbcPage<GameEntity>) = page.content.map(this::itemForEntity)
 
     private fun itemForEntity(entity: GameEntity) = Item(gameFromEntity(entity), encode(entity.timestamp))
 

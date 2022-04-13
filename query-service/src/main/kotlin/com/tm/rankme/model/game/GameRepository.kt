@@ -14,7 +14,4 @@ interface GameRepository {
     fun scheduledByLeagueId(leagueId: String, first: Int): Page<Game>
     fun scheduledByLeagueIdAfter(leagueId: String, first: Int, after: String): Page<Game>
     fun scheduledByLeagueIdBefore(leagueId: String, first: Int, before: String): Page<Game>
-    fun byPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
-    fun completedByPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
-    fun scheduledByPlayerId(playerId: String, first: Int, after: String? = null): Page<Game>
 }
