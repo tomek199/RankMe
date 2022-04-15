@@ -15,29 +15,38 @@ class PlayerGamesController(private val repository: PlayerGamesRepository) {
     fun gamesByPlayerId(
         @PathVariable playerId: String,
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<Game> {
-        log.info("Get games by playerId=$playerId, first=$first, after=$after")
-        return repository.byPlayerId(playerId, first, after)
+        log.info("Get games by playerId=$playerId, first=$first, after=$after, before=$before")
+        return if (after != null) repository.byPlayerIdAfter(playerId, first, after)
+            else if (before != null) repository.byPlayerIdBefore(playerId, first, before)
+            else repository.byPlayerId(playerId, first)
     }
 
     @GetMapping("/completed-games")
     fun completedGamesByPlayerId(
         @PathVariable playerId: String,
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<Game> {
-        log.info("Get completed games by playerId=$playerId, first=$first, after=$after")
-        return repository.completedByPlayerId(playerId, first, after)
+        log.info("Get completed games by playerId=$playerId, first=$first, after=$after, before=$before")
+        return if (after != null) repository.completedByPlayerIdAfter(playerId, first, after)
+            else if (before != null) repository.completedByPlayerIdBefore(playerId, first, before)
+            else repository.completedByPlayerId(playerId, first)
     }
 
     @GetMapping("/scheduled-games")
     fun scheduledGamesByPlayerId(
         @PathVariable playerId: String,
         @RequestParam first: Int,
-        @RequestParam(required = false) after: String?
+        @RequestParam(required = false) after: String?,
+        @RequestParam(required = false) before: String?
     ): Page<Game> {
-        log.info("Get scheduled games by playerId=$playerId, first=$first, after=$after")
-        return repository.scheduledByPlayerId(playerId, first, after)
+        log.info("Get scheduled games by playerId=$playerId, first=$first, after=$after, before=$before")
+        return if (after != null) repository.scheduledByPlayerIdAfter(playerId, first, after)
+            else if (before != null) repository.scheduledByPlayerIdBefore(playerId, first, before)
+            else repository.scheduledByPlayerId(playerId, first)
     }
 }

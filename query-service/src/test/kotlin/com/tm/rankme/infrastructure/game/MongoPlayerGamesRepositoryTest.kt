@@ -57,7 +57,7 @@ internal class MongoPlayerGamesRepositoryTest {
     }
 
     @Test
-    internal fun `Should return middle games page for player`() {
+    internal fun `Should return middle games page for player after given cursor`() {
         // given
         val leagueId = randomNanoId()
         val playerId = randomNanoId()
@@ -76,13 +76,13 @@ internal class MongoPlayerGamesRepositoryTest {
         } returns PageImpl(games, PageRequest.of(0, 6), 8)
         val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
         // when
-        val page = repository.byPlayerId(playerId, 6, afterCursor)
+        val page = repository.byPlayerIdAfter(playerId, 6, afterCursor)
         // then
         assertGamesPage(games, true, true, page)
     }
 
     @Test
-    internal fun `Should return last games page for player`() {
+    internal fun `Should return last games page for player after given cursor`() {
         // given
         val leagueId = randomNanoId()
         val playerId = randomNanoId()
@@ -101,9 +101,59 @@ internal class MongoPlayerGamesRepositoryTest {
         } returns PageImpl(games, PageRequest.of(0, 6), 6)
         val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
         // when
-        val page = repository.byPlayerId(playerId, 6, afterCursor)
+        val page = repository.byPlayerIdAfter(playerId, 6, afterCursor)
         // then
         assertGamesPage(games, true, false, page)
+    }
+
+    @Test
+    internal fun `Should return middle games page for player before given cursor`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(6) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val timestamp = currentTimeMillis()
+        every {
+            accessor.getByPlayerIdAndTimestampGreaterThanOrderByTimestampAsc(
+                playerId, timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.reversed(), PageRequest.of(0, 6), 8)
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        // when
+        val page = repository.byPlayerIdBefore(playerId, 6, beforeCursor)
+        // then
+        assertGamesPage(games, true, true, page)
+    }
+
+    @Test
+    internal fun `Should return first games page for player before given cursor`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(4) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val timestamp = currentTimeMillis()
+        every {
+            accessor.getByPlayerIdAndTimestampGreaterThanOrderByTimestampAsc(
+                playerId, timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.reversed(), PageRequest.of(0, 4), 4)
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        // when
+        val page = repository.byPlayerIdBefore(playerId, 4, beforeCursor)
+        // then
+        assertGamesPage(games, false, true, page)
     }
 
     @Test
@@ -143,7 +193,7 @@ internal class MongoPlayerGamesRepositoryTest {
     }
 
     @Test
-    internal fun `Should return middle completed games page for player`() {
+    internal fun `Should return middle completed games page for player after given cursor`() {
         // given
         val leagueId = randomNanoId()
         val playerId = randomNanoId()
@@ -163,14 +213,14 @@ internal class MongoPlayerGamesRepositoryTest {
         } returns PageImpl(games, PageRequest.of(0, 6), 8)
         val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
         // when
-        val page = repository.completedByPlayerId(playerId, 6, afterCursor)
+        val page = repository.completedByPlayerIdAfter(playerId, 6, afterCursor)
         // then
         assertGamesPage(games, true, true, page)
         page.items.forEach { item -> assertNotNull(item.node.result) }
     }
 
     @Test
-    internal fun `Should return last completed games page for player`() {
+    internal fun `Should return last completed games page for player after given cursor`() {
         // given
         val leagueId = randomNanoId()
         val playerId = randomNanoId()
@@ -190,9 +240,63 @@ internal class MongoPlayerGamesRepositoryTest {
         } returns PageImpl(games, PageRequest.of(0, 6), 6)
         val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
         // when
-        val page = repository.completedByPlayerId(playerId, 6, afterCursor)
+        val page = repository.completedByPlayerIdAfter(playerId, 6, afterCursor)
         // then
         assertGamesPage(games, true, false, page)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return middle completed games page for player before given cursor`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(6) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+        val timestamp = currentTimeMillis()
+        every {
+            accessor.getByPlayerIdAndTimestampGreaterThanAndResultNotNullOrderByTimestampAsc(
+                playerId, timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.reversed(), PageRequest.of(0, 6), 10)
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        // when
+        val page = repository.completedByPlayerIdBefore(playerId, 6, beforeCursor)
+        // then
+        assertGamesPage(games, true, true, page)
+        page.items.forEach { item -> assertNotNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return first completed games page for player before given cursor`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(7) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
+            )
+        }
+        val timestamp = currentTimeMillis()
+        every {
+            accessor.getByPlayerIdAndTimestampGreaterThanAndResultNotNullOrderByTimestampAsc(
+                playerId, timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.reversed(), PageRequest.of(0, 7), 7)
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        // when
+        val page = repository.completedByPlayerIdBefore(playerId, 7, beforeCursor)
+        // then
+        assertGamesPage(games, false, true, page)
         page.items.forEach { item -> assertNotNull(item.node.result) }
     }
 
@@ -232,7 +336,7 @@ internal class MongoPlayerGamesRepositoryTest {
     }
 
     @Test
-    internal fun `Should return middle scheduled games page for player`() {
+    internal fun `Should return middle scheduled games page for player after given cursor`() {
         // given
         val leagueId = randomNanoId()
         val playerId = randomNanoId()
@@ -251,14 +355,14 @@ internal class MongoPlayerGamesRepositoryTest {
         } returns PageImpl(games, PageRequest.of(0, 6), 8)
         val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
         // when
-        val page = repository.scheduledByPlayerId(playerId, 6, afterCursor)
+        val page = repository.scheduledByPlayerIdAfter(playerId, 6, afterCursor)
         // then
         assertGamesPage(games, true, true, page)
         page.items.forEach { item -> assertNull(item.node.result) }
     }
 
     @Test
-    internal fun `Should return last scheduled games page for player`() {
+    internal fun `Should return last scheduled games page for player after given cursor`() {
         // given
         val leagueId = randomNanoId()
         val playerId = randomNanoId()
@@ -277,9 +381,61 @@ internal class MongoPlayerGamesRepositoryTest {
         } returns PageImpl(games, PageRequest.of(0, 6), 6)
         val afterCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
         // when
-        val page = repository.scheduledByPlayerId(playerId, 6, afterCursor)
+        val page = repository.scheduledByPlayerIdAfter(playerId, 6, afterCursor)
         // then
         assertGamesPage(games, true, false, page)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return middle scheduled games page for player before given cursor`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(9) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val timestamp = currentTimeMillis()
+        every {
+            accessor.getByPlayerIdAndTimestampGreaterThanAndResultNullOrderByTimestampAsc(
+                playerId, timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.reversed(), PageRequest.of(0, 9), 10)
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        // when
+        val page = repository.scheduledByPlayerIdBefore(playerId, 9, beforeCursor)
+        // then
+        assertGamesPage(games, true, true, page)
+        page.items.forEach { item -> assertNull(item.node.result) }
+    }
+
+    @Test
+    internal fun `Should return first scheduled games page for player before given cursor`() {
+        // given
+        val leagueId = randomNanoId()
+        val playerId = randomNanoId()
+        val games = List(9) {
+            GameEntity(
+                randomNanoId(), leagueId, LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val timestamp = currentTimeMillis()
+        every {
+            accessor.getByPlayerIdAndTimestampGreaterThanAndResultNullOrderByTimestampAsc(
+                playerId, timestamp, ofType(Pageable::class)
+            )
+        } returns PageImpl(games.reversed(), PageRequest.of(0, 9), 9)
+        val beforeCursor = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
+        // when
+        val page = repository.scheduledByPlayerIdBefore(playerId, 9, beforeCursor)
+        // then
+        assertGamesPage(games, false, true, page)
         page.items.forEach { item -> assertNull(item.node.result) }
     }
 }
