@@ -1,5 +1,7 @@
 package com.tm.rankme.infrastructure.league
 
+import com.tm.rankme.infrastructure.decode
+import com.tm.rankme.infrastructure.encode
 import com.tm.rankme.model.Item
 import com.tm.rankme.model.Page
 import com.tm.rankme.model.league.League
@@ -7,7 +9,6 @@ import com.tm.rankme.model.league.LeagueRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
-import java.util.*
 
 @Repository
 class MongoLeagueRepository(
@@ -49,8 +50,4 @@ class MongoLeagueRepository(
     private fun leagueFromEntity(entity: LeagueEntity): League = League(
         entity.id, entity.name, entity.allowDraws, entity.maxScore
     )
-
-    private fun decode(value: String) = String(Base64.getDecoder().decode(value)).toLong()
-
-    private fun encode(timestamp: Long) = Base64.getEncoder().encodeToString(timestamp.toString().toByteArray())
 }

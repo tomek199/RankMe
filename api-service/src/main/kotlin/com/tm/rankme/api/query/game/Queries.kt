@@ -24,17 +24,20 @@ data class GetScheduledGamesForLeagueQuery(
 data class GetGamesForPlayerQuery(
     val playerId: String,
     val first: Int,
-    val after: String? = null
+    val after: String? = null,
+    val before: String? = null
 )
 
 data class GetCompletedGamesForPlayerQuery(
     val playerId: String,
     val first: Int,
-    val after: String? = null
+    val after: String? = null,
+    val before: String? = null
 )
 
 data class GetScheduledGamesForPlayerQuery(
     val playerId: String,
     val first: Int,
-    val after: String? = null
+    val after: String? = null,
+    val before: String? = null
 )

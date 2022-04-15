@@ -60,6 +60,16 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
 
     @Query(value =
             "{'\$and': [" +
+                "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}, " +
+                "{'timestamp': {\$gt: ?1}}" +
+            "]}",
+        sort = "{timestamp : 1}")
+    fun getByPlayerIdAndTimestampGreaterThanOrderByTimestampAsc(
+        playerId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
+    @Query(value =
+            "{'\$and': [" +
                 "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}," +
                 "{'result' : {'\$ne' : null}}" +
             "]}",
@@ -71,11 +81,22 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
     @Query(value =
             "{'\$and': [" +
                 "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}, " +
-                "{'timestamp': {\$lt: ?1}}" +
+                "{'timestamp': {\$lt: ?1}}," +
                 "{'result' : {'\$ne' : null}}" +
             "]}",
         sort = "{timestamp : -1}")
     fun getByPlayerIdAndTimestampLessThanAndResultNotNullOrderByTimestampDesc(
+        playerId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
+    @Query(value =
+            "{'\$and': [" +
+                "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}, " +
+                "{'timestamp': {\$gt: ?1}}," +
+                "{'result' : {'\$ne' : null}}" +
+            "]}",
+        sort = "{timestamp : 1}")
+    fun getByPlayerIdAndTimestampGreaterThanAndResultNotNullOrderByTimestampAsc(
         playerId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 
@@ -92,11 +113,22 @@ interface MongoGameAccessor : MongoRepository<GameEntity, String> {
     @Query(value =
             "{'\$and': [" +
                 "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}, " +
-                "{'timestamp': {\$lt: ?1}}" +
+                "{'timestamp': {\$lt: ?1}}," +
                 "{'result' : null}" +
             "]}",
         sort = "{timestamp : -1}")
     fun getByPlayerIdAndTimestampLessThanAndResultNullOrderByTimestampDesc(
+        playerId: String, timestamp: Long, pageable: Pageable
+    ): Page<GameEntity>
+
+    @Query(value =
+            "{'\$and': [" +
+                "{'\$or': [{'playerOneId': ?0}, {'playerTwoId': ?0}]}, " +
+                "{'timestamp': {\$gt: ?1}}," +
+                "{'result' : null}" +
+            "]}",
+        sort = "{timestamp : 1}")
+    fun getByPlayerIdAndTimestampGreaterThanAndResultNullOrderByTimestampAsc(
         playerId: String, timestamp: Long, pageable: Pageable
     ): Page<GameEntity>
 }
