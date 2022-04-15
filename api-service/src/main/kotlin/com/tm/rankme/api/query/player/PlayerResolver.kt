@@ -11,12 +11,15 @@ class PlayerResolver(
     private val gameQueryHandler: GameQueryHandler
 ) : GraphQLResolver<Player> {
 
-    fun games(player: Player, first: Int, after: String?, env: DataFetchingEnvironment): Connection<Game> =
-        gameQueryHandler.handle(GetGamesForPlayerQuery(player.id, first, after))
+    fun games(
+        player: Player, first: Int, after: String?, before: String?, env: DataFetchingEnvironment
+    ): Connection<Game> = gameQueryHandler.handle(GetGamesForPlayerQuery(player.id, first, after, before))
 
-    fun completedGames(player: Player, first: Int, after: String?, env: DataFetchingEnvironment): Connection<CompletedGame> =
-        gameQueryHandler.handle(GetCompletedGamesForPlayerQuery(player.id, first, after))
+    fun completedGames(
+        player: Player, first: Int, after: String?, before: String?, env: DataFetchingEnvironment
+    ): Connection<CompletedGame> = gameQueryHandler.handle(GetCompletedGamesForPlayerQuery(player.id, first, after, before))
 
-    fun scheduledGames(player: Player, first: Int, after: String?, env: DataFetchingEnvironment): Connection<ScheduledGame> =
-        gameQueryHandler.handle(GetScheduledGamesForPlayerQuery(player.id, first, after))
+    fun scheduledGames(
+        player: Player, first: Int, after: String?, before: String?, env: DataFetchingEnvironment
+    ): Connection<ScheduledGame> = gameQueryHandler.handle(GetScheduledGamesForPlayerQuery(player.id, first, after, before))
 }

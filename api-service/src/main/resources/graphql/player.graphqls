@@ -12,7 +12,7 @@ type Player {
     name: String!
     deviation: Int!
     rating: Int!
-    games(first: Int!, after: String): GameConnection @connection(for: "Game")
-    completedGames(first: Int!, after: String): CommpletedGameConnection @connection(for: "CompletedGame")
-    scheduledGames(first: Int!, after: String): ScheduledGameConnection @connection(for: "ScheduledGame")
+    games(first: Int!, after: String, before: String): GameConnection @connection(for: "Game")
+    completedGames(first: Int!, after: String, before: String): CommpletedGameConnection @connection(for: "CompletedGame")
+    scheduledGames(first: Int!, after: String, before: String): ScheduledGameConnection @connection(for: "ScheduledGame")
 }

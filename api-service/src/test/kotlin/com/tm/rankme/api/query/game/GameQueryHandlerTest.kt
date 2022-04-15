@@ -480,7 +480,7 @@ internal class GameQueryHandlerTest {
     }
 
     @Test
-    internal fun `Should return player games connection for given cursor`() {
+    internal fun `Should return player games connection for given cursor after`() {
         // given
         val playerId = randomNanoId()
         val completedGames = List(2) {
@@ -507,12 +507,56 @@ internal class GameQueryHandlerTest {
             restTemplate.exchange("$url/query-service/players/$playerId/games?first=5&after=$cursor",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val query = GetGamesForPlayerQuery(playerId, 5, cursor)
+        val query = GetGamesForPlayerQuery(playerId, 5, after = cursor)
         // when
         val result = handler.handle(query)
         // then
         assertTrue(result.pageInfo.isHasPreviousPage)
         assertFalse(result.pageInfo.isHasNextPage)
+        assertEquals(games.first().id, result.pageInfo.startCursor.value)
+        assertEquals(games.last().id, result.pageInfo.endCursor.value)
+        result.edges.forEachIndexed { index, edge ->
+            games[index].let { expectedGame ->
+                if (expectedGame is CompletedGame) assertCompletedGame(expectedGame, edge as Edge<CompletedGame>)
+                else if (expectedGame is ScheduledGame) assertScheduledGame(expectedGame, edge as Edge<ScheduledGame>)
+            }
+        }
+    }
+
+    @Test
+    internal fun `Should return player games connection for given cursor before`() {
+        // given
+        val playerId = randomNanoId()
+        val completedGames = List(2) {
+            CompletedGame(randomNanoId(), LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
+                )
+            )
+        }
+        val scheduledGames = List(3) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val games: List<Game> = completedGames + scheduledGames
+        val page = Page(games.map { Item(it, it.id) }, false, true)
+        val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
+        every {
+            restTemplate.exchange("$url/query-service/players/$playerId/games?first=5&before=$cursor",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetGamesForPlayerQuery(playerId, 5, before = cursor)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertTrue(result.pageInfo.isHasNextPage)
         assertEquals(games.first().id, result.pageInfo.startCursor.value)
         assertEquals(games.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge ->
@@ -590,7 +634,7 @@ internal class GameQueryHandlerTest {
     }
 
     @Test
-    internal fun `Should return player completed games connection for given cursor`() {
+    internal fun `Should return player completed games connection for given cursor after`() {
         // given
         val playerId = randomNanoId()
         val completedGames = List(2) {
@@ -609,12 +653,43 @@ internal class GameQueryHandlerTest {
             restTemplate.exchange("$url/query-service/players/$playerId/completed-games?first=5&after=$cursor",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val query = GetCompletedGamesForPlayerQuery(playerId, 5, cursor)
+        val query = GetCompletedGamesForPlayerQuery(playerId, 5, after = cursor)
         // when
         val result = handler.handle(query)
         // then
         assertTrue(result.pageInfo.isHasPreviousPage)
         assertFalse(result.pageInfo.isHasNextPage)
+        assertEquals(completedGames.first().id, result.pageInfo.startCursor.value)
+        assertEquals(completedGames.last().id, result.pageInfo.endCursor.value)
+        result.edges.forEachIndexed { index, edge -> assertCompletedGame(completedGames[index], edge) }
+    }
+
+    @Test
+    internal fun `Should return player completed games connection for given cursor before`() {
+        // given
+        val playerId = randomNanoId()
+        val completedGames = List(4) {
+            CompletedGame(randomNanoId(), LocalDateTime.now(),
+                playerId, "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
+                )
+            )
+        }
+        val page = Page(completedGames.map { Item(it, it.id) }, false, true)
+        val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
+        every {
+            restTemplate.exchange("$url/query-service/players/$playerId/completed-games?first=4&before=$cursor",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetCompletedGamesForPlayerQuery(playerId, 4, before = cursor)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertTrue(result.pageInfo.isHasNextPage)
         assertEquals(completedGames.first().id, result.pageInfo.startCursor.value)
         assertEquals(completedGames.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge -> assertCompletedGame(completedGames[index], edge) }
@@ -683,7 +758,7 @@ internal class GameQueryHandlerTest {
     }
 
     @Test
-    internal fun `Should return player scheduled games connection for given cursor`() {
+    internal fun `Should return player scheduled games connection for given cursor after`() {
         // given
         val playerId = randomNanoId()
         val scheduledGames = List(3) {
@@ -699,12 +774,40 @@ internal class GameQueryHandlerTest {
             restTemplate.exchange("$url/query-service/players/$playerId/scheduled-games?first=5&after=$cursor",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val query = GetScheduledGamesForPlayerQuery(playerId, 5, cursor)
+        val query = GetScheduledGamesForPlayerQuery(playerId, 5, after = cursor)
         // when
         val result = handler.handle(query)
         // then
         assertTrue(result.pageInfo.isHasPreviousPage)
         assertFalse(result.pageInfo.isHasNextPage)
+        assertEquals(scheduledGames.first().id, result.pageInfo.startCursor.value)
+        assertEquals(scheduledGames.last().id, result.pageInfo.endCursor.value)
+        result.edges.forEachIndexed { index, edge -> assertScheduledGame(scheduledGames[index], edge) }
+    }
+
+    @Test
+    internal fun `Should return player scheduled games connection for given cursor before`() {
+        // given
+        val playerId = randomNanoId()
+        val scheduledGames = List(5) {
+            ScheduledGame(
+                randomNanoId(), LocalDateTime.now(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt()
+            )
+        }
+        val page = Page(scheduledGames.map { Item(it, it.id) }, false, true)
+        val cursor = Base64.getEncoder().encodeToString(randomNanoId().toByteArray())
+        every {
+            restTemplate.exchange("$url/query-service/players/$playerId/scheduled-games?first=5&before=$cursor",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val query = GetScheduledGamesForPlayerQuery(playerId, 5, before = cursor)
+        // when
+        val result = handler.handle(query)
+        // then
+        assertFalse(result.pageInfo.isHasPreviousPage)
+        assertTrue(result.pageInfo.isHasNextPage)
         assertEquals(scheduledGames.first().id, result.pageInfo.startCursor.value)
         assertEquals(scheduledGames.last().id, result.pageInfo.endCursor.value)
         result.edges.forEachIndexed { index, edge -> assertScheduledGame(scheduledGames[index], edge) }
