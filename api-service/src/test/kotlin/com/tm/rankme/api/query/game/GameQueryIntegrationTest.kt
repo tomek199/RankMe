@@ -340,4 +340,74 @@ internal class GameQueryIntegrationTest {
             else if (game is ScheduledGame) assertScheduledGame(game, response, "$.data.playerGames.edges[$index]")
         }
     }
+
+    @Test
+    internal fun `Should return player completed games after given cursor`() {
+        // given
+        val playerId = "J4nxK4DLbBDwuoNaQng-m"
+        val completedGames = List(5) {
+            CompletedGame(
+                randomNanoId(), LocalDateTime.now(),
+                playerId, "Player-$playerId", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
+                )
+            )
+        }
+        val page = Page(completedGames.map { Item(it, it.id) }, true, false)
+        every {
+            restTemplate.exchange("$url/query-service/players/$playerId/completed-games?first=5&after=MTY1MDA5NzM5NTI5Nw==",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val request = "graphql/player-completed-games-after.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(page.hasPreviousPage, response.get("$.data.playerCompletedGames.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(page.hasNextPage, response.get("$.data.playerCompletedGames.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(page.items.first().cursor, response.get("$.data.playerCompletedGames.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.playerCompletedGames.pageInfo.endCursor"))
+
+        completedGames.forEachIndexed {index, game ->
+            assertCompletedGame(game, response, "$.data.playerCompletedGames.edges[$index]")
+        }
+    }
+
+    @Test
+    internal fun `Should return player completed games before given cursor`() {
+        // given
+        val playerId = "J4nxK4DLbBDwuoNaQng-m"
+        val completedGames = List(5) {
+            CompletedGame(
+                randomNanoId(), LocalDateTime.now(),
+                playerId, "Player-$playerId", Random.nextInt(), Random.nextInt(),
+                randomNanoId(), "Player-${Random.nextInt()}", Random.nextInt(), Random.nextInt(),
+                Result(
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100),
+                    Random.nextInt(10), - Random.nextInt(50), Random.nextInt(100)
+                )
+            )
+        }
+        val page = Page(completedGames.map { Item(it, it.id) }, false, true)
+        every {
+            restTemplate.exchange("$url/query-service/players/$playerId/completed-games?first=5&before=MTY1MDA5NzM5NTI5Nw==",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(page))
+        val request = "graphql/player-completed-games-before.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        assertEquals(page.hasPreviousPage, response.get("$.data.playerCompletedGames.pageInfo.hasPreviousPage", Boolean::class.java))
+        assertEquals(page.hasNextPage, response.get("$.data.playerCompletedGames.pageInfo.hasNextPage", Boolean::class.java))
+        assertEquals(page.items.first().cursor, response.get("$.data.playerCompletedGames.pageInfo.startCursor"))
+        assertEquals(page.items.last().cursor, response.get("$.data.playerCompletedGames.pageInfo.endCursor"))
+
+        completedGames.forEachIndexed {index, game ->
+            assertCompletedGame(game, response, "$.data.playerCompletedGames.edges[$index]")
+        }
+    }
 }

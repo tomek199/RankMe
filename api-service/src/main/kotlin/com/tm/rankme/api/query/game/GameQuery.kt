@@ -16,4 +16,6 @@ class GameQuery(
     fun scheduledGames(query: GetScheduledGamesForLeagueQuery): Connection<ScheduledGame> = queryHandler.handle(query)
 
     fun playerGames(query: GetGamesForPlayerQuery): Connection<Game> = queryHandler.handle(query)
+
+    fun playerCompletedGames(query: GetCompletedGamesForPlayerQuery): Connection<CompletedGame> = queryHandler.handle(query)
 }

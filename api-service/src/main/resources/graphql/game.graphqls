@@ -45,6 +45,13 @@ input GetGamesForPlayerQuery {
     before: String
 }
 
+input GetCompletedGamesForPlayerQuery {
+    playerId: String!
+    first: Int!
+    after: String
+    before: String
+}
+
 interface Game {
     id: String!
     dateTime: LocalDateTime!

@@ -30,6 +30,6 @@ type League {
     maxScore: Int!
     players: [Player!]!
     games(first: Int!, after: String, before: String): GameConnection @connection(for: "Game")
-    completedGames(first: Int!, after: String, before: String): CommpletedGameConnection @connection(for: "CompletedGame")
+    completedGames(first: Int!, after: String, before: String): CompletedGameConnection @connection(for: "CompletedGame")
     scheduledGames(first: Int!, after: String, before: String): ScheduledGameConnection @connection(for: "ScheduledGame")
 }
