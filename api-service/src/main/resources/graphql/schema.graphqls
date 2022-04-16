@@ -23,6 +23,7 @@ type Query {
     scheduledGames(query: GetScheduledGamesForLeagueQuery!): ScheduledGameConnection @connection(for: "ScheduledGame")
     playerGames(query: GetGamesForPlayerQuery!): GameConnection @connection(for: "Game")
     playerCompletedGames(query: GetCompletedGamesForPlayerQuery!): CompletedGameConnection @connection(for: "CompletedGame")
+    playerScheduledGames(query: GetScheduledGamesForPlayerQuery!): ScheduledGameConnection @connection(for: "ScheduledGame")
 }
 
 scalar LocalDateTime
