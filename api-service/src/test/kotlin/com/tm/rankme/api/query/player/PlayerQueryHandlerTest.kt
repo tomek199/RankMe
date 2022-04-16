@@ -20,6 +20,21 @@ internal class PlayerQueryHandlerTest {
     private val handler = PlayerQueryHandler(restTemplate, url)
 
     @Test
+    internal fun test() {
+        println(Base64.getEncoder().encodeToString(System.currentTimeMillis().toString().toByteArray()))
+        Thread.sleep(100)
+        println(Base64.getEncoder().encodeToString(System.currentTimeMillis().toString().toByteArray()))
+        Thread.sleep(100)
+        println(Base64.getEncoder().encodeToString(System.currentTimeMillis().toString().toByteArray()))
+        Thread.sleep(100)
+        println(Base64.getEncoder().encodeToString(System.currentTimeMillis().toString().toByteArray()))
+        Thread.sleep(100)
+        println(Base64.getEncoder().encodeToString(System.currentTimeMillis().toString().toByteArray()))
+        Thread.sleep(100)
+        println(Base64.getEncoder().encodeToString(System.currentTimeMillis().toString().toByteArray()))
+    }
+
+    @Test
     internal fun `Should return player`() {
         // given
         val player = Player(randomNanoId(), "Optimus Prime", 263, 2467)

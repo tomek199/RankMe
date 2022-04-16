@@ -1,0 +1,39 @@
+query {
+    playerGames(query: {
+        playerId: "UmLdL65Hl_1_FqcsSUhDq"
+        first: 5
+        after: "MTY1MDA5NzM5NTE5MQ=="
+    }) {
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+            startCursor
+            endCursor
+        }
+        edges {
+            cursor
+            node {
+                id
+                dateTime
+                playerOneId
+                playerOneName
+                playerOneRating
+                playerOneDeviation
+                playerTwoId
+                playerTwoName
+                playerTwoRating
+                playerTwoDeviation
+                ... on CompletedGame {
+                    result {
+                        playerOneScore
+                        playerOneDeviationDelta
+                        playerOneRatingDelta
+                        playerTwoScore
+                        playerTwoDeviationDelta
+                        playerTwoRatingDelta
+                    }
+                }
+            }
+        }
+    }
+}
