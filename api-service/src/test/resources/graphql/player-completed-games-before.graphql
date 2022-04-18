@@ -1,0 +1,37 @@
+query {
+    playerCompletedGames(query: {
+        playerId: "J4nxK4DLbBDwuoNaQng-m"
+        first: 5
+        before: "MTY1MDA5NzM5NTI5Nw=="
+    }) {
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+            startCursor
+            endCursor
+        }
+        edges {
+            cursor
+            node {
+                id
+                dateTime
+                playerOneId
+                playerOneName
+                playerOneRating
+                playerOneDeviation
+                playerTwoId
+                playerTwoName
+                playerTwoRating
+                playerTwoDeviation
+                result {
+                    playerOneScore
+                    playerOneDeviationDelta
+                    playerOneRatingDelta
+                    playerTwoScore
+                    playerTwoDeviationDelta
+                    playerTwoRatingDelta
+                }
+            }
+        }
+    }
+}

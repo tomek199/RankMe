@@ -8,7 +8,7 @@ Feature: Player
   Scenario: Show empty games list
     Then I have no games
 
-  Scenario: Play multiple games to check pagination
+  Scenario: Play multiple games to check pagination for league games
     * I create player "Darth Vader"
     * I create player "Han Solo"
     When I play 12 games between "Darth Vader" and "Han Solo"
@@ -31,6 +31,33 @@ Feature: Player
     * I have first 11 after 2 of 13 scheduled games listed
     * I have first 12 before 13 of 13 scheduled games listed
     * I have first 8 before 11 of 13 scheduled games listed
+
+  Scenario: I play multiple games to check pagination for player games
+    * I create player "Chewbacca"
+    * I create player "Yoda"
+    * I create player "R2D2"
+    When I play 18 games between "Chewbacca" and "Yoda"
+    * I schedule 12 games between "Yoda" and "Chewbacca" in 3 hours
+    And I play 4 games between "R2D2" and "Yoda"
+    * I schedule 3 games between "Yoda" and "R2D2" in 6 hours
+    Then I have first 21 of 30 games listed for player "Chewbacca"
+    * I have first 30 of 30 games listed for player "Chewbacca"
+    * I have first 16 after 8 of 30 games listed for player "Chewbacca"
+    * I have first 7 after 23 of 30 games listed for player "Chewbacca"
+    * I have first 29 before 30 of 30 games listed for player "Chewbacca"
+    * I have first 12 before 18 of 30 games listed for player "Chewbacca"
+    Then I have first 14 of 18 completed games listed for player "Chewbacca"
+    * I have first 18 of 18 completed games listed for player "Chewbacca"
+    * I have first 9 after 7 of 18 completed games listed for player "Chewbacca"
+    * I have first 7 after 11 of 18 completed games listed for player "Chewbacca"
+    * I have first 17 before 18 of 18 completed games listed for player "Chewbacca"
+    * I have first 10 before 16 of 18 completed games listed for player "Chewbacca"
+    Then I have first 10 of 12 scheduled games listed for player "Chewbacca"
+    * I have first 12 of 12 scheduled games listed for player "Chewbacca"
+    * I have first 4 after 6 of 12 scheduled games listed for player "Chewbacca"
+    * I have first 7 after 5 of 12 scheduled games listed for player "Chewbacca"
+    * I have first 11 before 12 of 12 scheduled games listed for player "Chewbacca"
+    * I have first 8 before 10 of 12 scheduled games listed for player "Chewbacca"
 
   Scenario: Play multiple games to check games data
     * I create player "Luke Skywalker"

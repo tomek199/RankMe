@@ -1,0 +1,29 @@
+query {
+    playerScheduledGames(query: {
+        playerId: "vIgDhNhvjked02bUyKtyi"
+        first: 5
+        after: "MTY1MDA5NzM5NTQwMg=="
+    }) {
+        pageInfo {
+            hasPreviousPage
+            hasNextPage
+            startCursor
+            endCursor
+        }
+        edges {
+            cursor
+            node {
+                id
+                dateTime
+                playerOneId
+                playerOneName
+                playerOneRating
+                playerOneDeviation
+                playerTwoId
+                playerTwoName
+                playerTwoRating
+                playerTwoDeviation
+            }
+        }
+    }
+}
