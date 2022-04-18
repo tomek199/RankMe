@@ -13,7 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import kotlin.test.*
 
-class GameSteps(
+class LeagueGamesSteps(
     private val graphQlClient: GraphQLKtorClient,
     private val context: ApplicationContext,
     @Value("\${cucumber.step-delay}") private val stepDelay: Long
@@ -208,18 +208,24 @@ class GameSteps(
     private suspend fun allGamesCursors(leagueId: String, of: Int): List<String> {
         val query = GetGames(leagueId, of)
         val allResults = graphQlClient.execute(query)
+        assertFalse(allResults.data!!.games.pageInfo.hasPreviousPage)
+        assertFalse(allResults.data!!.games.pageInfo.hasNextPage)
         return allResults.data?.games?.edges?.map { it.cursor } ?.toList() ?: fail("Games cursors not found")
     }
 
     private suspend fun allCompletedGamesCursors(leagueId: String, of: Int): List<String> {
         val query = GetCompletedGames(leagueId, of)
         val allResults = graphQlClient.execute(query)
+        assertFalse(allResults.data!!.completedGames.pageInfo.hasPreviousPage)
+        assertFalse(allResults.data!!.completedGames.pageInfo.hasNextPage)
         return allResults.data?.completedGames?.edges?.map { it.cursor } ?.toList() ?: fail("Games cursors not found")
     }
 
     private suspend fun allScheduledGamesCursors(leagueId: String, of: Int): List<String> {
         val query = GetScheduledGames(leagueId, of)
         val allResults = graphQlClient.execute(query)
+        assertFalse(allResults.data!!.scheduledGames.pageInfo.hasPreviousPage)
+        assertFalse(allResults.data!!.scheduledGames.pageInfo.hasNextPage)
         return allResults.data?.scheduledGames?.edges?.map { it.cursor } ?.toList() ?: fail("Games cursors not found")
     }
 }
