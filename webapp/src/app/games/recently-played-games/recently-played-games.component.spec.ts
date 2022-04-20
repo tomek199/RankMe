@@ -47,7 +47,7 @@ describe('RecentlyPlayedGamesComponent', () => {
 
   it('should show "No data" row when there is no completed games', () => {
     component.gamesPage = {
-      pageInfo: {hasNextPage: false, endCursor: null},
+      pageInfo: {hasPreviousPage: false, hasNextPage: false, startCursor: null, endCursor: null},
       edges: []
     }
     fixture.detectChanges();
