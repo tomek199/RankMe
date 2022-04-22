@@ -44,7 +44,7 @@ describe('GameService', () => {
       expect(data.completedGames.pageInfo.endCursor).toEqual(COMPLETED_GAMES_PAGE.pageInfo.endCursor);
       expect(data.completedGames.edges.length).toEqual(COMPLETED_GAMES_PAGE.edges.length);
     });
-    const operation = controller.expectOne('completedGamesAfter');
+    const operation = controller.expectOne('completedGames');
     operation.flush({data: {completedGames: COMPLETED_GAMES_PAGE}});
     expect(operation.operation.variables.leagueId).toEqual('league-1');
     expect(operation.operation.variables.first).toEqual(3);
@@ -60,11 +60,11 @@ describe('GameService', () => {
       expect(data.completedGames.pageInfo.endCursor).toEqual(COMPLETED_GAMES_PAGE.pageInfo.endCursor);
       expect(data.completedGames.edges.length).toEqual(COMPLETED_GAMES_PAGE.edges.length);
     });
-    const operation = controller.expectOne('completedGamesBefore');
+    const operation = controller.expectOne('completedGames');
     operation.flush({data: {completedGames: COMPLETED_GAMES_PAGE}});
     expect(operation.operation.variables.leagueId).toEqual('league-1');
     expect(operation.operation.variables.first).toEqual(3);
-    expect(operation.operation.variables.after).toEqual('game-15');
+    expect(operation.operation.variables.before).toEqual('game-15');
     controller.verify();
   });
 
@@ -91,7 +91,7 @@ describe('GameService', () => {
       expect(data.scheduledGames.pageInfo.endCursor).toEqual(SCHEDULED_GAMES_PAGE.pageInfo.endCursor);
       expect(data.scheduledGames.edges.length).toEqual(SCHEDULED_GAMES_PAGE.edges.length);
     });
-    const operation = controller.expectOne('scheduledGamesAfter');
+    const operation = controller.expectOne('scheduledGames');
     operation.flush({data: {scheduledGames: SCHEDULED_GAMES_PAGE}});
     expect(operation.operation.variables.leagueId).toEqual('league-1');
     expect(operation.operation.variables.first).toEqual(3);
@@ -107,11 +107,11 @@ describe('GameService', () => {
       expect(data.scheduledGames.pageInfo.endCursor).toEqual(SCHEDULED_GAMES_PAGE.pageInfo.endCursor);
       expect(data.scheduledGames.edges.length).toEqual(SCHEDULED_GAMES_PAGE.edges.length);
     });
-    const operation = controller.expectOne('scheduledGamesBefore');
+    const operation = controller.expectOne('scheduledGames');
     operation.flush({data: {scheduledGames: SCHEDULED_GAMES_PAGE}});
     expect(operation.operation.variables.leagueId).toEqual('league-1');
     expect(operation.operation.variables.first).toEqual(3);
-    expect(operation.operation.variables.after).toEqual('game-15');
+    expect(operation.operation.variables.before).toEqual('game-15');
     controller.verify();
   });
 

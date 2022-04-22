@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 describe('RecentlyPlayedGamesComponent', () => {
   let component: RecentlyPlayedGames;
   let fixture: ComponentFixture<RecentlyPlayedGames>;
-  let gameServiceSpy = jasmine.createSpyObj('GameService', ['completedGames']);
+  let gameServiceSpy = jasmine.createSpyObj('GameService', ['completedGames', 'completedGamesAfter']);
   let matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
   beforeEach(async () => {
@@ -72,7 +72,7 @@ describe('RecentlyPlayedGamesComponent', () => {
   });
 
   it('should load more completed games after button click', () => {
-    gameServiceSpy.completedGames.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
+    gameServiceSpy.completedGamesAfter.and.returnValue(of({data: { completedGames: COMPLETED_GAMES_PAGE }}));
     const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
     loadMoreButton.triggerEventHandler('click', null)
     fixture.detectChanges()

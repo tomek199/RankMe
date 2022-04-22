@@ -16,7 +16,7 @@ import { SnackbarServiceStub } from '../../../testing/stubs';
 describe('ScheduledGamesComponent', () => {
   let component: ScheduledGamesComponent;
   let fixture: ComponentFixture<ScheduledGamesComponent>;
-  let gameServiceSpy = jasmine.createSpyObj('GameService', ['scheduledGames']);
+  let gameServiceSpy = jasmine.createSpyObj('GameService', ['scheduledGames', 'scheduledGamesAfter']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -66,7 +66,7 @@ describe('ScheduledGamesComponent', () => {
   });
 
   it('should load more scheduled games after button click', () => {
-    gameServiceSpy.scheduledGames.and.returnValue(of({data: { scheduledGames: SCHEDULED_GAMES_PAGE }}));
+    gameServiceSpy.scheduledGamesAfter.and.returnValue(of({data: { scheduledGames: SCHEDULED_GAMES_PAGE }}));
     const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
     loadMoreButton.triggerEventHandler('click', null)
     fixture.detectChanges()
