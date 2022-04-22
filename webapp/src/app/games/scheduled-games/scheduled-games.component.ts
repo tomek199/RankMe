@@ -29,7 +29,7 @@ export class ScheduledGamesComponent {
 
   loadMore() {
     this.isLoading = true;
-    this.gameService.scheduledGames(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
+    this.gameService.scheduledGamesAfter(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
       this.pageInfo = data.scheduledGames.pageInfo;
       this.dataSource.data = [...this.dataSource.data, ...data.scheduledGames.edges.map(edge => edge.node)]
       this.isLoading = false;

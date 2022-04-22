@@ -34,7 +34,7 @@ export class RecentlyPlayedGames {
 
   loadMore() {
     this.isLoading = true;
-    this.gameService.completedGames(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
+    this.gameService.completedGamesAfter(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
       this.pageInfo = data.completedGames.pageInfo;
       this.dataSource.data = [...this.dataSource.data, ...data.completedGames.edges.map(edge => edge.node)]
     }, this.snackbarService.handleError).add(() => this.isLoading = false);
