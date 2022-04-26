@@ -7,6 +7,8 @@ import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PlayGameComponent } from '../play-game/play-game.component';
 import { Observable } from 'rxjs';
+import { ApolloQueryResult } from '@apollo/client';
+import { League } from '../../shared/model/league';
 
 @Component({
   selector: 'app-recently-played-games',
@@ -32,12 +34,27 @@ export class RecentlyPlayedGames {
     private dialog: MatDialog
   ) { }
 
-  loadMore() {
+  loadPreviousPage() {
     this.isLoading = true;
-    this.gameService.completedGamesAfter(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe(({data}) => {
-      this.pageInfo = data.completedGames.pageInfo;
-      this.dataSource.data = [...this.dataSource.data, ...data.completedGames.edges.map(edge => edge.node)]
-    }, this.snackbarService.handleError).add(() => this.isLoading = false);
+    this.gameService.completedGamesBefore(this.leagueId, this.PAGE_SIZE, this.pageInfo.startCursor!).subscribe({
+      next: this.updatePage,
+      error: this.snackbarService.handleError,
+      complete: () => this.isLoading = false
+    });
+  }
+
+  loadNextPage() {
+    this.isLoading = true;
+    this.gameService.completedGamesAfter(this.leagueId, this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe({
+      next: this.updatePage,
+      error: this.snackbarService.handleError,
+      complete: () => this.isLoading = false
+    });
+  }
+
+  private updatePage = (result: ApolloQueryResult<{ completedGames: Page<CompletedGame> }>) => {
+    this.pageInfo = result.data.completedGames.pageInfo;
+    this.dataSource.data = result.data.completedGames.edges.map(edge => edge.node);
   }
 
   playGame() {
