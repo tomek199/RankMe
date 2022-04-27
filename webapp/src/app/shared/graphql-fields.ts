@@ -1,6 +1,6 @@
 export const PAGE_INFO_FIELDS = `
   pageInfo {
-    hasNextPage endCursor
+    hasPreviousPage hasNextPage startCursor endCursor
   }
 `;
 

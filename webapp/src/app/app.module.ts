@@ -32,6 +32,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { Apollo } from 'apollo-angular';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
     declarations: [
@@ -44,32 +45,33 @@ import { Apollo } from 'apollo-angular';
         ScheduledGamesComponent,
         PlayGameComponent
     ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    GraphQLModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatListModule,
-    MatCardModule,
-    MatButtonModule,
-    MatProgressBarModule,
-    MatSidenavModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatIconModule,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatOptionModule,
-    MatSliderModule,
-    FormsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        GraphQLModule,
+        HttpClientModule,
+        MatToolbarModule,
+        MatListModule,
+        MatCardModule,
+        MatButtonModule,
+        MatProgressBarModule,
+        MatSidenavModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatIconModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatOptionModule,
+        MatSliderModule,
+        FormsModule,
+        MatTooltipModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

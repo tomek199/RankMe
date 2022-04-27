@@ -22,7 +22,9 @@ describe('LeagueService', () => {
 
   it('should return leagues page', () => {
     service.leagues(2).subscribe(response => {
+      expect(response.data.leagues.pageInfo.hasPreviousPage).toEqual(LEAGUES_PAGE.pageInfo.hasPreviousPage);
       expect(response.data.leagues.pageInfo.hasNextPage).toEqual(LEAGUES_PAGE.pageInfo.hasNextPage);
+      expect(response.data.leagues.pageInfo.startCursor).toEqual(LEAGUES_PAGE.pageInfo.startCursor);
       expect(response.data.leagues.pageInfo.endCursor).toEqual(LEAGUES_PAGE.pageInfo.endCursor);
       expect(response.data.leagues.edges.length).toEqual(LEAGUES_PAGE.edges.length);
     });
@@ -33,8 +35,10 @@ describe('LeagueService', () => {
   });
 
   it('should return leagues page after given cursor', () => {
-    service.leagues(2, "league-3-cur").subscribe(response => {
+    service.leaguesAfter(2, "league-3-cur").subscribe(response => {
+      expect(response.data.leagues.pageInfo.hasPreviousPage).toEqual(LEAGUES_PAGE.pageInfo.hasPreviousPage);
       expect(response.data.leagues.pageInfo.hasNextPage).toEqual(LEAGUES_PAGE.pageInfo.hasNextPage);
+      expect(response.data.leagues.pageInfo.startCursor).toEqual(LEAGUES_PAGE.pageInfo.startCursor);
       expect(response.data.leagues.pageInfo.endCursor).toEqual(LEAGUES_PAGE.pageInfo.endCursor);
       expect(response.data.leagues.edges.length).toEqual(LEAGUES_PAGE.edges.length);
     });
@@ -44,6 +48,21 @@ describe('LeagueService', () => {
     expect(operation.operation.variables.after).toEqual("league-3-cur");
     controller.verify();
   });
+
+  it('should return leagues page before given cursor', () => {
+    service.leaguesBefore(2, "league-4-cur").subscribe(response => {
+      expect(response.data.leagues.pageInfo.hasPreviousPage).toEqual(LEAGUES_PAGE.pageInfo.hasPreviousPage);
+      expect(response.data.leagues.pageInfo.hasNextPage).toEqual(LEAGUES_PAGE.pageInfo.hasNextPage);
+      expect(response.data.leagues.pageInfo.startCursor).toEqual(LEAGUES_PAGE.pageInfo.startCursor);
+      expect(response.data.leagues.pageInfo.endCursor).toEqual(LEAGUES_PAGE.pageInfo.endCursor);
+      expect(response.data.leagues.edges.length).toEqual(LEAGUES_PAGE.edges.length);
+    });
+    const operation = controller.expectOne('leagues');
+    operation.flush({data: {leagues: LEAGUES_PAGE}});
+    expect(operation.operation.variables.first).toEqual(2);
+    expect(operation.operation.variables.before).toEqual("league-4-cur");
+    controller.verify();
+  })
 
   it('should return league with players', () => {
     service.leagueWithPlayers(LEAGUE_WITH_PLAYERS.id).subscribe(({data}) => {

@@ -10,12 +10,7 @@ import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS, SCHEDULED_GAME_EDGE_FIELD
 export class LeagueService {
   constructor(private apollo: Apollo) { }
 
-  leagues(first: number, after?: string) {
-    if (after) return this.firstLeaguesAfter(first, after);
-    else return this.firstLeagues(first)
-  }
-
-  private firstLeagues(first: number) {
+  public leagues(first: number) {
     return this.apollo.query<{leagues: Page<League>}>({
       query: gql`
         query leagues($first: Int!) {
@@ -35,7 +30,7 @@ export class LeagueService {
     });
   }
 
-  private firstLeaguesAfter(first: number, after: string) {
+  public leaguesAfter(first: number, after: string) {
     return this.apollo.query<{leagues: Page<League>}>({
       query: gql`
         query leagues($first: Int!, $after: String) {
@@ -52,6 +47,27 @@ export class LeagueService {
       variables: {
         first: first,
         after: after
+      }
+    });
+  }
+
+  public leaguesBefore(first: number, before: string) {
+    return this.apollo.query<{leagues: Page<League>}>({
+      query: gql`
+        query leagues($first: Int!, $before: String) {
+          leagues(query: {first: $first, before: $before}) {
+            ${PAGE_INFO_FIELDS}
+            edges {
+              node {
+                id name
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        first: first,
+        before: before
       }
     });
   }

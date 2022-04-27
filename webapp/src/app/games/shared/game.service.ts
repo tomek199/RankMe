@@ -12,12 +12,7 @@ export class GameService {
 
   constructor(private apollo: Apollo) { }
 
-  completedGames(leagueId: string, first: number, after?: string) {
-    if (after) return this.firstCompletedGamesAfter(leagueId, first, after)
-    else return this.firstCompletedGames(leagueId, first);
-  }
-
-  private firstCompletedGames(leagueId: string, first: number) {
+  completedGames(leagueId: string, first: number) {
     return this.apollo.query<{completedGames: Page<CompletedGame>}>({
       query: gql`
         query completedGames($leagueId: String!, $first: Int!) {
@@ -34,7 +29,7 @@ export class GameService {
     });
   }
 
-  private firstCompletedGamesAfter(leagueId: string, first: number, after: string) {
+  completedGamesAfter(leagueId: string, first: number, after: string) {
     return this.apollo.query<{completedGames: Page<CompletedGame>}>({
       query: gql`
         query completedGames($leagueId: String!, $first: Int!, $after: String) {
@@ -52,12 +47,25 @@ export class GameService {
     });
   }
 
-  scheduledGames(leagueId: string, first: number, after?: string) {
-    if (after) return this.firstScheduledGamesAfter(leagueId, first, after)
-    else return this.firstScheduledGames(leagueId, first);
+  completedGamesBefore(leagueId: string, first: number, before: string) {
+    return this.apollo.query<{completedGames: Page<CompletedGame>}>({
+      query: gql`
+        query completedGames($leagueId: String!, $first: Int!, $before: String) {
+          completedGames(query: {leagueId: $leagueId, first: $first, before: $before}) {
+            ${PAGE_INFO_FIELDS}
+            ${COMPLETED_GAME_EDGE_FIELDS}
+          }
+        }
+      `,
+      variables: {
+        leagueId: leagueId,
+        first: first,
+        before: before
+      }
+    });
   }
 
-  private firstScheduledGames(leagueId: string, first: number) {
+  scheduledGames(leagueId: string, first: number) {
     return this.apollo.query<{scheduledGames: Page<ScheduledGame>}>({
       query: gql`
         query scheduledGames($leagueId: String!, $first: Int!) {
@@ -74,7 +82,7 @@ export class GameService {
     });
   }
 
-  private firstScheduledGamesAfter(leagueId: string, first: number, after: string) {
+  scheduledGamesAfter(leagueId: string, first: number, after: string) {
     return this.apollo.query<{scheduledGames: Page<ScheduledGame>}>({
       query: gql`
         query scheduledGames($leagueId: String!, $first: Int!, $after: String) {
@@ -88,6 +96,24 @@ export class GameService {
         leagueId: leagueId,
         first: first,
         after: after
+      }
+    });
+  }
+
+  scheduledGamesBefore(leagueId: string, first: number, before: string) {
+    return this.apollo.query<{scheduledGames: Page<ScheduledGame>}>({
+      query: gql`
+        query scheduledGames($leagueId: String!, $first: Int!, $before: String) {
+          scheduledGames(query: {leagueId: $leagueId, first: $first, before: $before}) {
+            ${PAGE_INFO_FIELDS}
+            ${SCHEDULED_GAME_EDGE_FIELDS}
+          }
+        }
+      `,
+      variables: {
+        leagueId: leagueId,
+        first: first,
+        before: before
       }
     });
   }

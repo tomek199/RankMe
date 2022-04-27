@@ -5,7 +5,7 @@ import { Player } from '../app/shared/model/player';
 
 export const LEAGUES_PAGE = {
   pageInfo: {
-    hasNextPage: true, endCursor: 'league-2-cur'
+    hasPreviousPage: true, hasNextPage: true, startCursor: 'league-1-cur', endCursor: 'league-2-cur'
   },
   edges: [
     {
@@ -19,13 +19,19 @@ export const LEAGUES_PAGE = {
       node: {
         id: 'league-2', name: 'League-2'
       }
+    },
+    {
+      cursor: 'league-3-cur',
+      node: {
+        id: 'league-3', name: 'League-3'
+      }
     }
   ]
 } as Page<League>
 
 export const COMPLETED_GAMES_PAGE = {
   pageInfo: {
-    hasNextPage: true, endCursor: 'game-3-cur'
+    hasPreviousPage: true, hasNextPage: true, startCursor: 'game-1-cur', endCursor: 'game-3-cur'
   },
   edges: [
     {
@@ -69,7 +75,7 @@ export const COMPLETED_GAMES_PAGE = {
 
 export const SCHEDULED_GAMES_PAGE = {
   pageInfo: {
-    hasNextPage: true, endCursor: 'game-6-cur'
+    hasPreviousPage: true, hasNextPage: true, startCursor: 'game-4-cur', endCursor: 'game-6-cur'
   },
   edges: [
     {

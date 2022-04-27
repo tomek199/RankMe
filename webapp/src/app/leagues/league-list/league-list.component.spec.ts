@@ -20,7 +20,7 @@ import { SnackbarServiceStub } from '../../../testing/stubs';
 describe('LeagueListComponent', () => {
   let component: LeagueListComponent;
   let fixture: ComponentFixture<LeagueListComponent>;
-  let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues']);
+  let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues', 'leaguesAfter', 'leaguesBefore']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -48,35 +48,73 @@ describe('LeagueListComponent', () => {
   it('should show leagues on the list', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const listOptions = compiled.querySelectorAll('mat-list-option');
-    expect(listOptions.length).toEqual(2);
+    expect(listOptions.length).toEqual(LEAGUES_PAGE.edges.length);
     expect(listOptions[0].textContent?.trim()).toEqual(LEAGUES_PAGE.edges[0].node.name);
     expect(listOptions[1].textContent?.trim()).toEqual(LEAGUES_PAGE.edges[1].node.name);
   });
 
-  it('should load more leagues after button click', () => {
-    const moreLeaguesPage = {
+  it('should load next leagues page after button click', () => {
+    const nextLeaguesPage = {
       pageInfo: {
-        hasNextPage: false, endCursor: 'c3c3c3'
+        hasPreviousPage: true, hasNextPage: false, startCursor: 'c4c4c4', endCursor: 'c4c4c4'
       },
       edges: [
         {
-          cursor: 'c3c3c3',
+          cursor: 'c4c4c4',
           node: {
-            id: 'ccc333', name: 'League-ccc333'
+            id: 'ccc444', name: 'League-ccc444'
+          }
+        },
+        {
+          cursor: 'c5c5c5',
+          node: {
+            id: 'ccc555', name: 'League-ccc555'
           }
         }
       ]
     } as Page<League>;
-    leagueServiceSpy.leagues.and.returnValue(of({data: { leagues: moreLeaguesPage }}));
-    // click "Load more" button
-    const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
-    loadMoreButton.triggerEventHandler('click', null)
+    leagueServiceSpy.leaguesAfter.and.returnValue(of({data: { leagues: nextLeaguesPage }}));
+    // click "Next page" button
+    const pageButtons = fixture.debugElement.queryAll(By.css('button.mat-icon-button'));
+    pageButtons[1].triggerEventHandler('click', null)
     fixture.detectChanges()
     // check leagues list and button state
     const listOptions = fixture.nativeElement.querySelectorAll('mat-list-option');
-    expect(listOptions.length).toEqual(3);
-    expect(listOptions[2].textContent?.trim()).toEqual(moreLeaguesPage.edges[0].node.name);
-    expect(loadMoreButton.nativeElement.disabled).toBeTrue()
+    expect(listOptions.length).toEqual(nextLeaguesPage.edges.length);
+    expect(pageButtons[0].nativeElement.disabled).toBeFalse();
+    expect(pageButtons[1].nativeElement.disabled).toBeTrue();
+  });
+
+  it('should load previous leagues page after button click', () => {
+    const previousLeaguesPage = {
+      pageInfo: {
+        hasPreviousPage: false, hasNextPage: true, startCursor: 'c4c4c4', endCursor: 'c4c4c4'
+      },
+      edges: [
+        {
+          cursor: 'c4c4c4',
+          node: {
+            id: 'ccc444', name: 'League-ccc444'
+          }
+        },
+        {
+          cursor: 'c5c5c5',
+          node: {
+            id: 'ccc555', name: 'League-ccc555'
+          }
+        }
+      ]
+    } as Page<League>;
+    leagueServiceSpy.leaguesBefore.and.returnValue(of({data: { leagues: previousLeaguesPage }}));
+    // click "Previous page" button
+    const pageButtons = fixture.debugElement.queryAll(By.css('button.mat-icon-button'));
+    pageButtons[0].triggerEventHandler('click', null)
+    fixture.detectChanges()
+    // check leagues list and button state
+    const listOptions = fixture.nativeElement.querySelectorAll('mat-list-option');
+    expect(listOptions.length).toEqual(previousLeaguesPage.edges.length);
+    expect(pageButtons[0].nativeElement.disabled).toBeTrue();
+    expect(pageButtons[1].nativeElement.disabled).toBeFalse();
   });
 
   it('should redirect to chosen league', inject([Router], (router: Router) => {

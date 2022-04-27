@@ -12,11 +12,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { SnackbarServiceStub } from '../../../testing/stubs';
+import { Page } from '../../shared/model/page';
+import { CompletedGame, ScheduledGame } from '../../shared/model/game';
 
 describe('ScheduledGamesComponent', () => {
   let component: ScheduledGamesComponent;
   let fixture: ComponentFixture<ScheduledGamesComponent>;
-  let gameServiceSpy = jasmine.createSpyObj('GameService', ['scheduledGames']);
+  let gameServiceSpy = jasmine.createSpyObj('GameService', ['scheduledGamesBefore', 'scheduledGamesAfter']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -44,7 +46,7 @@ describe('ScheduledGamesComponent', () => {
 
   it('should show "No data" row when there is no scheduled games', () => {
     component.gamesPage = {
-      pageInfo: {hasNextPage: false, endCursor: null},
+      pageInfo: {hasPreviousPage: false, hasNextPage: false, startCursor: null, endCursor: null},
       edges: []
     }
     fixture.detectChanges();
@@ -65,12 +67,55 @@ describe('ScheduledGamesComponent', () => {
     })
   });
 
-  it('should load more scheduled games after button click', () => {
-    gameServiceSpy.scheduledGames.and.returnValue(of({data: { scheduledGames: SCHEDULED_GAMES_PAGE }}));
-    const loadMoreButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
-    loadMoreButton.triggerEventHandler('click', null)
+  it('should load next scheduled games page after button click', () => {
+    const nextGamesPage = {
+      pageInfo: {
+        hasPreviousPage: true, hasNextPage: false, startCursor: 'game-1-cur', endCursor: 'game-1-cur'
+      },
+      edges: [
+        {
+          cursor: 'game-1-cur',
+          node: {
+            id: 'game-1', dateTime: '2021-12-30T15:38:05',
+            playerOneId: 'player-1', playerOneName: 'Player-1', playerOneRating: 2300,
+            playerTwoId: 'player-2', playerTwoName: 'Player-2', playerTwoRating: 1600
+          }
+        }
+      ]
+    } as Page<ScheduledGame>
+    gameServiceSpy.scheduledGamesAfter.and.returnValue(of({data: { scheduledGames: nextGamesPage }}));
+    const pageButtons = fixture.debugElement.queryAll(By.css('button.mat-raised-button'));
+    pageButtons[1].triggerEventHandler('click', null)
     fixture.detectChanges()
     const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
-    expect(rows.length).toEqual(6);
+    expect(rows.length).toEqual(nextGamesPage.edges.length);
+    expect(pageButtons[0].nativeElement.disabled).toBeFalse();
+    expect(pageButtons[1].nativeElement.disabled).toBeTrue();
+  });
+
+  it('should load previous scheduled games page after button click', () => {
+    const nextGamesPage = {
+      pageInfo: {
+        hasPreviousPage: false, hasNextPage: true, startCursor: 'game-1-cur', endCursor: 'game-1-cur'
+      },
+      edges: [
+        {
+          cursor: 'game-1-cur',
+          node: {
+            id: 'game-1', dateTime: '2021-12-30T15:38:05',
+            playerOneId: 'player-1', playerOneName: 'Player-1', playerOneRating: 2300,
+            playerTwoId: 'player-2', playerTwoName: 'Player-2', playerTwoRating: 1600
+          }
+        }
+      ]
+    } as Page<ScheduledGame>
+    gameServiceSpy.scheduledGamesBefore.and.returnValue(of({data: { scheduledGames: nextGamesPage }}));
+    const pageButtons = fixture.debugElement.queryAll(By.css('button.mat-raised-button'));
+    pageButtons[0].triggerEventHandler('click', null)
+    fixture.detectChanges()
+    const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
+    expect(rows.length).toEqual(nextGamesPage.edges.length);
+    expect(pageButtons[0].nativeElement.disabled).toBeTrue();
+    expect(pageButtons[1].nativeElement.disabled).toBeFalse();
   });
 });
