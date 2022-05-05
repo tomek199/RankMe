@@ -3,6 +3,8 @@ import { League } from '../app/shared/model/league';
 import { CompletedGame, ScheduledGame } from '../app/shared/model/game';
 import { Player } from '../app/shared/model/player';
 
+export const SUBMITTED = 'SUBMITTED';
+
 export const LEAGUES_PAGE = {
   pageInfo: {
     hasPreviousPage: true, hasNextPage: true, startCursor: 'league-1-cur', endCursor: 'league-2-cur'

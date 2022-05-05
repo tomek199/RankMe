@@ -3,6 +3,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { League } from '../../shared/model/league';
 import { Page } from '../../shared/model/page';
 import { COMPLETED_GAME_EDGE_FIELDS, PAGE_INFO_FIELDS, SCHEDULED_GAME_EDGE_FIELDS } from '../../shared/graphql-fields';
+import { CreateLeagueCommand } from './league.model';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +115,19 @@ export class LeagueService {
         id: id,
         firstCompletedGames: firstCompletedGames,
         firstScheduledGames: firstScheduledGames
+      }
+    });
+  }
+
+  createLeague(command: CreateLeagueCommand) {
+    return this.apollo.mutate<{createLeague: string}>({
+      mutation: gql`
+        mutation createLeague($command: CreateLeagueCommand!) {
+          createLeague(command: $command)
+        }
+      `,
+      variables: {
+        command: command
       }
     });
   }

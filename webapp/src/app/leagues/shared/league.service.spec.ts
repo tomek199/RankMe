@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
 import { LeagueService } from './league.service';
-import { LEAGUE_WITH_PLAYERS, LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE } from '../../../testing/data';
+import { LEAGUE_WITH_PLAYERS, LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE, SUBMITTED } from '../../../testing/data';
 import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
+import { CreateLeagueCommand } from './league.model';
 
 describe('LeagueService', () => {
   let service: LeagueService;
@@ -94,6 +95,17 @@ describe('LeagueService', () => {
     expect(operation.operation.variables.id).toEqual(LEAGUE_WITH_PLAYERS_AND_GAMES.id);
     expect(operation.operation.variables.firstCompletedGames).toEqual(5);
     expect(operation.operation.variables.firstScheduledGames).toEqual(5);
+    controller.verify();
+  });
+
+  it('should submit CreateLeagueCommand', () => {
+    const command = new CreateLeagueCommand('league-1');
+    service.createLeague(command).subscribe(({data}) => {
+      expect(data?.createLeague).toEqual(SUBMITTED);
+    });
+    const operation = controller.expectOne('createLeague');
+    operation.flush({data: {createLeague: SUBMITTED}});
+    expect(operation.operation.variables.command).toEqual(command);
     controller.verify();
   });
 });
