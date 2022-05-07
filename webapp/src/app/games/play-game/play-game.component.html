@@ -1,7 +1,10 @@
 <ng-container [ngSwitch]="isLoading">
   <mat-spinner *ngSwitchCase="true"></mat-spinner>
   <ng-container *ngSwitchCase="false">
-    <h1 mat-dialog-title>Play game</h1>
+    <h1 mat-dialog-title>
+      <mat-icon>play_circle_outline</mat-icon>
+      Play game
+    </h1>
     <form [formGroup]="playGameForm" (ngSubmit)="playGame()">
       <mat-dialog-content>
         <ng-container *ngIf="isPlayersValid()">

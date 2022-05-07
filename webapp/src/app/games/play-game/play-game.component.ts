@@ -79,9 +79,13 @@ export class PlayGameComponent implements OnInit {
   getLeague(): void {
     this.isLoading = true;
     this.leagueService.leagueWithPlayers(this.leagueId)
-      .subscribe(({data}) => {
-        this.league = data.league;
-      }, this.snackbarService.handleError).add(() => this.isLoading = false);
+      .subscribe({
+        next: ({data}) => {
+          this.league = data.league
+        },
+        error: this.snackbarService.handleError,
+        complete: () => this.isLoading = false
+      });
   }
 
   private filter(value: any): Player[] {
@@ -104,7 +108,7 @@ export class PlayGameComponent implements OnInit {
       this.playGameForm.value.playerOneScore, this.playGameForm.value.playerTwoScore
     );
     this.gameService.playGame(command).subscribe(() => {
-      this.dialogRef.close(this.snackbarService.showMessage("Game played!"));
+      this.dialogRef.close(this.snackbarService.showMessage('Game played!'));
     });
   }
 }

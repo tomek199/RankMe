@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>
+  <mat-icon>playlist_add</mat-icon>
+  Create league
+</h1>
+<form [formGroup]="createLeagueForm" (ngSubmit)="createLeague()">
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name">
+      <mat-error *ngIf="createLeagueForm.controls.name.invalid">Please provide league name</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button [mat-dialog-close]="null">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="createLeagueForm.invalid">
+      <mat-icon>check</mat-icon>
+      Create
+    </button>
+  </mat-dialog-actions>
+</form>

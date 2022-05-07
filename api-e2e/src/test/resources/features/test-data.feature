@@ -27,4 +27,4 @@ Feature: Test data generator
   Scenario: I create multiple leagues
     * I create league "Marvel"
     * I create league "Transformers"
-    * I create 10 leagues
+    * I create 3 leagues

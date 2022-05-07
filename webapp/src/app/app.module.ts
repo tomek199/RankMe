@@ -31,8 +31,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
-import { Apollo } from 'apollo-angular';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CreateLeagueComponent } from './leagues/create-league/create-league.component';
+import { LeagueComponent } from './leagues/league.component';
 
 @NgModule({
     declarations: [
@@ -43,7 +44,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         PlayerRankingComponent,
         RecentlyPlayedGames,
         ScheduledGamesComponent,
-        PlayGameComponent
+        PlayGameComponent,
+        CreateLeagueComponent,
+        LeagueComponent
     ],
     imports: [
         BrowserModule,

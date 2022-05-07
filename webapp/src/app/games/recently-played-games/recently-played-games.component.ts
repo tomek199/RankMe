@@ -8,7 +8,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { PlayGameComponent } from '../play-game/play-game.component';
 import { Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
-import { League } from '../../shared/model/league';
 
 @Component({
   selector: 'app-recently-played-games',
