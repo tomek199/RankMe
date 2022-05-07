@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LeagueService } from '../../leagues/shared/league.service';
 import { of } from 'rxjs';
-import { LEAGUE_WITH_PLAYERS } from '../../../testing/data';
+import { LEAGUE_WITH_PLAYERS, SUBMITTED } from '../../../testing/data';
 import { By } from '@angular/platform-browser';
 import { GameService } from '../shared/game.service';
 import { PlayGameCommand } from '../shared/game.model';
@@ -22,7 +22,7 @@ describe('PlayGameComponent', () => {
   let fixture: ComponentFixture<PlayGameComponent>;
   let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagueWithPlayers']);
   let gameServiceSpy = jasmine.createSpyObj('GameService', ['playGame']);
-  let snacbarServiceSpy = jasmine.createSpyObj('SnackbarService', ['showMessage']);
+  let snackbarServiceSpy = jasmine.createSpyObj('SnackbarService', ['showMessage']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,7 +34,7 @@ describe('PlayGameComponent', () => {
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: 'league-1' },
         { provide: MatDialogRef, useValue: {} },
-        { provide: SnackbarService, useValue: snacbarServiceSpy },
+        { provide: SnackbarService, useValue: snackbarServiceSpy },
         { provide: LeagueService, useValue: leagueServiceSpy },
         { provide: GameService, useValue: gameServiceSpy }
       ]
@@ -96,7 +96,7 @@ describe('PlayGameComponent', () => {
   });
 
   it('should play game', () => {
-    gameServiceSpy.playGame.and.returnValue(of({data: { playGame: 'SUBMITTED' }}));
+    gameServiceSpy.playGame.and.returnValue(of({data: { playGame: SUBMITTED }}));
     component.playGameForm.controls.playerOne.setValue(LEAGUE_WITH_PLAYERS.players[2]);
     component.playGameForm.controls.playerTwo.setValue(LEAGUE_WITH_PLAYERS.players[1]);
     component.playGameForm.controls.playerOneScore.setValue(3);
@@ -107,5 +107,6 @@ describe('PlayGameComponent', () => {
     expect(gameServiceSpy.playGame).toHaveBeenCalledWith(
       new PlayGameCommand(LEAGUE_WITH_PLAYERS.players[2].id, LEAGUE_WITH_PLAYERS.players[1].id, 3, 1)
     );
+    expect(snackbarServiceSpy.showMessage).toHaveBeenCalledOnceWith('Game played!')
   });
 });
