@@ -27,7 +27,9 @@ export class CreateLeagueComponent {
   createLeague() {
     const command = new CreateLeagueCommand(this.createLeagueForm.value.name);
     this.leagueService.createLeague(command).subscribe(() => {
-      this.dialogRef.close(this.snackbarService.showMessage('League created!'));
+      this.dialogRef.close(
+        this.snackbarService.showMessageWithAction('League created!', 'Go to leagues list', '/leagues')
+      );
     });
   }
 }

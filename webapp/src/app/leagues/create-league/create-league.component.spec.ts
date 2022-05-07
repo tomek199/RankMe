@@ -18,7 +18,8 @@ describe('CreateLeagueComponent', () => {
   let component: CreateLeagueComponent;
   let fixture: ComponentFixture<CreateLeagueComponent>;
   let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['createLeague']);
-  let snackbarServiceSpy = jasmine.createSpyObj('SnackbarService', ['showMessage']);
+  let snackbarServiceSpy = jasmine.createSpyObj('SnackbarService', ['showMessageWithAction']);
+  let dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,7 +29,7 @@ describe('CreateLeagueComponent', () => {
         MatDialogModule, MatFormFieldModule, MatInputModule, MatIconModule
       ],
       providers: [
-        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: SnackbarService, useValue: snackbarServiceSpy },
         { provide: LeagueService, useValue: leagueServiceSpy }
       ]
@@ -58,6 +59,7 @@ describe('CreateLeagueComponent', () => {
     const submitButton = fixture.debugElement.query(By.css('form'));
     submitButton.triggerEventHandler('submit', null);
     expect(leagueServiceSpy.createLeague).toHaveBeenCalledOnceWith(new CreateLeagueCommand(leagueName));
-    expect(snackbarServiceSpy.showMessage).toHaveBeenCalledOnceWith('League created!')
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
+    expect(snackbarServiceSpy.showMessageWithAction).toHaveBeenCalledOnceWith('League created!', 'Go to leagues list', '/leagues');
   });
 });

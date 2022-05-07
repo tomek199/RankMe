@@ -23,6 +23,7 @@ describe('PlayGameComponent', () => {
   let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagueWithPlayers']);
   let gameServiceSpy = jasmine.createSpyObj('GameService', ['playGame']);
   let snackbarServiceSpy = jasmine.createSpyObj('SnackbarService', ['showMessage']);
+  let dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -33,7 +34,7 @@ describe('PlayGameComponent', () => {
       ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: 'league-1' },
-        { provide: MatDialogRef, useValue: {} },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: SnackbarService, useValue: snackbarServiceSpy },
         { provide: LeagueService, useValue: leagueServiceSpy },
         { provide: GameService, useValue: gameServiceSpy }
@@ -107,6 +108,7 @@ describe('PlayGameComponent', () => {
     expect(gameServiceSpy.playGame).toHaveBeenCalledWith(
       new PlayGameCommand(LEAGUE_WITH_PLAYERS.players[2].id, LEAGUE_WITH_PLAYERS.players[1].id, 3, 1)
     );
+    expect(dialogRefSpy.close).toHaveBeenCalledTimes(1);
     expect(snackbarServiceSpy.showMessage).toHaveBeenCalledOnceWith('Game played!')
   });
 });
