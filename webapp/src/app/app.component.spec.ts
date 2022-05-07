@@ -1,17 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { By } from "@angular/platform-browser";
-import { Component } from "@angular/core";
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { By } from '@angular/platform-browser';
+import { Component } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatListModule } from '@angular/material/list';
+import { RouterOutlet } from '@angular/router';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule, MatSidenavModule, MatListModule, BrowserAnimationsModule
+        RouterTestingModule, BrowserAnimationsModule
       ],
       declarations: [
         AppComponent, HeaderComponentStub
@@ -30,6 +29,13 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const header = fixture.debugElement.query(By.directive(HeaderComponentStub));
     expect(header).toBeTruthy()
+  });
+
+  it('should contain main router-outlet', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const routerOutlet = fixture.debugElement.query(By.directive(RouterOutlet));
+    expect(routerOutlet).toBeTruthy()
   });
 });
 
