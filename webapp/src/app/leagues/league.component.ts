@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateLeagueComponent } from './create-league/create-league.component';
 
 @Component({
   selector: 'app-league',
   templateUrl: './league.component.html',
   styleUrls: ['./league.component.scss']
 })
-export class LeagueComponent implements OnInit {
+export class LeagueComponent {
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
-  ngOnInit(): void {
+  createLeague() {
+    this.dialog.open(CreateLeagueComponent);
   }
-
 }

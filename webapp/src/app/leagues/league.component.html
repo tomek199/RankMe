@@ -2,7 +2,7 @@
   <mat-sidenav-container id="sidenav-container">
     <mat-sidenav [mode]="'side'" [opened]="true">
       <mat-nav-list>
-        <a mat-list-item routerLink=".">
+        <a mat-list-item (click)="createLeague()">
           <mat-icon>playlist_add</mat-icon>
           Create league
         </a>
