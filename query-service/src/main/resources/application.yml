@@ -18,25 +18,25 @@ spring:
     stream:
       bindings:
         leagueCreatedMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: league-created-consumer-group
         leagueRenamedMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: league-renamed-consumer-group
         leagueSettingsChangedMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: league-settings-changed-consumer-group
         playerCreatedMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: player-created-consumer-group
         playerPlayedGameMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: player-played-game-consumer-group
         gameScheduledMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: game-scheduled-consumer-group
         gamePlayedMessageConsumer-in-0:
-          destination: command.query
+          destination: RankMe
           group: game-played-consumer-group
       rabbit:
         bindings:

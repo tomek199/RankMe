@@ -19,6 +19,6 @@ class SpringCloudEventBus(private val streamBridge: StreamBridge) : EventBus {
             event,
             MessageHeaders(mapOf(Pair("type", event.type)))
         )
-        streamBridge.send("commandQuery-out-0", message)
+        streamBridge.send("events-out-0", message)
     }
 }

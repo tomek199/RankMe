@@ -13,11 +13,11 @@ spring:
   cloud:
     stream:
       bindings:
-        apiCommand-out-0:
-          destination: api.command
+        commands-out-0:
+          destination: RankMe
       rabbit:
         bindings:
-          apiCommand-out-0:
+          commands-out-0:
             producer:
               routingKeyExpression: headers['type']
         default:

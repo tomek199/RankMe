@@ -15,7 +15,7 @@ internal class SpringCloudEventBusTest {
     @Test
     internal fun `Should emit event`() {
         // given
-        val exchangeName = "commandQuery-out-0"
+        val exchangeName = "events-out-0"
         every { streamBridge.send(exchangeName, ofType(GenericMessage::class)) } returns true
         val event = LeagueCreated("Star Wars")
         // when
