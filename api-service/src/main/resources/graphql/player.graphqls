@@ -16,3 +16,10 @@ type Player {
     completedGames(first: Int!, after: String, before: String): CompletedGameConnection @connection(for: "CompletedGame")
     scheduledGames(first: Int!, after: String, before: String): ScheduledGameConnection @connection(for: "ScheduledGame")
 }
+
+type PlayerCreated {
+    id: String!
+    name: String!
+    deviation: Int!
+    rating: Int!
+}

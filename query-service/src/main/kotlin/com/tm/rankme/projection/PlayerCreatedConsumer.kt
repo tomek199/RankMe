@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.function.Consumer
 
-@Service("playerCreatedMessageConsumer")
+@Service("playerCreatedMessageConsumer") // todo remove Message from consumer name
 class PlayerCreatedConsumer(
     private val repository: PlayerRepository
 ) : Consumer<PlayerCreatedMessage> {
