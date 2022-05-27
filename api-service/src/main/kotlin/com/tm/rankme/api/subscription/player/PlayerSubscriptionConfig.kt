@@ -19,8 +19,8 @@ class PlayerSubscriptionConfig {
 
     @Bean
     fun playerCreatedFlux(playerCreatedSink: Sinks.Many<PlayerCreated>): Consumer<Flux<PlayerCreatedMessage>> =
-        Consumer { playerCreatedMessage: Flux<PlayerCreatedMessage> ->
-            playerCreatedMessage.subscribe {
+        Consumer { inboundMessage: Flux<PlayerCreatedMessage> ->
+            inboundMessage.subscribe {
                 log.info("Consumed message $it")
                 playerCreatedSink.emitNext(PlayerCreated(it.aggregateId, it.name, it.deviation, it.rating), FAIL_FAST)
             }
