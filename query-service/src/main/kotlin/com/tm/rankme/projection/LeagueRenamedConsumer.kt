@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.function.Consumer
 
-@Service("leagueRenamedMessageConsumer")
+@Service("leagueRenamedConsumer")
 class LeagueRenamedConsumer(
     private val repository: LeagueRepository
 ) : Consumer<LeagueRenamedMessage> {

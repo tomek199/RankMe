@@ -12,41 +12,41 @@ spring:
     password: guest
   cloud:
     function:
-      definition: "leagueCreatedMessageConsumer;leagueRenamedMessageConsumer;leagueSettingsChangedMessageConsumer;\
-        playerCreatedMessageConsumer;playerPlayedGameMessageConsumer;\
-        gameScheduledMessageConsumer;gamePlayedMessageConsumer"
+      definition: "leagueCreatedConsumer;leagueRenamedConsumer;leagueSettingsChangedConsumer;\
+        playerCreatedConsumer;playerPlayedGameConsumer;\
+        gameScheduledConsumer;gamePlayedConsumer"
     stream:
       bindings:
-        leagueCreatedMessageConsumer-in-0:
+        leagueCreatedConsumer-in-0:
           destination: RankMe
           group: league-created-consumer-group
-        leagueRenamedMessageConsumer-in-0:
+        leagueRenamedConsumer-in-0:
           destination: RankMe
           group: league-renamed-consumer-group
-        leagueSettingsChangedMessageConsumer-in-0:
+        leagueSettingsChangedConsumer-in-0:
           destination: RankMe
           group: league-settings-changed-consumer-group
-        playerCreatedMessageConsumer-in-0:
+        playerCreatedConsumer-in-0:
           destination: RankMe
           group: player-created-consumer-group
-        playerPlayedGameMessageConsumer-in-0:
+        playerPlayedGameConsumer-in-0:
           destination: RankMe
           group: player-played-game-consumer-group
-        gameScheduledMessageConsumer-in-0:
+        gameScheduledConsumer-in-0:
           destination: RankMe
           group: game-scheduled-consumer-group
-        gamePlayedMessageConsumer-in-0:
+        gamePlayedConsumer-in-0:
           destination: RankMe
           group: game-played-consumer-group
       rabbit:
         bindings:
-          leagueCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: league-created
-          leagueRenamedMessageConsumer-in-0.consumer.bindingRoutingKey: league-renamed
-          leagueSettingsChangedMessageConsumer-in-0.consumer.bindingRoutingKey: league-settings-changed
-          playerCreatedMessageConsumer-in-0.consumer.bindingRoutingKey: player-created
-          playerPlayedGameMessageConsumer-in-0.consumer.bindingRoutingKey: player-played-game
-          gameScheduledMessageConsumer-in-0.consumer.bindingRoutingKey: game-scheduled
-          gamePlayedMessageConsumer-in-0.consumer.bindingRoutingKey: game-played
+          leagueCreatedConsumer-in-0.consumer.bindingRoutingKey: league-created
+          leagueRenamedConsumer-in-0.consumer.bindingRoutingKey: league-renamed
+          leagueSettingsChangedConsumer-in-0.consumer.bindingRoutingKey: league-settings-changed
+          playerCreatedConsumer-in-0.consumer.bindingRoutingKey: player-created
+          playerPlayedGameConsumer-in-0.consumer.bindingRoutingKey: player-played-game
+          gameScheduledConsumer-in-0.consumer.bindingRoutingKey: game-scheduled
+          gamePlayedConsumer-in-0.consumer.bindingRoutingKey: game-played
         default:
           consumer:
             anonymousGroupPrefix: ${spring.application.name}-${server.port}.
