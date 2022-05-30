@@ -40,6 +40,13 @@ dependencies {
         exclude(group = "org.mockito", module = "mockito-core")
         exclude(group = "org.mockito", module = "mockito-junit-jupiter")
     }
+    testImplementation("org.springframework.cloud:spring-cloud-stream") {
+        artifact {
+            extension = "jar"
+            type = "test-jar"
+            classifier = "test-binder"
+        }
+    }
     testImplementation("com.graphql-java-kickstart:graphql-spring-boot-starter-test:8.0.0") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(group = "org.mockito", module = "mockito-core")
