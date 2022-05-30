@@ -20,7 +20,7 @@ internal class InfoQueryIntegrationTest {
     @Test
     internal fun `Should return api version`() {
         // given
-        val request = "graphql/version.graphql"
+        val request = "graphql/query/version.graphql"
         // when
         val response = template.postForResource(request)
         // then

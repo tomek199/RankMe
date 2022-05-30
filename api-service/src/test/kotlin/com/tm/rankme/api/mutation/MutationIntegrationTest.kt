@@ -40,7 +40,7 @@ internal class MutationIntegrationTest {
             "complete-game"
         ).map { request -> DynamicTest.dynamicTest("Given $request mutation should be executed") {
             // when
-            val response = template.postForResource("graphql/${request}.graphql")
+            val response = template.postForResource("graphql/mutation/${request}.graphql")
             // then
             verify(atMost = 7) { bus.execute(ofType(Command::class)) }
             assertTrue(response.isOk)
