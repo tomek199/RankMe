@@ -77,7 +77,7 @@ internal class PlayerQueryIntegrationTest {
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(scheduledGamesPage))
 
-        val request = "graphql/player.graphql"
+        val request = "graphql/query/player.graphql"
         // when
         val response = template.postForResource(request)
         // then

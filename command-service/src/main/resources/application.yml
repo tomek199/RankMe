@@ -27,28 +27,28 @@ spring:
     stream:
       bindings:
         createLeagueCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: create-league-command-group
         renameLeagueCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: rename-league-command-group
         changeLeagueSettingsCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: change-league-settings-command-group
         createPlayerCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: create-player-command-group
         playGameCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: play-game-command-group
         scheduleGameCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: schedule-game-command-group
         completeGameCommandHandler-in-0:
-          destination: api.command
+          destination: RankMe
           group: complete-game-command-group
-        commandQuery-out-0:
-          destination: command.query
+        events-out-0:
+          destination: RankMe
       rabbit:
         bindings:
           createLeagueCommandHandler-in-0.consumer.bindingRoutingKey: CreateLeagueCommand
@@ -58,7 +58,7 @@ spring:
           playGameCommandHandler-in-0.consumer.bindingRoutingKey: PlayGameCommand
           scheduleGameCommandHandler-in-0.consumer.bindingRoutingKey: ScheduleGameCommand
           completeGameCommandHandler-in-0.consumer.bindingRoutingKey: CompleteGameCommand
-          commandQuery-out-0.producer.routingKeyExpression: headers['type']
+          events-out-0.producer.routingKeyExpression: headers['type']
         default:
           consumer:
             anonymousGroupPrefix: ${spring.application.name}-${server.port}.

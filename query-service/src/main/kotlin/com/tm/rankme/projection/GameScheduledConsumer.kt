@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.function.Consumer
 
-@Service("gameScheduledMessageConsumer")
+@Service("gameScheduledConsumer")
 class GameScheduledConsumer(
     private val repository: GameRepository,
     private val playerPort: PlayerPort

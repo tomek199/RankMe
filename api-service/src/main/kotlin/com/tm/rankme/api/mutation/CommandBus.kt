@@ -16,6 +16,6 @@ class CommandBus(private val streamBridge: StreamBridge) {
             command,
             MessageHeaders(mapOf(Pair("type", command::class.simpleName)))
         )
-        streamBridge.send("apiCommand-out-0", message)
+        streamBridge.send("commands-out-0", message)
     }
 }

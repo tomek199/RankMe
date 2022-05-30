@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.function.Consumer
 
-@Service("gamePlayedMessageConsumer")
+@Service("gamePlayedConsumer")
 class GamePlayedConsumer(
     private val repository: GameRepository,
     private val playerPort: PlayerPort

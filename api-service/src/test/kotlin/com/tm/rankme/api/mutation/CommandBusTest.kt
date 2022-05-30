@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 internal class CommandBusTest {
     private val streamBridge = mockk<StreamBridge>()
     private val commandBus = CommandBus(streamBridge)
-    private val bindingName = "apiCommand-out-0"
+    private val bindingName = "commands-out-0"
 
     @BeforeEach
     internal fun setUp() {

@@ -61,7 +61,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=5&after=MTYyMjg0MDE1NzI0Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/games-after.graphql"
+        val request = "graphql/query/games-after.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -105,7 +105,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/games?first=5&before=MTYyMjg0MDE1NzI0Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/games-before.graphql"
+        val request = "graphql/query/games-before.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -141,7 +141,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/completed-games?first=5&after=MTYyMjg0MDE1NzI0Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/completed-games-after.graphql"
+        val request = "graphql/query/completed-games-after.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -176,7 +176,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/completed-games?first=5&before=MTYyMjg0MDE1NzI0Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/completed-games-before.graphql"
+        val request = "graphql/query/completed-games-before.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -207,7 +207,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/scheduled-games?first=5&after=MTYyMjg0MDE1NzI0Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/scheduled-games-after.graphql"
+        val request = "graphql/query/scheduled-games-after.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -238,7 +238,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/leagues/$leagueId/scheduled-games?first=5&before=MTYyMjg0MDE1NzI0Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/scheduled-games-before.graphql"
+        val request = "graphql/query/scheduled-games-before.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -281,7 +281,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/players/$playerId/games?first=5&after=MTY1MDA5NzM5NTE5MQ==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/player-games-after.graphql"
+        val request = "graphql/query/player-games-after.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -325,7 +325,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/players/$playerId/games?first=5&before=MTY1MDA5NzM5NTE5MQ==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/player-games-before.graphql"
+        val request = "graphql/query/player-games-before.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -361,7 +361,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/players/$playerId/completed-games?first=5&after=MTY1MDA5NzM5NTI5Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/player-completed-games-after.graphql"
+        val request = "graphql/query/player-completed-games-after.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -396,7 +396,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/players/$playerId/completed-games?first=5&before=MTY1MDA5NzM5NTI5Nw==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/player-completed-games-before.graphql"
+        val request = "graphql/query/player-completed-games-before.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -427,7 +427,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/players/$playerId/scheduled-games?first=5&after=MTY1MDA5NzM5NTQwMg==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/player-scheduled-games-after.graphql"
+        val request = "graphql/query/player-scheduled-games-after.graphql"
         // when
         val response = template.postForResource(request)
         // then
@@ -458,7 +458,7 @@ internal class GameQueryIntegrationTest {
             restTemplate.exchange("$url/query-service/players/$playerId/scheduled-games?first=5&before=MTY1MDA5NzM5NTQwMg==",
                 HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
         } returns ResponseEntity.of(Optional.of(page))
-        val request = "graphql/player-scheduled-games-before.graphql"
+        val request = "graphql/query/player-scheduled-games-before.graphql"
         // when
         val response = template.postForResource(request)
         // then

@@ -11,15 +11,21 @@ spring:
     username: guest
     password: guest
   cloud:
+    function:
+      definition: playerCreatedFlux
     stream:
       bindings:
-        apiCommand-out-0:
-          destination: api.command
+        commands-out-0:
+          destination: RankMe
+        playerCreatedFlux-in-0:
+          destination: RankMe
+          group: api-player-created
       rabbit:
         bindings:
-          apiCommand-out-0:
+          commands-out-0:
             producer:
               routingKeyExpression: headers['type']
+          playerCreatedFlux-in-0.consumer.bindingRoutingKey: player-created
         default:
           consumer:
             anonymousGroupPrefix: ${spring.application.name}-${server.port}.
