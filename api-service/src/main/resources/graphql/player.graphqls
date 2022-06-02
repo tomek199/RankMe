@@ -7,6 +7,10 @@ input GetPlayerQuery {
     id: String!
 }
 
+input GetPlayersQuery {
+    leagueId: String!
+}
+
 type Player {
     id: String!
     name: String!

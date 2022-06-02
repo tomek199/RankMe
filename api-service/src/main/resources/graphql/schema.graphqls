@@ -19,6 +19,7 @@ type Query {
     league(query: GetLeagueQuery!): League
     leagues(query: GetLeaguesQuery!): LeagueConnection @connection(for: "League")
     player(query: GetPlayerQuery!): Player
+    players(query: GetPlayersQuery!): [Player!]!
     games(query: GetGamesForLeagueQuery!): GameConnection @connection(for: "Game")
     completedGames(query: GetCompletedGamesForLeagueQuery!): CompletedGameConnection @connection(for: "CompletedGame")
     scheduledGames(query: GetScheduledGamesForLeagueQuery!): ScheduledGameConnection @connection(for: "ScheduledGame")

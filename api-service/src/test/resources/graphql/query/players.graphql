@@ -1,0 +1,10 @@
+query {
+    players(query: {
+        leagueId: "xAeksxNOS-lq5mnKmm1tk"
+    }) {
+        id
+        name
+        deviation
+        rating
+    }
+}
