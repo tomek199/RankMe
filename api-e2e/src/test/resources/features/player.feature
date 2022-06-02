@@ -5,9 +5,18 @@ Feature: Player
     * I create league "Marvel"
     * I use league "Marvel"
 
-  Scenario: Create new player
+  Scenario: Create and list players
     When I create player "Optimus Prime"
+    * I create player "Bumblebee"
+    * I create player "Megatron"
     Then I have player "Optimus Prime" with deviation 350 and rating 1500
+    * I have player "Bumblebee" with deviation 350 and rating 1500
+    * I have player "Megatron" with deviation 350 and rating 1500
+    * I have players in league:
+      | name          | deviation | rating |
+      | Optimus Prime | 350       | 1500   |
+      | Bumblebee     | 350       | 1500   |
+      | Megatron      | 350       | 1500   |
 
   Scenario: Play draw game
     * I create player "Batman"

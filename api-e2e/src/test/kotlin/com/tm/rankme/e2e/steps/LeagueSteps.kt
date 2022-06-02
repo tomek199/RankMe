@@ -87,7 +87,7 @@ class LeagueSteps(
             }
         }
 
-        Then("I have players in league:") { playersTable: DataTable ->
+        Then("I have players connected in league:") { playersTable: DataTable ->
             runBlocking {
                 val id = context.leagueId()
                 val query = GetLeague(id)
@@ -103,7 +103,7 @@ class LeagueSteps(
             }
         }
 
-        Then("I have players in league sorted by ranking") {
+        Then("I have players connected in league sorted by ranking") {
             runBlocking {
                 val id = context.leagueId()
                 val query = GetLeague(id)
