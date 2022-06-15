@@ -24,7 +24,7 @@ internal class PlayerSubscriptionResolverIntegrationTest {
         context.getBean(InputDestination::class.java).send(inboundMessage)
         val subscription = context.getBean(GraphQLTestSubscription::class.java)
         // when
-        val response = subscription.start("graphql/subscription/player-created.graphql").awaitAndGetNextResponse(1000)
+        val response = subscription.start("graphql/subscription/player-created.graphql").awaitAndGetNextResponse(2000)
         // then
         assertTrue(response.isOk)
         assertEquals(inboundEvent.aggregateId, response.get("data.playerCreated.id"))

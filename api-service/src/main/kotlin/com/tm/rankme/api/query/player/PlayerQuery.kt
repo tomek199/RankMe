@@ -9,4 +9,6 @@ class PlayerQuery(
 ) : GraphQLQueryResolver {
 
     fun player(query: GetPlayerQuery): Player? = queryHandler.handle(query)
+
+    fun players(query: GetPlayersQuery): List<Player> = queryHandler.handle(query)
 }

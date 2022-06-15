@@ -38,7 +38,7 @@ describe('LeagueComponent', () => {
   });
 
   it('should open "Create league" dialog', () => {
-    const createLeagueButton = fixture.debugElement.queryAll(By.css('mat-nav-list a'))[0];
+    const createLeagueButton = fixture.debugElement.queryAll(By.css('mat-nav-list a'))[1];
     expect(createLeagueButton.nativeElement.textContent).toContain('Create league');
     createLeagueButton.triggerEventHandler('click', null);
     expect(matDialogSpy.open).toHaveBeenCalledTimes(1);

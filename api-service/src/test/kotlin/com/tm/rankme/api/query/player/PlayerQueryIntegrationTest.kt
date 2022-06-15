@@ -112,4 +112,30 @@ internal class PlayerQueryIntegrationTest {
             assertScheduledGame(game, response, "$.data.player.scheduledGames.edges[$index]")
         }
     }
+
+    @Test
+    internal fun `Should return players`() {
+        // given
+        val leagueId = "xAeksxNOS-lq5mnKmm1tk"
+        val players = listOf(
+            Player(randomNanoId(), "Optimus Prime", 145, 2746),
+            Player(randomNanoId(), "Bumblebee", 213, 1863),
+            Player(randomNanoId(), "Megatron", 327, 2175),
+        )
+        every {
+            restTemplate.exchange("$url/query-service/leagues/${leagueId}/players",
+                HttpMethod.GET, null, ofType(ParameterizedTypeReference::class))
+        } returns ResponseEntity.of(Optional.of(players))
+        val request = "graphql/query/players.graphql"
+        // when
+        val response = template.postForResource(request)
+        // then
+        assertTrue(response.isOk)
+        players.forEachIndexed {index, player ->
+            assertEquals(player.id, response.get("$.data.players[$index].id"))
+            assertEquals(player.name, response.get("$.data.players[$index].name"))
+            assertEquals(player.deviation, response.get("$.data.players[$index].deviation", Int::class.java))
+            assertEquals(player.rating, response.get("$.data.players[$index].rating", Int::class.java))
+        }
+    }
 }

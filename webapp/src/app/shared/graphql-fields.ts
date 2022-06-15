@@ -27,3 +27,5 @@ export const SCHEDULED_GAME_EDGE_FIELDS = `
     }
   }
 `;
+
+export const PLAYER_FIELDS = `id name deviation rating`;

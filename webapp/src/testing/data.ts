@@ -108,9 +108,9 @@ export const SCHEDULED_GAMES_PAGE = {
 } as Page<ScheduledGame>
 
 export const PLAYERS = [
-  {id: 'player-1', name: 'Player-1', rating: 2367},
-  {id: 'player-2', name: 'Player-2', rating: 1594},
-  {id: 'player-3', name: 'Player-3', rating: 1863}
+  {id: 'player-1', name: 'Player-1', deviation: 187, rating: 2367},
+  {id: 'player-2', name: 'Player-2', deviation: 293, rating: 1594},
+  {id: 'player-3', name: 'Player-3', deviation: 317, rating: 1863}
 ] as Player[];
 
 export const LEAGUE_WITH_PLAYERS = {

@@ -2,13 +2,21 @@
   <mat-sidenav-container id="sidenav-container">
     <mat-sidenav [mode]="'side'" [opened]="true">
       <mat-nav-list>
+        <a mat-list-item [routerLink]="['/leagues', leagueId]">
+          <mat-icon>dashboard</mat-icon>
+          &nbsp;Dashboard
+        </a>
         <a mat-list-item (click)="createLeague()">
           <mat-icon>playlist_add</mat-icon>
-          Create league
+          &nbsp;Create league
         </a>
         <a mat-list-item routerLink="/leagues">
           <mat-icon>swap_vert</mat-icon>
-          Switch league
+          &nbsp;Switch league
+        </a>
+        <a mat-list-item [routerLink]="['/leagues', leagueId, 'players']">
+          <mat-icon>people</mat-icon>
+          &nbsp;Players
         </a>
       </mat-nav-list>
     </mat-sidenav>

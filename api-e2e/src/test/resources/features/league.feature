@@ -18,7 +18,7 @@ Feature: League
     * I use league "Transformers"
     When I create player "Optimus Prime"
     * I create player "Bumblebee"
-    Then I have players in league:
+    Then I have players connected in league:
       | name          | deviation | rating |
       | Optimus Prime | 350       | 1500   |
       | Bumblebee     | 350       | 1500   |
@@ -44,7 +44,7 @@ Feature: League
     * I schedule 3 games between "Han Solo" and "Darth Vader" in 4 hours
     Then I have 26 games connected in league
     * I have 14 completed and 12 scheduled games connected in league
-    * I have players in league sorted by ranking
+    * I have players connected in league sorted by ranking
 
   Scenario: Create multiple leagues to check pagination
     When I create 10 leagues

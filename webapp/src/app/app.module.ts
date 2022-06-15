@@ -34,6 +34,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateLeagueComponent } from './leagues/create-league/create-league.component';
 import { LeagueComponent } from './leagues/league.component';
+import { PlayerListComponent } from './players/player-list/player-list.component';
 
 @NgModule({
     declarations: [
@@ -46,7 +47,8 @@ import { LeagueComponent } from './leagues/league.component';
         ScheduledGamesComponent,
         PlayGameComponent,
         CreateLeagueComponent,
-        LeagueComponent
+        LeagueComponent,
+        PlayerListComponent
     ],
     imports: [
         BrowserModule,

@@ -6,7 +6,9 @@ import com.tm.rankme.e2e.mutation.CreatePlayer
 import com.tm.rankme.e2e.mutation.PlayGame
 import com.tm.rankme.e2e.mutation.ScheduleGame
 import com.tm.rankme.e2e.query.GetPlayer
+import com.tm.rankme.e2e.query.GetPlayers
 import com.tm.rankme.e2e.util.ApplicationContext
+import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -143,6 +145,22 @@ class PlayerSteps(
                         assertTrue(it.player.id == edge.node.playerOneId || it.player.id == edge.node.playerTwoId)
                     }
                 } ?: fail("Cannot get player by id $id")
+            }
+        }
+
+        Then("I have players in league:") { playersTable: DataTable ->
+            runBlocking {
+                val leagueId = context.leagueId()
+                val query = GetPlayers(leagueId)
+                graphQlClient.execute(query).data?.let {
+                    val expectedPlayers = playersTable.asMaps()
+                    expectedPlayers.forEachIndexed { index, expectedPlayer ->
+                        val player = it.players.get(index)
+                        assertEquals(expectedPlayer["name"], player.name)
+                        assertEquals(expectedPlayer["deviation"]?.toInt(), player.deviation)
+                        assertEquals(expectedPlayer["rating"]?.toInt(), player.rating)
+                    }
+                } ?: fail("Cannot get players by league id $leagueId")
             }
         }
     }
