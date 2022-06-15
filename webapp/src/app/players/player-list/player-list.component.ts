@@ -11,7 +11,7 @@ import { Player } from '../../shared/model/player';
 })
 export class PlayerListComponent implements OnInit {
   isLoading: boolean = false;
-  players: Player[];
+  players: Player[] = [];
   displayedColumns = ['username', 'deviation', 'rating'];
 
   constructor(

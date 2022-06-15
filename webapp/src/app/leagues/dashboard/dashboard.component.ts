@@ -29,10 +29,14 @@ export class DashboardComponent implements OnInit {
       this.isLoading = true;
       const leagueId = params['league_id'];
       this.leagueService.leagueWithPlayersAndGames(leagueId)
-        .subscribe(({data}) => { // TODO replace deprecated method
-          if (data.league) this.league = data.league;
-          else this.router.navigate(['/leagues']);
-        }, this.snackbarService.handleError).add(() => this.isLoading = false);
+        .subscribe({
+          next: ({data}) => {
+            if (data.league) this.league = data.league;
+            else this.router.navigate(['/leagues']);
+          },
+          error: this.snackbarService.handleError,
+          complete: () => this.isLoading = false
+        });
     });
   }
 }
