@@ -1,1 +1,30 @@
-<p>player-list works!</p>
+<ng-container [ngSwitch]="isLoading">
+  <mat-spinner *ngSwitchCase="true"></mat-spinner>
+  <mat-card *ngSwitchCase="false">
+    <mat-card-title>
+      <mat-icon>people</mat-icon>
+      Players
+    </mat-card-title>
+    <mat-card-content>
+      <table mat-table [dataSource]="players" class="width-100p">
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let player">{{player.name}}</td>
+        </ng-container>
+        <ng-container matColumnDef="deviation">
+          <th mat-header-cell *matHeaderCellDef>Deviation</th>
+          <td mat-cell *matCellDef="let player">{{player.deviation}}</td>
+        </ng-container>
+        <ng-container matColumnDef="rating">
+          <th mat-header-cell *matHeaderCellDef>Rating</th>
+          <td mat-cell *matCellDef="let player">{{player.rating}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="3">No data</td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</ng-container>
