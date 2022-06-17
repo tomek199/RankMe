@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 plugins {
     kotlin("jvm")
-    id("se.thinkcode.cucumber-runner") version "0.0.9"
+    id("se.thinkcode.cucumber-runner") version "0.0.11"
 }
 
 repositories {
@@ -12,9 +12,9 @@ repositories {
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 val kotlinVersion = project.getKotlinPluginVersion()
-val cucumberVersion = "6.11.0"
-val graphqlKotlinVersion = "5.3.2"
-val springBootVersion = "2.5.5"
+val cucumberVersion = "7.3.4"
+val graphqlKotlinVersion = "5.5.0"
+val springBootVersion = "2.7.0"
 
 dependencies {
     testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
@@ -28,7 +28,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-data-mongodb:$springBootVersion")
-    testImplementation("org.testcontainers:junit-jupiter:1.16.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.17.2")
 }
 
 tasks.test {
