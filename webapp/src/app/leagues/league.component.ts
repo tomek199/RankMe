@@ -22,7 +22,7 @@ export class LeagueComponent implements OnInit {
     });
   }
 
-  createLeague() {
+  openCreateLeagueDialog() {
     this.dialog.open(CreateLeagueComponent);
   }
 }
