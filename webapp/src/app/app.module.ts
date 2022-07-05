@@ -35,6 +35,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CreateLeagueComponent } from './leagues/create-league/create-league.component';
 import { LeagueComponent } from './leagues/league.component';
 import { PlayerListComponent } from './players/player-list/player-list.component';
+import { AddPlayerComponent } from './players/add-player/add-player.component';
 
 @NgModule({
     declarations: [
@@ -48,7 +49,8 @@ import { PlayerListComponent } from './players/player-list/player-list.component
         PlayGameComponent,
         CreateLeagueComponent,
         LeagueComponent,
-        PlayerListComponent
+        PlayerListComponent,
+        AddPlayerComponent
     ],
     imports: [
         BrowserModule,
