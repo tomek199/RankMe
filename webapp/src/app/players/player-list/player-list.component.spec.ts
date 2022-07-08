@@ -68,7 +68,6 @@ describe('PlayerListComponent', () => {
   it('should show players in table',() => {
     playerServiceSpy.players.and.returnValue(of({data: {players: LEAGUE_WITH_PLAYERS.players}}));
     component.ngOnInit();
-    // tick();
     fixture.detectChanges();
     const rows = fixture.nativeElement.querySelectorAll('table tbody tr');
     rows.forEach((row: Element, index: number) => {
