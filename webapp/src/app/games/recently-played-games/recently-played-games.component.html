@@ -34,10 +34,10 @@
     </table>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button mat-raised-button matTooltip="Previous page" [disabled]="!pageInfo?.hasPreviousPage" (click)="loadPreviousPage()">
+    <button mat-raised-button matTooltip="Previous page" [disabled]="!pageInfo.hasPreviousPage" (click)="loadPreviousPage()">
       <mat-icon>navigate_before</mat-icon>
     </button>
-    <button mat-raised-button matTooltip="Next page" [disabled]="!pageInfo?.hasNextPage" (click)="loadNextPage()">
+    <button mat-raised-button matTooltip="Next page" [disabled]="!pageInfo.hasNextPage" (click)="loadNextPage()">
       <mat-icon>navigate_next</mat-icon>
     </button>
     <button mat-raised-button color="primary" (click)="openPlayGameDialog()">

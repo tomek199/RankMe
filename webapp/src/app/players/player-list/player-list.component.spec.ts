@@ -79,7 +79,9 @@ describe('PlayerListComponent', () => {
   });
 
   it('should open "Add player" dialog', () => {
+    playerServiceSpy.players.and.returnValue(of({data: {players: []}}));
     component.ngOnInit();
+    fixture.detectChanges();
     const addPlayerButton = fixture.debugElement.query(By.css('mat-card-actions button'));
     expect(addPlayerButton.nativeElement.textContent).toContain('Add player');
     addPlayerButton.triggerEventHandler('click', null);

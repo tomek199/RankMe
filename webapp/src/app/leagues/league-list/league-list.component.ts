@@ -15,7 +15,7 @@ export class LeagueListComponent implements OnInit {
   private PAGE_SIZE = 5;
 
   isLoading: boolean = false;
-  pageInfo: PageInfo;
+  pageInfo: PageInfo | null;
   leagues: League[];
 
   constructor(
@@ -39,7 +39,7 @@ export class LeagueListComponent implements OnInit {
 
   loadPreviousPage() {
     this.isLoading = true;
-    this.leagueService.leaguesBefore(this.PAGE_SIZE, this.pageInfo.startCursor!).subscribe({
+    this.leagueService.leaguesBefore(this.PAGE_SIZE, this.pageInfo?.startCursor!).subscribe({
       next: this.updatePage,
       error: this.snackbarService.handleError,
       complete: () => this.isLoading = false
@@ -48,7 +48,7 @@ export class LeagueListComponent implements OnInit {
 
   loadNextPage() {
     this.isLoading = true;
-    this.leagueService.leaguesAfter(this.PAGE_SIZE, this.pageInfo.endCursor!).subscribe({
+    this.leagueService.leaguesAfter(this.PAGE_SIZE, this.pageInfo?.endCursor!).subscribe({
       next: this.updatePage,
       error: this.snackbarService.handleError,
       complete: () => this.isLoading = false
