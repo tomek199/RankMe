@@ -38,4 +38,16 @@ export class PlayerService {
       }
     });
   }
+
+  // TODO to be used after subscriptions test
+  playerAdded() {
+    return this.apollo.subscribe<{player: Player}>({
+      query: gql`
+        subscription {
+          playerCreated {
+            ${PLAYER_FIELDS}
+          }
+        }`
+    });
+  }
 }
