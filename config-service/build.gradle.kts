@@ -1,18 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm")
-    id("org.springframework.boot") version "2.5.5"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("plugin.spring") version "1.5.21"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    kotlin("plugin.spring")
 }
 
-repositories {
-    mavenCentral()
-}
-
-java.sourceCompatibility = JavaVersion.VERSION_11
-extra["springCloudVersion"] = "2020.0.4"
+//java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -26,13 +19,6 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
     }
 }
 
