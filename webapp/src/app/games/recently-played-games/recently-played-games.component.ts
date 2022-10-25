@@ -56,7 +56,7 @@ export class RecentlyPlayedGames {
     this.dataSource.data = result.data.completedGames.edges.map(edge => edge.node);
   }
 
-  playGame() {
+  openPlayGameDialog() {
     const dialogRef = this.dialog.open(PlayGameComponent, {data: this.leagueId});
     dialogRef.afterClosed().subscribe((event: Observable<any>) => {
       if (event) event.subscribe(() => this.gamePlayed.emit(true));

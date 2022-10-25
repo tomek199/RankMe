@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { PlayerService } from './player.service';
 import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
-import { LEAGUES_PAGE, PLAYERS } from '../../../testing/data';
+import { LEAGUES_PAGE, PLAYERS, SUBMITTED } from '../../../testing/data';
+import { CreatePlayerCommand } from './player.model';
 
 describe('PlayerService', () => {
   let service: PlayerService;
@@ -28,6 +29,17 @@ describe('PlayerService', () => {
     const operation = controller.expectOne('players');
     operation.flush({data: {players: PLAYERS}});
     expect(operation.operation.variables.leagueId).toEqual(leagueId);
+    controller.verify();
+  });
+
+  it ('should submit CreatePlayerCommand', () => {
+    const command = new CreatePlayerCommand('league-1', 'Player 1');
+    service.addPlayer(command).subscribe(({data}) => {
+      expect(data?.createPlayer).toEqual(SUBMITTED);
+    });
+    const operation = controller.expectOne('createPlayer');
+    operation.flush({data: {createPlayer: SUBMITTED}});
+    expect(operation.operation.variables.command).toEqual(command);
     controller.verify();
   });
 });

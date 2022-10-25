@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -14,9 +13,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://jitpack.io")
-    }
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -30,7 +26,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-bus-amqp")
     implementation("org.postgresql:postgresql")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
-    implementation("com.github.EventStore:EventStoreDB-Client-Java:trunk-SNAPSHOT")
+    implementation("com.eventstore:db-client-java:3.0.1")
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")

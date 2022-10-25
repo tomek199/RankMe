@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>
+  <mat-icon>person_add</mat-icon>
+  Add player
+</h1>
+<form [formGroup]="addPlayerForm" (ngSubmit)="addPlayer()">
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name">
+      <mat-error *ngIf="addPlayerForm.controls.name.invalid">Please provide player name</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button [mat-dialog-close]="null">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="addPlayerForm.invalid">
+      <mat-icon>check</mat-icon>
+      Add
+    </button>
+  </mat-dialog-actions>
+</form>
