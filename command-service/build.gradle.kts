@@ -10,8 +10,6 @@ plugins {
     kotlin("plugin.jpa")
 }
 
-//java.sourceCompatibility = JavaVersion.VERSION_11
-
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

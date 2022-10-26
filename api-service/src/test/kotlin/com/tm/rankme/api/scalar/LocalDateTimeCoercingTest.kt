@@ -4,11 +4,10 @@ import graphql.language.StringValue
 import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingParseValueException
 import graphql.schema.CoercingSerializeException
+import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
-import org.junit.jupiter.api.Test
 
 internal class LocalDateTimeCoercingTest {
     private val coercing = LocalDateTimeCoercing()
@@ -34,11 +33,13 @@ internal class LocalDateTimeCoercingTest {
     }
 
     @Test
-    internal fun `Should return null when converting null value to LocalDateTime`() {
+    internal fun `Should throw exception when converting no String value to LocalDateTime`() {
+        // given
+        val input = Int.MAX_VALUE
         // when
-        val result = coercing.parseValue(null)
+        val exception = assertFailsWith<CoercingParseValueException> { coercing.parseValue(input) }
         // then
-        assertNull(result)
+        assertEquals("Incorrect value type ${input::class} for LocalDateTime", exception.message)
     }
 
     @Test
@@ -62,11 +63,13 @@ internal class LocalDateTimeCoercingTest {
     }
 
     @Test
-    internal fun `Should return null when converting null literal to LocalDateTime`() {
+    internal fun `Should throw exception when converting no String literal to LocalDateTime`() {
+        // given
+        val input = Int.MIN_VALUE
         // when
-        val result = coercing.parseLiteral(null)
+        val exception = assertFailsWith<CoercingParseLiteralException> { coercing.parseLiteral(input) }
         // then
-        assertNull(result)
+        assertEquals("Incorrect literal type ${input::class} for LocalDateTime", exception.message)
     }
 
     @Test
@@ -90,11 +93,13 @@ internal class LocalDateTimeCoercingTest {
     }
 
     @Test
-    internal fun `Should serialize null value`() {
+    internal fun `Should throw exception when serialize type is incorrect`() {
+        // given
+        val input = Int.MAX_VALUE
         // when
-        val result = coercing.serialize(null)
+        val exception = assertFailsWith<CoercingSerializeException> { coercing.serialize(input) }
         // then
-        assertNull(result)
+        assertEquals("Incorrect type to serialize ${input::class}", exception.message)
     }
 
     @Test
