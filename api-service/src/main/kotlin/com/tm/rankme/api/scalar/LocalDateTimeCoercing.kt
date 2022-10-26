@@ -8,9 +8,9 @@ import graphql.schema.CoercingSerializeException
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
 
-class LocalDateTimeCoercing : Coercing<LocalDateTime?, String?> {
-    override fun parseValue(input: Any?): LocalDateTime? {
-        if (input !is String) return null
+class LocalDateTimeCoercing : Coercing<LocalDateTime, String?> {
+    override fun parseValue(input: Any): LocalDateTime {
+        if (input !is String) throw CoercingParseValueException("Incorrect value type ${input::class} for LocalDateTime")
         try {
             return LocalDateTime.parse(input)
         } catch (e: DateTimeParseException) {
@@ -18,8 +18,8 @@ class LocalDateTimeCoercing : Coercing<LocalDateTime?, String?> {
         }
     }
 
-    override fun parseLiteral(input: Any?): LocalDateTime? {
-        if (input !is StringValue) return null
+    override fun parseLiteral(input: Any): LocalDateTime {
+        if (input !is StringValue) throw CoercingParseLiteralException("Incorrect literal type ${input::class} for LocalDateTime")
         try {
             return LocalDateTime.parse(input.value)
         } catch (e: DateTimeParseException) {
@@ -27,16 +27,16 @@ class LocalDateTimeCoercing : Coercing<LocalDateTime?, String?> {
         }
     }
 
-    override fun serialize(dataFetcherResult: Any?): String? {
-        when (dataFetcherResult) {
-            is LocalDateTime -> return dataFetcherResult.toString()
+    override fun serialize(dataFetcherResult: Any): String {
+        return when (dataFetcherResult) {
+            is LocalDateTime -> dataFetcherResult.toString()
             is String ->
                 try {
-                    return LocalDateTime.parse(dataFetcherResult).toString()
+                    LocalDateTime.parse(dataFetcherResult).toString()
                 } catch (e: DateTimeParseException) {
                     throw CoercingSerializeException("Could not serialize object $dataFetcherResult")
                 }
+            else -> throw CoercingSerializeException("Incorrect type to serialize ${dataFetcherResult::class}")
         }
-        return null
     }
 }

@@ -5,12 +5,6 @@ plugins {
     id("se.thinkcode.cucumber-runner") version "0.0.11"
 }
 
-repositories {
-    mavenCentral()
-}
-
-java.sourceCompatibility = JavaVersion.VERSION_11
-
 val kotlinVersion = project.getKotlinPluginVersion()
 val cucumberVersion = "7.3.4"
 val graphqlKotlinVersion = "5.5.0"
