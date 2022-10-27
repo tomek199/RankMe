@@ -80,7 +80,7 @@ services:
       WAIT_DISCOVERY_SERVICE: discovery-service:9030
 
   subscription-service:
-    build: api-service
+    build: subscription-service
     ports:
       - "9070:9070"
     environment:
