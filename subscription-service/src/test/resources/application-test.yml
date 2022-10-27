@@ -1,0 +1,9 @@
+server:
+  port: 0
+spring:
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false

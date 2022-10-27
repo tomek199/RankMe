@@ -79,3 +79,12 @@ services:
       WAIT_MONGODB: mongodb:27017
       WAIT_DISCOVERY_SERVICE: discovery-service:9030
 
+  subscription-service:
+    build: subscription-service
+    ports:
+      - "9070:9070"
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:9010/
+      WAIT_CONFIG_SERVICE: config-service:9010
+      WAIT_RABBITMQ: rabbitmq:15672
+      WAIT_DISCOVERY_SERVICE: discovery-service:9030

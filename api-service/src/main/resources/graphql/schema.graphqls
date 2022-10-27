@@ -1,7 +1,6 @@
 schema {
     mutation: Mutation
     query: Query
-    subscription: Subscription
 }
 
 type Mutation {
@@ -26,10 +25,6 @@ type Query {
     playerGames(query: GetGamesForPlayerQuery!): GameConnection @connection(for: "Game")
     playerCompletedGames(query: GetCompletedGamesForPlayerQuery!): CompletedGameConnection @connection(for: "CompletedGame")
     playerScheduledGames(query: GetScheduledGamesForPlayerQuery!): ScheduledGameConnection @connection(for: "ScheduledGame")
-}
-
-type Subscription {
-    playerCreated: PlayerCreated
 }
 
 scalar LocalDateTime

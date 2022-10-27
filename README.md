@@ -16,6 +16,7 @@ Backend services might be divided into two types:
 - **api-service** - service that contains GraphQL API and orchestrate CQRS commands and queries.
 - **command-service** - service for handling CQRS commands.
 - **query-service** - service for handling CQRS queries.
+- **subscription-service** - service emit CQRS read-model changes events
 
 ### Diagram
 ![Architecture diagram](architecture-diagram.png)
@@ -40,7 +41,8 @@ Services:
 - http://localhost:9030 - Eureka Discovery Service
 - http://localhost:9040/graphiql - GraphQL API
 - http://localhost:9050 - Command service
-- http://localhost:9060 - QueryService
+- http://localhost:9060 - Query service
+- http://localhost:9070 - Subscription service
 ___
 All services might be also run separately without Docker as standard Spring Boot Application. They require running *RabbitMQ*, *MongoDB* and *PostgreSQL/Event Store* instances.
 ### Frontend
