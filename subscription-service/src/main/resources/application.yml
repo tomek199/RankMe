@@ -6,8 +6,7 @@ spring:
   config:
     import: optional:configserver:http://localhost:9010
   rabbitmq:
-#    host: localhost
-    host: raspberry
+    host: localhost
     port: 5672
     username: guest
     password: guest
@@ -29,8 +28,7 @@ spring:
 eureka:
   client:
     service-url:
-#      defaultZone: http://localhost:9030/eureka
-      defaultZone: http://raspberry:9030/eureka
+      defaultZone: http://localhost:9030/eureka
 graphql:
   servlet:
     mapping: /graphql
