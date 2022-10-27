@@ -3,6 +3,7 @@ rootProject.name = "RankMe"
 include("config-service")
 include("discovery-service")
 include("api-service")
+include("subscription-service")
 include("command-service")
 include("query-service")
 include("gateway-service")

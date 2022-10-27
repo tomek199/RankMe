@@ -1,0 +1,19 @@
+schema {
+    query: Info
+    subscription: Subscription
+}
+
+type Info {
+    version: String!
+}
+
+type Subscription {
+    playerCreated: PlayerCreated
+}
+
+type PlayerCreated {
+    id: String!
+    name: String!
+    deviation: Int!
+    rating: Int!
+}
