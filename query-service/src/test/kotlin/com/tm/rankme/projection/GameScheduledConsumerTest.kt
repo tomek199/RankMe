@@ -1,6 +1,7 @@
 package com.tm.rankme.projection
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import com.tm.rankme.model.ModelChangeNotifier
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.PlayerInfo
@@ -15,8 +16,9 @@ import kotlin.test.assertNull
 
 internal class GameScheduledConsumerTest {
     private val repository: GameRepository = mockk()
+    private val notifier: ModelChangeNotifier = mockk()
     private val playerPort: PlayerPort = mockk()
-    private val consumer: Consumer<GameScheduledMessage> = GameScheduledConsumer(repository, playerPort)
+    private val consumer: Consumer<GameScheduledMessage> = GameScheduledConsumer(repository, notifier, playerPort)
 
     @Test
     internal fun `Should consume 'game-scheduled' message`() {
@@ -32,16 +34,20 @@ internal class GameScheduledConsumerTest {
         every { playerPort.playerInfo(message.firstId) } returns firstPlayerInfo
         every { playerPort.playerInfo(message.secondId) } returns secondPlayerInfo
         every { repository.store(ofType(Game::class)) } just Runs
+        every { notifier.notify("game-scheduled", ofType(Game::class)) } just Runs
         // when
         consumer.accept(message)
         // then
-        val gameSlot = slot<Game>()
+        val createdGameSlot = slot<Game>()
+        val notificationGameSlot = slot<Game>()
         verifySequence {
             playerPort.playerInfo(message.firstId)
             playerPort.playerInfo(message.secondId)
-            repository.store(capture(gameSlot))
+            repository.store(capture(createdGameSlot))
+            notifier.notify("game-scheduled", capture(notificationGameSlot))
         }
-        gameSlot.captured.let {
+        assertEquals(createdGameSlot.captured, notificationGameSlot.captured)
+        createdGameSlot.captured.let {
             assertEquals(message.aggregateId, it.id)
             assertEquals(message.leagueId, it.leagueId)
             assertEquals(dateTime, it.dateTime)

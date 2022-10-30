@@ -1,6 +1,7 @@
 package com.tm.rankme.projection
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import com.tm.rankme.model.ModelChangeNotifier
 import com.tm.rankme.model.league.League
 import com.tm.rankme.model.league.LeagueRepository
 import io.mockk.*
@@ -10,7 +11,8 @@ import kotlin.test.assertEquals
 
 internal class LeagueRenamedConsumerTest {
     private val repository: LeagueRepository = mockk()
-    private val consumer: Consumer<LeagueRenamedMessage> = LeagueRenamedConsumer(repository)
+    private val notifier: ModelChangeNotifier = mockk()
+    private val consumer: Consumer<LeagueRenamedMessage> = LeagueRenamedConsumer(repository, notifier)
 
     @Test
     internal fun `Should consume 'league-renamed' message and update league`() {
@@ -19,19 +21,23 @@ internal class LeagueRenamedConsumerTest {
         val league = League(aggregateId, "Start Wars", false, 7)
         every { repository.byId(aggregateId) } returns league
         every { repository.store(ofType(League::class)) } just Runs
+        every { notifier.notify("league-renamed", ofType(League::class)) } just Runs
         val message = LeagueRenamedMessage(aggregateId, "Transformers")
         // when
         consumer.accept(message)
         // then
-        val leagueSlot = slot<League>()
+        val updatedLeagueSlot = slot<League>()
+        val notificationLeagueSlot = slot<League>()
         verifySequence {
             repository.byId(aggregateId)
-            repository.store(capture(leagueSlot))
+            repository.store(capture(updatedLeagueSlot))
+            notifier.notify("league-renamed", capture(notificationLeagueSlot))
         }
-        assertEquals(league.id, leagueSlot.captured.id)
-        assertEquals(message.name, leagueSlot.captured.name)
-        assertEquals(league.allowDraws, leagueSlot.captured.allowDraws)
-        assertEquals(league.maxScore, leagueSlot.captured.maxScore)
+        assertEquals(updatedLeagueSlot.captured, notificationLeagueSlot.captured)
+        assertEquals(league.id, updatedLeagueSlot.captured.id)
+        assertEquals(message.name, updatedLeagueSlot.captured.name)
+        assertEquals(league.allowDraws, updatedLeagueSlot.captured.allowDraws)
+        assertEquals(league.maxScore, updatedLeagueSlot.captured.maxScore)
     }
 
     @Test
@@ -45,5 +51,6 @@ internal class LeagueRenamedConsumerTest {
         // then
         verify(exactly = 1) { repository.byId(aggregateId) }
         verify(exactly = 0) { repository.store(ofType(League::class)) }
+        verify(exactly = 0) { notifier.notify(any(), ofType(League::class)) }
     }
 }

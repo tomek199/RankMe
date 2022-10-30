@@ -1,5 +1,6 @@
 package com.tm.rankme.projection
 
+import com.tm.rankme.model.ModelChangeNotifier
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.PlayerPort
@@ -12,6 +13,7 @@ import java.util.function.Consumer
 @Service("gameScheduledConsumer")
 class GameScheduledConsumer(
     private val repository: GameRepository,
+    private val notifier: ModelChangeNotifier,
     private val playerPort: PlayerPort
 ) : Consumer<GameScheduledMessage> {
 
@@ -21,11 +23,13 @@ class GameScheduledConsumer(
         log.info("Consuming message game-scheduled for aggregate ${message.aggregateId}")
         val firstPlayerInfo = playerPort.playerInfo(message.firstId)
         val secondPlayerInfo = playerPort.playerInfo(message.secondId)
-        val game = Game(message.aggregateId, message.leagueId, LocalDateTime.ofEpochSecond(message.dateTime, 0, ZoneOffset.UTC),
+        Game(message.aggregateId, message.leagueId, LocalDateTime.ofEpochSecond(message.dateTime, 0, ZoneOffset.UTC),
             message.firstId, firstPlayerInfo.name, firstPlayerInfo.rating, firstPlayerInfo.deviation,
             message.secondId, secondPlayerInfo.name, secondPlayerInfo.rating, secondPlayerInfo.deviation
-        )
-        repository.store(game)
+        ).let {
+            repository.store(it)
+            notifier.notify("game-scheduled", it)
+        }
     }
 }
 
