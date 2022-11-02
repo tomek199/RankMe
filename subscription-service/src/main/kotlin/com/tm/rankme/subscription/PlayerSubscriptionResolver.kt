@@ -10,7 +10,7 @@ class PlayerSubscriptionResolver(
     private val playerCreatedSink: Sinks.Many<PlayerCreated>
 ) : GraphQLSubscriptionResolver {
 
-    fun playerCreated(): Publisher<PlayerCreated> {
-        return playerCreatedSink.asFlux()
+    fun playerCreated(leagueId: String): Publisher<PlayerCreated> {
+        return playerCreatedSink.asFlux().filter { it.leagueId == leagueId }
     }
 }

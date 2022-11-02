@@ -28,13 +28,14 @@ internal class PlayerSubscriptionConfigTest {
         // given
         val sinkMock = mockk<Sinks.Many<PlayerCreated>>(relaxed = true)
         val outboundSlot = slot<PlayerCreated>()
-        val inboundMessage = PlayerCreatedMessage(randomNanoId(), "Optimus Prime", 3500, 1500)
+        val inboundMessage = PlayerCreatedMessage(randomNanoId(), randomNanoId(), "Optimus Prime", 3500, 1500)
         // when
         subscriptionConfig.playerCreatedFlux(sinkMock).accept(Flux.just(inboundMessage))
         // then
         verify(exactly = 1) { sinkMock.emitNext(capture(outboundSlot), FAIL_FAST) }
         outboundSlot.captured.let {
             assertEquals(inboundMessage.id, it.id)
+            assertEquals(inboundMessage.leagueId, it.leagueId)
             assertEquals(inboundMessage.name, it.name)
             assertEquals(inboundMessage.deviation, it.deviation)
             assertEquals(inboundMessage.rating, it.rating)
