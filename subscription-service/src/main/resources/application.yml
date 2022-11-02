@@ -17,10 +17,10 @@ spring:
       bindings:
         playerCreatedFlux-in-0:
           destination: RankMe
-          group: api-player-created
+          group: subscriber-player-created
       rabbit:
         bindings:
-          playerCreatedFlux-in-0.consumer.bindingRoutingKey: player-created
+          playerCreatedFlux-in-0.consumer.bindingRoutingKey: query-player-created
         default:
           consumer:
             anonymousGroupPrefix: ${spring.application.name}-${server.port}.
