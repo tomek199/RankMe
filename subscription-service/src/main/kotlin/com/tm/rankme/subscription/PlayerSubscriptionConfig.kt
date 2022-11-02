@@ -22,13 +22,12 @@ class PlayerSubscriptionConfig {
         Consumer { inboundMessage: Flux<PlayerCreatedMessage> ->
             inboundMessage.subscribe {
                 log.info("Consumed message $it")
-                playerCreatedSink.emitNext(PlayerCreated(it.aggregateId, it.name, it.deviation, it.rating), FAIL_FAST)
+                playerCreatedSink.emitNext(PlayerCreated(it.id, it.name, it.deviation, it.rating), FAIL_FAST)
             }
         }
 
     data class PlayerCreatedMessage(
-        val aggregateId: String,
-        val leagueId: String,
+        val id: String,
         val name: String,
         val deviation: Int,
         val rating: Int

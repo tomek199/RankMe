@@ -1,6 +1,7 @@
 package com.tm.rankme.projection
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils.randomNanoId
+import com.tm.rankme.model.ModelChangeNotifier
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.PlayerPort
@@ -14,8 +15,9 @@ import kotlin.test.assertEquals
 
 internal class GamePlayedConsumerTest {
     private val repository: GameRepository = mockk()
+    private val notifier: ModelChangeNotifier = mockk()
     private val playerPort: PlayerPort = mockk()
-    private val consumer: Consumer<GamePlayedMessage> = GamePlayedConsumer(repository, playerPort)
+    private val consumer: Consumer<GamePlayedMessage> = GamePlayedConsumer(repository, notifier, playerPort)
 
     @Test
     internal fun `Should consume 'player-played-game' message for new game`() {
@@ -33,17 +35,21 @@ internal class GamePlayedConsumerTest {
         every { playerPort.playerName(message.firstId) } returns firstPlayerName
         every { playerPort.playerName(message.secondId) } returns secondPlayerName
         every { repository.store(ofType(Game::class)) } just Runs
+        every { notifier.notify("game-played", ofType(Game::class)) } just Runs
         // when
         consumer.accept(message)
         // then
-        val gameSlot = slot<Game>()
+        val createdGameSlot = slot<Game>()
+        val notificationGameSlot = slot<Game>()
         verifySequence {
             repository.byId(message.aggregateId)
             playerPort.playerName(message.firstId)
             playerPort.playerName(message.secondId)
-            repository.store(capture(gameSlot))
+            repository.store(capture(createdGameSlot))
+            notifier.notify("game-played", capture(notificationGameSlot))
         }
-        gameSlot.captured.let {
+        assertEquals(createdGameSlot.captured, notificationGameSlot.captured)
+        createdGameSlot.captured.let {
             assertEquals(message.aggregateId, it.id)
             assertEquals(message.leagueId, it.leagueId)
             assertEquals(dateTime, it.dateTime)
@@ -81,15 +87,19 @@ internal class GamePlayedConsumerTest {
         )
         every { repository.byId(message.aggregateId) } returns game
         every { repository.store(ofType(Game::class)) } just Runs
+        every { notifier.notify("game-played", ofType(Game::class)) } just Runs
         // when
         consumer.accept(message)
         // then
-        val gameSlot = slot<Game>()
+        val updatedGameSlot = slot<Game>()
+        val notificationGameSlot = slot<Game>()
         verifySequence {
             repository.byId(message.aggregateId)
-            repository.store(capture(gameSlot))
+            repository.store(capture(updatedGameSlot))
+            notifier.notify("game-played", capture(notificationGameSlot))
         }
-        gameSlot.captured.let {
+        assertEquals(updatedGameSlot.captured, notificationGameSlot.captured)
+        updatedGameSlot.captured.let {
             assertEquals(message.aggregateId, it.id)
             assertEquals(message.leagueId, it.leagueId)
             assertEquals(message.dateTime, it.dateTime.toEpochSecond(ZoneOffset.UTC))

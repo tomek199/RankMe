@@ -1,5 +1,6 @@
 package com.tm.rankme.projection
 
+import com.tm.rankme.model.ModelChangeNotifier
 import com.tm.rankme.model.game.Game
 import com.tm.rankme.model.game.GameRepository
 import com.tm.rankme.model.game.PlayerPort
@@ -13,6 +14,7 @@ import java.util.function.Consumer
 @Service("gamePlayedConsumer")
 class GamePlayedConsumer(
     private val repository: GameRepository,
+    private val notifier: ModelChangeNotifier,
     private val playerPort: PlayerPort
 ) : Consumer<GamePlayedMessage> {
 
@@ -32,6 +34,7 @@ class GamePlayedConsumer(
         game.playerTwoRating = message.secondRating
         game.result = result(message)
         repository.store(game)
+        notifier.notify("game-played", game)
     }
 
     private fun create(message: GamePlayedMessage) {
@@ -43,6 +46,7 @@ class GamePlayedConsumer(
             result(message)
         )
         repository.store(game)
+        notifier.notify("game-played", game)
     }
 
     private fun result(message: GamePlayedMessage) = Result(

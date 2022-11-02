@@ -38,6 +38,8 @@ spring:
         gamePlayedConsumer-in-0:
           destination: RankMe
           group: game-played-consumer-group
+        notifications-out-0:
+          destination: RankMe
       rabbit:
         bindings:
           leagueCreatedConsumer-in-0.consumer.bindingRoutingKey: league-created
@@ -47,6 +49,7 @@ spring:
           playerPlayedGameConsumer-in-0.consumer.bindingRoutingKey: player-played-game
           gameScheduledConsumer-in-0.consumer.bindingRoutingKey: game-scheduled
           gamePlayedConsumer-in-0.consumer.bindingRoutingKey: game-played
+          notifications-out-0.producer.routingKeyExpression: headers['type']
         default:
           consumer:
             anonymousGroupPrefix: ${spring.application.name}-${server.port}.
