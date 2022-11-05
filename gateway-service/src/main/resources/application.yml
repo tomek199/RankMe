@@ -35,6 +35,10 @@ spring:
             - Method=GET,POST,OPTIONS
           filters:
             - RewritePath=/api, /graphql
+        - id: subscription-service
+          uri: lb://SUBSCRIPTION-SERVICE
+          predicates:
+            - Path=/subscriptions/**
     stream:
       rabbit:
         default:

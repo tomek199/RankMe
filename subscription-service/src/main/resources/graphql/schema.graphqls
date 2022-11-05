@@ -8,7 +8,7 @@ type Info {
 }
 
 type Subscription {
-    playerCreated: PlayerCreated
+    playerCreated(leagueId: String!): PlayerCreated
 }
 
 type PlayerCreated {

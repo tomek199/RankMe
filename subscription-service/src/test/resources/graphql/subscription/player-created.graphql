@@ -1,5 +1,5 @@
 subscription {
-    playerCreated {
+    playerCreated(leagueId: "XB3x5Vk5l4s5eD8D9Dhbh") {
         id
         name
         deviation
