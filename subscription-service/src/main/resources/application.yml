@@ -12,14 +12,14 @@ spring:
     password: guest
   cloud:
     function:
-      definition: playerCreatedFlux
+      definition: playerCreatedConsumer
     stream:
       bindings:
-        playerCreatedFlux-in-0:
+        playerCreatedConsumer-in-0:
           destination: RankMe
       rabbit:
         bindings:
-          playerCreatedFlux-in-0:
+          playerCreatedConsumer-in-0:
             consumer:
               bindingRoutingKey: query-player-created
               anonymousGroupPrefix: player-created-subscriber-

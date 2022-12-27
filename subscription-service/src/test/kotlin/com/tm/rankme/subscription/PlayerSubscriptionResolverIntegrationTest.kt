@@ -18,7 +18,7 @@ internal class PlayerSubscriptionResolverIntegrationTest {
     fun `Should consume message from player-created subscription`() {
         // given
         val context = SpringApplicationBuilder(*getCompleteConfiguration(SubscriptionService::class.java))
-            .run("--spring.cloud.function.definition=playerCreatedFlux", "--spring.profiles.active=test")
+            .run("--spring.cloud.function.definition=playerCreatedConsumer", "--spring.profiles.active=test")
         val leagueId = "XB3x5Vk5l4s5eD8D9Dhbh"
         val inboundEvent = PlayerCreatedMessage(randomNanoId(), leagueId, "Optimus Prime", 350, 1500)
         val inboundMessage = MessageBuilder.createMessage(inboundEvent, MessageHeaders(emptyMap()))
