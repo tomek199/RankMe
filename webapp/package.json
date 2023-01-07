@@ -1,6 +1,6 @@
 {
   "name": "webapp",
-  "version": "0.81-SNAPSHOT",
+  "version": "0.82-SNAPSHOT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -24,6 +24,7 @@
     "apollo-angular": "^4.1.0",
     "graphql": "^16.6.0",
     "rxjs": "~7.5.7",
+    "subscriptions-transport-ws": "^0.11.0",
     "tslib": "^2.4.0",
     "zone.js": "~0.11.8"
   },

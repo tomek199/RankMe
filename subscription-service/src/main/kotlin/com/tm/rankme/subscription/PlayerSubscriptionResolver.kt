@@ -3,14 +3,14 @@ package com.tm.rankme.subscription
 import graphql.kickstart.tools.GraphQLSubscriptionResolver
 import org.reactivestreams.Publisher
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Sinks
+import reactor.core.publisher.Flux
 
 @Service
 class PlayerSubscriptionResolver(
-    private val playerCreatedSink: Sinks.Many<PlayerCreated>
+    private val playerCreatedFlux: Flux<PlayerCreated>
 ) : GraphQLSubscriptionResolver {
 
     fun playerCreated(leagueId: String): Publisher<PlayerCreated> {
-        return playerCreatedSink.asFlux().filter { it.leagueId == leagueId }
+        return playerCreatedFlux.filter { it.leagueId == leagueId }
     }
 }

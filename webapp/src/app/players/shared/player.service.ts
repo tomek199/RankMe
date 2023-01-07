@@ -39,15 +39,18 @@ export class PlayerService {
     });
   }
 
-  // TODO to be used after subscriptions test
-  playerAdded() {
-    return this.apollo.subscribe<{player: Player}>({
+  playerCreated(leagueId: string) {
+    return this.apollo.subscribe<{playerCreated: Player}>({
       query: gql`
-        subscription {
-          playerCreated {
+        subscription playerCreated($leagueId: String!) {
+          playerCreated(leagueId: $leagueId) {
             ${PLAYER_FIELDS}
           }
-        }`
+        }
+      `,
+      variables: {
+        leagueId: leagueId
+      }
     });
   }
 }

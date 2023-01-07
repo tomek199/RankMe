@@ -42,4 +42,15 @@ describe('PlayerService', () => {
     expect(operation.operation.variables.command).toEqual(command);
     controller.verify();
   });
+
+  it ('should subscribe PlayerCreated', () => {
+    const leagueId = 'league-1';
+    service.playerCreated(leagueId).subscribe(({data}) => {
+      expect(data?.playerCreated).toEqual(PLAYERS[0]);
+    });
+    const operation = controller.expectOne('playerCreated');
+    operation.flush({data: {playerCreated: PLAYERS[0]}});
+    expect(operation.operation.variables.leagueId).toEqual(leagueId);
+    controller.verify();
+  });
 });
