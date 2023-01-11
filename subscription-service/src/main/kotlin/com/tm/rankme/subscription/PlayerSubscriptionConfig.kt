@@ -14,16 +14,13 @@ class PlayerSubscriptionConfig {
     @Bean
     fun playerCreatedConsumer(playerCreatedSink: Sinks.Many<PlayerCreated>): Consumer<PlayerCreatedMessage> =
         Consumer { inboundMessage: PlayerCreatedMessage ->
-            inboundMessage.let {
-                log.info("Consumed message $it")
-                playerCreatedSink.tryEmitNext(PlayerCreated(it.id, it.leagueId, it.name, it.deviation, it.rating))
-            }
+            inboundMessage
+                .also { log.info("Consumed message $it") }
+                .let { playerCreatedSink.tryEmitNext(PlayerCreated(it.id, it.leagueId, it.name, it.deviation, it.rating)) }
         }
 
     @Bean
-    fun playerCreatedSink(): Sinks.Many<PlayerCreated> {
-        return Sinks.many().multicast().onBackpressureBuffer()
-    }
+    fun playerCreatedSink(): Sinks.Many<PlayerCreated> = Sinks.many().multicast().onBackpressureBuffer()
 
     @Bean
     fun playerCreatedFlux(playerCreatedSink: Sinks.Many<PlayerCreated>): Flux<PlayerCreated> = playerCreatedSink.asFlux()

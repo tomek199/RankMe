@@ -7,3 +7,10 @@ data class PlayerCreated(
     val deviation: Int,
     val rating: Int
 )
+
+data class LeagueCreated(
+    val id: String,
+    var name: String,
+    var allowDraws: Boolean,
+    var maxScore: Int
+)
