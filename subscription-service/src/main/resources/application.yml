@@ -12,10 +12,12 @@ spring:
     password: guest
   cloud:
     function:
-      definition: playerCreatedConsumer
+      definition: playerCreatedConsumer;leagueCreatedConsumer
     stream:
       bindings:
         playerCreatedConsumer-in-0:
+          destination: RankMe
+        leagueCreatedConsumer-in-0:
           destination: RankMe
       rabbit:
         bindings:
@@ -23,6 +25,10 @@ spring:
             consumer:
               bindingRoutingKey: query-player-created
               anonymousGroupPrefix: player-created-subscriber-
+          leagueCreatedConsumer-in-0:
+            consumer:
+              bindingRoutingKey: query-league-created
+              anonymousGroupPrefix: league-created-subscriber-
         default:
           consumer:
             anonymousGroupPrefix: ${spring.application.name}-${server.port}.
