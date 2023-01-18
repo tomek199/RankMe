@@ -131,4 +131,19 @@ export class LeagueService {
       }
     });
   }
+
+  leagueCreated(name: string) {
+    return this.apollo.subscribe<{leagueCreated: League}>({
+      query: gql`
+        subscription leagueCreated($name: String!) {
+          leagueCreated(name: $name) {
+            id name
+          }
+        }
+      `,
+      variables: {
+        name: name
+      }
+    });
+  }
 }

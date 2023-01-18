@@ -113,13 +113,17 @@ export const PLAYERS = [
   {id: 'player-3', name: 'Player-3', deviation: 317, rating: 1863}
 ] as Player[];
 
+export const LEAGUE = {
+  id: 'league-1', name: 'League-1', allowDraws: true, maxScore: 5
+} as League;
+
 export const LEAGUE_WITH_PLAYERS = {
-  id: 'league-1', name: "League-1", allowDraws: false, maxScore: 3,
+  id: 'league-1', name: 'League-1', allowDraws: false, maxScore: 3,
   players: PLAYERS
 } as League;
 
 export const LEAGUE_WITH_PLAYERS_AND_GAMES = {
-  id: 'league-1', name: "League-1",
+  id: 'league-1', name: 'League-1',
   players: PLAYERS,
   completedGames: COMPLETED_GAMES_PAGE,
   scheduledGames: SCHEDULED_GAMES_PAGE
