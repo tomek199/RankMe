@@ -16,11 +16,13 @@ import { LEAGUES_PAGE } from '../../../testing/data';
 import { MatIconModule } from '@angular/material/icon';
 import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { SnackbarServiceStub } from '../../../testing/stubs';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('LeagueListComponent', () => {
   let component: LeagueListComponent;
   let fixture: ComponentFixture<LeagueListComponent>;
   let leagueServiceSpy = jasmine.createSpyObj('LeagueService', ['leagues', 'leaguesAfter', 'leaguesBefore']);
+  let matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,7 +30,8 @@ describe('LeagueListComponent', () => {
       imports: [ RouterTestingModule, MatCardModule, MatListModule, MatProgressBarModule, MatButtonModule, MatIconModule ],
       providers: [
         { provide: LeagueService, useValue: leagueServiceSpy },
-        { provide: SnackbarService, useClass: SnackbarServiceStub }
+        { provide: SnackbarService, useClass: SnackbarServiceStub },
+        { provide: MatDialog, useValue: matDialogSpy }
       ]
     })
     .compileComponents();
@@ -123,4 +126,11 @@ describe('LeagueListComponent', () => {
     listOptions[1].triggerEventHandler('click', null)
     expect(router.navigate).toHaveBeenCalledOnceWith(['/leagues', LEAGUES_PAGE.edges[1].node.id])
   }));
+
+  it('should open "Create league" dialog', () => {
+    const createLeagueButton = fixture.debugElement.query(By.css('button.mat-raised-button'));
+    expect(createLeagueButton.nativeElement.textContent).toContain('Create league');
+    createLeagueButton.triggerEventHandler('click', null);
+    expect(matDialogSpy.open).toHaveBeenCalledTimes(1);
+  });
 });

@@ -5,6 +5,8 @@ import { Page, PageInfo } from '../../shared/model/page';
 import { Router } from '@angular/router';
 import { SnackbarService } from '../../shared/snackbar/snackbar.service';
 import { ApolloQueryResult } from '@apollo/client';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateLeagueComponent } from '../create-league/create-league.component';
 
 @Component({
   selector: 'app-league-list',
@@ -21,7 +23,8 @@ export class LeagueListComponent implements OnInit {
   constructor(
     private leagueService: LeagueService,
     private router: Router,
-    private snackbarService: SnackbarService
+    private snackbarService: SnackbarService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -62,5 +65,9 @@ export class LeagueListComponent implements OnInit {
 
   select(id: string) {
     this.router.navigate(['/leagues', id])
+  }
+
+  openCreateLeagueDialog() {
+    this.dialog.open(CreateLeagueComponent);
   }
 }
