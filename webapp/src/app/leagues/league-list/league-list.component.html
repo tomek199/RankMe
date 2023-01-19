@@ -15,6 +15,10 @@
       <button mat-icon-button matTooltip="Next page" [disabled]="!pageInfo?.hasNextPage" (click)="loadNextPage()">
         <mat-icon>navigate_next</mat-icon>
       </button>
+      <button mat-raised-button color="primary" (click)="openCreateLeagueDialog()">
+        <mat-icon>playlist_add</mat-icon>
+        Create league
+      </button>
     </mat-card-actions>
     <mat-card-footer *ngIf="isLoading">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>

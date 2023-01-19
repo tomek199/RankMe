@@ -51,7 +51,7 @@ export class PlayerListComponent implements OnInit, OnDestroy {
       });
   }
 
-  subscribePlayerCreated() {
+  private subscribePlayerCreated() {
     this.playerCreatedSubscription = this.playerService.playerCreated(this.leagueId)
       .subscribe({
         next: ({data}) => {

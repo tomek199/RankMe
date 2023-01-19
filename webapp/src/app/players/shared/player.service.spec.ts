@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { PlayerService } from './player.service';
 import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
-import { LEAGUES_PAGE, PLAYERS, SUBMITTED } from '../../../testing/data';
+import { PLAYERS, SUBMITTED } from '../../../testing/data';
 import { CreatePlayerCommand } from './player.model';
 
 describe('PlayerService', () => {

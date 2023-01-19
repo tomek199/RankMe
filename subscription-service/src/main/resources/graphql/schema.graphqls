@@ -9,6 +9,7 @@ type Info {
 
 type Subscription {
     playerCreated(leagueId: String!): PlayerCreated
+    leagueCreated(name: String!): LeagueCreated
 }
 
 type PlayerCreated {
@@ -16,4 +17,11 @@ type PlayerCreated {
     name: String!
     deviation: Int!
     rating: Int!
+}
+
+type LeagueCreated {
+    id: String!
+    name: String!
+    allowDraws: Boolean!
+    maxScore: Int!
 }

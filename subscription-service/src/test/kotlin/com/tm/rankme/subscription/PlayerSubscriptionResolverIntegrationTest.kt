@@ -19,8 +19,7 @@ internal class PlayerSubscriptionResolverIntegrationTest {
         // given
         val context = SpringApplicationBuilder(*getCompleteConfiguration(SubscriptionService::class.java))
             .run("--spring.cloud.function.definition=playerCreatedConsumer", "--spring.profiles.active=test")
-        val leagueId = "XB3x5Vk5l4s5eD8D9Dhbh"
-        val inboundEvent = PlayerCreatedMessage(randomNanoId(), leagueId, "Optimus Prime", 350, 1500)
+        val inboundEvent = PlayerCreatedMessage(randomNanoId(), "XB3x5Vk5l4s5eD8D9Dhbh", "Optimus Prime", 350, 1500)
         val inboundMessage = MessageBuilder.createMessage(inboundEvent, MessageHeaders(emptyMap()))
         context.getBean(InputDestination::class.java).send(inboundMessage)
         val subscription = context.getBean(GraphQLTestSubscription::class.java)

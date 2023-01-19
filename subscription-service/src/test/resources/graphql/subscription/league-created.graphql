@@ -1,0 +1,8 @@
+subscription {
+    leagueCreated(name: "Transformers") {
+        id
+        name
+        allowDraws
+        maxScore
+    }
+}

@@ -1,7 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
 import { LeagueService } from './league.service';
-import { LEAGUE_WITH_PLAYERS, LEAGUE_WITH_PLAYERS_AND_GAMES, LEAGUES_PAGE, SUBMITTED } from '../../../testing/data';
+import {
+  LEAGUE,
+  LEAGUE_WITH_PLAYERS,
+  LEAGUE_WITH_PLAYERS_AND_GAMES,
+  LEAGUES_PAGE,
+  SUBMITTED
+} from '../../../testing/data';
 import { ApolloTestingController, ApolloTestingModule } from 'apollo-angular/testing';
 import { CreateLeagueCommand } from './league.model';
 
@@ -106,6 +112,17 @@ describe('LeagueService', () => {
     const operation = controller.expectOne('createLeague');
     operation.flush({data: {createLeague: SUBMITTED}});
     expect(operation.operation.variables.command).toEqual(command);
+    controller.verify();
+  });
+
+  it('should subscribe LeagueCreated', () => {
+    const leagueName = 'League 1';
+    service.leagueCreated(leagueName).subscribe(({data}) => {
+      expect(data?.leagueCreated).toEqual(LEAGUE);
+    });
+    const operation = controller.expectOne('leagueCreated');
+    operation.flush({data: {leagueCreated: LEAGUE}});
+    expect(operation.operation.variables.name).toEqual(leagueName);
     controller.verify();
   });
 });
