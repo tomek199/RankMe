@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   api: {
     http: 'http://localhost:9020/api',
-    ws: 'http://localhost:9020/subscriptions'
+    ws: 'ws://localhost:9020/subscriptions'
   }
 };
 
