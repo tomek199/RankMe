@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "1.7.20" apply false
-    kotlin("plugin.spring") version "1.7.20" apply false
-    kotlin("plugin.jpa") version "1.7.20" apply false
+    kotlin("jvm") version "1.8.10" apply false
+    kotlin("plugin.spring") version "1.8.10" apply false
+    kotlin("plugin.jpa") version "1.8.10" apply false
     id("org.springframework.boot") version "2.5.5" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE" apply false
     id("org.sonarqube") version "2.7.1"
@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = "com.tm.rankme"
-    version = "0.83-SNAPSHOT"
+    version = "0.84-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -20,7 +20,7 @@ subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "11"
+            jvmTarget = "17"
         }
     }
 }

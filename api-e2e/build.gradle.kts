@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "1.8.10"
     id("se.thinkcode.cucumber-runner") version "0.0.11"
 }
 
@@ -35,6 +35,6 @@ task<Test>("e2e") {
 
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
-    java.sourceCompatibility = JavaVersion.VERSION_11
-    java.targetCompatibility = JavaVersion.VERSION_11
+    java.sourceCompatibility = JavaVersion.VERSION_17
+    java.targetCompatibility = JavaVersion.VERSION_17
 }
